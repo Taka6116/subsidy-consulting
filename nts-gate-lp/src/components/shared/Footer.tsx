@@ -1,8 +1,8 @@
 import Link from "next/link";
 import FooterPartnerLink from "./FooterPartnerLink";
 
-/** 診断前LPフッター（添付スウォッチ #0e357e 相当） */
-const FOOTER_NAVY = "#0e357e";
+const FOOTER_GRADIENT =
+  "linear-gradient(135deg, #0F2027 0%, #2C5364 50%, #00c6ff 100%)";
 
 const footerLinks = [
   { label: "サービス", href: "#" },
@@ -12,10 +12,7 @@ const footerLinks = [
 
 export default function Footer() {
   return (
-    <footer
-      className="text-white"
-      style={{ backgroundColor: FOOTER_NAVY }}
-    >
+    <footer className="text-white" style={{ background: FOOTER_GRADIENT }}>
       <div className="mx-auto max-w-container px-6 py-16">
         <div className="mb-8 space-y-4 text-small leading-relaxed text-white">
           <p className="text-base font-bold font-heading tracking-tight">

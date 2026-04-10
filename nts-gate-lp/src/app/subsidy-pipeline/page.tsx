@@ -9,8 +9,9 @@ export const metadata: Metadata = {
 
 export default function SubsidyPipelinePage() {
   return (
-    <div className="check-portal min-h-screen bg-portal-bg font-body text-portal-on-surface">
+    <div className="check-portal min-h-screen font-body text-portal-on-surface">
       <main className="mx-auto max-w-3xl px-6 py-12 md:py-16">
+        <div className="rounded-2xl border border-white/45 bg-white/92 p-6 shadow-xl backdrop-blur-sm sm:p-8 md:p-10 md:py-12">
         <p className="text-sm font-medium text-portal-primary-container">
           <Link
             href="/check"
@@ -81,6 +82,7 @@ export default function SubsidyPipelinePage() {
         <p className="mt-12 text-xs leading-relaxed text-portal-on-surface-variant">
           ※採択可否・金額・要件の最終判断は必ず公募要領および公式情報でご確認ください。
         </p>
+        </div>
       </main>
     </div>
   );

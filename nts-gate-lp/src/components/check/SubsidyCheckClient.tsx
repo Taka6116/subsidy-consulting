@@ -1,56 +1,105 @@
 "use client";
 
+import Link from "next/link";
 import { useCallback, useState } from "react";
 import { INDUSTRY_OPTIONS } from "@/data/industryOptions";
-import type { InsightItem } from "@/lib/ai/bedrockSubsidyInsight";
+import { JAPAN_PREFECTURES } from "@/data/japanPrefectures";
+
+const EMPLOYEE_BAND_OPTIONS = [
+  { id: "", label: "指定しない" },
+  { id: "1〜4人", label: "1〜4人" },
+  { id: "5〜20人", label: "5〜20人" },
+  { id: "21〜100人", label: "21〜100人" },
+  { id: "101〜300人", label: "101〜300人" },
+  { id: "301人以上", label: "301人以上" },
+] as const;
+
+const REVENUE_BAND_OPTIONS = [
+  { id: "", label: "指定しない" },
+  { id: "〜3,000万円未満", label: "〜3,000万円未満" },
+  { id: "3,000万円〜1億円未満", label: "3,000万円〜1億円未満" },
+  { id: "1億円〜10億円未満", label: "1億円〜10億円未満" },
+  { id: "10億円以上", label: "10億円以上" },
+] as const;
 import type { MatchedSubsidyPreview } from "@/lib/subsidyCheckMocks";
 import type { CorporateCandidate } from "@/types/corporateSearch";
 import SubsidyResultCard from "@/components/check/SubsidyResultCard";
 import SubsidyResultHero from "@/components/check/SubsidyResultHero";
 
-function parseInsightEntry(key: string, v: unknown): InsightItem | null {
-  if (!v || typeof v !== "object") return null;
-  const o = v as Record<string, unknown>;
-  const id = typeof o.id === "string" ? o.id : "";
-  if (id !== key) return null;
-  const title = typeof o.title === "string" ? o.title : "";
-  const use_case = typeof o.use_case === "string" ? o.use_case : "";
-  const max_amount = typeof o.max_amount === "string" ? o.max_amount : "";
-  const benefit = typeof o.benefit === "string" ? o.benefit : "";
-  const urgency = typeof o.urgency === "string" ? o.urgency : "";
-  const next_action = typeof o.next_action === "string" ? o.next_action : "";
-  if (!title || !use_case || !max_amount || !benefit || !urgency || !next_action) {
-    return null;
-  }
-  return { id, title, use_case, max_amount, benefit, urgency, next_action };
+function parseStringArray(v: unknown): string[] {
+  if (!Array.isArray(v)) return [];
+  return v.filter((x): x is string => typeof x === "string");
 }
 
-function parseMatchSubsidyRows(data: unknown): Array<{
-  id: string;
-  name: string;
-  description: string;
-  targetIndustries: string[];
-}> {
-  if (!Array.isArray(data)) return [];
+const MAX_INSIGHT_CARDS_PARSE = 4;
 
-  return data
+function parseInsightCardsFromApi(v: unknown): { title: string; body: string }[] {
+  if (!Array.isArray(v)) return [];
+  const out: { title: string; body: string }[] = [];
+  for (const el of v) {
+    if (!el || typeof el !== "object") continue;
+    const o = el as Record<string, unknown>;
+    const title = typeof o.title === "string" ? o.title.trim() : "";
+    const body = typeof o.body === "string" ? o.body.trim() : "";
+    if (!title || !body) continue;
+    out.push({ title, body });
+    if (out.length >= MAX_INSIGHT_CARDS_PARSE) break;
+  }
+  return out;
+}
+
+function parseMatchApiResults(payload: unknown): MatchedSubsidyPreview[] {
+  if (payload === null || typeof payload !== "object") return [];
+  const raw = (payload as { results?: unknown }).results;
+  if (!Array.isArray(raw)) return [];
+
+  return raw
     .map((r) => {
       if (!r || typeof r !== "object") return null;
+      const row = r as Record<string, unknown>;
+      const id = typeof row.id === "string" ? row.id : "";
+      if (!id) return null;
+      const name = typeof row.name === "string" ? row.name : "名称未設定";
+      const description = typeof row.description === "string" ? row.description : "";
+      const maxAmountLabel = typeof row.maxAmountLabel === "string" ? row.maxAmountLabel : "—";
+      const deadlineLabel = typeof row.deadlineLabel === "string" ? row.deadlineLabel : "—";
+      const targetIndustries = parseStringArray(row.targetIndustries);
+      const subsidyRate = typeof row.subsidyRate === "string" ? row.subsidyRate : "";
+      const targetArea = typeof row.targetArea === "string" ? row.targetArea : "";
+      const institutionName = typeof row.institutionName === "string" ? row.institutionName : "";
+      const detailUrl = typeof row.detailUrl === "string" ? row.detailUrl : "";
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any -- API 行の形は不定
-      const row = r as any;
+      const matchScoreRaw = row.matchScore;
+      const matchScore =
+        typeof matchScoreRaw === "number" && Number.isFinite(matchScoreRaw) ? matchScoreRaw : 0;
+      const decisionSummary = typeof row.summary === "string" ? row.summary : "";
+      const matchReason = parseStringArray(row.matchReason);
+      const riskFlags = parseStringArray(row.riskFlags);
+      const insightCards = parseInsightCardsFromApi(row.insightCards);
 
-      const rawTid = Array.isArray(row.targetIndustries) ? row.targetIndustries : [];
-      const targetIndustries = rawTid.filter((x: unknown): x is string => typeof x === "string");
-
-      return {
-        id: String(row.id ?? ""),
-        name: typeof row.name === "string" ? row.name : "名称未設定",
-        description: typeof row.description === "string" ? row.description : "",
-        targetIndustries,
+      const out: MatchedSubsidyPreview = {
+        id,
+        name,
+        maxAmountLabel,
+        deadlineLabel,
+        summary: description,
+        description: description || undefined,
+        targetIndustries: targetIndustries.length ? targetIndustries : undefined,
+        subsidyRate: subsidyRate || undefined,
+        targetArea: targetArea || undefined,
+        institutionName: institutionName || undefined,
+        detailUrl: detailUrl || undefined,
+        decision: {
+          matchScore,
+          summary: decisionSummary,
+          matchReason,
+          riskFlags,
+          ...(insightCards.length > 0 ? { insightCards } : {}),
+        },
       };
+      return out;
     })
-    .filter((item): item is NonNullable<typeof item> => item != null);
+    .filter((item): item is MatchedSubsidyPreview => item != null);
 }
 
 type Step = "form" | "loading" | "results";
@@ -73,6 +122,11 @@ export default function SubsidyCheckClient({ audience }: Props) {
   const [step, setStep] = useState<Step>("form");
   const [companyName, setCompanyName] = useState("");
   const [industryId, setIndustryId] = useState("");
+  const [prefecture, setPrefecture] = useState("");
+  const [employeeBand, setEmployeeBand] = useState("");
+  const [revenueBand, setRevenueBand] = useState("");
+  const [businessNotes, setBusinessNotes] = useState("");
+  const [companyWebsiteUrl, setCompanyWebsiteUrl] = useState("");
   const [formError, setFormError] = useState<string | null>(null);
   const [confirmed, setConfirmed] = useState<CorporateCandidate | null>(null);
   const [results, setResults] = useState<MatchedSubsidyPreview[]>([]);
@@ -84,96 +138,53 @@ export default function SubsidyCheckClient({ audience }: Props) {
     setStep("form");
     setCompanyName("");
     setIndustryId("");
+    setPrefecture("");
+    setEmployeeBand("");
+    setRevenueBand("");
+    setBusinessNotes("");
     setFormError(null);
     setConfirmed(null);
     setResults([]);
     setSearchLoading(false);
   }, []);
 
-  const runMatchAndInsights = useCallback(
+  const runMatch = useCallback(
     async (corp: CorporateCandidate) => {
       try {
+        const industryLabel =
+          INDUSTRY_OPTIONS.find((o) => o.id === industryId)?.label ?? industryId;
+
         const matchRes = await fetch("/api/subsidy/match", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ industry: industryId }),
+          body: JSON.stringify({
+            industry: industryId,
+            companyName: corp.name,
+            industryLabel,
+            prefecture: prefecture || corp.prefecture || "",
+            employees: employeeBand,
+            revenueBand,
+            businessNotes,
+            companyWebsiteUrl: companyWebsiteUrl.trim(),
+          }),
         });
+
         let matchJson: unknown;
         try {
           matchJson = await matchRes.json();
         } catch {
-          matchJson = [];
-        }
-        const rows = parseMatchSubsidyRows(Array.isArray(matchJson) ? matchJson : []);
-
-        const industryLabel =
-          INDUSTRY_OPTIONS.find((o) => o.id === industryId)?.label ?? industryId;
-
-        const mapped: MatchedSubsidyPreview[] = rows.map((row) => ({
-          id: row.id,
-          name: row.name || "名称未設定",
-          maxAmountLabel: "—",
-          deadlineLabel: "—",
-          summary: row.description,
-          description: row.description || undefined,
-          targetIndustries: row.targetIndustries,
-        }));
-
-        let insights: Record<string, InsightItem> = {};
-        try {
-          const aiRes = await fetch("/api/subsidy/ai-insight", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              corporate: {
-                name: corp.name,
-                prefecture: corp.prefecture,
-                city: corp.city,
-                corporateNumber: corp.corporateNumber,
-              },
-              industryLabel,
-              subsidies: mapped.map((m) => ({
-                id: m.id,
-                name: m.name,
-                description: m.description ?? m.summary ?? "",
-                targetIndustries: m.targetIndustries ?? [],
-              })),
-            }),
-          });
-          const aiJson: unknown = await aiRes.json().catch(() => ({}));
-          if (
-            aiJson !== null &&
-            typeof aiJson === "object" &&
-            "insights" in aiJson &&
-            (aiJson as { insights: unknown }).insights !== null &&
-            typeof (aiJson as { insights: unknown }).insights === "object" &&
-            !Array.isArray((aiJson as { insights: unknown }).insights)
-          ) {
-            const rawIn = (aiJson as { insights: Record<string, unknown> }).insights;
-            const next: Record<string, InsightItem> = {};
-            for (const [k, val] of Object.entries(rawIn)) {
-              const item = parseInsightEntry(k, val);
-              if (item) next[k] = item;
-            }
-            insights = next;
-          }
-        } catch {
-          /* insight 省略で続行 */
+          matchJson = null;
         }
 
-        const withInsights: MatchedSubsidyPreview[] = mapped.map((m) => ({
-          ...m,
-          aiInsight: insights[m.id],
-        }));
-
-        setResults(withInsights);
+        const rows = parseMatchApiResults(matchJson);
+        setResults(rows);
       } catch {
         setResults([]);
       } finally {
         setStep("results");
       }
     },
-    [industryId],
+    [industryId, prefecture, employeeBand, revenueBand, businessNotes, companyWebsiteUrl],
   );
 
   const submitForm = async (e: React.FormEvent) => {
@@ -194,7 +205,7 @@ export default function SubsidyCheckClient({ audience }: Props) {
     setStep("loading");
 
     try {
-      await runMatchAndInsights(corp);
+      await runMatch(corp);
     } finally {
       setSearchLoading(false);
     }
@@ -217,7 +228,7 @@ export default function SubsidyCheckClient({ audience }: Props) {
       {step === "form" && (
         <>
           <section className="mb-10" aria-labelledby="check-intro-heading">
-            <span className="mb-4 inline-block rounded-md bg-portal-tertiary-container px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-portal-on-tertiary-container">
+            <span className="mb-4 inline-block rounded-full border border-[rgba(0,198,255,0.3)] bg-[rgba(0,198,255,0.12)] px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-[#00a0cc]">
               デモ・参考表示
             </span>
             <p className="text-xs font-bold uppercase tracking-widest text-portal-primary-container">
@@ -233,20 +244,20 @@ export default function SubsidyCheckClient({ audience }: Props) {
               {formLead}
             </p>
           </section>
-          <div className="rounded-xl border border-portal-outline/30 bg-portal-surface-lowest p-6 shadow-sm sm:p-8">
-            <h2 className="font-heading text-h2 font-bold text-portal-primary">
+          <div className="rounded-xl border border-white/10 bg-white p-6 shadow-[0_8px_32px_rgba(0,0,0,0.4)] sm:p-8">
+            <h2 className="font-heading text-h2 font-bold text-[#0F2027]">
               {isPartner ? "顧客企業の情報を入力" : "会社情報を入力"}
             </h2>
-            <p className="mt-2 text-sm leading-relaxed text-portal-on-surface-variant">
+            <p className="mt-2 text-sm leading-relaxed text-[#5a7080]">
               {isPartner
-                ? "顧客企業の会社名と業種を入力してください。法人の正式な特定は行わず、ご入力の社名と業種をもとに対象制度のイメージを表示します。"
-                : "会社名と業種を入力してください。法人の正式な特定は行わず、ご入力の社名と業種をもとに対象制度のイメージを表示します。"}
+                ? "顧客企業の会社名と業種を入力してください（事業内容・地域・規模は任意）。法人の正式な特定は行わず、入力内容をもとに対象制度のイメージを表示します。"
+                : "会社名と業種を入力してください（事業内容・地域・規模は任意）。法人の正式な特定は行わず、入力内容をもとに対象制度のイメージを表示します。"}
             </p>
             <form onSubmit={submitForm} className="mt-8 space-y-6">
               <div>
                 <label
                   htmlFor="check-company"
-                  className="block text-sm font-bold text-portal-on-surface"
+                  className="block text-sm font-bold text-[#1a3a4a]"
                 >
                   {isPartner ? "顧客企業の会社名" : "会社名"}
                   <span className="ml-1 text-portal-error">*</span>
@@ -258,13 +269,13 @@ export default function SubsidyCheckClient({ audience }: Props) {
                   value={companyName}
                   onChange={(e) => setCompanyName(e.target.value)}
                   placeholder={isPartner ? "例：株式会社○○" : "例：株式会社○○"}
-                  className="mt-2 w-full rounded-lg border border-portal-outline bg-portal-surface-lowest px-4 py-3 text-body text-portal-on-surface outline-none transition-colors focus:border-portal-primary-container focus:ring-2 focus:ring-portal-primary-container/20"
+                  className="mt-2 w-full rounded-lg border border-[#d0dde5] bg-[#f8fbfd] px-4 py-3 text-body text-[#0F2027] outline-none transition-colors focus:border-[#00a0cc] focus:ring-2 focus:ring-[#00a0cc]/20 placeholder:text-[#a0b4bf]"
                 />
               </div>
               <div>
                 <label
                   htmlFor="check-industry"
-                  className="block text-sm font-bold text-portal-on-surface"
+                  className="block text-sm font-bold text-[#1a3a4a]"
                 >
                   業種
                   <span className="ml-1 text-portal-error">*</span>
@@ -273,7 +284,7 @@ export default function SubsidyCheckClient({ audience }: Props) {
                   id="check-industry"
                   value={industryId}
                   onChange={(e) => setIndustryId(e.target.value)}
-                  className="mt-2 w-full rounded-lg border border-portal-outline bg-portal-surface-lowest px-4 py-3 text-body text-portal-on-surface outline-none transition-colors focus:border-portal-primary-container focus:ring-2 focus:ring-portal-primary-container/20"
+                  className="mt-2 w-full rounded-lg border border-[#d0dde5] bg-[#f8fbfd] px-4 py-3 text-body text-[#0F2027] outline-none transition-colors focus:border-[#00a0cc] focus:ring-2 focus:ring-[#00a0cc]/20"
                 >
                   <option value="">選択してください</option>
                   {INDUSTRY_OPTIONS.map((opt) => (
@@ -283,13 +294,114 @@ export default function SubsidyCheckClient({ audience }: Props) {
                   ))}
                 </select>
               </div>
+              <div>
+                <label
+                  htmlFor="check-prefecture"
+                  className="block text-sm font-bold text-[#1a3a4a]"
+                >
+                  本社・主たる事業所の都道府県（任意）
+                </label>
+                <select
+                  id="check-prefecture"
+                  value={prefecture}
+                  onChange={(e) => setPrefecture(e.target.value)}
+                  className="mt-2 w-full rounded-lg border border-[#d0dde5] bg-[#f8fbfd] px-4 py-3 text-body text-[#0F2027] outline-none transition-colors focus:border-[#00a0cc] focus:ring-2 focus:ring-[#00a0cc]/20"
+                >
+                  {JAPAN_PREFECTURES.map((p) => (
+                    <option key={p.id || "none"} value={p.id}>
+                      {p.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label
+                  htmlFor="check-employees"
+                  className="block text-sm font-bold text-[#1a3a4a]"
+                >
+                  従業員規模（任意）
+                </label>
+                <select
+                  id="check-employees"
+                  value={employeeBand}
+                  onChange={(e) => setEmployeeBand(e.target.value)}
+                  className="mt-2 w-full rounded-lg border border-[#d0dde5] bg-[#f8fbfd] px-4 py-3 text-body text-[#0F2027] outline-none transition-colors focus:border-[#00a0cc] focus:ring-2 focus:ring-[#00a0cc]/20"
+                >
+                  {EMPLOYEE_BAND_OPTIONS.map((o) => (
+                    <option key={o.id || "none"} value={o.id}>
+                      {o.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label
+                  htmlFor="check-revenue"
+                  className="block text-sm font-bold text-[#1a3a4a]"
+                >
+                  売上規模の目安（任意）
+                </label>
+                <select
+                  id="check-revenue"
+                  value={revenueBand}
+                  onChange={(e) => setRevenueBand(e.target.value)}
+                  className="mt-2 w-full rounded-lg border border-[#d0dde5] bg-[#f8fbfd] px-4 py-3 text-body text-[#0F2027] outline-none transition-colors focus:border-[#00a0cc] focus:ring-2 focus:ring-[#00a0cc]/20"
+                >
+                  {REVENUE_BAND_OPTIONS.map((o) => (
+                    <option key={o.id || "none"} value={o.id}>
+                      {o.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label
+                  htmlFor="check-business-notes"
+                  className="block text-sm font-bold text-[#1a3a4a]"
+                >
+                  事業内容・取扱い（任意）
+                </label>
+                <p className="mt-1 text-xs text-[#8aa0ad]">
+                  例：オンライン英会話、化学物質は扱わない、店舗数、主な顧客など。照合の精度向上に使います。
+                </p>
+                <textarea
+                  id="check-business-notes"
+                  rows={3}
+                  value={businessNotes}
+                  onChange={(e) => setBusinessNotes(e.target.value)}
+                  placeholder="具体的な事業・業務内容に関してなど"
+                  className="mt-2 w-full resize-y rounded-lg border border-[#d0dde5] bg-[#f8fbfd] px-4 py-3 text-body text-[#0F2027] outline-none transition-colors focus:border-[#00a0cc] focus:ring-2 focus:ring-[#00a0cc]/20 placeholder:text-[#a0b4bf]"
+                />
+              </div>
+              <div>
+                <label
+                  htmlFor="check-company-website"
+                  className="block text-sm font-bold text-[#1a3a4a]"
+                >
+                  会社の公式サイトURL（任意）
+                </label>
+                <p className="mt-1 text-xs text-[#8aa0ad]">
+                  入力があればサーバーがページを取得し、ユーザー記述とあわせて照合に使います。取得できない場合は無視されます（サイトの利用規約・robots
+                  等はご確認ください）。
+                </p>
+                <input
+                  id="check-company-website"
+                  type="text"
+                  inputMode="url"
+                  autoComplete="url"
+                  value={companyWebsiteUrl}
+                  onChange={(e) => setCompanyWebsiteUrl(e.target.value)}
+                  placeholder="https://example.co.jp"
+                  className="mt-2 w-full rounded-lg border border-[#d0dde5] bg-[#f8fbfd] px-4 py-3 text-body text-[#0F2027] outline-none transition-colors focus:border-[#00a0cc] focus:ring-2 focus:ring-[#00a0cc]/20 placeholder:text-[#a0b4bf]"
+                />
+              </div>
               {formError ? (
                 <p className="text-sm font-medium text-portal-error">{formError}</p>
               ) : null}
               <button
                 type="submit"
                 disabled={searchLoading}
-                className="w-full rounded-full bg-portal-tertiary-fixed-dim px-6 py-4 text-base font-bold text-portal-primary shadow-sm transition-opacity hover:opacity-90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-portal-primary disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
+                className="w-full rounded-full bg-[#00c6ff] px-6 py-4 text-base font-bold text-[#0b1a22] shadow-sm transition-all hover:bg-[#00b0e6] hover:shadow-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00c6ff] disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
               >
                 {searchLoading ? "照合中…" : "補助金を照合する"}
               </button>
@@ -299,17 +411,14 @@ export default function SubsidyCheckClient({ audience }: Props) {
       )}
 
       {step === "loading" && (
-        <div className="flex min-h-[280px] flex-col items-center justify-center rounded-xl border border-portal-outline/30 bg-portal-surface-lowest p-10 shadow-sm">
+        <div className="flex min-h-[280px] flex-col items-center justify-center rounded-xl border border-white/10 bg-white p-10 shadow-[0_8px_32px_rgba(0,0,0,0.4)]">
           <div
-            className="h-10 w-10 animate-spin rounded-full border-4 border-portal-surface-container border-t-portal-primary-container"
+            className="h-10 w-10 animate-spin rounded-full border-4 border-[#e0e8ed] border-t-[#00a0cc]"
             aria-hidden
           />
-          <p className="mt-6 text-center font-medium text-portal-on-surface">対象制度を照合しています…</p>
-          <p className="mt-2 text-center text-sm text-portal-on-surface-variant">
-            制度データを取得しています…
-          </p>
-          <p className="mt-1 text-center text-xs text-portal-secondary">
-            AI が提案文を生成しています…
+          <p className="mt-6 text-center font-medium text-[#0F2027]">対象制度を照合しています…</p>
+          <p className="mt-2 text-center text-sm text-[#5a7080]">
+            制度データを取得し、適合度を評価しています…
           </p>
         </div>
       )}
@@ -330,25 +439,44 @@ export default function SubsidyCheckClient({ audience }: Props) {
 
           {results.length === 0 ? (
             <>
-              <h1 className="font-heading text-h1 font-bold text-portal-primary">
-                照合結果（デモ）
-              </h1>
-              <p className="mt-4 text-sm text-portal-on-surface-variant">
-                該当する制度が見つかりませんでした。
-              </p>
+              <h1 className="font-heading text-h1 font-bold text-portal-primary">照合結果（デモ）</h1>
+              <div className="mt-6 max-w-2xl space-y-4 rounded-xl border border-white/10 bg-white p-6 text-sm leading-relaxed text-[#0F2027] shadow-[0_8px_32px_rgba(0,0,0,0.35)] sm:p-8">
+                <p className="font-medium text-[#1a3a4a]">
+                  現在、御社の条件に完全に合致する公募中の補助金が見つかりませんでした。
+                </p>
+                <p className="text-[#5a7080]">これは以下の可能性があります：</p>
+                <ul className="list-inside list-disc space-y-1 text-[#5a7080]">
+                  <li>現在、公募が始まっていない（近日公募予定の制度あり）</li>
+                  <li>業種・地域の条件が特殊なケース</li>
+                  <li>御社の課題に合う制度が複数省庁にまたがるケース</li>
+                </ul>
+                <p className="text-[#5a7080]">
+                  補助金は年間を通じて新規公募が出ます。
+                  <br />
+                  専門家への無料相談で、最新情報と合わせてご案内します。
+                </p>
+                <div className="pt-2">
+                  <Link
+                    href="/consult"
+                    className="inline-flex w-full items-center justify-center rounded-full bg-[#00c6ff] px-6 py-4 text-base font-bold text-[#0b1a22] shadow-sm transition-all hover:bg-[#00b0e6] hover:shadow-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00c6ff] sm:w-auto"
+                  >
+                    無料で専門家に相談する
+                  </Link>
+                </div>
+              </div>
             </>
           ) : (
             <>
               <SubsidyResultHero item={results[0]} />
               {results.length > 1 ? (
-                <section aria-labelledby="check-related-heading">
+                <section className="mt-16 md:mt-20" aria-labelledby="check-related-heading">
                   <h2
                     id="check-related-heading"
-                    className="mb-6 font-heading text-2xl font-bold text-portal-primary-container"
+                    className="mb-8 font-heading text-2xl font-bold text-portal-primary-container"
                   >
-                    ほかの候補
+                    関連する候補
                   </h2>
-                  <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
+                  <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
                     {results.slice(1).map((r) => (
                       <SubsidyResultCard key={r.id} item={r} />
                     ))}
@@ -364,7 +492,7 @@ export default function SubsidyCheckClient({ audience }: Props) {
           <button
             type="button"
             onClick={reset}
-            className="w-full rounded-full border-2 border-portal-primary-container/40 bg-portal-surface-lowest px-6 py-3 text-sm font-bold text-portal-primary transition-colors hover:bg-portal-surface-low sm:w-auto"
+            className="w-full rounded-full border-2 border-[rgba(0,198,255,0.35)] bg-white/5 px-6 py-3 text-sm font-bold text-[#7ed9f5] backdrop-blur-sm transition-colors hover:border-[#00c6ff] hover:bg-white/10 hover:text-[#00c6ff] sm:w-auto"
           >
             条件を変えてやり直す
           </button>

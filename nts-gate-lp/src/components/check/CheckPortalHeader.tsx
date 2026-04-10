@@ -8,7 +8,7 @@ export default function CheckPortalHeader({ audience }: Props) {
   const isPartner = audience === "partner";
 
   return (
-    <header className="check-portal-glass-nav fixed left-0 right-0 top-0 z-50 border-b border-portal-outline/20">
+    <header className="check-portal-glass-nav fixed left-0 right-0 top-0 z-50">
       <div className="mx-auto flex max-w-5xl items-center justify-between gap-4 px-6 py-4">
         <div className="flex min-w-0 flex-1 items-center gap-6">
           <Link

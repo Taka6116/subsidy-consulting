@@ -18,12 +18,12 @@ import TopSubsidyReportCard, {
 } from "@/components/result/TopSubsidyReportCard";
 import HorizontalProcessSteps from "@/components/result/HorizontalProcessSteps";
 
-const GREEN_PRIMARY = "#27a85f";
-const GREEN_CONTAINER = "#0e5c33";
-const GREEN_HEADING = "#0e2a1e";
-const ACCENT_MUTED = "#e0f0e9";
-const SURFACE = "#f8fafb";
-const SURFACE_LOW = "#f2f4f5";
+const BRAND_PRIMARY = "#2c5364";
+const BRAND_PRIMARY_DARK = "#0f2027";
+const BRAND_HEADING = "#0f2027";
+const ACCENT_MUTED = "#d9f0f8";
+const SURFACE = "#f0f9fc";
+const SURFACE_LOW = "#e5eef4";
 
 const PARTNER_BADGE_LABELS: Record<string, string> = {
   best: "最優先で提案",
@@ -115,7 +115,7 @@ function Inner() {
           className="pointer-events-none absolute inset-0"
           style={{
             background:
-              "linear-gradient(105deg, rgba(5,20,10,0.88) 0%, rgba(5,20,10,0.72) 45%, rgba(5,20,10,0.35) 70%, rgba(5,20,10,0.18) 100%)",
+              "linear-gradient(105deg, rgba(15,32,39,0.88) 0%, rgba(15,32,39,0.72) 45%, rgba(44,83,100,0.35) 70%, rgba(0,198,255,0.14) 100%)",
           }}
           aria-hidden
         />
@@ -132,7 +132,7 @@ function Inner() {
           <div>
             <span
               className="mb-6 inline-block rounded-sm px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-white/90"
-              style={{ backgroundColor: GREEN_PRIMARY }}
+              style={{ backgroundColor: BRAND_PRIMARY }}
             >
               Partner | パートナー向け診断完了
             </span>
@@ -152,7 +152,7 @@ function Inner() {
               <Link
                 href="/#footer-contact"
                 className="flex items-center gap-2 rounded px-8 py-4 text-base font-bold text-white shadow-sm transition-all hover:shadow-lg active:scale-[0.98]"
-                style={{ backgroundColor: GREEN_PRIMARY }}
+                style={{ backgroundColor: BRAND_PRIMARY }}
               >
                 提携プログラムを見る
                 <ArrowRight className="h-5 w-5" aria-hidden />
@@ -169,8 +169,8 @@ function Inner() {
             {topMatch ? (
               <TopSubsidyReportCard
                 match={topMatch}
-                primary={GREEN_PRIMARY}
-                headingColor={GREEN_HEADING}
+                primary={BRAND_PRIMARY}
+                headingColor={BRAND_HEADING}
                 accentMuted={ACCENT_MUTED}
                 matchLabel="対象可能性"
                 detailHref="/#footer-contact"
@@ -178,13 +178,13 @@ function Inner() {
               />
             ) : roleMismatch ? (
               <HeroSubsidyEmptyCard
-                headingColor={GREEN_HEADING}
+                headingColor={BRAND_HEADING}
                 message="パートナー向けの診断結果を表示できません"
                 subMessage="保存されている回答はエンドユーザー向けの可能性があります。エンドユーザー向けの結果ページをご確認ください。"
               />
             ) : (
               <HeroSubsidyEmptyCard
-                headingColor={GREEN_HEADING}
+                headingColor={BRAND_HEADING}
                 message="優先度の高い候補を表示できませんでした"
                 subMessage="診断の回答がないか、条件に合致する制度が見つかりませんでした。診断をやり直すか、お問い合わせください。"
               />
@@ -201,7 +201,7 @@ function Inner() {
               保存されている回答はパートナー向けではありません。エンドユーザー向けの結果は
               <Link
                 href="/result/end-user"
-                className="mx-1 font-bold text-[#008081] underline underline-offset-4 hover:text-[#005252]"
+                className="mx-1 font-bold text-[#00a8cc] underline underline-offset-4 hover:text-[#0f2027]"
               >
                 こちら
               </Link>
@@ -213,7 +213,7 @@ function Inner() {
               診断の回答が見つかりませんでした。
               <Link
                 href="/check"
-                className="ml-1 font-bold text-[#0e5c33] underline underline-offset-4 hover:text-[#0e2a1e]"
+                className="ml-1 font-bold text-[#2c5364] underline underline-offset-4 hover:text-[#0f2027]"
               >
                 診断からやり直す
               </Link>
@@ -228,9 +228,9 @@ function Inner() {
             )}
           <SubsidyBentoGrid
             matches={gridMatches}
-            primary={GREEN_PRIMARY}
-            primaryContainer={GREEN_CONTAINER}
-            headingColor={GREEN_HEADING}
+            primary={BRAND_PRIMARY}
+            primaryContainer={BRAND_PRIMARY_DARK}
+            headingColor={BRAND_HEADING}
             accentMuted={ACCENT_MUTED}
             matchLabel="対象可能性"
             detailHref="/#footer-contact"
@@ -246,7 +246,7 @@ function Inner() {
       >
         <div className="mx-auto max-w-[1536px] px-6 md:px-8">
           <div className="mx-auto max-w-3xl text-center">
-            <p className="font-heading text-h2 font-bold italic leading-snug" style={{ color: GREEN_HEADING }}>
+            <p className="font-heading text-h2 font-bold italic leading-snug" style={{ color: BRAND_HEADING }}>
               「ただの申請代行ではありません。
               <br />
               <span className="inline-block whitespace-nowrap">
@@ -269,9 +269,9 @@ function Inner() {
           </h2>
           <HorizontalProcessSteps
             steps={result.nextSteps}
-            outlineColor={GREEN_HEADING}
-            activeStepBg={GREEN_PRIMARY}
-            titleColor={GREEN_HEADING}
+            outlineColor={BRAND_HEADING}
+            activeStepBg={BRAND_PRIMARY}
+            titleColor={BRAND_HEADING}
           />
         </div>
       </motion.section>
@@ -290,7 +290,7 @@ function Inner() {
           className="pointer-events-none absolute inset-0"
           style={{
             background:
-              "linear-gradient(180deg, rgba(10,30,40,0.55) 0%, rgba(10,30,40,0.42) 50%, rgba(10,30,40,0.52) 100%)",
+              "linear-gradient(180deg, rgba(15,32,39,0.55) 0%, rgba(44,83,100,0.42) 50%, rgba(15,32,39,0.52) 100%)",
           }}
           aria-hidden
         />
@@ -307,8 +307,8 @@ function Inner() {
           <div className="flex flex-col justify-center gap-4 sm:flex-row sm:gap-6">
             <Link
               href="/#footer-contact"
-              className="rounded px-10 py-5 text-base font-bold shadow-lg transition-all hover:bg-emerald-50 active:scale-[0.98]"
-              style={{ backgroundColor: "#ffffff", color: GREEN_HEADING }}
+              className="rounded px-10 py-5 text-base font-bold shadow-lg transition-all hover:bg-cyan-50 active:scale-[0.98]"
+              style={{ backgroundColor: "#ffffff", color: BRAND_HEADING }}
             >
               提携プログラムを見る
             </Link>
@@ -329,7 +329,7 @@ export default function PartnerResultClient() {
   return (
     <Suspense
       fallback={
-        <div className="flex min-h-screen items-center justify-center bg-[#f8fafb]">
+        <div className="flex min-h-screen items-center justify-center bg-[#f0f9fc]">
           <p className="text-slate-400">読み込み中…</p>
         </div>
       }

@@ -50,6 +50,8 @@ module.exports = {
           surface: "var(--portal-surface)",
           "on-surface": "var(--portal-on-surface)",
           "on-surface-variant": "var(--portal-on-surface-variant)",
+          "on-surface-card": "var(--portal-on-surface-card)",
+          "on-surface-card-sub": "var(--portal-on-surface-card-sub)",
           primary: "var(--portal-primary)",
           "primary-container": "var(--portal-primary-container)",
           "on-primary": "var(--portal-on-primary)",
@@ -64,6 +66,8 @@ module.exports = {
           "on-tertiary-container": "var(--portal-on-tertiary-container)",
           error: "var(--portal-error)",
           secondary: "var(--portal-secondary)",
+          "nav-bg": "var(--portal-nav-bg)",
+          "nav-border": "var(--portal-nav-border)",
         },
       },
       spacing: {

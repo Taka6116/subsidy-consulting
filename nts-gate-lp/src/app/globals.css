@@ -3,14 +3,26 @@
 @tailwind utilities;
 
 :root {
-  /* === Primary（Pattern B: 深緑→エメラルド） === */
-  --primary-900: #082C24;
-  --primary-700: #0D4A3A;
-  --primary-500: #136B56;
-  --primary-300: #1A9070;
-  --primary-200: #3DBFA0;
-  --primary-100: #E3F5F0;
-  --primary-50:  #F4F9F7;
+  /* === Brand（#0F2027 → #2C5364 → #00c6ff） === */
+  --brand-900: #0f2027;
+  --brand-500: #2c5364;
+  --brand-accent: #00c6ff;
+
+  --gradient-brand: linear-gradient(
+    135deg,
+    var(--brand-900) 0%,
+    var(--brand-500) 50%,
+    var(--brand-accent) 100%
+  );
+
+  /* === Primary（ブランドトーンに合わせたスケール） === */
+  --primary-900: #0f2027;
+  --primary-700: #1e3d4d;
+  --primary-500: #2c5364;
+  --primary-300: #3d6b7f;
+  --primary-200: #5a9eb8;
+  --primary-100: #d9f0f8;
+  --primary-50:  #f0f9fc;
 
   /* === Warm Accent（アンバー寄りゴールド） === */
   --accent-600:  #B86A10;
@@ -27,9 +39,9 @@
   --neutral-50:  #FAFAF8;
 
   /* === Semantic === */
-  --success:     #2D8A56;
-  --info:        #136B56;
-  --warning:     #D4930D;
+  --success:     #2d7a6b;
+  --info:        #2c5364;
+  --warning:     #d4930d;
 
   /* === タイポグラフィ === */
   --font-heading: "Noto Sans JP", sans-serif;
@@ -64,41 +76,60 @@
   --section-gap: clamp(4rem, 8vw, 8rem);
 }
 
-/* === /check ポータル（LP の青トーンと分離・モック HTML と同期） === */
+/* ===== NTS Check Portal — Dark Theme Variables ===== */
 .check-portal {
-  --portal-bg: #f9f9f6;
-  --portal-surface: #f9f9f6;
-  --portal-on-surface: #1a1c1b;
-  --portal-on-surface-variant: #424843;
-  --portal-primary: #082C24;
-  --portal-primary-container: #136B56;
-  --portal-on-primary: #ffffff;
+  --portal-bg: #0b1a22;
+  --portal-surface: rgba(255, 255, 255, 0.05);
+  --portal-surface-low: rgba(255, 255, 255, 0.03);
   --portal-surface-lowest: #ffffff;
-  --portal-surface-low: #f4f4f1;
-  --portal-surface-container: #eeeeeb;
-  --portal-secondary-container: #e2e0d7;
-  --portal-on-secondary-container: #64635c;
-  --portal-outline: #c2c8c1;
-  --portal-tertiary-fixed-dim: #e3c281;
-  --portal-tertiary-container: #483400;
-  --portal-on-tertiary-container: #bb9c5f;
-  --portal-error: #ba1a1a;
-  --portal-secondary: #5f5f58;
+  --portal-outline: rgba(0, 198, 255, 0.18);
+  --portal-primary: #00c6ff;
+  --portal-primary-container: #7ed9f5;
+  --portal-on-primary: #0b1a22;
+  --portal-on-surface: #e8f4fd;
+  --portal-on-surface-variant: rgba(200, 225, 240, 0.65);
+  --portal-on-surface-card: #0f2027;
+  --portal-on-surface-card-sub: #5a7080;
+  --portal-error: #f87171;
+  --portal-tertiary-container: rgba(0, 198, 255, 0.12);
+  --portal-on-tertiary-container: #00c6ff;
+  --portal-nav-bg: rgba(11, 26, 34, 0.88);
+  --portal-nav-border: rgba(0, 198, 255, 0.12);
+
+  /* 白カード内サブブロック・ラベル用（既存コンポーネント互換） */
+  --portal-secondary: #6b8294;
+  --portal-surface-container: #e8f1f6;
+  --portal-secondary-container: rgba(0, 198, 255, 0.1);
+  --portal-on-secondary-container: #1a3a4a;
+  --portal-tertiary-fixed-dim: #00b0e6;
+
+  background: linear-gradient(160deg, #0b1a22 0%, #2c5364 65%, #1a3a4a 100%);
 }
 
 .check-portal-editorial-gradient {
-  background: linear-gradient(135deg, #082C24 0%, #136B56 50%, #1A9070 100%);
+  background: var(--gradient-brand);
 }
 
 /* トップ Hero ベース（画像・オーバーレイの下層） */
 .hero-gradient-bg {
-  background: linear-gradient(135deg, #082C24 0%, #136B56 60%, #1A9070 100%);
+  background: linear-gradient(
+    135deg,
+    var(--brand-900) 0%,
+    var(--brand-500) 55%,
+    var(--brand-accent) 100%
+  );
 }
 
 .check-portal-glass-nav {
-  background: rgba(249, 249, 246, 0.8);
-  -webkit-backdrop-filter: blur(24px);
-  backdrop-filter: blur(24px);
+  background: var(--portal-nav-bg);
+  border-bottom: 1px solid var(--portal-nav-border);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+}
+
+.check-portal-glass-nav img {
+  filter: brightness(0) invert(1);
+  opacity: 0.95;
 }
 
 body {

@@ -10,9 +10,9 @@ import { trackCTAClick } from "@/lib/analytics";
 import HeroPartnerStrip from "@/components/gate-lp/HeroPartnerStrip";
 
 const GRADIENT_A =
-  "linear-gradient(105deg, rgba(8,44,36,0.72) 0%, rgba(8,44,36,0.48) 42%, rgba(19,107,86,0.14) 65%, transparent 100%)";
+  "linear-gradient(105deg, rgba(15,32,39,0.72) 0%, rgba(15,32,39,0.48) 42%, rgba(44,83,100,0.14) 65%, transparent 100%)";
 const GRADIENT_B =
-  "linear-gradient(to left, rgba(8,44,36,0.42) 0%, transparent 45%)";
+  "linear-gradient(to left, rgba(44,83,100,0.42) 0%, transparent 45%)";
 
 const HERO_PICTURE_SRC = "/images/hero_picture.png";
 

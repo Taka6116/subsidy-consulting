@@ -5,44 +5,42 @@ type Props = {
 };
 
 export default function SubsidyResultCard({ item }: Props) {
-  const ai = item.aiInsight;
-  const title = ai?.title ?? item.name;
-  const amount = ai?.max_amount ?? item.maxAmountLabel;
+  const d = item.decision;
+  const insightTeaser = d?.insightCards?.[0]?.body?.trim();
+  const blurb = d?.summary?.trim() || item.description?.trim() || item.summary;
 
   return (
-    <article className="flex h-full flex-col rounded-xl border border-portal-outline/30 bg-portal-surface-lowest p-6 shadow-sm">
-      <h3 className="font-heading text-lg font-bold text-portal-primary-container">{title}</h3>
-      <p className="mt-1 text-xs text-portal-on-surface-variant">{item.name}</p>
-      <p className="mt-3 font-heading text-xl font-bold text-portal-primary">{amount}</p>
-      {ai ? (
-        <div className="mt-4 flex flex-1 flex-col gap-3 text-sm leading-relaxed text-portal-on-surface">
-          <p>
-            <span className="font-semibold text-portal-primary-container">活用イメージ：</span>
-            {ai.use_case}
-          </p>
-          <p>
-            <span className="font-semibold text-portal-primary-container">メリット：</span>
-            {ai.benefit}
-          </p>
-          <p>
-            <span className="font-semibold text-portal-primary-container">今やる理由：</span>
-            {ai.urgency}
-          </p>
-          <div
-            className="mt-auto rounded-full bg-portal-tertiary-fixed-dim px-4 py-3 text-center text-xs font-bold leading-snug text-portal-primary-container"
-            role="status"
-          >
-            {ai.next_action}
-          </div>
-        </div>
-      ) : (
-        <p className="mt-4 text-sm text-portal-on-surface-variant">
-          {item.description ?? item.summary}
-        </p>
-      )}
-      <p className="mt-4 text-xs leading-relaxed text-portal-on-surface-variant">
-        ※本内容は活用イメージです。詳細は必ず公募要領をご確認ください。
+    <article className="group flex h-full flex-col rounded-xl border border-white/10 bg-white p-6 shadow-[0_8px_32px_rgba(0,0,0,0.25)] transition-shadow hover:shadow-[0_12px_40px_rgba(0,0,0,0.3)]">
+      <span className="mb-4 inline-block rounded bg-[rgba(0,198,255,0.1)] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-[#00a0cc]">
+        候補
+      </span>
+      <h3 className="font-heading text-lg font-semibold text-portal-primary-container transition-colors group-hover:text-portal-primary">
+        {item.name}
+      </h3>
+      <p className="mt-4 font-heading text-2xl font-bold text-portal-primary-container md:text-3xl">
+        {item.maxAmountLabel}
       </p>
+      {insightTeaser ? (
+        <p className="mt-3 line-clamp-2 text-sm leading-relaxed text-portal-on-surface-card-sub">
+          {insightTeaser}
+        </p>
+      ) : blurb ? (
+        <p className="mt-3 line-clamp-3 text-sm leading-relaxed text-portal-on-surface-card-sub">
+          {blurb}
+        </p>
+      ) : null}
+      {item.detailUrl ? (
+        <p className="mt-auto pt-4 text-[11px] leading-relaxed text-portal-on-surface-card-sub">
+          <a
+            href={item.detailUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="break-all text-portal-primary underline-offset-2 hover:underline"
+          >
+            {item.detailUrl}
+          </a>
+        </p>
+      ) : null}
     </article>
   );
 }

@@ -22,16 +22,18 @@ export default async function CheckPage({
   const audience = audienceParam === "partner" ? "partner" : "end_user";
 
   return (
-    <div className="check-portal min-h-screen bg-portal-bg font-body text-portal-on-surface">
+    <div className="check-portal min-h-screen font-body text-portal-on-surface">
       <CheckPortalHeader audience={audience} />
       <main className="min-h-[calc(100vh-5rem)] px-6 pb-16 pt-24">
-        <SubsidyCheckClient audience={audience} />
+        <div className="mx-auto max-w-5xl">
+          <SubsidyCheckClient audience={audience} />
+        </div>
       </main>
-      <footer className="border-t border-portal-outline/20 bg-portal-surface-low py-8">
-        <div className="mx-auto max-w-5xl px-6 text-center text-caption text-portal-on-surface-variant">
+      <footer className="border-t border-[rgba(0,198,255,0.1)] bg-[rgba(0,0,0,0.2)] py-8">
+        <div className="mx-auto max-w-5xl px-6 text-center text-caption">
           <Link
             href="/"
-            className="font-medium text-portal-primary-container underline-offset-4 hover:underline"
+            className="font-medium text-[#7ed9f5] underline-offset-4 hover:text-[#00c6ff] hover:underline"
           >
             日本提携支援 トップへ戻る
           </Link>

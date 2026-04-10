@@ -1,20 +1,35 @@
 /** スプリント2: 法人検索・マッチング結果のモック（タイムアウト時フォールバック等で利用） */
 
-import type { InsightItem } from "@/lib/ai/bedrockSubsidyInsight";
+import type { SubsidyInsightCard } from "@/lib/ai/bedrockSubsidyMatch";
 import type { CorporateCandidate } from "@/types/corporateSearch";
 
 export type { CorporateCandidate };
+
+/** /api/subsidy/match の Bedrock マージ後フィールド */
+export type SubsidyMatchDecision = {
+  matchScore: number;
+  summary: string;
+  matchReason: string[];
+  riskFlags: string[];
+  insightCards?: SubsidyInsightCard[];
+};
 
 export type MatchedSubsidyPreview = {
   id: string;
   name: string;
   maxAmountLabel: string;
   deadlineLabel: string;
+  /** jGrants 等からの事実ベースの抜粋 */
   summary: string;
-  /** /api/subsidy/match 等の description（表示は description ?? summary） */
+  /** 一覧・詳細の本文（表示は description ?? summary） */
   description?: string;
-  aiInsight?: InsightItem;
+  decision?: SubsidyMatchDecision;
   targetIndustries?: string[];
+  /** jGrants 追加フィールド */
+  subsidyRate?: string;
+  targetArea?: string;
+  institutionName?: string;
+  detailUrl?: string;
 };
 
 export function mockSearchCorporates(companyName: string): CorporateCandidate[] {
@@ -52,6 +67,22 @@ export function mockMatchedSubsidies(_industryId: string): MatchedSubsidyPreview
       maxAmountLabel: "最大450万円（例）",
       deadlineLabel: "公募ごとに異なります（要確認）",
       summary: "ITツール・SaaS導入など業務効率化・DX投資が対象になり得る制度です。",
+      decision: {
+        matchScore: 78,
+        summary: "IT・業務効率化投資の支援制度として照合候補に挙がりやすい典型例です。",
+        matchReason: ["業種がIT関連施策の対象領域と重なる可能性", "導入費用の補助という目的が明確"],
+        riskFlags: [],
+        insightCards: [
+          {
+            title: "活用のイメージ",
+            body: "業務用のITツールやSaaSの導入費用が補助の対象になり得る制度です。自社の投資計画と公募要領の対象範囲を照合してください。",
+          },
+          {
+            title: "確認したい条件",
+            body: "対象業種・従業員規模・補助率は公募ごとに異なります。最新の要領と申請窓口で要確認です。",
+          },
+        ],
+      },
     },
     {
       id: "mock-labor",

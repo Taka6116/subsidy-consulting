@@ -20,7 +20,7 @@ export default function TrustSection() {
         className="pointer-events-none absolute inset-0"
         style={{
           background:
-            "linear-gradient(180deg, rgba(0,0,0,0.56) 0%, rgba(0,0,0,0.48) 45%, rgba(0,0,0,0.52) 100%)",
+            "linear-gradient(180deg, rgba(15,32,39,0.58) 0%, rgba(44,83,100,0.45) 45%, rgba(15,32,39,0.55) 100%)",
         }}
         aria-hidden
       />
