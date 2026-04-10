@@ -10,9 +10,9 @@ import { trackCTAClick } from "@/lib/analytics";
 import HeroPartnerStrip from "@/components/gate-lp/HeroPartnerStrip";
 
 const GRADIENT_A =
-  "linear-gradient(105deg, rgba(10,22,46,0.68) 0%, rgba(10,22,46,0.44) 42%, rgba(10,22,46,0.12) 65%, transparent 100%)";
+  "linear-gradient(105deg, rgba(8,44,36,0.72) 0%, rgba(8,44,36,0.48) 42%, rgba(19,107,86,0.14) 65%, transparent 100%)";
 const GRADIENT_B =
-  "linear-gradient(to left, rgba(10,22,46,0.38) 0%, transparent 45%)";
+  "linear-gradient(to left, rgba(8,44,36,0.42) 0%, transparent 45%)";
 
 const HERO_PICTURE_SRC = "/images/hero_picture.png";
 
@@ -89,10 +89,10 @@ export default function Hero() {
   }, [skipTextAnim]);
 
   return (
-    <div className="flex h-[max(100dvh,520px)] w-full flex-col bg-[#0d1a2e]">
+    <div className="hero-gradient-bg flex h-[max(100dvh,520px)] w-full flex-col">
       <section
         ref={rootRef}
-        className="relative min-h-0 flex-1 w-full overflow-hidden bg-[#0d1a2e]"
+        className="hero-gradient-bg relative min-h-0 flex-1 w-full overflow-hidden"
         aria-label="メインビジュアル"
       >
         <div className="absolute inset-0 overflow-hidden" aria-hidden="true">
@@ -132,7 +132,7 @@ export default function Hero() {
               <Link
                 href="/check"
                 onClick={() => trackCTAClick("hero")}
-                className="inline-flex items-center gap-2 rounded border-0 bg-[#d05a28] px-8 py-4 text-[15px] font-medium text-white transition-transform hover:-translate-y-px hover:bg-[#b84e22] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                className="inline-flex items-center gap-2 rounded border-0 bg-accent-500 px-8 py-4 text-[15px] font-medium text-white transition-transform hover:-translate-y-px hover:bg-accent-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
               >
                 対象の補助金を確認する
                 <svg

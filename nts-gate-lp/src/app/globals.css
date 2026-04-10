@@ -3,19 +3,19 @@
 @tailwind utilities;
 
 :root {
-  /* === Primary（信頼・専門性） === */
-  --primary-900: #0F2B4C;
-  --primary-700: #1A4A7A;
-  --primary-500: #2D6CB4;
-  --primary-300: #7AADE0;
-  --primary-200: #B3D4F0;
-  --primary-100: #E8F2FC;
-  --primary-50:  #F4F9FE;
+  /* === Primary（Pattern B: 深緑→エメラルド） === */
+  --primary-900: #082C24;
+  --primary-700: #0D4A3A;
+  --primary-500: #136B56;
+  --primary-300: #1A9070;
+  --primary-200: #3DBFA0;
+  --primary-100: #E3F5F0;
+  --primary-50:  #F4F9F7;
 
-  /* === Warm Accent（行動喚起・温かみ） === */
-  --accent-600:  #C75C2E;
-  --accent-500:  #E07040;
-  --accent-100:  #FDF0EA;
+  /* === Warm Accent（アンバー寄りゴールド） === */
+  --accent-600:  #B86A10;
+  --accent-500:  #E8911E;
+  --accent-100:  #FEF0DC;
 
   /* === Neutral（本文・構造） === */
   --neutral-900: #1A1A1A;
@@ -28,7 +28,7 @@
 
   /* === Semantic === */
   --success:     #2D8A56;
-  --info:        #2D6CB4;
+  --info:        #136B56;
   --warning:     #D4930D;
 
   /* === タイポグラフィ === */
@@ -70,8 +70,8 @@
   --portal-surface: #f9f9f6;
   --portal-on-surface: #1a1c1b;
   --portal-on-surface-variant: #424843;
-  --portal-primary: #082717;
-  --portal-primary-container: #1f3d2b;
+  --portal-primary: #082C24;
+  --portal-primary-container: #136B56;
   --portal-on-primary: #ffffff;
   --portal-surface-lowest: #ffffff;
   --portal-surface-low: #f4f4f1;
@@ -87,7 +87,12 @@
 }
 
 .check-portal-editorial-gradient {
-  background: linear-gradient(135deg, #082717 0%, #1f3d2b 100%);
+  background: linear-gradient(135deg, #082C24 0%, #136B56 50%, #1A9070 100%);
+}
+
+/* トップ Hero ベース（画像・オーバーレイの下層） */
+.hero-gradient-bg {
+  background: linear-gradient(135deg, #082C24 0%, #136B56 60%, #1A9070 100%);
 }
 
 .check-portal-glass-nav {
