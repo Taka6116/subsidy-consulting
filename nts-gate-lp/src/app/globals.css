@@ -43,10 +43,13 @@
   --info:        #2c5364;
   --warning:     #d4930d;
 
-  /* === タイポグラフィ === */
-  --font-heading: "Noto Sans JP", sans-serif;
-  --font-body:    "Noto Sans JP", sans-serif;
-  --font-display: "Sora", sans-serif;
+  /* === タイポグラフィ（Google Fonts: Inter / IBM Plex Mono / Cormorant Garamond） === */
+  --font-body: "Inter", var(--font-noto-sans-jp), "Noto Sans JP", sans-serif;
+  --font-heading: "Cormorant Garamond", "Yu Mincho", "Hiragino Mincho ProN",
+    "MS PMincho", serif;
+  --font-display: "Inter", var(--font-noto-sans-jp), "Noto Sans JP", sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Monaco,
+    Consolas, monospace;
 
   --text-hero:    clamp(1.75rem, 5vw, 3.5rem);
   --text-h1:      clamp(1.75rem, 4vw, 2.5rem);
@@ -137,6 +140,12 @@ body {
   color: var(--neutral-900);
   font-family: var(--font-body);
   line-height: var(--leading-normal);
+}
+
+@layer utilities {
+  .mono {
+    font-family: var(--font-mono);
+  }
 }
 
 /* ヒーロー静止画（カルーセル廃止後の単一ビジュアル） */

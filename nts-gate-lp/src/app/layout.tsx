@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Newsreader, Noto_Sans_JP, Sora } from "next/font/google";
+import { Noto_Sans_JP } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
 
@@ -10,19 +10,9 @@ const notoSansJP = Noto_Sans_JP({
   display: "swap",
 });
 
-const sora = Sora({
-  subsets: ["latin"],
-  weight: ["400", "700"],
-  variable: "--font-sora",
-  display: "swap",
-});
-
-const newsreader = Newsreader({
-  subsets: ["latin"],
-  weight: ["400", "600", "700"],
-  variable: "--font-newsreader",
-  display: "swap",
-});
+/** Google Fonts（Inter / IBM Plex Mono / Cormorant Garamond）— link は要件どおり <head> 内 */
+const GOOGLE_FONTS_HREF =
+  "https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;600;800&family=IBM+Plex+Mono:wght@300;400;600&family=Cormorant+Garamond:wght@300;400;500&display=swap";
 
 export const metadata: Metadata = {
   title:
@@ -46,11 +36,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="ja"
-      className={`${notoSansJP.variable} ${sora.variable} ${newsreader.variable}`}
-    >
+    <html lang="ja" className={notoSansJP.variable}>
       <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin="anonymous"
+        />
+        <link href={GOOGLE_FONTS_HREF} rel="stylesheet" />
         {GA_ID && (
           <>
             <Script

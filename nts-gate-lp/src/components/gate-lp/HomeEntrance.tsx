@@ -28,10 +28,11 @@ const SPLASH_LINES = [
 
 const FULL_INTRO_ARIA = SPLASH_LINES.join(" ");
 
-const LINE_FADE_IN_DURATION = 0.8;
+/** スプラッシュ各行は opacity のみ（フェードイン／フェードアウト） */
+const LINE_FADE_IN_DURATION = 1;
 const LINE_STAGGER_IN = 0.8;
 const HOLD_AFTER_LINES = 0.35;
-const LINE_FADE_OUT_DURATION = 0.8;
+const LINE_FADE_OUT_DURATION = 1;
 const LINE_STAGGER_OUT = 0.2;
 
 function primeSplashHidden(
@@ -40,7 +41,7 @@ function primeSplashHidden(
   skipBtn: HTMLElement | null,
 ) {
   gsap.set(overlay, { opacity: 1 });
-  lines.forEach((el) => gsap.set(el, { opacity: 0, yPercent: 120 }));
+  lines.forEach((el) => gsap.set(el, { opacity: 0, yPercent: 0 }));
   if (skipBtn) gsap.set(skipBtn, { opacity: 0 });
 }
 
@@ -148,22 +149,20 @@ export default function HomeEntrance({ children }: { children: ReactNode }) {
 
         tl.fromTo(
           lines,
-          { opacity: 0, yPercent: 120 },
+          { opacity: 0 },
           {
             opacity: 1,
-            yPercent: 0,
             duration: LINE_FADE_IN_DURATION,
             stagger: LINE_STAGGER_IN,
-            ease: "power3.out",
+            ease: "power2.out",
           },
         )
           .to({}, { duration: HOLD_AFTER_LINES })
           .to(lines, {
             opacity: 0,
-            yPercent: -120,
             duration: LINE_FADE_OUT_DURATION,
             stagger: LINE_STAGGER_OUT,
-            ease: "power3.in",
+            ease: "power2.in",
           })
           .to(overlay, {
             opacity: 0,
@@ -228,15 +227,15 @@ export default function HomeEntrance({ children }: { children: ReactNode }) {
             role="dialog"
             aria-modal="true"
             aria-label={FULL_INTRO_ARIA}
-            className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-[#F2F2F2] px-4"
+            className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-[#F2F2F2] px-2 sm:px-6"
           >
-            <div className="w-full max-w-[min(100%,40rem)] text-center font-heading will-change-transform">
+            <div className="mx-auto inline-block max-w-[min(100%,calc(100vw-1rem))] text-center font-heading">
               <p
                 ref={(el) => {
                   lineRefs.current[0] = el;
                 }}
                 aria-hidden="true"
-                className="opacity-0 will-change-transform text-[clamp(1.05rem,3.6vw,1.5rem)] font-bold leading-snug text-neutral-700"
+                className="opacity-0 will-change-[opacity] text-[clamp(1.96875rem,6.75vw,2.8125rem)] font-bold leading-snug text-neutral-700"
               >
                 {SPLASH_LINES[0]}
               </p>
@@ -245,10 +244,9 @@ export default function HomeEntrance({ children }: { children: ReactNode }) {
                   lineRefs.current[1] = el;
                 }}
                 aria-hidden="true"
-                className="opacity-0 will-change-transform mt-3 text-[clamp(1.2rem,4vw,1.85rem)] font-bold leading-snug text-primary-900"
+                className="opacity-0 will-change-[opacity] mt-[1.40625rem] whitespace-nowrap text-[clamp(2.25rem,7.5vw,3.46875rem)] font-bold leading-snug text-primary-900"
               >
-                自分の会社が、国の支援を受けられる
-                <span className="whitespace-nowrap">ことを。</span>
+                {SPLASH_LINES[1]}
               </p>
             </div>
 

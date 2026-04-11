@@ -7,15 +7,40 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        heading: ["var(--font-noto-sans-jp)", "sans-serif"],
-        body: ["var(--font-noto-sans-jp)", "sans-serif"],
-        display: ["var(--font-sora)", "sans-serif"],
-        headline: [
-          "var(--font-newsreader)",
-          "YuMincho",
+        body: [
+          "Inter",
+          "var(--font-noto-sans-jp)",
+          "Noto Sans JP",
+          "sans-serif",
+        ],
+        heading: [
+          "Cormorant Garamond",
+          "Yu Mincho",
           "Hiragino Mincho ProN",
           "MS PMincho",
           "serif",
+        ],
+        display: [
+          "Inter",
+          "var(--font-noto-sans-jp)",
+          "Noto Sans JP",
+          "sans-serif",
+        ],
+        headline: [
+          "Cormorant Garamond",
+          "Yu Mincho",
+          "Hiragino Mincho ProN",
+          "MS PMincho",
+          "serif",
+        ],
+        mono: [
+          "IBM Plex Mono",
+          "ui-monospace",
+          "SFMono-Regular",
+          "Menlo",
+          "Monaco",
+          "Consolas",
+          "monospace",
         ],
       },
       colors: {
