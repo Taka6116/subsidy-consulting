@@ -80,12 +80,12 @@ export default function PartnerPage() {
 
           <p className="mt-14 text-center text-sm text-neutral-600 md:text-left">
             提携のご相談・お問い合わせは、
-            <a
+            <Link
               href="/#footer-contact"
               className="font-bold text-primary-700 underline underline-offset-4 hover:text-primary-900"
             >
               フッターのお問い合わせ
-            </a>
+            </Link>
             よりご連絡ください。
           </p>
         </div>

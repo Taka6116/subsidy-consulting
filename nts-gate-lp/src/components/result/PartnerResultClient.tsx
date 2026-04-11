@@ -59,7 +59,8 @@ function Inner() {
       return;
     }
 
-    const { savedAt: _s, ...wizard } = parsed;
+    const { savedAt, ...wizard } = parsed;
+    void savedAt;
 
     if (wizard.q1 !== "partner_sales") {
       setRoleMismatch(true);
