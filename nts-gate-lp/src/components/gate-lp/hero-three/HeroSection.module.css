@@ -6,8 +6,8 @@
 .hero {
   position: relative;
   width: 100%;
-  height: 100vh;
-  min-height: 640px;
+  height: 100%;
+  min-height: 0;
   overflow: hidden;
   /* prefers-reduced-motion 時の静止背景色 */
   background: #0d2660;
@@ -35,8 +35,7 @@
 }
 
 /* ── メインコンテンツ ──────────────────────────
-   Header が absolute z-[10] で被さるため
-   padding-top で eyebrow / 見出しが被らないよう確保
+   Header が absolute z-[10] で被さるため padding-top で確保
 ─────────────────────────────────────────── */
 .content {
   position: absolute;
@@ -49,50 +48,24 @@
   text-align: center;
   width: 100%;
   /* Header 分（top-4 + h-16 ≈ 80px）＋余白 */
-  padding: 80px 52px 80px;
+  padding: 72px 52px 72px;
   box-sizing: border-box;
-}
-
-/* eyebrow */
-.eyebrow {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  width: 100%;
-  margin-bottom: 24px;
-  opacity: 0;
-  animation: fadeUp 0.8s 0.3s ease forwards;
-}
-
-.eyebrowDot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: #00c4ff;
-  animation: pulse 2s ease-in-out infinite;
-  flex-shrink: 0;
-}
-
-.eyebrowText {
-  font-size: 11px;
-  font-weight: 600;
-  color: rgba(180, 230, 255, 0.85);
-  letter-spacing: 2.5px;
-  text-transform: uppercase;
 }
 
 /* メイン見出し（中央） */
 .headline {
   max-width: min(100%, 40rem);
   margin: 0 0 20px;
-  font-size: clamp(18px, 2.8vw, 34px);
+  font-size: clamp(12px, 2.65vw, 34px);
   font-weight: 700;
   color: #fff;
   line-height: 1.55;
   letter-spacing: -0.02em;
+  /* <br> で意図した2行のみ。行内は折り返さず3行目にしない */
+  white-space: nowrap;
+  word-break: keep-all;
   opacity: 0;
-  animation: fadeUp 0.9s 0.45s ease forwards;
+  animation: fadeUp 0.9s 0.28s ease forwards;
 }
 
 /* サブコピー */
@@ -103,7 +76,7 @@
   color: rgba(180, 220, 255, 0.65);
   line-height: 2;
   opacity: 0;
-  animation: fadeUp 0.8s 0.65s ease forwards;
+  animation: fadeUp 0.8s 0.48s ease forwards;
 }
 
 /* CTA */
@@ -122,7 +95,7 @@
   text-decoration: none;
   transition: background 0.25s, transform 0.25s, box-shadow 0.25s;
   opacity: 0;
-  animation: fadeUp 0.8s 0.85s ease forwards;
+  animation: fadeUp 0.8s 0.68s ease forwards;
   width: fit-content;
   outline-offset: 3px;
 }
@@ -154,7 +127,7 @@
   align-items: center;
   gap: 6px;
   opacity: 0;
-  animation: fadeUp 0.8s 1.05s ease forwards;
+  animation: fadeUp 0.8s 0.88s ease forwards;
 }
 
 .scrollLine {
@@ -184,18 +157,6 @@
   }
 }
 
-@keyframes pulse {
-  0%,
-  100% {
-    opacity: 1;
-    transform: scale(1);
-  }
-  50% {
-    opacity: 0.4;
-    transform: scale(1.5);
-  }
-}
-
 @keyframes scrollLine {
   0%,
   100% {
@@ -207,7 +168,6 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .eyebrow,
   .headline,
   .sub,
   .cta,
@@ -215,9 +175,6 @@
     animation: none;
     opacity: 1;
     transform: none;
-  }
-  .eyebrowDot {
-    animation: none;
   }
   .scrollLine {
     animation: none;
@@ -227,7 +184,7 @@
 
 @media (max-width: 768px) {
   .content {
-    padding: 80px 24px 80px;
+    padding: 72px 24px 72px;
   }
   .scrollHint {
     right: 24px;

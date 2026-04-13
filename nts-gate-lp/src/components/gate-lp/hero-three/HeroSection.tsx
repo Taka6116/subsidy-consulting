@@ -310,11 +310,6 @@ export default function HeroSection() {
       <div className={styles.overlay} aria-hidden="true" />
 
       <div className={styles.content}>
-        <div className={styles.eyebrow} aria-hidden="true">
-          <span className={styles.eyebrowDot} />
-          <span className={styles.eyebrowText}>補助金照会サービス · 無料</span>
-        </div>
-
         <h1 className={styles.headline}>
           人手不足・設備老朽化・事業承継 ―
           <br />
@@ -322,9 +317,9 @@ export default function HeroSection() {
         </h1>
 
         <p className={styles.sub}>
-          会社名を入力するだけで対象制度を即時照会。
+          あなたの会社の対象制度を即時照会。
           <br />
-          最大1,500万円の活用実績。照会・相談は完全無料です。
+          照会・相談は完全無料です。
         </p>
 
         <Link
