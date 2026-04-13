@@ -1,5 +1,4 @@
 import type { NormalizedSubsidyForMatch } from "@/lib/ai/bedrockSubsidyMatch";
-import pool from "@/lib/db";
 import { formatDeadline } from "@/lib/jgrants/client";
 
 export type StaticSubsidy = {
@@ -24,19 +23,20 @@ function acceptanceEndToIso(v: string | Date | null | undefined): string | null 
   return v;
 }
 
-/**
- * is_active=true の補助金を全件取得
- * DB障害時は空配列を返してフォールバック
- */
 export async function fetchStaticSubsidies(): Promise<StaticSubsidy[]> {
   try {
-    const { rows } = await pool.query(
-      `SELECT * FROM static_subsidies WHERE is_active = true ORDER BY created_at ASC`,
+    const res = await fetch(
+      "https://0y9i088kxf.execute-api.ap-northeast-1.amazonaws.com/default/subsidy-static-db",
+      {
+        next: { revalidate: 3600 }, // 1時間キャッシュ（Next.jsの機能）
+      },
     );
-    console.log("[staticSubsidies] fetched:", rows.length);
-    return rows as StaticSubsidy[];
-  } catch (e) {
-    console.error("[staticSubsidies] DB fetch failed:", e);
+    if (!res.ok) throw new Error("API response was not ok");
+    const data = await res.json();
+    console.log("[staticSubsidies] fetched via API:", data.length);
+    return data as StaticSubsidy[];
+  } catch (error) {
+    console.error("[staticSubsidies] fetch failed:", error);
     return [];
   }
 }

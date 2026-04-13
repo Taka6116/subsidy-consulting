@@ -26,12 +26,12 @@
     "three": "^0.173.0"
   },
   "devDependencies": {
-    "@types/three": "^0.173.0",
     "@eslint/eslintrc": "^3.2.0",
     "@types/node": "^20",
     "@types/pg": "^8.20.0",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@types/three": "^0.173.0",
     "autoprefixer": "^10.4.27",
     "dotenv": "^16.6.1",
     "eslint": "^9",
@@ -43,5 +43,14 @@
     "ts-node": "^10.9.2",
     "tsx": "^4.21.0",
     "typescript": "^5"
-  }
+  },
+  "description": "This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).",
+  "main": "postcss.config.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs"
 }
