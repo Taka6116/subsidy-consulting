@@ -10,6 +10,8 @@ import {
   fadeInUpTransition,
   fadeInUpViewport,
   glassCardClass,
+  sectionContainerClass,
+  sectionStackClass,
 } from "@/components/sections/sectionStyles";
 
 const FAQ_ITEMS = [
@@ -46,8 +48,8 @@ export default function FaqSection() {
   const [openId, setOpenId] = useState<string | null>(null);
 
   return (
-    <section className="bg-[#0a1628] py-24 md:py-32" aria-labelledby={`${baseId}-faq-title`}>
-      <div className="mx-auto max-w-3xl px-6">
+    <section className={sectionStackClass} aria-labelledby={`${baseId}-faq-title`}>
+      <div className={sectionContainerClass}>
         <motion.h2
           id={`${baseId}-faq-title`}
           initial={reduce ? fadeInUpReduced : fadeInUpInitial}
@@ -72,7 +74,7 @@ export default function FaqSection() {
             const aId = `${baseId}-faq-a-${item.id}`;
             const open = openId === item.id;
             return (
-              <li key={item.id} className={glassCardClass}>
+              <li key={item.id} className={`text-white ${glassCardClass}`}>
                 <button
                   type="button"
                   id={qId}
@@ -81,7 +83,7 @@ export default function FaqSection() {
                   onClick={() => setOpenId(open ? null : item.id)}
                   className="flex w-full items-start justify-between gap-4 text-left"
                 >
-                  <span className="text-base font-bold leading-snug text-white md:text-lg">
+                  <span className="text-base font-bold leading-snug md:text-lg">
                     Q. {item.q}
                   </span>
                   <ChevronDown

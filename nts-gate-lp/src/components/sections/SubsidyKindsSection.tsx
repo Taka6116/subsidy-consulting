@@ -9,7 +9,10 @@ import {
   fadeInUpReduced,
   fadeInUpTransition,
   fadeInUpViewport,
-  glassCardClass,
+  glassShellClass,
+  nestedGlassCardClass,
+  sectionContainerClass,
+  sectionStackClass,
 } from "@/components/sections/sectionStyles";
 
 const TARGET = 1500;
@@ -50,77 +53,60 @@ export default function SubsidyKindsSection() {
   const formatted = displayValue.toLocaleString();
 
   return (
-    <section
-      className="bg-[#0d1d38] py-24 md:py-32"
-      aria-labelledby="home-subsidy-kinds-heading"
-    >
-      <div className="mx-auto max-w-container px-6">
-        <motion.p
+    <section className={sectionStackClass} aria-labelledby="home-subsidy-kinds-heading">
+      <div className={sectionContainerClass}>
+        <motion.div
           initial={skip ? fadeInUpReduced : fadeInUpInitial}
           whileInView={skip ? fadeInUpReduced : fadeInUpInView}
           viewport={fadeInUpViewport}
           transition={fadeInUpTransition}
-          className="mb-3 text-center text-xs font-bold uppercase tracking-[0.2em] text-white/55"
+          className={glassShellClass}
         >
-          活用できる制度
-        </motion.p>
+          <p className="mb-3 text-center text-xs font-bold uppercase tracking-[0.2em] text-white/55">
+            活用できる制度
+          </p>
 
-        <div ref={ref} className="text-center">
-          <h2 id="home-subsidy-kinds-heading" className="sr-only">
-            補助金の種類と規模
-          </h2>
+          <div ref={ref} className="text-center">
+            <h2 id="home-subsidy-kinds-heading" className="sr-only">
+              補助金の種類と規模
+            </h2>
 
-          <motion.p
-            initial={skip ? fadeInUpReduced : fadeInUpInitial}
-            whileInView={skip ? fadeInUpReduced : fadeInUpInView}
-            viewport={fadeInUpViewport}
-            transition={{ ...fadeInUpTransition, delay: 0.05 }}
-            className="mb-2 text-lg font-medium text-white/90 md:text-xl"
-            aria-hidden="true"
-          >
-            最大
-          </motion.p>
-          <div
-            className="mb-6 flex items-baseline justify-center gap-1"
-            aria-label={`最大${displayValue.toLocaleString()}万円`}
-          >
-            <span className="text-6xl font-bold tabular-nums text-white md:text-8xl">
-              {formatted}
-            </span>
-            <span className="text-3xl font-bold text-white md:text-5xl">万円</span>
+            <p
+              className="mb-2 text-lg font-medium text-white/90 md:text-xl"
+              aria-hidden="true"
+            >
+              最大
+            </p>
+            <div
+              className="mb-6 flex items-baseline justify-center gap-1"
+              aria-label={`最大${displayValue.toLocaleString()}万円`}
+            >
+              <span className="text-6xl font-bold tabular-nums text-white md:text-8xl">
+                {formatted}
+              </span>
+              <span className="text-3xl font-bold text-white md:text-5xl">万円</span>
+            </div>
+
+            <p className="mx-auto mb-12 max-w-xl text-base leading-relaxed text-white/75 md:text-lg">
+              あなたの会社の投資に、使える制度があるかもしれません。
+            </p>
           </div>
 
-          <motion.p
-            initial={skip ? fadeInUpReduced : fadeInUpInitial}
-            whileInView={skip ? fadeInUpReduced : fadeInUpInView}
-            viewport={fadeInUpViewport}
-            transition={{ ...fadeInUpTransition, delay: 0.1 }}
-            className="mx-auto mb-14 max-w-xl text-base leading-relaxed text-white/75 md:text-lg"
-          >
-            あなたの会社の投資に、使える制度があるかもしれません。
-          </motion.p>
-        </div>
-
-        <motion.ul
-          initial={skip ? fadeInUpReduced : fadeInUpInitial}
-          whileInView={skip ? fadeInUpReduced : fadeInUpInView}
-          viewport={fadeInUpViewport}
-          transition={{ ...fadeInUpTransition, delay: 0.15 }}
-          className="grid grid-cols-1 gap-6 md:grid-cols-3"
-        >
-          {CARDS.map((c) => (
-            <li key={c.title} className={glassCardClass}>
-              <p className="mb-2 text-xs font-bold uppercase tracking-wide text-[#7ec8ff]">
-                {c.tag}
-              </p>
-              <h3 className="font-heading text-xl font-bold text-white md:text-2xl">
-                {c.title}
-              </h3>
-              <p className="mt-3 text-sm leading-relaxed text-white/75">{c.body}</p>
-              <p className="mt-5 text-sm font-bold text-white">{c.max}</p>
-            </li>
-          ))}
-        </motion.ul>
+          <ul className="grid grid-cols-1 gap-6 md:grid-cols-3">
+            {CARDS.map((c) => (
+              <li key={c.title} className={nestedGlassCardClass}>
+                <p className="mb-2 text-xs font-bold uppercase tracking-wide text-[#7ec8ff]">
+                  {c.tag}
+                </p>
+                <h3 className="font-heading text-xl font-bold text-white md:text-2xl">
+                  {c.title}
+                </h3>
+                <p className="mt-3 text-sm leading-relaxed text-white/75">{c.body}</p>
+                <p className="mt-5 text-sm font-bold text-white">{c.max}</p>
+              </li>
+            ))}
+          </ul>
+        </motion.div>
       </div>
     </section>
   );

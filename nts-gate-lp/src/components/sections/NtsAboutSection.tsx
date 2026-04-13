@@ -9,7 +9,7 @@ const HERO_BG = "/images/subsidy-footer.jpg";
  */
 export default function NtsAboutSection() {
   return (
-    <section className="relative overflow-hidden py-16 md:py-24 lg:py-28">
+    <section className="relative z-10 overflow-hidden py-16 md:py-24 lg:py-28">
       <Image
         src={HERO_BG}
         alt=""

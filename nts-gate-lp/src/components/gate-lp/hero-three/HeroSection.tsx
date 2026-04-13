@@ -132,15 +132,15 @@ export default function HeroSection() {
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(
       62,
-      wrap.clientWidth / wrap.clientHeight,
+      window.innerWidth / window.innerHeight,
       0.1,
       1000,
     );
     camera.position.z = 52;
 
     const handleResize = () => {
-      const w = wrap.clientWidth;
-      const h = wrap.clientHeight;
+      const w = window.innerWidth;
+      const h = window.innerHeight;
       renderer.setSize(w, h);
       camera.aspect = w / h;
       camera.updateProjectionMatrix();

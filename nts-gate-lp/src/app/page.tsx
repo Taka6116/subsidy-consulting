@@ -19,7 +19,7 @@ export default function Home() {
     <HomeEntrance>
       <ScrollDepthTracker />
       <Header />
-      <main>
+      <main className="relative z-[2]">
         <div className="flex min-h-[100svh] flex-col">
           <div className="relative min-h-0 flex-1 basis-0">
             <HeroSection />

@@ -8,46 +8,40 @@ import {
   fadeInUpReduced,
   fadeInUpTransition,
   fadeInUpViewport,
+  sectionContainerClass,
+  sectionStackClass,
 } from "@/components/sections/sectionStyles";
+
+const finalGlassClass =
+  "rounded-2xl border border-white/10 bg-gradient-to-b from-[rgba(10,22,40,0.45)] to-[rgba(13,29,56,0.45)] p-8 text-center text-white shadow-none backdrop-blur-[12px] [-webkit-backdrop-filter:blur(12px)] md:p-12";
 
 export default function FinalCtaSection() {
   const reduce = useReducedMotion();
 
   return (
-    <section
-      className="bg-gradient-to-b from-[#0a1628] to-[#0d1d38] py-24 md:py-32"
-      aria-labelledby="home-final-cta-heading"
-    >
-      <div className="mx-auto max-w-2xl px-6 text-center">
-        <motion.h2
-          id="home-final-cta-heading"
-          initial={reduce ? fadeInUpReduced : fadeInUpInitial}
-          whileInView={reduce ? fadeInUpReduced : fadeInUpInView}
-          viewport={fadeInUpViewport}
-          transition={fadeInUpTransition}
-          className="font-heading text-3xl font-bold leading-snug text-white md:text-4xl"
-        >
-          まず、対象かどうかを確認してみてください。
-        </motion.h2>
-        <motion.p
-          initial={reduce ? fadeInUpReduced : fadeInUpInitial}
-          whileInView={reduce ? fadeInUpReduced : fadeInUpInView}
-          viewport={fadeInUpViewport}
-          transition={{ ...fadeInUpTransition, delay: 0.06 }}
-          className="mt-6 text-base leading-relaxed text-white/75 md:text-lg"
-        >
-          照会は1分。相談は無料。
-          <br />
-          あなたの会社に使える制度が、あるかもしれません。
-        </motion.p>
+    <section className={sectionStackClass} aria-labelledby="home-final-cta-heading">
+      <div className={sectionContainerClass}>
         <motion.div
           initial={reduce ? fadeInUpReduced : fadeInUpInitial}
           whileInView={reduce ? fadeInUpReduced : fadeInUpInView}
           viewport={fadeInUpViewport}
-          transition={{ ...fadeInUpTransition, delay: 0.12 }}
-          className="mt-10 flex justify-center"
+          transition={fadeInUpTransition}
+          className={`mx-auto max-w-2xl ${finalGlassClass}`}
         >
-          <HeroCheckCtaLink location="final" />
+          <h2
+            id="home-final-cta-heading"
+            className="font-heading text-3xl font-bold leading-snug md:text-4xl"
+          >
+            まず、対象かどうかを確認してみてください。
+          </h2>
+          <p className="mt-6 text-base leading-relaxed text-white/75 md:text-lg">
+            照会は1分。相談は無料。
+            <br />
+            あなたの会社に使える制度が、あるかもしれません。
+          </p>
+          <div className="mt-10 flex justify-center">
+            <HeroCheckCtaLink location="final" />
+          </div>
         </motion.div>
       </div>
     </section>

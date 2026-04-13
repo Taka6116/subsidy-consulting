@@ -8,24 +8,23 @@ import {
   fadeInUpReduced,
   fadeInUpTransition,
   fadeInUpViewport,
-  glassCardClass,
+  glassShellClass,
+  sectionContainerClass,
+  sectionStackClass,
 } from "@/components/sections/sectionStyles";
 
 export default function CheckLeadSection() {
   const reduce = useReducedMotion();
 
   return (
-    <section
-      className="bg-[#0a1628] py-24 md:py-32"
-      aria-labelledby="home-check-lead-heading"
-    >
-      <div className="mx-auto max-w-3xl px-6 text-center">
+    <section className={sectionStackClass} aria-labelledby="home-check-lead-heading">
+      <div className={sectionContainerClass}>
         <motion.div
           initial={reduce ? fadeInUpReduced : fadeInUpInitial}
           whileInView={reduce ? fadeInUpReduced : fadeInUpInView}
           viewport={fadeInUpViewport}
           transition={fadeInUpTransition}
-          className={`mx-auto max-w-2xl ${glassCardClass}`}
+          className={`${glassShellClass} text-center`}
         >
           <p className="mb-4 text-xs font-bold uppercase tracking-[0.2em] text-white/55">
             1分で確認できます
