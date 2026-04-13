@@ -106,7 +106,7 @@
   --portal-on-secondary-container: #1a3a4a;
   --portal-tertiary-fixed-dim: #00b0e6;
 
-  background: linear-gradient(160deg, #0b1a22 0%, #2c5364 65%, #1a3a4a 100%);
+  background: linear-gradient(160deg, #081844 0%, #0d2660 45%, #143478 100%);
 }
 
 .check-portal-editorial-gradient {
@@ -254,12 +254,12 @@ body {
 .subsidy-match-loading-spin-overlay {
   background: conic-gradient(
     from 0deg,
-    transparent 0deg 250deg,
-    rgba(155, 248, 244, 0.35) 300deg,
-    rgba(111, 123, 247, 0.25) 330deg,
+    transparent 0deg 260deg,
+    rgba(155, 248, 244, 0.45) 310deg,
+    rgba(111, 123, 247, 0.3) 340deg,
     transparent 360deg
   );
-  animation: subsidy-match-spin 2.6s linear infinite;
+  animation: subsidy-match-spin 1.5s cubic-bezier(0.35, 0.05, 0.25, 1) infinite;
 }
 
 .subsidy-match-loading-message {

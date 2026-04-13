@@ -40,38 +40,36 @@ export default function SubsidyMatchLoading() {
 
   return (
     <div
-      className="flex min-h-[360px] flex-col items-center justify-center rounded-xl border border-white/[0.08] bg-[#101012] px-6 py-14 shadow-[0_8px_40px_rgba(0,0,0,0.55)]"
+      className="flex min-h-[420px] flex-col items-center justify-center px-6 py-20"
       role="status"
       aria-live="polite"
       aria-busy="true"
       aria-label="補助金を照合しています"
     >
-      <div className="relative mx-auto aspect-square w-[min(72vw,220px)] max-w-[220px]">
+      <div className="relative mx-auto aspect-square w-[min(56vw,200px)] max-w-[200px]">
+        {/* 固定トラックリング */}
         <div
-          className="pointer-events-none absolute inset-0 rounded-full border border-white/[0.07]"
+          className="pointer-events-none absolute inset-0 rounded-full border-[3px] border-white/[0.08]"
           aria-hidden
         />
+
+        {/* 回転ハイライト弧 */}
         <div
-          className="subsidy-match-loading-spin-overlay pointer-events-none absolute inset-[3px] rounded-full"
+          className="subsidy-match-loading-spin-overlay pointer-events-none absolute inset-[-1px] rounded-full"
           aria-hidden
         />
-        <div
-          className="absolute inset-[5px] rounded-full p-[6px]"
-          style={{
-            background: `conic-gradient(from -90deg at 50% 50%, #6f7bf7 0%, #9bf8f4 ${pRounded}%, #2a2a2e ${pRounded}% 100%)`,
-          }}
-        >
-          <div className="flex h-full w-full flex-col items-center justify-center rounded-full bg-[#101012]">
-            <span className="font-display text-[clamp(2.5rem,10vw,3.25rem)] font-semibold tabular-nums leading-none text-white">
-              {pRounded}
-              <span className="text-[0.45em] font-medium text-white/75">%</span>
-            </span>
-          </div>
+
+        {/* 中央の数字 */}
+        <div className="absolute inset-[6px] flex flex-col items-center justify-center rounded-full">
+          <span className="font-display text-[clamp(2.5rem,10vw,3.25rem)] font-semibold tabular-nums leading-none text-white">
+            {pRounded}
+            <span className="text-[0.45em] font-medium text-white/60">%</span>
+          </span>
         </div>
       </div>
 
       <p
-        className={`subsidy-match-loading-message mt-12 max-w-md text-center text-sm leading-relaxed text-white/80 md:text-base ${
+        className={`subsidy-match-loading-message mt-14 max-w-md text-center text-sm leading-relaxed text-white/70 md:text-base ${
           messageVisible ? "subsidy-match-loading-message--visible" : ""
         }`}
       >

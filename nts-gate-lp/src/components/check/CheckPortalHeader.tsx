@@ -4,9 +4,8 @@ type Props = {
   audience: "end_user" | "partner";
 };
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export default function CheckPortalHeader({ audience }: Props) {
-  const isPartner = audience === "partner";
-
   return (
     <header className="check-portal-glass-nav fixed left-0 right-0 top-0 z-50">
       <div className="mx-auto flex max-w-5xl items-center justify-between gap-4 px-6 py-4">
@@ -23,9 +22,6 @@ export default function CheckPortalHeader({ audience }: Props) {
               height={29}
             />
           </Link>
-          <span className="hidden font-heading text-lg font-bold tracking-tight text-portal-primary-container sm:inline">
-            {isPartner ? "顧客向け補助金チェック（デモ）" : "御社に最適な補助金提案（デモ）"}
-          </span>
         </div>
         <div className="flex shrink-0 items-center gap-3">
           <Link
