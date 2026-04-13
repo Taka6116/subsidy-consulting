@@ -6,7 +6,7 @@ import SubsidyCheckClient from "@/components/check/SubsidyCheckClient";
 export const metadata: Metadata = {
   title: "対象補助金の確認（デモ） | 日本提携支援",
   description:
-    "会社名と業種から、対象になり得る補助金のイメージを確認します。表示は参考例です。公募要領で必ずご確認ください。",
+    "会社名・業種で対象になり得る補助金のイメージを確認できます。公式サイトURLは任意です。表示は参考例です。公募要領で必ずご確認ください。",
 };
 
 type SearchParams = { audience?: string | string[] };

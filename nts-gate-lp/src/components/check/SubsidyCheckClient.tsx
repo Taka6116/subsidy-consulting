@@ -3,24 +3,6 @@
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { INDUSTRY_OPTIONS } from "@/data/industryOptions";
-import { JAPAN_PREFECTURES } from "@/data/japanPrefectures";
-
-const EMPLOYEE_BAND_OPTIONS = [
-  { id: "", label: "指定しない" },
-  { id: "1〜4人", label: "1〜4人" },
-  { id: "5〜20人", label: "5〜20人" },
-  { id: "21〜100人", label: "21〜100人" },
-  { id: "101〜300人", label: "101〜300人" },
-  { id: "301人以上", label: "301人以上" },
-] as const;
-
-const REVENUE_BAND_OPTIONS = [
-  { id: "", label: "指定しない" },
-  { id: "〜3,000万円未満", label: "〜3,000万円未満" },
-  { id: "3,000万円〜1億円未満", label: "3,000万円〜1億円未満" },
-  { id: "1億円〜10億円未満", label: "1億円〜10億円未満" },
-  { id: "10億円以上", label: "10億円以上" },
-] as const;
 import type { MatchedSubsidyPreview } from "@/lib/subsidyCheckMocks";
 import type { CorporateCandidate } from "@/types/corporateSearch";
 import SubsidyMatchLoading from "@/components/check/SubsidyMatchLoading";
@@ -122,10 +104,6 @@ export default function SubsidyCheckClient({ audience }: Props) {
   const [step, setStep] = useState<Step>("form");
   const [companyName, setCompanyName] = useState("");
   const [industryId, setIndustryId] = useState("");
-  const [prefecture, setPrefecture] = useState("");
-  const [employeeBand, setEmployeeBand] = useState("");
-  const [revenueBand, setRevenueBand] = useState("");
-  const [businessNotes, setBusinessNotes] = useState("");
   const [companyWebsiteUrl, setCompanyWebsiteUrl] = useState("");
   const [formError, setFormError] = useState<string | null>(null);
   const [confirmed, setConfirmed] = useState<CorporateCandidate | null>(null);
@@ -143,10 +121,7 @@ export default function SubsidyCheckClient({ audience }: Props) {
     setStep("form");
     setCompanyName("");
     setIndustryId("");
-    setPrefecture("");
-    setEmployeeBand("");
-    setRevenueBand("");
-    setBusinessNotes("");
+    setCompanyWebsiteUrl("");
     setFormError(null);
     setConfirmed(null);
     setResults([]);
@@ -167,10 +142,10 @@ export default function SubsidyCheckClient({ audience }: Props) {
             industry: industryId,
             companyName: corp.name,
             industryLabel,
-            prefecture: prefecture || corp.prefecture || "",
-            employees: employeeBand,
-            revenueBand,
-            businessNotes,
+            prefecture: corp.prefecture || "",
+            employees: "",
+            revenueBand: "",
+            businessNotes: "",
             companyWebsiteUrl: companyWebsiteUrl.trim(),
           }),
         });
@@ -190,7 +165,7 @@ export default function SubsidyCheckClient({ audience }: Props) {
         setStep("results");
       }
     },
-    [industryId, prefecture, employeeBand, revenueBand, businessNotes, companyWebsiteUrl],
+    [industryId, companyWebsiteUrl],
   );
 
   const submitForm = async (e: React.FormEvent) => {
@@ -227,7 +202,7 @@ export default function SubsidyCheckClient({ audience }: Props) {
     : "対象補助金が把握できます";
 
   const formLead =
-    "個人の氏名・連絡先は不要です。ご入力の会社名と業種をもとに、対象になり得る制度のイメージを表示します（法人の正式な特定は行いません）。";
+    "個人の氏名・連絡先は不要です。会社名と業種のみで照合できます。公式サイトURLを任意で入れると、ページ抜粋を照合に使い精度が上がりやすくなります（法人の正式な特定は行いません）。";
 
   return (
     <div className="mx-auto w-full max-w-5xl">
@@ -250,8 +225,8 @@ export default function SubsidyCheckClient({ audience }: Props) {
             </h2>
             <p className="mt-2 text-sm leading-relaxed text-[#5a7080]">
               {isPartner
-                ? "顧客企業の会社名と業種を入力してください（事業内容・地域・規模は任意）。法人の正式な特定は行わず、入力内容をもとに対象制度のイメージを表示します。"
-                : "会社名と業種を入力してください（事業内容・地域・規模は任意）。法人の正式な特定は行わず、入力内容をもとに対象制度のイメージを表示します。"}
+                ? "顧客企業の会社名と業種が必須です。公式サイトURLは任意です。法人の正式な特定は行わず、入力内容をもとに対象制度のイメージを表示します。"
+                : "会社名と業種が必須です。公式サイトURLは任意です。法人の正式な特定は行わず、入力内容をもとに対象制度のイメージを表示します。"}
             </p>
             <form onSubmit={submitForm} className="mt-8 space-y-6">
               <div>
@@ -296,92 +271,13 @@ export default function SubsidyCheckClient({ audience }: Props) {
               </div>
               <div>
                 <label
-                  htmlFor="check-prefecture"
-                  className="block text-sm font-bold text-[#1a3a4a]"
-                >
-                  本社・主たる事業所の都道府県（任意）
-                </label>
-                <select
-                  id="check-prefecture"
-                  value={prefecture}
-                  onChange={(e) => setPrefecture(e.target.value)}
-                  className="mt-2 w-full rounded-lg border border-[#d0dde5] bg-[#f8fbfd] px-4 py-3 text-body text-[#0F2027] outline-none transition-colors focus:border-[#00a0cc] focus:ring-2 focus:ring-[#00a0cc]/20"
-                >
-                  {JAPAN_PREFECTURES.map((p) => (
-                    <option key={p.id || "none"} value={p.id}>
-                      {p.label}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div>
-                <label
-                  htmlFor="check-employees"
-                  className="block text-sm font-bold text-[#1a3a4a]"
-                >
-                  従業員規模（任意）
-                </label>
-                <select
-                  id="check-employees"
-                  value={employeeBand}
-                  onChange={(e) => setEmployeeBand(e.target.value)}
-                  className="mt-2 w-full rounded-lg border border-[#d0dde5] bg-[#f8fbfd] px-4 py-3 text-body text-[#0F2027] outline-none transition-colors focus:border-[#00a0cc] focus:ring-2 focus:ring-[#00a0cc]/20"
-                >
-                  {EMPLOYEE_BAND_OPTIONS.map((o) => (
-                    <option key={o.id || "none"} value={o.id}>
-                      {o.label}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div>
-                <label
-                  htmlFor="check-revenue"
-                  className="block text-sm font-bold text-[#1a3a4a]"
-                >
-                  売上規模の目安（任意）
-                </label>
-                <select
-                  id="check-revenue"
-                  value={revenueBand}
-                  onChange={(e) => setRevenueBand(e.target.value)}
-                  className="mt-2 w-full rounded-lg border border-[#d0dde5] bg-[#f8fbfd] px-4 py-3 text-body text-[#0F2027] outline-none transition-colors focus:border-[#00a0cc] focus:ring-2 focus:ring-[#00a0cc]/20"
-                >
-                  {REVENUE_BAND_OPTIONS.map((o) => (
-                    <option key={o.id || "none"} value={o.id}>
-                      {o.label}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div>
-                <label
-                  htmlFor="check-business-notes"
-                  className="block text-sm font-bold text-[#1a3a4a]"
-                >
-                  事業内容・取扱い（任意）
-                </label>
-                <p className="mt-1 text-xs text-[#8aa0ad]">
-                  例：オンライン英会話、化学物質は扱わない、店舗数、主な顧客など。照合の精度向上に使います。
-                </p>
-                <textarea
-                  id="check-business-notes"
-                  rows={3}
-                  value={businessNotes}
-                  onChange={(e) => setBusinessNotes(e.target.value)}
-                  placeholder="具体的な事業・業務内容に関してなど"
-                  className="mt-2 w-full resize-y rounded-lg border border-[#d0dde5] bg-[#f8fbfd] px-4 py-3 text-body text-[#0F2027] outline-none transition-colors focus:border-[#00a0cc] focus:ring-2 focus:ring-[#00a0cc]/20 placeholder:text-[#a0b4bf]"
-                />
-              </div>
-              <div>
-                <label
                   htmlFor="check-company-website"
                   className="block text-sm font-bold text-[#1a3a4a]"
                 >
                   会社の公式サイトURL（任意）
                 </label>
                 <p className="mt-1 text-xs text-[#8aa0ad]">
-                  入力があればサーバーがページを取得し、ユーザー記述とあわせて照合に使います。取得できない場合は無視されます（サイトの利用規約・robots
+                  入力があればサーバーがページを取得し、照合キーワード・マッチングに使います。取得できない場合は無視されます（サイトの利用規約・robots
                   等はご確認ください）。
                 </p>
                 <input

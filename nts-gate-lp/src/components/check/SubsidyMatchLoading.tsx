@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from "react";
 
-const PROGRESS_CAP = 82;
-const TICK_MS = 250;
+const PROGRESS_CAP = 76;
+const TICK_MS = 280;
 
 export default function SubsidyMatchLoading() {
   const [percent, setPercent] = useState(0);
@@ -15,7 +15,7 @@ export default function SubsidyMatchLoading() {
       window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     if (reduced) {
-      setPercent(76);
+      setPercent(70);
       setMessageVisible(true);
       return;
     }
@@ -26,7 +26,7 @@ export default function SubsidyMatchLoading() {
       setPercent((p) => {
         if (p >= PROGRESS_CAP) return p;
         const delta =
-          p < 28 ? 0.85 : p < 52 ? 0.55 : p < 70 ? 0.35 : 0.22;
+          p < 24 ? 0.55 : p < 46 ? 0.38 : p < 60 ? 0.25 : 0.15;
         return Math.min(PROGRESS_CAP, Math.round((p + delta) * 10) / 10);
       });
     }, TICK_MS);
@@ -70,7 +70,7 @@ export default function SubsidyMatchLoading() {
       </div>
 
       <p
-        className={`subsidy-match-loading-message mt-16 max-w-3xl text-center text-base font-semibold leading-relaxed text-white sm:text-lg md:text-xl ${
+        className={`subsidy-match-loading-message px-4 ${
           messageVisible ? "subsidy-match-loading-message--visible" : ""
         }`}
       >
