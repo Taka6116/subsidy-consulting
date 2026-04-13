@@ -7,7 +7,6 @@ import HeroPartnerStrip from "@/components/gate-lp/HeroPartnerStrip";
 import AwarenessSection from "@/components/sections/AwarenessSection";
 import SubsidyKindsSection from "@/components/sections/SubsidyKindsSection";
 import CheckLeadSection from "@/components/sections/CheckLeadSection";
-import HowItWorksSection from "@/components/sections/HowItWorksSection";
 import NtsServicesSection from "@/components/sections/NtsServicesSection";
 import NewSubsidySection from "@/components/sections/NewSubsidySection";
 import PartnerNarrowSection from "@/components/sections/PartnerNarrowSection";
@@ -35,7 +34,6 @@ export default function Home() {
         <AwarenessSection />
         <SubsidyKindsSection />
         <CheckLeadSection />
-        <HowItWorksSection />
         <NtsServicesSection />
         <NewSubsidySection />
         <PartnerNarrowSection />
