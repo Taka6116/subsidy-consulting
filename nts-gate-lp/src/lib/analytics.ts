@@ -20,6 +20,8 @@ function sendEvent(eventName: string, params: GtagEventParams) {
 
 export type CTALocation =
   | "hero"
+  /** トップヒーロー — 無料相談申し込み */
+  | "hero_consult"
   | "impact"
   | "steps"
   | "final"

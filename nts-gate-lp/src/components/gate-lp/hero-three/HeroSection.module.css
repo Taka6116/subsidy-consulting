@@ -46,7 +46,7 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: center;
+  align-items: stretch;
   text-align: center;
   width: 100%;
   /* Header 分（top-4 + h-16 ≈ 80px）＋余白 */
@@ -56,49 +56,92 @@
   pointer-events: none;
 }
 
-/* メイン見出し（中央） */
+/*
+ * メイン見出し：1文＝1ボックス（幅はその文だけ）を縦に積み、
+ * 親の flex + align-items:center でそれぞれ画面中央に揃える
+ */
 .headline {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.15em;
+  width: 100%;
   max-width: min(100%, 40rem);
-  margin: 0 0 20px;
-  font-size: clamp(12px, 2.65vw, 34px);
+  margin: 0 auto 24px;
+  padding: 0 0.25rem;
+  box-sizing: border-box;
+  font-size: clamp(14.4px, 3.18vw, 40.8px);
   font-weight: 700;
   color: #fff;
   line-height: 1.55;
   letter-spacing: -0.02em;
-  white-space: nowrap;
-  word-break: keep-all;
   opacity: 0;
   animation: fadeUp 0.9s 0.28s ease forwards;
 }
 
-/* サブコピー */
+.headlineLine {
+  display: block;
+  width: fit-content;
+  max-width: 100%;
+  text-align: center;
+  white-space: nowrap;
+  word-break: keep-all;
+}
+
+/* サブコピー（見出しと同じく1文ずつボックスで中央） */
 .sub {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2em;
+  width: 100%;
   max-width: min(100%, 36rem);
-  margin: 0 auto 36px;
-  font-size: clamp(12px, 1.2vw, 14px);
+  margin: 0 auto 43px;
+  padding: 0 0.25rem;
+  box-sizing: border-box;
+  font-size: clamp(14.4px, 1.44vw, 16.8px);
   color: rgba(180, 220, 255, 0.65);
-  line-height: 2;
+  line-height: 1.75;
   opacity: 0;
   animation: fadeUp 0.8s 0.48s ease forwards;
 }
 
-/* CTA */
+.subLine {
+  display: block;
+  width: fit-content;
+  max-width: 100%;
+  text-align: center;
+  white-space: nowrap;
+  word-break: keep-all;
+}
+
+/* CTA 行（2ボタン・折返し可） */
+.ctaRow {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 14px 18px;
+  align-self: center;
+  pointer-events: auto;
+  opacity: 0;
+  animation: fadeUp 0.8s 0.68s ease forwards;
+}
+
+/* CTA（照会・オレンジ） */
 .cta {
   display: inline-flex;
   align-items: center;
-  align-self: center;
-  gap: 10px;
-  padding: 15px 34px;
+  gap: 12px;
+  padding: 18px 41px;
   background: #e8880a;
   border-radius: 4px;
   color: #fff;
-  font-size: 15px;
+  font-size: 18px;
   font-weight: 700;
   letter-spacing: 0.3px;
   text-decoration: none;
   transition: background 0.25s, transform 0.25s, box-shadow 0.25s;
-  opacity: 0;
-  animation: fadeUp 0.8s 0.68s ease forwards;
   width: fit-content;
   outline-offset: 3px;
   pointer-events: auto;
@@ -112,11 +155,47 @@
   outline: 2px solid #00c4ff;
 }
 
+/* CTA（相談・枠線） */
+.ctaSecondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 18px 41px;
+  border: 2px solid rgba(255, 255, 255, 0.85);
+  border-radius: 4px;
+  background: rgba(8, 24, 68, 0.35);
+  color: #fff;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  text-decoration: none;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition:
+    background 0.25s,
+    border-color 0.25s,
+    transform 0.25s,
+    box-shadow 0.25s;
+  width: fit-content;
+  outline-offset: 3px;
+  pointer-events: auto;
+}
+.ctaSecondary:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 28px rgba(0, 196, 255, 0.2);
+}
+.ctaSecondary:focus-visible {
+  outline: 2px solid #00c4ff;
+}
+
 .ctaArrow {
-  font-size: 16px;
+  font-size: 19.2px;
   transition: transform 0.2s;
 }
-.cta:hover .ctaArrow {
+.cta:hover .ctaArrow,
+.ctaSecondary:hover .ctaArrow {
   transform: translateX(4px);
 }
 
@@ -143,7 +222,7 @@
 }
 
 .scrollText {
-  font-size: 9px;
+  font-size: 10.8px;
   color: rgba(180, 220, 255, 0.35);
   letter-spacing: 2px;
   text-transform: uppercase;
@@ -175,7 +254,7 @@
 @media (prefers-reduced-motion: reduce) {
   .headline,
   .sub,
-  .cta,
+  .ctaRow,
   .scrollHint {
     animation: none;
     opacity: 1;
@@ -193,5 +272,13 @@
   }
   .scrollHint {
     right: 24px;
+  }
+}
+
+/* 極窄では各行ボックス内で折返し */
+@media (max-width: 520px) {
+  .headlineLine,
+  .subLine {
+    white-space: normal;
   }
 }
