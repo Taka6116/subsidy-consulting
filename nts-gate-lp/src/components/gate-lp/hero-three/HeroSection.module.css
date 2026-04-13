@@ -61,7 +61,6 @@
   color: #fff;
   line-height: 1.55;
   letter-spacing: -0.02em;
-  /* <br> で意図した2行のみ。行内は折り返さず3行目にしない */
   white-space: nowrap;
   word-break: keep-all;
   opacity: 0;
