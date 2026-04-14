@@ -111,12 +111,19 @@ export default function SubsidyCheckClient({ audience }: Props) {
   const [results, setResults] = useState<MatchedSubsidyPreview[]>([]);
   const [activeResultIndex, setActiveResultIndex] = useState(0);
   const [searchLoading, setSearchLoading] = useState(false);
+  /** 照合 API 完了（ローディングで最終フレーム→結果へ進むトリガー） */
+  const [matchApiComplete, setMatchApiComplete] = useState(false);
 
   const isPartner = audience === "partner";
 
   useEffect(() => {
     setActiveResultIndex(0);
   }, [results]);
+
+  const handleLoadingComplete = useCallback(() => {
+    setStep("results");
+    setMatchApiComplete(false);
+  }, []);
 
   const reset = useCallback(() => {
     setStep("form");
@@ -128,6 +135,7 @@ export default function SubsidyCheckClient({ audience }: Props) {
     setResults([]);
     setActiveResultIndex(0);
     setSearchLoading(false);
+    setMatchApiComplete(false);
   }, []);
 
   const runMatch = useCallback(
@@ -163,7 +171,7 @@ export default function SubsidyCheckClient({ audience }: Props) {
       } catch {
         setResults([]);
       } finally {
-        setStep("results");
+        setMatchApiComplete(true);
       }
     },
     [industryId, companyWebsiteUrl],
@@ -184,6 +192,7 @@ export default function SubsidyCheckClient({ audience }: Props) {
     const corp = syntheticCorporate(companyName);
     setConfirmed(corp);
     setSearchLoading(true);
+    setMatchApiComplete(false);
     setStep("loading");
 
     try {
@@ -309,7 +318,12 @@ export default function SubsidyCheckClient({ audience }: Props) {
         </>
       )}
 
-      {step === "loading" && <SubsidyMatchLoading />}
+      {step === "loading" && (
+        <SubsidyMatchLoading
+          apiComplete={matchApiComplete}
+          onReadyToTransition={handleLoadingComplete}
+        />
+      )}
 
       {step === "results" && confirmed && (
         <div className="space-y-12">
