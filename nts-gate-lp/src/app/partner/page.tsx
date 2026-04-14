@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import PartnerBackground from "@/components/gate-lp/partner/PartnerBackground";
-import PartnerHeroSection from "@/components/gate-lp/partner/PartnerHeroSection";
+import PartnerLpWebGLBackground from "@/components/partner-lp/PartnerLpWebGLBackground";
+import HeroSection from "@/components/partner-lp/HeroSection";
 import PartnerAgitationSection from "@/components/gate-lp/partner/PartnerAgitationSection";
 import PartnerMeritSection from "@/components/gate-lp/partner/PartnerMeritSection";
 import PartnerSubsidySection from "@/components/gate-lp/partner/PartnerSubsidySection";
@@ -20,9 +20,9 @@ export default function PartnerPage() {
   return (
     <div
       className="relative min-h-screen text-white"
-      style={{ background: "#051428" }}
+      style={{ background: "#041e42" }}
     >
-      <PartnerBackground />
+      <PartnerLpWebGLBackground />
 
       <header
         className="fixed left-0 right-0 top-0 z-50 flex items-center justify-between border-b border-white/[0.08] px-6 py-5 sm:px-8"
@@ -53,7 +53,7 @@ export default function PartnerPage() {
       </header>
 
       <main className="relative pt-20" style={{ zIndex: 2 }}>
-        <PartnerHeroSection />
+        <HeroSection />
         <PartnerAgitationSection />
         <PartnerMeritSection />
         <PartnerSubsidySection />
