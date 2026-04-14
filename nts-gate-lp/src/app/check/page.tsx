@@ -29,11 +29,11 @@ export default async function CheckPage({
           <SubsidyCheckClient audience={audience} />
         </div>
       </main>
-      <footer className="border-t border-[rgba(0,198,255,0.1)] bg-[rgba(0,0,0,0.2)] py-8">
+      <footer className="border-t border-white/10 bg-[rgba(6,14,28,0.35)] py-8">
         <div className="mx-auto max-w-5xl px-6 text-center text-caption">
           <Link
             href="/"
-            className="font-medium text-[#7ed9f5] underline-offset-4 hover:text-[#00c6ff] hover:underline"
+            className="font-medium text-white/60 underline-offset-4 transition hover:text-white hover:underline"
           >
             日本提携支援 トップへ戻る
           </Link>

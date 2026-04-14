@@ -15,6 +15,7 @@ import {
   RESULT_DASHBOARD_HERO_IMAGE,
   eligibilityPair,
 } from "@/lib/subsidyCheckResultHelpers";
+import heroStyles from "@/components/gate-lp/hero-three/HeroSection.module.css";
 
 type TabId = "overview" | "examples" | "checks" | "related";
 
@@ -81,35 +82,35 @@ export default function SubsidyCheckResultTabs({
   const relatedCandidates = results;
 
   return (
-    <div className="results-dashboard rounded-2xl border border-[var(--rd-border)] bg-[var(--rd-bg)] p-4 shadow-[0_24px_80px_rgba(0,0,0,0.35)] sm:p-6 md:p-8">
+    <div className="results-dashboard rounded-2xl border border-white/10 bg-white/[0.05] p-4 shadow-[0_24px_80px_rgba(0,0,0,0.35)] backdrop-blur-[14px] [-webkit-backdrop-filter:blur(14px)] sm:p-6 md:p-8">
       <header className="mb-8 flex flex-col gap-6 md:mb-10 md:flex-row md:items-end md:justify-between">
         <div className="min-w-0">
-          <p className="mb-2 text-[10px] font-bold uppercase tracking-[0.2em] text-[var(--rd-primary)]">
+          <p className="mb-2 text-[11px] font-bold uppercase tracking-[0.2em] text-white/35">
             照合結果
           </p>
-          <h1 className="font-heading text-2xl font-bold leading-tight text-[var(--rd-on-surface)] md:text-3xl">
+          <h1 className="font-heading text-2xl font-bold leading-tight text-white md:text-3xl">
             {item.name}
           </h1>
           {item.institutionName ? (
-            <p className="mt-2 text-sm text-[var(--rd-on-surface-variant)]">
+            <p className="mt-2 text-sm text-white/70">
               実施主体（参考）: {item.institutionName}
             </p>
           ) : null}
         </div>
         <div className="flex flex-wrap gap-3 md:gap-4">
-          <div className="min-w-[140px] rounded-xl bg-[var(--rd-surface-high)] p-4">
-            <p className="mb-1 text-[10px] font-semibold uppercase tracking-wide text-[var(--rd-on-surface-dim)]">
+          <div className="min-w-[140px] rounded-xl border border-white/10 bg-white/[0.08] px-5 py-3">
+            <p className="mb-1 text-[10px] font-semibold uppercase tracking-wide text-white/40">
               最大補助（参照）
             </p>
-            <p className="font-display text-xl font-bold tabular-nums text-[var(--rd-primary)] md:text-2xl">
+            <p className="font-display text-xl font-bold tabular-nums text-white md:text-2xl">
               {item.maxAmountLabel}
             </p>
           </div>
-          <div className="min-w-[140px] rounded-xl bg-[var(--rd-surface-high)] p-4">
-            <p className="mb-1 text-[10px] font-semibold uppercase tracking-wide text-[var(--rd-on-surface-dim)]">
+          <div className="min-w-[140px] rounded-xl border border-white/10 bg-white/[0.08] px-5 py-3">
+            <p className="mb-1 text-[10px] font-semibold uppercase tracking-wide text-white/40">
               公募期限
             </p>
-            <p className="text-base font-bold text-[var(--rd-on-surface)]">
+            <p className="text-base font-bold text-white">
               {item.deadlineLabel && item.deadlineLabel !== "—"
                 ? item.deadlineLabel
                 : "要確認"}
@@ -121,7 +122,7 @@ export default function SubsidyCheckResultTabs({
       <div
         role="tablist"
         aria-label="照合結果の内訳"
-        className="mb-8 flex gap-1 overflow-x-auto rounded-2xl border border-[var(--rd-border)] bg-[var(--rd-bg-elevated)]/80 p-1 backdrop-blur-md"
+        className="mb-8 flex gap-1 overflow-x-auto rounded-2xl border border-white/10 bg-[rgba(4,12,24,0.35)] p-1 backdrop-blur-md"
       >
         {TABS.map(({ id, label }, i) => {
           const selected = tab === id;
@@ -140,10 +141,10 @@ export default function SubsidyCheckResultTabs({
               tabIndex={selected ? 0 : -1}
               onClick={() => setTab(id)}
               onKeyDown={(e) => onTabKeyDown(e, i)}
-              className={`min-w-[112px] flex-1 rounded-xl px-3 py-3 text-center text-sm font-bold transition-all sm:min-w-[120px] sm:px-4 ${
+              className={`min-w-[112px] flex-1 rounded-lg px-5 py-2.5 text-center text-sm font-bold transition-all sm:min-w-[120px] ${
                 selected
-                  ? "bg-white text-[#001b3f] shadow-lg shadow-black/25"
-                  : "text-[var(--rd-on-surface-variant)] hover:bg-white/5"
+                  ? "bg-white text-[#0a1628] shadow-md shadow-black/20"
+                  : "text-white/55 hover:bg-white/[0.06] hover:text-white"
               }`}
             >
               {label}
@@ -174,44 +175,47 @@ export default function SubsidyCheckResultTabs({
                   priority
                 />
                 <div
-                  className="absolute inset-0 bg-gradient-to-t from-[var(--rd-bg)] via-[var(--rd-bg)]/55 to-transparent"
+                  className="absolute inset-0 bg-gradient-to-t from-[rgba(6,14,28,0.95)] via-[rgba(6,14,28,0.55)] to-transparent"
                   aria-hidden
                 />
               </div>
               <div className="relative z-10 flex min-h-[280px] flex-col justify-end p-6 md:min-h-[320px] md:p-10">
-                <span className="mb-3 inline-block w-fit rounded-full border border-[var(--rd-border-strong)] bg-[var(--rd-primary-muted)] px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-[var(--rd-primary)]">
+                <span className="mb-3 inline-block w-fit rounded-full border border-white/20 bg-white/10 px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-white/90">
                   概要
                 </span>
                 {d?.summary ? (
                   <p
                     id={`${baseId}-featured-heading`}
-                    className="mb-4 max-w-2xl text-sm font-medium leading-relaxed text-[var(--rd-on-surface-variant)] md:text-base"
+                    className="mb-4 max-w-2xl text-sm font-medium leading-relaxed text-white/70 md:text-base"
                   >
                     {d.summary}
                   </p>
                 ) : null}
                 {factBody ? (
-                  <p className="mb-8 max-w-2xl text-sm leading-relaxed text-[var(--rd-on-surface)] md:text-base">
+                  <p className="mb-8 max-w-2xl text-sm leading-relaxed text-white md:text-base">
                     {factBody.length > 560 ? `${factBody.slice(0, 560)}…` : factBody}
                   </p>
                 ) : (
-                  <p className="mb-8 text-sm text-[var(--rd-on-surface-variant)]">
+                  <p className="mb-8 text-sm text-white/70">
                     説明文の取得がありません。公式情報でご確認ください。
                   </p>
                 )}
-                <div className="flex flex-wrap gap-3">
+                <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:flex-wrap">
                   <Link
                     href="/consult"
-                    className="inline-flex items-center justify-center gap-2 rounded-full bg-[var(--rd-primary)] px-8 py-3 text-sm font-bold text-[var(--rd-on-primary)] transition hover:brightness-110"
+                    className={heroStyles.cta}
                   >
                     無料相談を申し込む
+                    <span className={heroStyles.ctaArrow} aria-hidden="true">
+                      →
+                    </span>
                   </Link>
                   {item.detailUrl?.trim() ? (
                     <a
                       href={item.detailUrl.trim()}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center justify-center gap-2 rounded-full border border-white/25 bg-white/10 px-8 py-3 text-sm font-bold text-white backdrop-blur-md transition hover:bg-white/15"
+                      className={heroStyles.ctaSecondary}
                     >
                       公式の詳細を見る
                       <ExternalLink className="h-4 w-4 shrink-0" aria-hidden />
@@ -236,7 +240,7 @@ export default function SubsidyCheckResultTabs({
                     key={`${card.title}-${idx}`}
                     className="rounded-2xl border border-[var(--rd-border)] bg-[var(--rd-surface)] p-6"
                   >
-                    <p className="mb-2 text-xs font-bold uppercase tracking-wide text-[var(--rd-primary)]">
+                    <p className="mb-2 text-xs font-bold uppercase tracking-wide text-white/70">
                       {card.title}
                     </p>
                     <p className="text-sm leading-relaxed text-[var(--rd-on-surface)]">
@@ -264,7 +268,7 @@ export default function SubsidyCheckResultTabs({
               <section aria-labelledby={`${baseId}-risks-heading`}>
                 <h2
                   id={`${baseId}-risks-heading`}
-                  className="mb-3 flex items-center gap-2 font-heading text-lg font-bold text-[var(--rd-warning)]"
+                  className="mb-3 flex items-center gap-2 font-heading text-lg font-bold text-amber-300"
                 >
                   <AlertTriangle className="h-5 w-5 shrink-0" aria-hidden />
                   注意・リスクフラグ
@@ -297,7 +301,7 @@ export default function SubsidyCheckResultTabs({
                       className="flex gap-3 rounded-xl border border-[var(--rd-border)] bg-[var(--rd-surface)] p-4 text-sm leading-relaxed text-[var(--rd-on-surface)]"
                     >
                       <CheckCircle2
-                        className="mt-0.5 h-5 w-5 shrink-0 text-[var(--rd-primary)]"
+                        className="mt-0.5 h-5 w-5 shrink-0 text-emerald-400"
                         aria-hidden
                       />
                       <span>{line}</span>
@@ -324,7 +328,7 @@ export default function SubsidyCheckResultTabs({
                     key={c.label}
                     className="rounded-xl border border-[var(--rd-border)] bg-[var(--rd-surface-high)] p-4"
                   >
-                    <p className="mb-1 text-[10px] font-semibold uppercase tracking-wide text-[var(--rd-primary)]">
+                    <p className="mb-1 text-[10px] font-semibold uppercase tracking-wide text-white/70">
                       {c.label}
                     </p>
                     <p className="text-sm leading-relaxed text-[var(--rd-on-surface)]">
@@ -368,7 +372,7 @@ export default function SubsidyCheckResultTabs({
                         <span className="font-heading text-base font-semibold text-[var(--rd-on-surface)]">
                           {r.name}
                         </span>
-                        <span className="mt-3 font-display text-xl font-bold text-[var(--rd-primary)]">
+                        <span className="mt-3 font-display text-xl font-bold text-white">
                           {r.maxAmountLabel}
                         </span>
                         <span className="mt-4 inline-flex items-center gap-1 text-xs font-semibold text-[var(--rd-primary)]">

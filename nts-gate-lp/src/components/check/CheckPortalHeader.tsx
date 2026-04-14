@@ -7,7 +7,7 @@ type Props = {
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export default function CheckPortalHeader({ audience }: Props) {
   return (
-    <header className="check-portal-glass-nav fixed left-0 right-0 top-0 z-50">
+    <header className="check-portal-glass-nav fixed left-0 right-0 top-0 z-50 text-white">
       <div className="mx-auto flex max-w-5xl items-center justify-between gap-4 px-6 py-4">
         <div className="flex min-w-0 flex-1 items-center gap-6">
           <Link

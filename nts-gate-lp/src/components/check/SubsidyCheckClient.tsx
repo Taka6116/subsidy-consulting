@@ -7,6 +7,7 @@ import type { MatchedSubsidyPreview } from "@/lib/subsidyCheckMocks";
 import type { CorporateCandidate } from "@/types/corporateSearch";
 import SubsidyMatchLoading from "@/components/check/SubsidyMatchLoading";
 import SubsidyCheckResultTabs from "@/components/check/SubsidyCheckResultTabs";
+import heroStyles from "@/components/gate-lp/hero-three/HeroSection.module.css";
 
 function parseStringArray(v: unknown): string[] {
   if (!Array.isArray(v)) return [];
@@ -313,13 +314,13 @@ export default function SubsidyCheckClient({ audience }: Props) {
       {step === "results" && confirmed && (
         <div className="space-y-12">
           <div>
-            <p className="text-xs font-bold uppercase tracking-widest text-white/85 drop-shadow-[0_1px_2px_rgba(0,0,0,0.25)]">
+            <p className="mb-1 text-[11px] font-bold uppercase tracking-[0.2em] text-white/35">
               照合結果
             </p>
-            <p className="mt-2 text-sm text-white/90 drop-shadow-[0_1px_2px_rgba(0,0,0,0.2)]">
-              <span className="font-semibold text-white">{confirmed.name}</span>
+            <p className="text-base font-medium text-white/70">
+              <span className="font-bold text-white">{confirmed.name}</span>
               {locationLine}
-              <span className="mx-1">・</span>
+              <span className="mx-1">　·　</span>
               {INDUSTRY_OPTIONS.find((o) => o.id === industryId)?.label ?? industryId}
             </p>
           </div>
@@ -347,9 +348,12 @@ export default function SubsidyCheckClient({ audience }: Props) {
                 <div className="pt-2">
                   <Link
                     href="/consult"
-                    className="inline-flex w-full items-center justify-center rounded-full bg-[#00c6ff] px-6 py-4 text-base font-bold text-[#0b1a22] shadow-sm transition-all hover:bg-[#00b0e6] hover:shadow-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00c6ff] sm:w-auto"
+                    className={`${heroStyles.cta} w-full justify-center sm:w-auto`}
                   >
                     無料で専門家に相談する
+                    <span className={heroStyles.ctaArrow} aria-hidden="true">
+                      →
+                    </span>
                   </Link>
                 </div>
               </div>
@@ -367,13 +371,15 @@ export default function SubsidyCheckClient({ audience }: Props) {
             </>
           )}
 
-          <button
-            type="button"
-            onClick={reset}
-            className="w-full rounded-full border-2 border-[rgba(0,198,255,0.35)] bg-white/5 px-6 py-3 text-sm font-bold text-[#7ed9f5] backdrop-blur-sm transition-colors hover:border-[#00c6ff] hover:bg-white/10 hover:text-[#00c6ff] sm:w-auto"
-          >
-            条件を変えてやり直す
-          </button>
+          <div className="mt-8 text-center">
+            <button
+              type="button"
+              onClick={reset}
+              className="inline-flex items-center gap-2 text-sm text-white/40 transition hover:text-white/70"
+            >
+              ← 条件を変えてやり直す
+            </button>
+          </div>
         </div>
       )}
     </div>
