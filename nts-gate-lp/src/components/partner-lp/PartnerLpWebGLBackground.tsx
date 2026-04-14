@@ -1,10 +1,17 @@
 "use client";
 
+/**
+ * パートナー LP 用「海中の太陽光」WebGL 背景。
+ * ゴッドレイは THREE.Line のみ（Plane での光束は使わない）。
+ * 参照: partner_lp_hero_v5.html
+ */
 import { useEffect, useRef } from "react";
 import * as THREE from "three";
 
 const FOG_COLOR = 0x041e42;
 const CLEAR_COLOR = 0x041e42;
+/** 指数フォグ。やや弱めて奥の抜けと明るさを少し確保（エンドユーザー LP より落ち着きつつ暗すぎない） */
+const FOG_DENSITY = 0.014;
 const BEAM_COUNT = 24;
 const N1 = 2200;
 const N2 = 600;
@@ -19,11 +26,11 @@ function makeCircleTex(size: number, sharpness: number): THREE.CanvasTexture {
   const ctx = cv.getContext("2d");
   if (!ctx) throw new Error("2d context");
   const r = size / 2;
-  const g = ctx.createRadialGradient(r, r, 0, r, r, r);
-  g.addColorStop(0, "rgba(255,255,255,1)");
-  g.addColorStop(sharpness, "rgba(255,255,255,.5)");
-  g.addColorStop(1, "rgba(255,255,255,0)");
-  ctx.fillStyle = g;
+  const grad = ctx.createRadialGradient(r, r, 0, r, r, r);
+  grad.addColorStop(0, "rgba(255,255,255,1)");
+  grad.addColorStop(sharpness, "rgba(255,255,255,0.5)");
+  grad.addColorStop(1, "rgba(255,255,255,0)");
+  ctx.fillStyle = grad;
   ctx.beginPath();
   ctx.arc(r, r, r, 0, Math.PI * 2);
   ctx.fill();
@@ -66,7 +73,7 @@ export default function PartnerLpWebGLBackground() {
     renderer.setClearColor(CLEAR_COLOR, 1);
 
     const scene = new THREE.Scene();
-    scene.fog = new THREE.FogExp2(FOG_COLOR, 0.016);
+    scene.fog = new THREE.FogExp2(FOG_COLOR, FOG_DENSITY);
 
     const cam = new THREE.PerspectiveCamera(
       65,
@@ -128,7 +135,7 @@ export default function PartnerLpWebGLBackground() {
       map: texSharp,
       vertexColors: true,
       transparent: true,
-      opacity: 0.8,
+      opacity: 0.85,
       alphaTest: 0.01,
       sizeAttenuation: true,
       depthWrite: false,
@@ -153,7 +160,7 @@ export default function PartnerLpWebGLBackground() {
       map: texSoft,
       color: 0x88eedd,
       transparent: true,
-      opacity: 0.42,
+      opacity: 0.46,
       alphaTest: 0.01,
       sizeAttenuation: true,
       depthWrite: false,
@@ -176,7 +183,7 @@ export default function PartnerLpWebGLBackground() {
       map: texGlow,
       color: 0xccf8f4,
       transparent: true,
-      opacity: 0.26,
+      opacity: 0.3,
       alphaTest: 0.01,
       sizeAttenuation: true,
       depthWrite: false,
@@ -184,20 +191,16 @@ export default function PartnerLpWebGLBackground() {
     });
     scene.add(new THREE.Points(g3, m3));
 
-    const beamTargets: { x: number; y: number; z: number }[] = [];
-    for (let i = 0; i < BEAM_COUNT; i++) {
-      beamTargets.push({
-        x: -18 + Math.random() * 16,
-        y: -10 + Math.random() * 12,
-        z: (Math.random() - 0.5) * 12,
-      });
-    }
-
     const rayGroup = new THREE.Group();
     const rayLines: THREE.Group[] = [];
     const lineDisposables: { geo: THREE.BufferGeometry; mat: THREE.LineBasicMaterial }[] = [];
 
-    beamTargets.forEach((tgt) => {
+    for (let bi = 0; bi < BEAM_COUNT; bi++) {
+      const tgt = {
+        x: -18 + Math.random() * 16,
+        y: -10 + Math.random() * 12,
+        z: (Math.random() - 0.5) * 12,
+      };
       const lineCount = 3 + Math.floor(Math.random() * 3);
       const baseOp = 0.18 + Math.random() * 0.28;
       const beamGroup = new THREE.Group();
@@ -219,21 +222,20 @@ export default function PartnerLpWebGLBackground() {
         ]);
         geo.setAttribute("color", new THREE.BufferAttribute(colors, 3));
 
-        const opacityScale = 0.5 + Math.random() * 0.5;
         const mat = new THREE.LineBasicMaterial({
           vertexColors: true,
           transparent: true,
-          opacity: baseOp * opacityScale,
+          opacity: baseOp * (0.5 + Math.random() * 0.5),
           depthWrite: false,
           blending: THREE.AdditiveBlending,
+          linewidth: 1,
         });
         const line = new THREE.Line(geo, mat);
-        line.userData.opacityScale = opacityScale;
         beamGroup.add(line);
         lineDisposables.push({ geo, mat });
       }
 
-      const ud: BeamUserData = {
+      beamGroup.userData = {
         baseOp,
         cloudPhase: Math.random() * Math.PI * 2,
         cloudSpeed: 0.009 + Math.random() * 0.012,
@@ -244,11 +246,10 @@ export default function PartnerLpWebGLBackground() {
         anglePhase: Math.random() * Math.PI * 2,
         angleSpeed: 0.003 + Math.random() * 0.005,
         angleDrift: (Math.random() - 0.5) * 0.04,
-      };
-      beamGroup.userData = ud;
+      } satisfies BeamUserData;
       rayGroup.add(beamGroup);
       rayLines.push(beamGroup);
-    });
+    }
     scene.add(rayGroup);
 
     const sunGlowG = new THREE.PlaneGeometry(7, 4);
@@ -261,7 +262,7 @@ export default function PartnerLpWebGLBackground() {
       side: THREE.DoubleSide,
     });
     const sunGlow = new THREE.Mesh(sunGlowG, sunGlowM);
-    sunGlow.position.set(SX * 0.55, SY * 0.65, SZ * 0.5);
+    sunGlow.position.set(9, 8, -3);
     sunGlow.rotation.z = -0.3;
     scene.add(sunGlow);
 
@@ -285,6 +286,33 @@ export default function PartnerLpWebGLBackground() {
     let cloudTimer = 0;
     let cloudInterval = 8 + Math.random() * 12;
 
+    const updateCloud = (deltaTime: number) => {
+      cloudTimer += deltaTime;
+      if (cloudTimer > cloudInterval) {
+        cloudTimer = 0;
+        cloudInterval = 6 + Math.random() * 14;
+        cloudTarget = 0.3 + Math.random() * 0.7;
+      }
+      cloudState += (cloudTarget - cloudState) * Math.min(1, deltaTime * 60 * 0.003);
+    };
+
+    const updateRays = (t: number) => {
+      rayLines.forEach((beam) => {
+        const u = beam.userData as BeamUserData;
+        const cloud = cloudState * (0.7 + u.cloudAmp * Math.sin(t * u.cloudSpeed + u.cloudPhase));
+        const wave = 1.0 + u.waveAmp * Math.sin(t * u.waveSpeed + u.wavePhase);
+        const finalOp = u.baseOp * cloud * wave;
+
+        beam.children.forEach((child) => {
+          const line = child as THREE.Line;
+          const mat = line.material as THREE.LineBasicMaterial;
+          mat.opacity = Math.max(0, Math.min(1, finalOp));
+        });
+
+        beam.rotation.z = u.angleDrift * Math.sin(t * u.angleSpeed + u.anglePhase);
+      });
+    };
+
     const clock = new THREE.Clock();
     let raf = 0;
 
@@ -297,29 +325,8 @@ export default function PartnerLpWebGLBackground() {
       cam.position.y += (-my * 0.28 - cam.position.y + 1) * 0.02;
       cam.lookAt(0, 0, 0);
 
-      cloudTimer += dt;
-      if (cloudTimer > cloudInterval) {
-        cloudTimer = 0;
-        cloudInterval = 6 + Math.random() * 14;
-        cloudTarget = 0.3 + Math.random() * 0.7;
-      }
-      cloudState += (cloudTarget - cloudState) * Math.min(1, dt * 60 * 0.003);
-
-      rayLines.forEach((beam) => {
-        const u = beam.userData as BeamUserData;
-        const cloud = cloudState * (0.7 + u.cloudAmp * Math.sin(t * u.cloudSpeed + u.cloudPhase));
-        const wave = 1.0 + u.waveAmp * Math.sin(t * u.waveSpeed + u.wavePhase);
-        const finalOp = u.baseOp * cloud * wave;
-
-        beam.children.forEach((child) => {
-          const line = child as THREE.Line;
-          const mat = line.material as THREE.LineBasicMaterial;
-          const scale = (line.userData.opacityScale as number) ?? 1;
-          mat.opacity = Math.max(0, Math.min(1, finalOp * scale));
-        });
-
-        beam.rotation.z = u.angleDrift * Math.sin(t * u.angleSpeed + u.anglePhase);
-      });
+      updateCloud(dt);
+      updateRays(t);
 
       sunGlowM.opacity = 0.07 * cloudState + 0.02 * Math.sin(t * 0.3);
       causticM.opacity = 0.03 * cloudState + 0.015 * Math.sin(t * 0.5 + 1.2);
