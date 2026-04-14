@@ -14,19 +14,19 @@ export default function HeroSection() {
       <HeroThreeWebGLBackground interactive />
 
       <div className={styles.content}>
-        <h1 className={styles.headline}>
+        <h1 className={`${styles.headline} font-heading font-normal`}>
           <span className={styles.headlineLine}>人手不足・設備老朽化・事業承継 ―</span>
           <span className={styles.headlineLine}>
             あなたの課題に使える補助金が、1分でわかります。
           </span>
         </h1>
 
-        <p className={styles.sub}>
+        <p className={`${styles.sub} font-body`}>
           <span className={styles.subLine}>あなたの会社の対象制度を即時照会。</span>
           <span className={styles.subLine}>照会・相談は完全無料です。</span>
         </p>
 
-        <div className={styles.ctaRow}>
+        <div className={`${styles.ctaRow} font-body`}>
           <Link
             href="/check"
             className={styles.cta}
@@ -50,7 +50,7 @@ export default function HeroSection() {
         </div>
       </div>
 
-      <div className={styles.scrollHint} aria-hidden="true">
+      <div className={`${styles.scrollHint} font-body`} aria-hidden="true">
         <div className={styles.scrollLine} />
         <span className={styles.scrollText}>scroll</span>
       </div>

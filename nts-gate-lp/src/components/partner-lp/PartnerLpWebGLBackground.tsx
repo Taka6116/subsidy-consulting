@@ -54,12 +54,23 @@ type BeamUserData = {
   angleDrift: number;
 };
 
-export default function PartnerLpWebGLBackground() {
+const clamp01 = (v: number) => Math.max(0, Math.min(1, v));
+
+type PartnerLpWebGLBackgroundProps = {
+  /** 1 = 既定。1.2 などで粒子・ビームの不透明度を上げ視認性を上げる（各値は 1 でクランプ） */
+  particleIntensity?: number;
+};
+
+export default function PartnerLpWebGLBackground({
+  particleIntensity = 1,
+}: PartnerLpWebGLBackgroundProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
+
+    const pi = Math.max(0.5, Math.min(1.5, particleIntensity));
 
     const prefersReduced =
       typeof window !== "undefined" &&
@@ -137,7 +148,7 @@ export default function PartnerLpWebGLBackground() {
       map: texSharp,
       vertexColors: true,
       transparent: true,
-      opacity: 0.85,
+      opacity: clamp01(0.85 * pi),
       alphaTest: 0.01,
       sizeAttenuation: true,
       depthWrite: false,
@@ -162,7 +173,7 @@ export default function PartnerLpWebGLBackground() {
       map: texSoft,
       color: 0xa7f0ff,
       transparent: true,
-      opacity: 0.46,
+      opacity: clamp01(0.46 * pi),
       alphaTest: 0.01,
       sizeAttenuation: true,
       depthWrite: false,
@@ -185,7 +196,7 @@ export default function PartnerLpWebGLBackground() {
       map: texGlow,
       color: 0xd8f6ff,
       transparent: true,
-      opacity: 0.3,
+      opacity: clamp01(0.3 * pi),
       alphaTest: 0.01,
       sizeAttenuation: true,
       depthWrite: false,
@@ -227,7 +238,7 @@ export default function PartnerLpWebGLBackground() {
         const mat = new THREE.LineBasicMaterial({
           vertexColors: true,
           transparent: true,
-          opacity: baseOp * (0.28 + Math.random() * 0.35),
+          opacity: clamp01(baseOp * (0.28 + Math.random() * 0.35) * pi),
           depthWrite: false,
           blending: THREE.AdditiveBlending,
           linewidth: 1,
@@ -258,7 +269,7 @@ export default function PartnerLpWebGLBackground() {
     const sunGlowM = new THREE.MeshBasicMaterial({
       color: 0xa7f0ff,
       transparent: true,
-      opacity: 0.11,
+      opacity: clamp01(0.11 * pi),
       depthWrite: false,
       blending: THREE.AdditiveBlending,
       side: THREE.DoubleSide,
@@ -272,7 +283,7 @@ export default function PartnerLpWebGLBackground() {
     const causticM = new THREE.MeshBasicMaterial({
       color: 0x55d8f0,
       transparent: true,
-      opacity: 0.05,
+      opacity: clamp01(0.05 * pi),
       depthWrite: false,
       blending: THREE.AdditiveBlending,
       side: THREE.DoubleSide,
@@ -308,7 +319,7 @@ export default function PartnerLpWebGLBackground() {
         beam.children.forEach((child) => {
           const line = child as THREE.Line;
           const mat = line.material as THREE.LineBasicMaterial;
-          mat.opacity = Math.max(0, Math.min(1, finalOp));
+          mat.opacity = clamp01(finalOp * pi);
         });
 
         beam.rotation.z = u.angleDrift * Math.sin(t * u.angleSpeed + u.anglePhase);
@@ -330,8 +341,12 @@ export default function PartnerLpWebGLBackground() {
       updateCloud(dt);
       updateRays(t);
 
-      sunGlowM.opacity = 0.07 * cloudState + 0.02 * Math.sin(t * 0.3);
-      causticM.opacity = 0.03 * cloudState + 0.015 * Math.sin(t * 0.5 + 1.2);
+      sunGlowM.opacity = clamp01(
+        (0.07 * cloudState + 0.02 * Math.sin(t * 0.3)) * pi,
+      );
+      causticM.opacity = clamp01(
+        (0.03 * cloudState + 0.015 * Math.sin(t * 0.5 + 1.2)) * pi,
+      );
 
       for (let i = 0; i < N1; i++) {
         p1[i * 3] += v1[i * 3];
@@ -389,7 +404,7 @@ export default function PartnerLpWebGLBackground() {
       causticM.dispose();
       renderer.dispose();
     };
-  }, []);
+  }, [particleIntensity]);
 
   return (
     <canvas

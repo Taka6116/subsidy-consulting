@@ -12,7 +12,7 @@
   overflow: hidden;
   /* prefers-reduced-motion 時の静止背景色 */
   background: #0d2660;
-  font-family: "Inter", "Noto Sans JP", sans-serif;
+  font-family: var(--font-body);
 }
 
 /* ── メインコンテンツ ──────────────────────────
@@ -54,7 +54,6 @@
   padding: 0 1rem;
   box-sizing: border-box;
   font-size: clamp(14.4px, 3.18vw, 40.8px);
-  font-weight: 700;
   color: #fff;
   line-height: 1.55;
   letter-spacing: -0.02em;

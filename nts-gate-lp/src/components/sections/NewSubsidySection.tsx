@@ -83,10 +83,10 @@ export default function NewSubsidySection() {
           className="mt-10 text-center"
         >
           <Link
-            href="#"
+            href="/subsidies"
             className="inline-flex items-center gap-1 text-sm font-bold text-white/90 underline-offset-4 hover:text-white hover:underline"
           >
-            すべての補助金情報を見る
+            補助金情報を見る
             <ChevronRight className="h-4 w-4" aria-hidden />
           </Link>
         </motion.div>
