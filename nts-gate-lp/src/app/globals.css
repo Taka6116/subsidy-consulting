@@ -109,6 +109,11 @@
   background: linear-gradient(160deg, #0a1628 0%, #0d1d38 60%, #060e1c 100%);
 }
 
+/* /check エンドユーザー: トップと同一の WebGL 背景の下にグラデを敷かない */
+.check-portal.check-portal-lp-bg {
+  background: transparent;
+}
+
 .check-portal-editorial-gradient {
   background: var(--gradient-brand);
 }

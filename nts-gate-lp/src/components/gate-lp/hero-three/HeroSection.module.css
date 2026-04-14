@@ -15,27 +15,6 @@
   font-family: "Inter", "Noto Sans JP", sans-serif;
 }
 
-.canvas {
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  width: 100vw;
-  height: 100vh;
-  display: block;
-}
-
-.overlay {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    110deg,
-    rgba(8, 24, 68, 0.78) 0%,
-    rgba(8, 24, 68, 0.5) 45%,
-    rgba(0, 60, 120, 0.2) 100%
-  );
-  pointer-events: none;
-}
-
 /* ── メインコンテンツ ──────────────────────────
    Header が absolute z-[10] で被さるため padding-top で確保
 ─────────────────────────────────────────── */

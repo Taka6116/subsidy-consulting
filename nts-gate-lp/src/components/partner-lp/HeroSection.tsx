@@ -2,6 +2,7 @@
 
 import { useLayoutEffect, useRef } from "react";
 import gsap from "gsap";
+import HeroPartnerStrip from "@/components/gate-lp/HeroPartnerStrip";
 import styles from "./HeroSection.module.css";
 
 export default function HeroSection() {
@@ -83,7 +84,9 @@ export default function HeroSection() {
 
   return (
     <section className={styles.page}>
-      <p ref={eyebrowRef} className={styles.eyebrow}>
+      <div className={styles.heroMain}>
+      <div className={styles.content}>
+      <p ref={eyebrowRef} className={`${styles.eyebrow} font-body`}>
         Partner Program — NTS
       </p>
       <h1 ref={headlineRef} className={`${styles.headline} font-heading`}>
@@ -91,11 +94,11 @@ export default function HeroSection() {
         <br />
         あとは<em>私たちが動きます</em>。
       </h1>
-      <p ref={subRef} className={styles.sub}>
+      <p ref={subRef} className={`${styles.sub} font-body`}>
         御社の顧客に補助金という選択肢を。申請から採択まで全て対応。紹介フィーは成功報酬でお支払いします。
       </p>
 
-      <div className={styles.flow}>
+      <div className={`${styles.flow} font-body`}>
         <div ref={s1Ref} className={styles.step}>
           <div ref={setStepIconRef(0)} className={styles.stepIcon}>
             <div className={styles.pulseRing} aria-hidden />
@@ -173,13 +176,19 @@ export default function HeroSection() {
         </div>
       </div>
 
-      <div ref={ctRef} className={styles.ctas}>
+      <div ref={ctRef} className={`${styles.ctas} font-body`}>
         <a href="#merit" className={styles.btnP}>
           提携の詳細を見る
         </a>
         <a href="#contact" className={styles.btnS}>
           まず話を聞く →
         </a>
+      </div>
+      </div>
+      </div>
+
+      <div className={styles.heroStrip}>
+        <HeroPartnerStrip variant="dark" />
       </div>
     </section>
   );

@@ -1,0 +1,39 @@
+.canvas {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  width: 100vw;
+  height: 100vh;
+  display: block;
+}
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(
+    110deg,
+    rgba(8, 24, 68, 0.78) 0%,
+    rgba(8, 24, 68, 0.5) 45%,
+    rgba(0, 60, 120, 0.2) 100%
+  );
+}
+
+/* ヒーロー内: 制度名ホバー検出用（.content は pointer-events:none のため透過してここに届く） */
+.hitLayer {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+.fallback {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  background: #0d2660;
+}
+
+.passiveRoot {
+  pointer-events: none;
+}

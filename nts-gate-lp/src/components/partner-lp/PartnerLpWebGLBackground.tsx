@@ -3,22 +3,24 @@
 /**
  * パートナー LP 用「海中の太陽光」WebGL 背景。
  * ゴッドレイは THREE.Line のみ（Plane での光束は使わない）。
- * 参照: partner_lp_hero_v5.html
+ * 色味: CSS `linear-gradient(180deg, #0a466b 0%, #011326 100%)` / `rgba(167,240,255,…)` に合わせる。
  */
 import { useEffect, useRef } from "react";
 import * as THREE from "three";
 
-const FOG_COLOR = 0x041e42;
-const CLEAR_COLOR = 0x041e42;
-/** 指数フォグ。やや弱めて奥の抜けと明るさを少し確保（エンドユーザー LP より落ち着きつつ暗すぎない） */
-const FOG_DENSITY = 0.014;
-const BEAM_COUNT = 24;
+/** #0a466b に近い明るめのネイビー（クリアカラー） */
+const CLEAR_COLOR = 0x0a3d5e;
+/** フォグ深部 #011326 系 */
+const FOG_COLOR = 0x062840;
+const FOG_DENSITY = 0.016;
+const BEAM_COUNT = 16;
 const N1 = 2200;
 const N2 = 600;
 const N3 = 90;
-const SX = 16;
-const SY = 12;
-const SZ = -5;
+/** 光源：右斜め上の外側 */
+const SX = 22;
+const SY = 16;
+const SZ = -4;
 
 function makeCircleTex(size: number, sharpness: number): THREE.CanvasTexture {
   const cv = document.createElement("canvas");
@@ -111,17 +113,17 @@ export default function PartnerLpWebGLBackground() {
       const t = Math.random();
       const br = 0.5 + Math.random() * 0.5;
       if (t < 0.4) {
-        c1[i * 3] = 0.5 * br;
-        c1[i * 3 + 1] = 0.95 * br;
-        c1[i * 3 + 2] = 0.85 * br;
+        c1[i * 3] = 0.655 * br;
+        c1[i * 3 + 1] = 0.941 * br;
+        c1[i * 3 + 2] = 1.0 * br;
       } else if (t < 0.72) {
-        c1[i * 3] = 0.25 * br;
-        c1[i * 3 + 1] = 0.72 * br;
-        c1[i * 3 + 2] = 0.98 * br;
+        c1[i * 3] = 0.3 * br;
+        c1[i * 3 + 1] = 0.78 * br;
+        c1[i * 3 + 2] = 0.92 * br;
       } else {
-        c1[i * 3] = 0.88 * br;
-        c1[i * 3 + 1] = 0.98 * br;
-        c1[i * 3 + 2] = br;
+        c1[i * 3] = 0.82 * br;
+        c1[i * 3 + 1] = 0.96 * br;
+        c1[i * 3 + 2] = 1.0 * br;
       }
       v1[i * 3] = (Math.random() - 0.5) * 0.0007;
       v1[i * 3 + 1] = 0.0005 + Math.random() * 0.0009;
@@ -158,7 +160,7 @@ export default function PartnerLpWebGLBackground() {
     const m2 = new THREE.PointsMaterial({
       size: 0.28,
       map: texSoft,
-      color: 0x88eedd,
+      color: 0xa7f0ff,
       transparent: true,
       opacity: 0.46,
       alphaTest: 0.01,
@@ -181,7 +183,7 @@ export default function PartnerLpWebGLBackground() {
     const m3 = new THREE.PointsMaterial({
       size: 0.55,
       map: texGlow,
-      color: 0xccf8f4,
+      color: 0xd8f6ff,
       transparent: true,
       opacity: 0.3,
       alphaTest: 0.01,
@@ -197,20 +199,20 @@ export default function PartnerLpWebGLBackground() {
 
     for (let bi = 0; bi < BEAM_COUNT; bi++) {
       const tgt = {
-        x: -18 + Math.random() * 16,
-        y: -10 + Math.random() * 12,
-        z: (Math.random() - 0.5) * 12,
+        x: -22 + Math.random() * 14,
+        y: -8 + Math.random() * 10,
+        z: (Math.random() - 0.5) * 8,
       };
-      const lineCount = 3 + Math.floor(Math.random() * 3);
-      const baseOp = 0.18 + Math.random() * 0.28;
+      const lineCount = 7 + Math.floor(Math.random() * 4);
+      const baseOp = 0.09 + Math.random() * 0.14;
       const beamGroup = new THREE.Group();
 
       for (let li = 0; li < lineCount; li++) {
-        const spreadX = (Math.random() - 0.5) * 0.6;
-        const spreadY = (Math.random() - 0.5) * 0.3;
-        const srcX = SX + (Math.random() - 0.5) * 1.5;
-        const srcY = SY + (Math.random() - 0.5) * 0.8;
-        const srcZ = SZ + (Math.random() - 0.5) * 0.5;
+        const spreadX = (Math.random() - 0.5) * 1.15;
+        const spreadY = (Math.random() - 0.5) * 0.55;
+        const srcX = SX + (Math.random() - 0.5) * 2.2;
+        const srcY = SY + (Math.random() - 0.5) * 1.1;
+        const srcZ = SZ + (Math.random() - 0.5) * 0.65;
 
         const points = [
           new THREE.Vector3(srcX, srcY, srcZ),
@@ -218,14 +220,14 @@ export default function PartnerLpWebGLBackground() {
         ];
         const geo = new THREE.BufferGeometry().setFromPoints(points);
         const colors = new Float32Array([
-          0.55, 0.92, 0.82, 0.15, 0.55, 0.7,
+          0.48, 0.78, 0.92, 0.06, 0.22, 0.36,
         ]);
         geo.setAttribute("color", new THREE.BufferAttribute(colors, 3));
 
         const mat = new THREE.LineBasicMaterial({
           vertexColors: true,
           transparent: true,
-          opacity: baseOp * (0.5 + Math.random() * 0.5),
+          opacity: baseOp * (0.28 + Math.random() * 0.35),
           depthWrite: false,
           blending: THREE.AdditiveBlending,
           linewidth: 1,
@@ -239,10 +241,10 @@ export default function PartnerLpWebGLBackground() {
         baseOp,
         cloudPhase: Math.random() * Math.PI * 2,
         cloudSpeed: 0.009 + Math.random() * 0.012,
-        cloudAmp: 0.28 + Math.random() * 0.45,
+        cloudAmp: 0.2 + Math.random() * 0.32,
         wavePhase: Math.random() * Math.PI * 2,
-        waveSpeed: 0.14 + Math.random() * 0.2,
-        waveAmp: 0.06 + Math.random() * 0.12,
+        waveSpeed: 0.1 + Math.random() * 0.14,
+        waveAmp: 0.04 + Math.random() * 0.08,
         anglePhase: Math.random() * Math.PI * 2,
         angleSpeed: 0.003 + Math.random() * 0.005,
         angleDrift: (Math.random() - 0.5) * 0.04,
@@ -254,23 +256,23 @@ export default function PartnerLpWebGLBackground() {
 
     const sunGlowG = new THREE.PlaneGeometry(7, 4);
     const sunGlowM = new THREE.MeshBasicMaterial({
-      color: 0xaaffee,
+      color: 0xa7f0ff,
       transparent: true,
-      opacity: 0.09,
+      opacity: 0.11,
       depthWrite: false,
       blending: THREE.AdditiveBlending,
       side: THREE.DoubleSide,
     });
     const sunGlow = new THREE.Mesh(sunGlowG, sunGlowM);
-    sunGlow.position.set(9, 8, -3);
+    sunGlow.position.set(13, 10, -3);
     sunGlow.rotation.z = -0.3;
     scene.add(sunGlow);
 
     const causticG = new THREE.PlaneGeometry(22, 10);
     const causticM = new THREE.MeshBasicMaterial({
-      color: 0x44ddbb,
+      color: 0x55d8f0,
       transparent: true,
-      opacity: 0.04,
+      opacity: 0.05,
       depthWrite: false,
       blending: THREE.AdditiveBlending,
       side: THREE.DoubleSide,

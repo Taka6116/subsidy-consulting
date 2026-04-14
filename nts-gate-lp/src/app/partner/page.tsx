@@ -19,7 +19,7 @@ export const metadata: Metadata = {
 export default function PartnerPage() {
   return (
     <div
-      className="relative min-h-screen text-white"
+      className="relative min-h-screen font-body text-white"
       style={{ background: "#041e42" }}
     >
       <PartnerLpWebGLBackground />
