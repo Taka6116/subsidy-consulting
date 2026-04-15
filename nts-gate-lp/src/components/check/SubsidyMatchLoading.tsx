@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import HeroThreeWebGLBackground from "@/components/gate-lp/hero-three/HeroThreeWebGLBackground";
 
 // ── キーメッセージ定義 ──────────────────────────────
 const FRAMES = [
@@ -31,6 +32,10 @@ const FRAMES = [
     lines: [
       { text: "採択されたあとにも、", large: true },
       { text: "やることがあります。", large: true },
+      {
+        text: "日本提携支援は採択後も1年間お客様の経営に寄り添い続けます。",
+        large: false,
+      },
       { text: "最後まで、NTSがそばにいます。", large: false },
     ],
   },
@@ -43,7 +48,7 @@ const FRAMES = [
   },
 ];
 
-const FRAME_DURATION = 5000;
+const FRAME_DURATION = 6500;
 const FADE_DURATION = 700;
 /** API 完了後、最終フレームを見せてから結果へ遷移するまで（ms） */
 const FINAL_HOLD_MS = 1600;
@@ -136,15 +141,13 @@ export default function SubsidyMatchLoading({
   return (
     <div
       className="fixed inset-0 z-[100] flex min-h-screen flex-col items-center justify-center overflow-hidden"
-      style={{
-        background:
-          "linear-gradient(160deg, #0a1628 0%, #0d1d38 55%, #060e1c 100%)",
-      }}
       role="status"
       aria-live="polite"
       aria-busy="true"
       aria-label="補助金を照合しています"
     >
+      <HeroThreeWebGLBackground interactive={false} />
+
       <AnimatePresence>
         {curtain && (
           <motion.div
@@ -161,7 +164,7 @@ export default function SubsidyMatchLoading({
       <header
         className="fixed left-0 right-0 top-0 z-40 flex items-center justify-between border-b border-white/10 px-6 py-5 sm:px-8"
         style={{
-          background: "rgba(6,14,28,0.85)",
+          background: "rgba(6,14,28,0.28)",
           backdropFilter: "blur(12px)",
           WebkitBackdropFilter: "blur(12px)",
         }}
