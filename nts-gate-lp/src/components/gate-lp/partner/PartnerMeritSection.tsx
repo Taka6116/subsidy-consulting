@@ -20,9 +20,9 @@ export default function PartnerMeritSection() {
             Partner Benefits
           </p>
           <h2 className="font-heading text-3xl font-bold leading-tight text-white md:text-4xl lg:text-5xl">
-            提携することで、
+            あなたの営業が、
             <br />
-            2つのメリットが生まれます。
+            補助金で変わります。
           </h2>
         </motion.div>
 
@@ -47,9 +47,9 @@ export default function PartnerMeritSection() {
             </h3>
             <p className="mt-4 text-base leading-relaxed text-white/60">
               「補助金が使えるので、自己負担を抑えて導入できます」——
-              この一言が、顧客の意思決定を大きく後押しします。
-              価格交渉ではなく、制度の活用という形で前に進めるため、
-              営業トークの質が変わります。
+              この一言が、価格交渉を不要にします。
+              値下げではなく、制度の活用として話が進むため、
+              あなたの提案の質が根本から変わります。
             </p>
             <div className="mt-6 rounded-xl border border-white/[0.08] bg-white/[0.04] p-5">
               <p className="mb-2 text-[11px] font-bold uppercase tracking-wider text-white/30">
@@ -84,9 +84,9 @@ export default function PartnerMeritSection() {
               新しい収益が生まれる
             </h3>
             <p className="mt-4 text-base leading-relaxed text-white/60">
-              紹介いただいた案件が採択された場合、
-              NTSから提携先へ紹介フィー（キックバック）をお支払いします。
-              「紹介するだけ」で新しい収益の柱になります。
+              紹介いただいた案件が採択された場合、NTSから紹介フィー（キックバック）をお支払いします。
+              申請業務はすべてNTSが担当するため、御社の工数はほぼゼロ。
+              「紹介するだけ」で、新しい収益の柱が生まれます。
             </p>
             <div
               className="mt-6 rounded-xl p-5"

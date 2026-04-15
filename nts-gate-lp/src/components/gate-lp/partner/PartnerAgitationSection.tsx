@@ -1,5 +1,6 @@
 "use client";
 
+import type { ReactNode } from "react";
 import { motion } from "framer-motion";
 
 const EASE_OUT = [0.22, 1, 0.36, 1] as const;
@@ -11,6 +12,45 @@ const fadeUp = (delay: number) => ({
   transition: { duration: 0.6, ease: EASE_OUT, delay },
 });
 
+const CARDS: {
+  situation: string;
+  pain: string;
+  note: ReactNode;
+}[] = [
+  {
+    situation: "顧客に提案しても",
+    pain: "「費用が\nネックで…」",
+    note: (
+      <>
+        省力化補助金を活用すれば、
+        <strong className="font-semibold text-white/75">自己負担が半額以下</strong>
+        になるケースがあります。「高くて無理」が「これなら動ける」に変わります。
+      </>
+    ),
+  },
+  {
+    situation: "せっかく興味を持ってもらっても",
+    pain: "「今期の\n予算がない」",
+    note: (
+      <>
+        補助金の公募スケジュールと合わせれば、
+        <strong className="font-semibold text-white/75">「来期でいい」を「今動く」</strong>
+        に変えられます。タイミングが鍵です。
+      </>
+    ),
+  },
+  {
+    situation: "検討が長引いて",
+    pain: "「やっぱり\n見送ります」",
+    note: (
+      <>
+        <strong className="font-semibold text-white/75">「補助金が使える」</strong>
+        という一言が、止まっていた意思決定を動かします。背中を押す武器が、あなたにはまだあります。
+      </>
+    ),
+  },
+];
+
 export default function PartnerAgitationSection() {
   return (
     <section id="agitation" className="relative py-32 md:py-40" style={{ zIndex: 10 }}>
@@ -20,39 +60,25 @@ export default function PartnerAgitationSection() {
             className="font-heading text-3xl font-bold leading-tight text-white md:text-4xl lg:text-5xl"
             {...fadeUp(0)}
           >
-            顧客の投資計画が止まるとき、
+            その「見送ります」の裏に、
             <br />
-            原因は「お金」だけではありません。
+            使えるはずの補助金があります。
           </motion.h2>
 
           <motion.p
             className="mt-8 text-lg leading-relaxed text-white/[0.58] md:text-xl"
             {...fadeUp(0.15)}
           >
-            「費用が高い」「今期は難しい」——
+            「費用がネックで…」「今期は予算がなくて…」——
             <br className="hidden sm:block" />
-            その言葉の裏に、補助金を知らないだけのケースが、少なくありません。
+            その言葉が出るたびに、商談を諦めてきませんでしたか。
+            <br />
+            実は、補助金を知らないだけのケースがほとんどです。
           </motion.p>
         </div>
 
         <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-          {[
-            {
-              situation: "顧客に提案しても",
-              pain: "「費用が\nネックで…」",
-              note: "補助金を使えば自己負担が半分以下になるケースがあります",
-            },
-            {
-              situation: "せっかく興味を持ってもらっても",
-              pain: "「今期の\n予算がない」",
-              note: "補助金の公募タイミングと合わせれば前に進められることがあります",
-            },
-            {
-              situation: "検討が長引いて",
-              pain: "「やっぱり\n見送ります」",
-              note: "補助金という選択肢が、意思決定を後押しすることがあります",
-            },
-          ].map((card, i) => (
+          {CARDS.map((card, i) => (
             <motion.div
               key={i}
               {...fadeUp(i * 0.1)}

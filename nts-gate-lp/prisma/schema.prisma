@@ -26,10 +26,85 @@ model SubsidyGrant {
   updatedAt          DateTime @updatedAt // auto-updated by Prisma (DB default is for initial fill)
   syncRunId          String?
 
-  syncRun SubsidySyncRun? @relation(fields: [syncRunId], references: [id], onDelete: SetNull)
+  status        String    @default("open")
+  source        String    @default("manual")
+  subsidyAmount BigInt?   @map("subsidy_amount")
+  subsidyRate   Decimal?  @map("subsidy_rate") @db.Decimal(4, 2)
+  deadline      DateTime? @db.Date
+
+  syncRun  SubsidySyncRun?    @relation(fields: [syncRunId], references: [id], onDelete: SetNull)
+  contents GeneratedContent[]
+  jobs     ContentJob[]
 
   @@index([syncedAt])
   @@index([updatedAt])
+}
+
+/// 補助金に紐づく生成コンテンツ（記事 / LP / 台本等）
+model GeneratedContent {
+  id              String    @id @default(uuid()) @db.Uuid
+  subsidyId       String    @map("subsidy_id")
+  contentType     String    @map("content_type")
+  title           String?
+  body            String?   @db.Text
+  metaDescription String?   @map("meta_description") @db.Text
+  status          String    @default("draft")
+  publishedAt     DateTime? @map("published_at")
+  createdAt       DateTime  @default(now()) @map("created_at")
+
+  grant SubsidyGrant @relation(fields: [subsidyId], references: [id], onDelete: Cascade)
+
+  @@index([subsidyId])
+  @@map("generated_contents")
+}
+
+/// コンテンツ生成ジョブ
+model ContentJob {
+  id          String    @id @default(uuid()) @db.Uuid
+  subsidyId   String    @map("subsidy_id")
+  jobType     String    @map("job_type")
+  status      String    @default("pending")
+  triggeredAt DateTime  @default(now()) @map("triggered_at")
+  completedAt DateTime? @map("completed_at")
+
+  grant SubsidyGrant @relation(fields: [subsidyId], references: [id], onDelete: Cascade)
+
+  @@index([subsidyId])
+  @@unique([subsidyId, jobType])
+  @@map("content_jobs")
+}
+
+/// 同期・取り込みのサマリログ（任意）
+model SyncLog {
+  id              String   @id @default(uuid()) @db.Uuid
+  syncedAt        DateTime @default(now()) @map("synced_at")
+  recordsFetched  Int?     @map("records_fetched")
+  recordsUpserted Int?     @map("records_upserted")
+  errorMessage    String?  @map("error_message") @db.Text
+
+  @@map("sync_logs")
+}
+
+/// 静的マスタ（LP 等で参照）。既存テーブルを保持するためモデル化。
+model StaticSubsidy {
+  id                        String    @id @db.VarChar(100)
+  title                     String    @db.Text
+  summary                   String    @db.Text
+  subsidyMaxLimit           BigInt?   @map("subsidy_max_limit")
+  subsidyRate               String?   @map("subsidy_rate") @db.VarChar(50)
+  targetAreaSearch          String?   @map("target_area_search") @db.Text
+  targetNumberOfEmployees   String?   @map("target_number_of_employees") @db.Text
+  acceptanceStatus          String?   @map("acceptance_status") @db.VarChar(100)
+  acceptanceEndDatetime     DateTime? @map("acceptance_end_datetime")
+  targetThemes              String[]  @default([]) @map("target_themes")
+  excludedIndustries        String[]  @default([]) @map("excluded_industries")
+  officialUrl               String?   @map("official_url") @db.Text
+  institutionName           String?   @map("institution_name") @db.Text
+  isActive                  Boolean?  @map("is_active")
+  createdAt                 DateTime? @map("created_at")
+  updatedAt                 DateTime? @map("updated_at")
+
+  @@map("static_subsidies")
 }
 
 /// 同期ジョブの実行単位（部分成功も status で表現可能）。

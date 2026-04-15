@@ -90,12 +90,12 @@ export default function HeroSection() {
         Partner Program — NTS
       </p>
       <h1 ref={headlineRef} className={`${styles.headline} font-heading`}>
-        紹介するだけ。
+        「顧客の「できない」を、
         <br />
-        あとは<em>私たちが動きます</em>。
+        「できる」に変える一言がある。」
       </h1>
       <p ref={subRef} className={`${styles.sub} font-body`}>
-        御社の顧客に補助金という選択肢を。申請から採択まで全て対応。紹介フィーは成功報酬でお支払いします。
+        「「費用がネックで」「予算がなくて」——その言葉が出たとき、あなたには渡せる切り札があります。「補助金を使えるか、専門家に確認してみましょう」と。」
       </p>
 
       <div className={`${styles.flow} font-body`}>

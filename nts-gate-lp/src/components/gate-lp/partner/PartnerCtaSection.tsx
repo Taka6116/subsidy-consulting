@@ -26,9 +26,11 @@ export default function PartnerCtaSection() {
             まず、話を聞かせてください。
           </h2>
           <p className="mt-6 text-lg leading-relaxed text-white/[0.58]">
-            提携に関するご質問・ご相談は無料です。
-            <br className="hidden sm:block" />
-            御社の業種・商材に合った活用方法をご案内します。
+            補助金の知識は不要です。
+            <br />
+            「紹介できる顧客がいるかもしれない」と思ったら、それだけで十分です。
+            <br />
+            まず、30分だけ話を聞かせてください。
           </p>
         </motion.div>
 
@@ -53,14 +55,14 @@ export default function PartnerCtaSection() {
               e.currentTarget.style.background = "#F5A623";
             }}
           >
-            提携の相談をする →
+            提携について相談する（無料）→
           </a>
 
           <Link
-            href="/"
+            href="/consult"
             className="inline-flex items-center gap-2 rounded border border-white/25 bg-white/[0.06] px-6 py-4 text-sm text-white/65 transition hover:border-white/45 hover:bg-white/[0.10]"
           >
-            補助金の詳細を見る ↗
+            お問い合わせ ↗
           </Link>
         </motion.div>
 

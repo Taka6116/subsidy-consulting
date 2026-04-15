@@ -75,7 +75,7 @@
   font-weight: 300;
   color: rgba(255, 255, 255, 0.95);
   text-align: center;
-  max-width: 480px;
+  max-width: min(720px, 92vw);
   line-height: 1.8;
   margin-bottom: 40px;
   opacity: 0;
