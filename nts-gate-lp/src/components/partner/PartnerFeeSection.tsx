@@ -156,10 +156,9 @@ export default function PartnerFeeSection() {
           transition={{ duration: 0.5, delay: 0.1 }}
         >
           <div
-            className="rounded-r-xl border-y border-r border-white/10 py-6 pl-5 pr-5 md:pl-6 md:pr-8"
+            className="rounded-xl border border-white/10 py-6 pl-5 pr-5 md:pl-6 md:pr-8"
             style={{
               background: "rgba(26, 123, 111, 0.1)",
-              borderLeft: "3px solid #1A7B6F",
             }}
           >
             <p className="mb-4 text-xs font-bold uppercase tracking-wider text-white/45">

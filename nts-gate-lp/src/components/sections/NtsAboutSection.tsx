@@ -9,12 +9,12 @@ const HERO_BG = "/images/subsidy-footer.jpg";
  */
 export default function NtsAboutSection() {
   return (
-    <section className="relative z-10 overflow-hidden py-20 md:py-28 lg:py-32">
+    <section className="relative z-10 overflow-hidden py-[calc(5rem+2.35rem)] md:py-[calc(7rem+2.35rem)] lg:py-[calc(8rem+2.35rem)]">
       <Image
         src={HERO_BG}
         alt=""
         fill
-        className="object-cover object-[35%_center]"
+        className="object-cover object-[30%_42%]"
         sizes="100vw"
         priority={false}
       />
@@ -31,7 +31,7 @@ export default function NtsAboutSection() {
         <h2 className="font-heading text-h1 font-bold leading-tight text-white drop-shadow-sm">
           補助金活用の専門チームが、
           <br />
-          あなたの経営とともに動きます。
+          あなたの経営課題に寄り添います。
         </h2>
 
         <div className="mt-10 grid max-w-5xl grid-cols-1 gap-4 text-body leading-loose text-white/95 drop-shadow-sm md:mt-12 md:grid-cols-3 md:text-lg md:leading-loose">
