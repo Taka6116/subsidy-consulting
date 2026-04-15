@@ -23,7 +23,7 @@ const STEPS = [
     step: "STEP 2",
     timing: "採択が決まった時点",
     amount: "成果報酬 5%",
-    body: "申請が通ったことを確認してから、初回の成果報酬",
+    body: "採択が決まったことを確認してから、初回の成果報酬",
   },
   {
     step: "STEP 3",
@@ -89,7 +89,7 @@ export default function FeeStructureSection() {
             className="mt-8 rounded-xl border-l-[3px] border-[#1A7B6F] px-5 py-4 text-sm leading-relaxed text-white/85"
             style={{ background: "rgba(26, 123, 111, 0.1)" }}
           >
-            合計の成果報酬は補助額の15%。
+            合計の成果報酬は補助金額の15%。
             <br />
             「採択されなければ成果報酬は発生しません」——
             <br />

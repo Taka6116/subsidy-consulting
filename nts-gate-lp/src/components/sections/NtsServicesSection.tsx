@@ -29,7 +29,7 @@ export default function NtsServicesSection() {
         {/* ヘッダー */}
         <motion.div className="mb-16 text-center" {...fadeUp(0)}>
           <p className="mb-4 text-[11px] font-bold uppercase tracking-[0.25em] text-white/70">
-            NTS の 支 援 の 特 長
+            NTSの支援の特長
           </p>
           <h2
             id="home-nts-services-heading"
@@ -41,7 +41,7 @@ export default function NtsServicesSection() {
           </h2>
         </motion.div>
 
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
           {[
             {
               number: "01",
@@ -53,6 +53,11 @@ export default function NtsServicesSection() {
             },
             {
               number: "02",
+              title: "提携行政書士と連携し、採択まで伴走する",
+              body: "申請書類の作成は提携行政書士と連携して進めます。NTSは申請の上流にある「何のために使うか」の設計と、申請プロセス全体の進行管理を担当します。",
+            },
+            {
+              number: "03",
               title: "採択後も1年間、経営に関わり続ける",
               body: "採択がゴールではありません。補助金を使って設備を入れ、現場に定着させ、効果を検証するまでが私たちの仕事です。採択後も継続的にお客様の経営に関わり続けます。",
               boxTitle: "補足",
@@ -75,14 +80,16 @@ export default function NtsServicesSection() {
                   {card.title}
                 </h3>
                 <p className="mt-4 text-base leading-relaxed text-white/80">{card.body}</p>
-                <div className="mt-6 rounded-xl border border-white/[0.08] bg-white/[0.04] p-5">
-                  <p className="text-[11px] font-bold uppercase tracking-wider text-white/40">
-                    {card.boxTitle}
-                  </p>
-                  <p className="mt-2 whitespace-pre-line text-sm leading-relaxed text-white/75">
-                    {card.boxBody}
-                  </p>
-                </div>
+                {card.boxTitle && card.boxBody ? (
+                  <div className="mt-6 rounded-xl border border-white/[0.08] bg-white/[0.04] p-5">
+                    <p className="text-[11px] font-bold uppercase tracking-wider text-white/40">
+                      {card.boxTitle}
+                    </p>
+                    <p className="mt-2 whitespace-pre-line text-sm leading-relaxed text-white/75">
+                      {card.boxBody}
+                    </p>
+                  </div>
+                ) : null}
               </motion.div>
             ),
           )}

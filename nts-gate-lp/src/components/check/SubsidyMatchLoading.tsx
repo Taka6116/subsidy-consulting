@@ -24,19 +24,20 @@ const FRAMES = [
   {
     lines: [
       { text: "書類の質も、採択率を分けます。", large: true },
-      { text: "NTSは事業計画書の作成から", large: false },
-      { text: "一緒に取り組みます。", large: false },
     ],
   },
   {
     lines: [
       { text: "採択されたあとにも、", large: true },
       { text: "やることがあります。", large: true },
+    ],
+  },
+  {
+    lines: [
       {
         text: "日本提携支援は採択後も1年間お客様の経営に寄り添い続けます。",
         large: false,
       },
-      { text: "最後まで、NTSがそばにいます。", large: false },
     ],
   },
   {
