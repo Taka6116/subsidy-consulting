@@ -1,5 +1,6 @@
 "use client";
 
+import { FileText, HeartHandshake, Target } from "lucide-react";
 import { motion, useReducedMotion } from "framer-motion";
 import ImagePlaceholder from "@/components/ui/ImagePlaceholder";
 import {
@@ -10,21 +11,20 @@ import {
   fadeInUpViewport,
 } from "@/components/sections/sectionStyles";
 
+const ABOUT_ICONS = [Target, FileText, HeartHandshake] as const;
+
 const ABOUT_CARDS = [
   {
     label: "戦略設計",
     body: "補助金を使う目的と順序を、経営計画と照らし合わせながら設計します。",
-    imgLabel: "戦略設計アイコン",
   },
   {
     label: "申請サポート",
     body: "提携行政書士と連携し、書類準備から採択まで伴走します。",
-    imgLabel: "申請サポートアイコン",
   },
   {
     label: "採択後の伴走",
     body: "設備の導入定着・効果検証・次の一手の設計まで、1年間関わり続けます。",
-    imgLabel: "採択後の伴走アイコン",
   },
 ] as const;
 
@@ -80,10 +80,15 @@ export default function WhatIsNtsSection() {
           </div>
 
           <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-            {ABOUT_CARDS.map((card) => (
-              <div key={card.label} className="nts-card flex flex-col p-8">
-                <div className="mb-5 w-14 shrink-0">
-                  <ImagePlaceholder label={card.imgLabel} aspectRatio="1/1" className="rounded-xl" />
+            {ABOUT_CARDS.map((card, i) => {
+              const Icon = ABOUT_ICONS[i];
+              return (
+                <div key={card.label} className="nts-card flex flex-col p-8">
+                <div
+                  className="mb-5 flex h-[52px] w-[52px] shrink-0 items-center justify-center rounded-[14px] text-[var(--accent-teal)]"
+                  style={{ backgroundColor: "rgba(0, 184, 148, 0.1)" }}
+                >
+                  <Icon className="h-6 w-6" strokeWidth={2} aria-hidden />
                 </div>
                 <p className="mb-2 text-xs font-bold uppercase tracking-[0.2em] text-[var(--text-muted)]">
                   {card.label}
@@ -91,8 +96,9 @@ export default function WhatIsNtsSection() {
                 <p className="text-sm leading-relaxed text-[var(--text-secondary)] md:text-base">
                   {card.body}
                 </p>
-              </div>
-            ))}
+                </div>
+              );
+            })}
           </div>
         </motion.div>
       </div>

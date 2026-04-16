@@ -32,7 +32,9 @@ export type CTALocation =
   /** サイトヘッダー — 無料相談 */
   | "header_consult"
   /** サイトヘッダー — 補助金照会 */
-  | "header_subsidy_lookup";
+  | "header_subsidy_lookup"
+  /** サイトヘッダー — 補助金プラットフォーム（詳細） */
+  | "header_subsidy_detail";
 
 export function trackCTAClick(location: CTALocation) {
   sendEvent("cta_click", { location });

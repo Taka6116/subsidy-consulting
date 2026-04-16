@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import {
   fadeInUpInitial,
@@ -10,127 +11,51 @@ import {
   fadeInUpViewport,
 } from "@/components/sections/sectionStyles";
 
-type MeritLayout = "text-left" | "text-right";
-
-type MeritBlock = {
-  layout: MeritLayout;
-  stepMark: string;
-  meritLabel?: "MERIT";
-  title: string;
+type ServiceTab = {
+  number: string;
+  label: string;
   body: string;
   note?: { title: string; body: string };
-  image: { src: string; alt: string };
+  imageSrc: string;
+  imageAlt: string;
 };
 
-const MERITS: MeritBlock[] = [
+const SERVICES: ServiceTab[] = [
   {
-    layout: "text-left",
-    stepMark: "①",
-    title: "補助金活用戦略の設計から始める",
+    number: "01",
+    label: "補助金活用戦略の設計から始める",
     body: "いきなり申請書類に入りません。まずヒアリングで、あなたの会社の課題・投資計画・タイミングを整理します。「どの補助金を、いつ、どう使うか」という戦略を最初に設計します。",
     note: {
       title: "活用例",
       body: "建設業：主力重機の更新 × 省力化補助金の組み合わせを設計\n運送業：デジタコ・Gマーク取得 × 複数補助金の活用順序を整理",
     },
-    image: {
-      src: "/images/PANA3061.jpg",
-      alt: "経営課題のヒアリング・戦略整理のイメージ",
-    },
+    imageSrc: "/images/PANA3061.jpg",
+    imageAlt: "経営課題のヒアリング・戦略整理のイメージ",
   },
   {
-    layout: "text-right",
-    stepMark: "②",
-    meritLabel: "MERIT",
-    title: "提携行政書士と連携し、採択まで伴走する",
+    number: "02",
+    label: "提携行政書士と連携し、採択まで伴走する",
     body: "申請書類の作成は提携行政書士と連携して進めます。NTSは申請の上流にある「何のために使うか」の設計と、申請プロセス全体の進行管理を担当します。",
-    image: {
-      src: "/images/PANA3202-2.jpg",
-      alt: "申請書類・行政書士連携のイメージ",
-    },
+    imageSrc: "/images/PANA3202-2.jpg",
+    imageAlt: "申請書類・行政書士連携のイメージ",
   },
   {
-    layout: "text-left",
-    stepMark: "③",
-    title: "採択後も1年間、経営に関わり続ける",
+    number: "03",
+    label: "採択後も1年間、経営に関わり続ける",
     body: "採択がゴールではありません。補助金を使って設備を入れ、現場に定着させ、効果を検証するまでが私たちの仕事です。採択後も継続的にお客様の経営に関わり続けます。",
     note: {
       title: "補足",
       body: "「1年後の効果検証の時点」で最後の成果報酬が発生するのは、NTSが結果まで責任を持つためです。",
     },
-    image: {
-      src: "/images/PANA3955.jpg",
-      alt: "採択後の伴走・経営支援のイメージ",
-    },
+    imageSrc: "/images/PANA3955.jpg",
+    imageAlt: "採択後の伴走・経営支援のイメージ",
   },
 ];
 
-function MeritImage({ src, alt }: { src: string; alt: string }) {
-  return (
-    <div
-      className="relative w-full max-w-xl justify-self-center overflow-hidden rounded-2xl shadow-[0_14px_48px_-12px_rgba(26,76,142,0.18)] ring-1 ring-[rgba(26,76,142,0.08)] sm:rounded-[1.35rem] lg:max-w-none"
-      style={{ aspectRatio: "4 / 3" }}
-    >
-      <Image
-        src={src}
-        alt={alt}
-        fill
-        className="object-cover object-center"
-        sizes="(max-width: 1024px) 100vw, 44vw"
-      />
-    </div>
-  );
-}
-
-function MeritTextColumn({
-  stepMark,
-  meritLabel,
-  title,
-  body,
-  note,
-  titleId,
-}: Pick<MeritBlock, "stepMark" | "meritLabel" | "title" | "body" | "note"> & {
-  titleId: string;
-}) {
-  return (
-    <div className="col-text flex flex-col justify-center space-y-5 text-center lg:text-left">
-      <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 lg:justify-start">
-        <span
-          className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[rgba(26,76,142,0.1)] font-heading text-lg font-bold text-[var(--accent-navy)]"
-          aria-hidden
-        >
-          {stepMark}
-        </span>
-        {meritLabel ? (
-          <p className="font-heading text-[11px] font-semibold uppercase tracking-[0.2em] text-[var(--accent-teal)]">
-            {meritLabel}
-          </p>
-        ) : null}
-      </div>
-      <h3
-        id={titleId}
-        className="font-heading text-2xl font-bold leading-snug text-[var(--text-primary)] md:text-3xl"
-      >
-        {title}
-      </h3>
-      <p className="text-base leading-relaxed text-[var(--text-secondary)] md:text-lg md:leading-relaxed">
-        {body}
-      </p>
-      {note ? (
-        <div className="rounded-xl border border-[var(--border-subtle)] bg-[#f0f4fa] p-5 text-left">
-          <p className="text-[11px] font-bold uppercase tracking-wider text-[var(--text-muted)]">
-            {note.title}
-          </p>
-          <p className="mt-2 whitespace-pre-line text-sm leading-relaxed text-[var(--text-secondary)] md:text-base">
-            {note.body}
-          </p>
-        </div>
-      ) : null}
-    </div>
-  );
-}
-
 export default function NtsServicesSection() {
   const reduce = useReducedMotion();
+  const [active, setActive] = useState(0);
+  const current = SERVICES[active];
 
   return (
     <section
@@ -140,7 +65,7 @@ export default function NtsServicesSection() {
     >
       <div className="section-inner">
         <motion.div
-          className="mb-16 text-center md:mb-20"
+          className="mb-12 text-center md:mb-16"
           initial={reduce ? fadeInUpReduced : fadeInUpInitial}
           whileInView={reduce ? fadeInUpReduced : fadeInUpInView}
           viewport={fadeInUpViewport}
@@ -157,54 +82,82 @@ export default function NtsServicesSection() {
           </h2>
         </motion.div>
 
-        <div className="flex flex-col gap-20 md:gap-24 lg:gap-28">
-          {MERITS.map((merit, i) => {
-            const isTextLeft = merit.layout === "text-left";
-            const twoColClass = isTextLeft ? "two-col img-right" : "two-col img-left";
+        <motion.div
+          initial={reduce ? fadeInUpReduced : fadeInUpInitial}
+          whileInView={reduce ? fadeInUpReduced : fadeInUpInView}
+          viewport={fadeInUpViewport}
+          transition={{ ...fadeInUpTransition, delay: 0.08 }}
+          className="overflow-hidden rounded-[20px] shadow-[0_8px_40px_rgba(26,76,142,0.1)] lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,1.4fr)]"
+          aria-label="NTSの支援内容"
+        >
+          <div className="flex flex-col gap-1 bg-[#1A4C8E] p-2 lg:flex-col" role="tablist" aria-label="支援メニュー">
+            {SERVICES.map((s, i) => {
+              const isActive = active === i;
+              return (
+                <button
+                  key={s.number}
+                  type="button"
+                  role="tab"
+                  aria-selected={isActive}
+                  id={`nts-service-tab-${i}`}
+                  aria-controls={`nts-service-panel-${i}`}
+                  onClick={() => setActive(i)}
+                  className="w-full rounded-xl border-0 px-5 py-5 text-left transition-colors md:px-7 md:py-6"
+                  style={{
+                    backgroundColor: isActive ? "rgba(255,255,255,0.12)" : "transparent",
+                  }}
+                >
+                  <div
+                    className="font-heading text-[0.7rem] font-bold uppercase tracking-[0.1em]"
+                    style={{ color: isActive ? "#00B894" : "rgba(255,255,255,0.5)" }}
+                  >
+                    {s.number}
+                  </div>
+                  <div
+                    className="mt-1.5 text-[0.95rem] font-bold leading-snug tracking-[0.04em] md:text-base"
+                    style={{ color: isActive ? "#FFFFFF" : "rgba(255,255,255,0.65)" }}
+                  >
+                    {s.label}
+                  </div>
+                </button>
+              );
+            })}
+          </div>
 
-            return (
-              <motion.article
-                key={merit.stepMark}
-                initial={reduce ? fadeInUpReduced : fadeInUpInitial}
-                whileInView={reduce ? fadeInUpReduced : fadeInUpInView}
-                viewport={fadeInUpViewport}
-                transition={{ ...fadeInUpTransition, delay: i * 0.06 }}
-                className={twoColClass}
-                aria-labelledby={`home-nts-merit-${i}-title`}
-              >
-                {isTextLeft ? (
-                  <>
-                    <MeritTextColumn
-                      titleId={`home-nts-merit-${i}-title`}
-                      stepMark={merit.stepMark}
-                      meritLabel={merit.meritLabel}
-                      title={merit.title}
-                      body={merit.body}
-                      note={merit.note}
-                    />
-                    <div className="col-img w-full">
-                      <MeritImage src={merit.image.src} alt={merit.image.alt} />
-                    </div>
-                  </>
-                ) : (
-                  <>
-                    <div className="col-img w-full">
-                      <MeritImage src={merit.image.src} alt={merit.image.alt} />
-                    </div>
-                    <MeritTextColumn
-                      titleId={`home-nts-merit-${i}-title`}
-                      stepMark={merit.stepMark}
-                      meritLabel={merit.meritLabel}
-                      title={merit.title}
-                      body={merit.body}
-                      note={merit.note}
-                    />
-                  </>
-                )}
-              </motion.article>
-            );
-          })}
-        </div>
+          <div
+            role="tabpanel"
+            id={`nts-service-panel-${active}`}
+            aria-labelledby={`nts-service-tab-${active}`}
+            className="bg-white px-6 py-8 md:px-10 md:py-12"
+          >
+            <div className="relative mb-6 aspect-video w-full overflow-hidden rounded-xl">
+              <Image
+                src={current.imageSrc}
+                alt={current.imageAlt}
+                fill
+                className="object-cover object-center"
+                sizes="(max-width: 1024px) 100vw, 58vw"
+                priority={active === 0}
+              />
+            </div>
+            <h3 className="mb-4 font-heading text-[1.3rem] font-bold text-[var(--text-primary)] md:text-xl">
+              {current.label}
+            </h3>
+            <p className="text-[0.9rem] leading-[1.95] text-[var(--text-secondary)] md:text-base">
+              {current.body}
+            </p>
+            {current.note ? (
+              <div className="mt-6 rounded-xl border border-[var(--border-subtle)] bg-[#f0f4fa] p-5">
+                <p className="text-[11px] font-bold uppercase tracking-wider text-[var(--text-muted)]">
+                  {current.note.title}
+                </p>
+                <p className="mt-2 whitespace-pre-line text-sm leading-relaxed text-[var(--text-secondary)] md:text-base">
+                  {current.note.body}
+                </p>
+              </div>
+            ) : null}
+          </div>
+        </motion.div>
       </div>
     </section>
   );

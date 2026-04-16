@@ -93,10 +93,12 @@
   text-align: center;
   padding: 0 1rem;
   box-sizing: border-box;
-  font-size: clamp(14.4px, 3.18vw, 40.8px);
+  font-family: var(--font-body);
+  font-size: clamp(2.2rem, 4vw, 3.6rem);
+  font-weight: 800;
   color: var(--text-primary);
-  line-height: 1.55;
-  letter-spacing: -0.02em;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
   opacity: 0;
   animation: fadeUp 0.9s 0.28s ease forwards;
 }
@@ -118,12 +120,14 @@
   gap: 0.2em;
   width: 100%;
   max-width: min(100%, 36rem);
-  margin: 0 auto 43px;
+  margin: 20px auto 0;
   padding: 0 0.25rem;
   box-sizing: border-box;
-  font-size: clamp(14.4px, 1.44vw, 16.8px);
+  max-width: 480px;
+  font-size: 1.05rem;
   color: var(--text-secondary);
-  line-height: 1.75;
+  line-height: 2;
+  letter-spacing: 0.05em;
   opacity: 0;
   animation: fadeUp 0.8s 0.48s ease forwards;
 }
@@ -143,7 +147,8 @@
   flex-wrap: wrap;
   justify-content: center;
   align-items: center;
-  gap: 14px 18px;
+  gap: 16px;
+  margin-top: 36px;
   align-self: center;
   opacity: 0;
   animation: fadeUp 0.8s 0.68s ease forwards;

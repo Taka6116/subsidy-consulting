@@ -137,7 +137,14 @@ export default function Header() {
               →
             </span>
           </Link>
-          <div className="order-1 flex justify-center sm:order-2 sm:justify-end">
+          <div className="order-1 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 sm:order-2 sm:justify-end sm:gap-x-5">
+            <Link
+              href="/subsidies"
+              onClick={() => trackCTAClick("header_subsidy_detail")}
+              className={`${navLinkClass(heroStyle)} shrink-0`}
+            >
+              補助金詳細
+            </Link>
             <HeaderCtaGroup />
           </div>
         </div>

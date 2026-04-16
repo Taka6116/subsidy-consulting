@@ -14,14 +14,7 @@ export default function FinalCtaSection() {
   const reduce = useReducedMotion();
 
   return (
-    <section
-      className="section-block"
-      style={{
-        background: "linear-gradient(135deg, #1A4C8E 0%, #0F3468 100%)",
-        color: "#ffffff",
-      }}
-      aria-labelledby="home-final-cta-heading"
-    >
+    <section className="section-block section-cta" aria-labelledby="home-final-cta-heading">
       <div className="section-inner text-center">
         <motion.div
           initial={reduce ? fadeInUpReduced : fadeInUpInitial}

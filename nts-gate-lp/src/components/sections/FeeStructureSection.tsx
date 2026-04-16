@@ -37,6 +37,13 @@ const STEPS = [
   },
 ] as const;
 
+const STEP_VISUAL = [
+  { color: "#00B894" },
+  { color: "#1A7B6F" },
+  { color: "#1A4C8E" },
+  { color: "#F5A623" },
+] as const;
+
 export default function FeeStructureSection() {
   const reduce = useReducedMotion();
   return (
@@ -88,23 +95,46 @@ export default function FeeStructureSection() {
             これはNTSの姿勢そのものです。
           </p>
 
-          <div className="mt-10 grid grid-cols-1 gap-4 md:grid-cols-2">
-            {STEPS.map((s, i) => (
-              <div key={s.step} className="nts-card relative p-8">
-                <div className="pointer-events-none absolute right-3 top-3 max-h-10 max-w-10 opacity-80">
-                  <ImagePlaceholder label="" aspectRatio="1/1" className="gap-1 rounded-lg py-2" />
-                </div>
-                <p className="text-highlight-teal text-xs font-bold tracking-wider">{s.step}</p>
-                <p className="mt-3 text-xs text-[var(--text-muted)]">{s.timing}</p>
-                <p className="text-highlight-gold mt-1 font-heading text-xl font-bold">{s.amount}</p>
-                <p className="mt-3 text-sm leading-relaxed text-[var(--text-secondary)] md:text-base">{s.body}</p>
-                {i < STEPS.length - 1 ? (
-                  <p className="text-highlight-teal mt-4 text-center text-xs font-bold md:hidden">
-                    ↓
-                  </p>
-                ) : null}
-              </div>
-            ))}
+          <div className="relative mt-12 md:mt-16">
+            <div
+              className="pointer-events-none absolute left-[12.5%] right-[12.5%] top-7 z-0 hidden h-0.5 md:block"
+              style={{ backgroundColor: "#E2EAF4" }}
+              aria-hidden
+            />
+            <div className="relative z-[1] grid grid-cols-1 gap-10 md:grid-cols-4 md:gap-4">
+              {STEPS.map((s, i) => {
+                const vis = STEP_VISUAL[i];
+                return (
+                  <div key={s.step} className="flex flex-col items-center text-center">
+                    <div
+                      className="relative z-[2] mb-5 flex h-14 w-14 shrink-0 items-center justify-center rounded-full font-heading text-[0.65rem] font-bold tracking-[0.05em] text-white shadow-md"
+                      style={{
+                        backgroundColor: vis.color,
+                        boxShadow: `0 4px 16px ${vis.color}44`,
+                      }}
+                      aria-hidden
+                    >
+                      {String(i + 1).padStart(2, "0")}
+                    </div>
+                    <div className="nts-card w-full p-5 md:p-4">
+                      <p
+                        className="text-[0.65rem] font-bold tracking-[0.08em]"
+                        style={{ color: vis.color }}
+                      >
+                        {s.step}
+                      </p>
+                      <p className="mt-1 text-[0.75rem] text-[var(--text-muted)]">{s.timing}</p>
+                      <p className="text-highlight-gold mt-2 font-heading text-lg font-extrabold md:text-[1.1rem]">
+                        {s.amount}
+                      </p>
+                      <p className="mt-2 text-[0.8rem] leading-snug text-[var(--text-secondary)] md:text-[0.8rem]">
+                        {s.body}
+                      </p>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
           </div>
 
           <div className="mt-10 rounded-xl border-l-[3px] border-[var(--accent-teal)] bg-[var(--accent-teal)]/10 px-5 py-4 text-sm leading-relaxed text-[var(--text-primary)] md:text-base">

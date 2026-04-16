@@ -18,7 +18,7 @@ export default function HeroSection() {
       <div className="section-inner w-full shrink-0 py-8">
         <div className="two-col img-right">
           <div className={`${styles.textCol} col-text space-y-6`}>
-            <h1 className={`${styles.headline} font-heading font-bold`}>
+            <h1 className={styles.headline}>
               <span className={styles.headlineLine}>補助金だけでなく、経営課題を超えて</span>
               <span className={styles.headlineLine}>前に進みたい方へ</span>
             </h1>
@@ -45,7 +45,7 @@ export default function HeroSection() {
           <div className="col-img w-full max-w-xl justify-self-end lg:max-w-none">
             <ImagePlaceholder
               label="メインビジュアル（等角イラストまたはダッシュボード画像）"
-              aspectRatio="4/3"
+              aspectRatio="3/2"
             />
           </div>
         </div>

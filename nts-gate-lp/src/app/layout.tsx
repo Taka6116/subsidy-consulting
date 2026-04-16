@@ -10,15 +10,14 @@ import "./globals.css";
 /** 模倣元サイトに合わせたフォント（Poppins + Zen Kaku Gothic New） */
 const zenKakuGothicNew = Zen_Kaku_Gothic_New({
   subsets: ["latin"],
-  /** 参照サイトの Google Fonts 指定（400, 500）に合わせる */
-  weight: ["400", "500"],
+  weight: ["400", "500", "700"],
   variable: "--font-zen-kaku-gothic-new",
   display: "swap",
 });
 
 const poppins = Poppins({
   subsets: ["latin"],
-  weight: ["400", "600", "700"],
+  weight: ["400", "500", "600", "700"],
   variable: "--font-poppins",
   display: "swap",
 });

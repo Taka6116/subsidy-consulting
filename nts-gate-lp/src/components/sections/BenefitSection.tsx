@@ -11,6 +11,12 @@ import {
   fadeInUpViewport,
 } from "@/components/sections/sectionStyles";
 
+const HIGHLIGHTS = [
+  { main: "最大半額以下", sub: "" },
+  { main: "1年間", sub: "の伴走" },
+  { main: "ROI", sub: "を数字で" },
+] as const;
+
 const BENEFITS = [
   {
     num: "01",
@@ -73,21 +79,37 @@ export default function BenefitSection() {
           </div>
 
           <div className="mb-14 grid grid-cols-1 gap-6 md:mb-16 md:grid-cols-3">
-            {BENEFITS.map(({ num, title, body, Icon }) => (
-              <div key={num} className="nts-card flex flex-col p-9">
+            {BENEFITS.map(({ num, title, body, Icon }, idx) => {
+              const hi = HIGHLIGHTS[idx];
+              return (
+              <div key={num} className="nts-card flex flex-col p-9 md:p-10">
                 <div
-                  className="mb-6 flex h-14 w-14 items-center justify-center rounded-[14px] text-[var(--accent-teal)]"
+                  className="mb-6 flex h-[52px] w-[52px] items-center justify-center rounded-[14px] text-[var(--accent-teal)]"
                   style={{ backgroundColor: "rgba(0, 184, 148, 0.1)" }}
                 >
                   <Icon className="h-7 w-7" strokeWidth={2} aria-hidden />
                 </div>
-                <p className="mb-2 text-xs font-bold text-[var(--accent-teal)]">{num}</p>
-                <h3 className="mb-3 font-heading text-xl font-bold leading-snug text-[var(--text-primary)] md:text-[1.2rem]">
+                <p className="mb-2 font-heading text-[0.7rem] font-bold tracking-[0.12em] text-[var(--accent-teal)]">
+                  {num}
+                </p>
+                <h3 className="mb-4 font-heading text-xl font-extrabold leading-snug text-[var(--text-primary)] md:text-[1.25rem]">
                   {title}
                 </h3>
+                <div
+                  className="mb-4 rounded-[10px] border-l-[3px] border-[var(--accent-teal)] px-4 py-3"
+                  style={{ backgroundColor: "rgba(0, 184, 148, 0.06)" }}
+                >
+                  <span className="font-heading text-2xl font-extrabold leading-none text-[var(--accent-teal)] md:text-[1.5rem]">
+                    {hi.main}
+                  </span>
+                  {hi.sub ? (
+                    <span className="ml-2 text-[0.8rem] text-[var(--text-secondary)]">{hi.sub}</span>
+                  ) : null}
+                </div>
                 <p className="flex-1 text-sm leading-[1.9] text-[var(--text-secondary)] md:text-base">{body}</p>
               </div>
-            ))}
+            );
+            })}
           </div>
 
           <div className="mx-auto max-w-[280px]">
