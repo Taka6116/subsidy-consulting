@@ -82,35 +82,35 @@ export default function SubsidyCheckResultTabs({
   const relatedCandidates = results;
 
   return (
-    <div className="results-dashboard rounded-2xl border border-white/10 bg-white/[0.05] p-4 shadow-[0_24px_80px_rgba(0,0,0,0.35)] backdrop-blur-[14px] [-webkit-backdrop-filter:blur(14px)] sm:p-6 md:p-8">
+    <div className="results-dashboard nts-card p-4 sm:p-6 md:p-8">
       <header className="mb-8 flex flex-col gap-6 md:mb-10 md:flex-row md:items-end md:justify-between">
         <div className="min-w-0">
-          <p className="mb-2 text-[11px] font-bold uppercase tracking-[0.2em] text-white/35">
+          <p className="mb-2 text-[11px] font-bold uppercase tracking-[0.2em] text-[var(--text-muted)]">
             照合結果
           </p>
-          <h1 className="font-heading text-2xl font-bold leading-tight text-white md:text-3xl">
+          <h1 className="font-heading text-2xl font-bold leading-tight text-[var(--text-primary)] md:text-3xl">
             {item.name}
           </h1>
           {item.institutionName ? (
-            <p className="mt-2 text-sm text-white/70">
+            <p className="mt-2 text-sm text-[var(--text-secondary)]">
               実施主体（参考）: {item.institutionName}
             </p>
           ) : null}
         </div>
         <div className="flex flex-wrap gap-3 md:gap-4">
-          <div className="min-w-[140px] rounded-xl border border-white/10 bg-white/[0.08] px-5 py-3">
-            <p className="mb-1 text-[10px] font-semibold uppercase tracking-wide text-white/40">
+          <div className="min-w-[140px] rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-section-alt)] px-5 py-3">
+            <p className="mb-1 text-[10px] font-semibold uppercase tracking-wide text-[var(--text-muted)]">
               最大補助（参照）
             </p>
-            <p className="font-display text-xl font-bold tabular-nums text-white md:text-2xl">
+            <p className="font-display text-xl font-bold tabular-nums text-[var(--text-primary)] md:text-2xl">
               {item.maxAmountLabel}
             </p>
           </div>
-          <div className="min-w-[140px] rounded-xl border border-white/10 bg-white/[0.08] px-5 py-3">
-            <p className="mb-1 text-[10px] font-semibold uppercase tracking-wide text-white/40">
+          <div className="min-w-[140px] rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-section-alt)] px-5 py-3">
+            <p className="mb-1 text-[10px] font-semibold uppercase tracking-wide text-[var(--text-muted)]">
               公募期限
             </p>
-            <p className="text-base font-bold text-white">
+            <p className="text-base font-bold text-[var(--text-primary)]">
               {item.deadlineLabel && item.deadlineLabel !== "—"
                 ? item.deadlineLabel
                 : "要確認"}
@@ -122,7 +122,7 @@ export default function SubsidyCheckResultTabs({
       <div
         role="tablist"
         aria-label="照合結果の内訳"
-        className="mb-8 flex gap-1 overflow-x-auto rounded-2xl border border-white/10 bg-[rgba(4,12,24,0.35)] p-1 backdrop-blur-md"
+        className="mb-8 flex gap-1 overflow-x-auto rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-section-alt)] p-1"
       >
         {TABS.map(({ id, label }, i) => {
           const selected = tab === id;
@@ -143,8 +143,8 @@ export default function SubsidyCheckResultTabs({
               onKeyDown={(e) => onTabKeyDown(e, i)}
               className={`min-w-[112px] flex-1 rounded-lg px-5 py-2.5 text-center text-sm font-bold transition-all sm:min-w-[120px] ${
                 selected
-                  ? "bg-white text-[#0a1628] shadow-md shadow-black/20"
-                  : "text-white/55 hover:bg-white/[0.06] hover:text-white"
+                  ? "bg-[var(--accent-navy)] text-white shadow-md"
+                  : "text-[var(--text-muted)] hover:bg-[var(--bg-base)] hover:text-[var(--text-primary)]"
               }`}
             >
               {label}
@@ -175,7 +175,7 @@ export default function SubsidyCheckResultTabs({
                   priority
                 />
                 <div
-                  className="absolute inset-0 bg-gradient-to-t from-[rgba(6,14,28,0.95)] via-[rgba(6,14,28,0.55)] to-transparent"
+                  className="absolute inset-0 bg-gradient-to-t from-[rgba(20,40,70,0.92)] via-[rgba(20,40,70,0.5)] to-transparent"
                   aria-hidden
                 />
               </div>
@@ -268,7 +268,7 @@ export default function SubsidyCheckResultTabs({
               <section aria-labelledby={`${baseId}-risks-heading`}>
                 <h2
                   id={`${baseId}-risks-heading`}
-                  className="mb-3 flex items-center gap-2 font-heading text-lg font-bold text-amber-300"
+                  className="mb-3 flex items-center gap-2 font-heading text-lg font-bold text-amber-700"
                 >
                   <AlertTriangle className="h-5 w-5 shrink-0" aria-hidden />
                   注意・リスクフラグ
@@ -328,7 +328,7 @@ export default function SubsidyCheckResultTabs({
                     key={c.label}
                     className="rounded-xl border border-[var(--rd-border)] bg-[var(--rd-surface-high)] p-4"
                   >
-                    <p className="mb-1 text-[10px] font-semibold uppercase tracking-wide text-white/70">
+                    <p className="mb-1 text-[10px] font-semibold uppercase tracking-wide text-[var(--text-muted)]">
                       {c.label}
                     </p>
                     <p className="text-sm leading-relaxed text-[var(--rd-on-surface)]">
@@ -372,7 +372,7 @@ export default function SubsidyCheckResultTabs({
                         <span className="font-heading text-base font-semibold text-[var(--rd-on-surface)]">
                           {r.name}
                         </span>
-                        <span className="mt-3 font-display text-xl font-bold text-white">
+                        <span className="mt-3 font-display text-xl font-bold text-[var(--text-primary)]">
                           {r.maxAmountLabel}
                         </span>
                         <span className="mt-4 inline-flex items-center gap-1 text-xs font-semibold text-[var(--rd-primary)]">

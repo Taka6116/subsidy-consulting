@@ -148,22 +148,27 @@
   background: var(--gradient-brand);
 }
 
-/* ===== /check 照合結果 — ダッシュボード用（#00132c 系・check-portal と独立） ===== */
+/* ===== /check 照合結果 — LP統一トークン ===== */
 .results-dashboard {
-  --rd-bg: rgba(6, 14, 28, 0.35);
-  --rd-bg-elevated: rgba(10, 22, 40, 0.55);
-  --rd-surface: rgba(4, 16, 32, 0.45);
-  --rd-surface-high: rgba(12, 28, 52, 0.55);
-  /* LP 橙色（CTA・リンク強調） */
-  --rd-primary: #e8880a;
-  --rd-primary-muted: rgba(232, 136, 10, 0.18);
-  --rd-on-surface: #f8fafc;
-  --rd-on-surface-variant: rgba(248, 250, 252, 0.72);
-  --rd-on-surface-dim: rgba(248, 250, 252, 0.45);
-  --rd-border: rgba(255, 255, 255, 0.1);
-  --rd-border-strong: rgba(255, 255, 255, 0.2);
-  --rd-warning: #fbbf24;
-  --rd-on-primary: #ffffff;
+  /* サーフェス: LP系 */
+  --rd-bg:             var(--bg-base);
+  --rd-bg-elevated:    var(--bg-white);
+  --rd-surface:        var(--bg-white);
+  --rd-surface-high:   var(--bg-section-alt);
+  /* アクセント: LPのテールグリーン */
+  --rd-primary:        var(--accent-teal);
+  --rd-primary-muted:  rgba(0, 184, 148, 0.12);
+  --rd-on-primary:     #ffffff;
+  /* テキスト */
+  --rd-on-surface:         var(--text-primary);
+  --rd-on-surface-variant: var(--text-secondary);
+  --rd-on-surface-dim:     var(--text-muted);
+  /* ボーダー */
+  --rd-border:        var(--border-subtle);
+  --rd-border-strong: var(--border-card);
+  /* 警告 */
+  --rd-warning:        var(--accent-gold);
+  --rd-on-primary:     #ffffff;
 }
 
 /* トップ Hero ベース（画像・オーバーレイの下層） */

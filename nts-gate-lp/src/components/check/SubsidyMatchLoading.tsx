@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import HeroThreeWebGLBackground from "@/components/gate-lp/hero-three/HeroThreeWebGLBackground";
 
 // ── キーメッセージ定義 ──────────────────────────────
 const FRAMES = [
@@ -146,16 +145,16 @@ export default function SubsidyMatchLoading({
       aria-live="polite"
       aria-busy="true"
       aria-label="補助金を照合しています"
+      style={{ background: "var(--bg-base)" }}
     >
-      <HeroThreeWebGLBackground interactive={false} />
-
       <AnimatePresence>
         {curtain && (
           <motion.div
             key="curtain"
-            className="pointer-events-none fixed inset-0 z-50 bg-black"
+            className="pointer-events-none fixed inset-0 z-50"
+            style={{ background: "var(--bg-base)" }}
             initial={{ opacity: 0 }}
-            animate={{ opacity: 0.7 }}
+            animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: FADE_DURATION / 1000 }}
           />
@@ -163,28 +162,24 @@ export default function SubsidyMatchLoading({
       </AnimatePresence>
 
       <header
-        className="fixed left-0 right-0 top-0 z-40 flex items-center justify-between border-b border-white/10 px-6 py-5 sm:px-8"
-        style={{
-          background: "rgba(6,14,28,0.28)",
-          backdropFilter: "blur(12px)",
-          WebkitBackdropFilter: "blur(12px)",
-        }}
+        className="fixed left-0 right-0 top-0 z-40 flex items-center justify-between border-b border-[var(--border-subtle)] px-6 py-5 sm:px-8"
+        style={{ background: "var(--bg-base)" }}
       >
         <Link
           href="/"
-          className="flex shrink-0 items-center rounded-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+          className="flex shrink-0 items-center rounded-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent-teal)]"
         >
           <img
             src="/nts-logo.svg"
             alt="日本提携支援"
-            className="h-7 w-auto brightness-0 invert sm:h-8"
+            className="h-7 w-auto sm:h-8"
             width={200}
             height={29}
           />
         </Link>
         <Link
           href="/"
-          className="text-sm text-white/60 transition hover:text-white"
+          className="text-sm text-[var(--text-muted)] transition hover:text-[var(--text-primary)]"
         >
           トップへ
         </Link>
@@ -205,8 +200,8 @@ export default function SubsidyMatchLoading({
                 key={`${frameIndex}-${i}-${line.text}`}
                 className={
                   line.large
-                    ? "font-heading text-3xl font-bold leading-tight text-white md:text-4xl"
-                    : "text-lg leading-relaxed text-white/60"
+                    ? "font-heading text-3xl font-bold leading-tight text-[var(--text-primary)] md:text-4xl"
+                    : "text-lg leading-relaxed text-[var(--text-secondary)]"
                 }
                 initial={
                   shouldReduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 18 }
@@ -228,7 +223,7 @@ export default function SubsidyMatchLoading({
           {FRAMES.map((_, i) => (
             <motion.div
               key={i}
-              className="rounded-full bg-white"
+              className="rounded-full bg-[var(--accent-navy)]"
               animate={{
                 width: i === frameIndex ? 20 : 6,
                 opacity: i === frameIndex ? 1 : 0.2,
@@ -240,15 +235,11 @@ export default function SubsidyMatchLoading({
         </div>
 
         <div
-          className="mt-6 w-48 overflow-hidden rounded-full bg-white/10 md:w-64"
+          className="mt-6 w-48 overflow-hidden rounded-full bg-[var(--border-subtle)] md:w-64"
           style={{ height: 3 }}
         >
           <motion.div
-            className="h-full rounded-full"
-            style={{
-              background:
-                "linear-gradient(to right, rgba(232,136,10,0.7), rgba(232,136,10,1))",
-            }}
+            className="h-full rounded-full bg-[var(--accent-teal)]"
             animate={{ width: `${progress}%` }}
             transition={{ duration: 0.3, ease: "linear" }}
           />
