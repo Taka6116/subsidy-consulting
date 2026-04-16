@@ -227,7 +227,7 @@ export default function HomeEntrance({ children }: { children: ReactNode }) {
             role="dialog"
             aria-modal="true"
             aria-label={FULL_INTRO_ARIA}
-            className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-[#F2F2F2] px-2 sm:px-6"
+            className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-[var(--bg-base)] px-2 sm:px-6"
           >
             <div className="mx-auto inline-block max-w-[min(100%,calc(100vw-1rem))] overflow-x-hidden text-center font-heading">
               <p
@@ -235,7 +235,7 @@ export default function HomeEntrance({ children }: { children: ReactNode }) {
                   lineRefs.current[0] = el;
                 }}
                 aria-hidden="true"
-                className="opacity-0 will-change-[opacity] text-[clamp(1.96875rem,6.75vw,2.8125rem)] font-bold leading-snug text-neutral-700"
+                className="opacity-0 will-change-[opacity] text-[clamp(1.96875rem,6.75vw,2.8125rem)] font-bold leading-snug text-[var(--text-secondary)]"
               >
                 {SPLASH_LINES[0]}
               </p>
@@ -244,7 +244,7 @@ export default function HomeEntrance({ children }: { children: ReactNode }) {
                   lineRefs.current[1] = el;
                 }}
                 aria-hidden="true"
-                className="opacity-0 will-change-[opacity] mt-[1.40625rem] text-[clamp(2.25rem,7.5vw,3.46875rem)] font-bold leading-snug text-primary-900"
+                className="opacity-0 will-change-[opacity] mt-[1.40625rem] text-[clamp(2.25rem,7.5vw,3.46875rem)] font-bold leading-snug text-[var(--text-primary)]"
               >
                 {SPLASH_LINES[1]}
               </p>
@@ -254,7 +254,7 @@ export default function HomeEntrance({ children }: { children: ReactNode }) {
               ref={skipRef}
               type="button"
               onClick={skip}
-              className="absolute bottom-10 left-1/2 opacity-0 -translate-x-1/2 rounded-sm text-caption text-neutral-500 underline underline-offset-4 transition-colors hover:text-neutral-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600"
+              className="absolute bottom-10 left-1/2 opacity-0 -translate-x-1/2 rounded-sm text-caption text-[var(--text-muted)] underline underline-offset-4 transition-colors hover:text-[var(--text-primary)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent-navy)]"
             >
               スキップ
             </button>

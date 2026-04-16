@@ -59,7 +59,7 @@ function makeTextSprite(
 
   const tmp = document.createElement("canvas");
   const tc = tmp.getContext("2d")!;
-  tc.font = `${opts.weight} ${fs}px 'Noto Sans JP', sans-serif`;
+  tc.font = `${opts.weight} ${fs}px 'Zen Kaku Gothic New', sans-serif`;
   const tw = tc.measureText(text).width;
 
   const cw = Math.ceil(tw + 28);
@@ -69,7 +69,7 @@ function makeTextSprite(
   c.height = ch;
 
   const ctx = c.getContext("2d")!;
-  ctx.font = `${opts.weight} ${fs}px 'Noto Sans JP', sans-serif`;
+  ctx.font = `${opts.weight} ${fs}px 'Zen Kaku Gothic New', sans-serif`;
   ctx.fillStyle = opts.color;
   ctx.textBaseline = "middle";
   ctx.fillText(text, 14, ch / 2);
@@ -384,8 +384,14 @@ export default function HeroThreeWebGLBackground({
   if (reducedMotion) {
     return (
       <>
-        <div className={bgStyles.fallback} aria-hidden />
-        <div className={bgStyles.overlay} aria-hidden />
+        <div
+          className={interactive ? bgStyles.fallback : bgStyles.fallbackPortal}
+          aria-hidden
+        />
+        <div
+          className={interactive ? bgStyles.overlay : bgStyles.overlayPortal}
+          aria-hidden
+        />
       </>
     );
   }
@@ -394,7 +400,7 @@ export default function HeroThreeWebGLBackground({
     return (
       <div className={bgStyles.passiveRoot} aria-hidden>
         <canvas ref={canvasRef} className={bgStyles.canvas} />
-        <div className={bgStyles.overlay} aria-hidden />
+        <div className={bgStyles.overlayPortal} aria-hidden />
       </div>
     );
   }

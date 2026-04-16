@@ -26,7 +26,13 @@ export type CTALocation =
   | "steps"
   | "final"
   /** トップ LP — 照会導線セクション（Section C 等） */
-  | "home_check_lead";
+  | "home_check_lead"
+  /** トップ LP — 対象補助金確認（/check） */
+  | "home_subsidy_check"
+  /** サイトヘッダー — 無料相談 */
+  | "header_consult"
+  /** サイトヘッダー — 補助金照会 */
+  | "header_subsidy_lookup";
 
 export function trackCTAClick(location: CTALocation) {
   sendEvent("cta_click", { location });

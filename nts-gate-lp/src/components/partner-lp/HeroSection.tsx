@@ -83,7 +83,7 @@ export default function HeroSection() {
   };
 
   return (
-    <section className={styles.page}>
+    <section className={`section-hero ${styles.page}`}>
       <div className={styles.heroMain}>
       <div className={styles.content}>
       <p ref={eyebrowRef} className={`${styles.eyebrow} font-body`}>

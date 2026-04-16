@@ -56,11 +56,15 @@ const CARDS: {
 
 export default function PartnerAgitationSection() {
   return (
-    <section id="agitation" className="relative py-32 md:py-40" style={{ zIndex: 10 }}>
+    <section
+      id="agitation"
+      className="section-white relative py-32 md:py-40"
+      style={{ zIndex: 10 }}
+    >
       <div className="mx-auto max-w-4xl px-6 md:px-8">
         <div className="mb-20 text-center">
           <motion.h2
-            className="font-heading text-3xl font-bold leading-tight text-white md:text-4xl lg:text-5xl"
+            className="font-heading text-3xl font-bold leading-tight text-[var(--text-primary)] md:text-4xl lg:text-5xl"
             {...fadeUp(0)}
           >
             その「見送ります」の裏に、
@@ -69,7 +73,7 @@ export default function PartnerAgitationSection() {
           </motion.h2>
 
           <motion.p
-            className="mt-8 text-lg leading-relaxed text-white/[0.58] md:text-xl"
+            className="mt-8 text-lg leading-relaxed text-[var(--text-secondary)] md:text-xl"
             {...fadeUp(0.15)}
           >
             「費用がネックで…」「今期は予算がなくて…」——
@@ -85,27 +89,27 @@ export default function PartnerAgitationSection() {
             <motion.div
               key={i}
               {...fadeUp(i * 0.1)}
-              className="rounded-2xl border border-white/[0.08] bg-white/[0.04] p-7 backdrop-blur-[12px] [-webkit-backdrop-filter:blur(12px)]"
+              className="card p-7"
             >
-              <p className="mb-3 text-xs text-white/[0.38]">{card.situation}</p>
-              <p className="mb-5 font-heading text-2xl font-bold leading-snug text-white whitespace-pre-line">
+              <p className="mb-3 text-xs text-[var(--text-muted)]">{card.situation}</p>
+              <p className="mb-5 font-heading text-2xl font-bold leading-snug whitespace-pre-line text-[var(--text-primary)]">
                 {card.pain}
               </p>
-              <div className="border-t border-white/10 pt-4">
-                <p className="text-sm leading-relaxed text-white/55">{card.note}</p>
+              <div className="border-t border-[var(--border-subtle)] pt-4">
+                <p className="text-sm leading-relaxed text-[var(--text-secondary)]">{card.note}</p>
               </div>
             </motion.div>
           ))}
         </div>
 
         <motion.div
-          className="mt-16 rounded-2xl border border-[#F5A623]/20 bg-[#F5A623]/[0.05] p-8 text-center backdrop-blur-[12px]"
+          className="mt-16 rounded-2xl border border-[var(--accent-gold)]/25 bg-[var(--accent-gold)]/10 p-8 text-center"
           {...fadeUp(0.3)}
         >
-          <p className="font-heading text-xl font-bold text-white md:text-2xl">
+          <p className="font-heading text-xl font-bold text-[var(--text-primary)] md:text-2xl">
             「補助金が使えます」——
             <br />
-            <span style={{ color: "#F5A623" }}>その一言の先に、NTSの1年間の伴走があります。</span>
+            <span className="text-highlight-gold">その一言の先に、NTSの1年間の伴走があります。</span>
           </p>
         </motion.div>
       </div>

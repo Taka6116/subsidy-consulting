@@ -7,7 +7,22 @@
   display: block;
 }
 
+/* トップ LP — ライト */
 .overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(
+    135deg,
+    rgba(238, 242, 247, 0.88) 0%,
+    rgba(221, 232, 245, 0.82) 50%,
+    rgba(238, 242, 247, 0.9) 100%
+  );
+}
+
+/* /check ポータル — ダーク（可読性） */
+.overlayPortal {
   position: fixed;
   inset: 0;
   z-index: 1;
@@ -28,6 +43,13 @@
 }
 
 .fallback {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  background: #eef2f7;
+}
+
+.fallbackPortal {
   position: fixed;
   inset: 0;
   z-index: 0;

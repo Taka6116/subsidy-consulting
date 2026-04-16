@@ -3,6 +3,32 @@
 @tailwind utilities;
 
 :root {
+  /* === LP refresh — カラートークン === */
+  --bg-base: #eef2f7;
+  --bg-white: #ffffff;
+  --bg-section-alt: #f0f4fa;
+  --bg-tag-band: #b8cde0;
+
+  --text-primary: #1a2b3c;
+  --text-secondary: #4a5568;
+  --text-muted: #718096;
+
+  --accent-teal: #00b894;
+  --accent-gold: #f5a623;
+  --accent-navy: #1a4c8e;
+  --accent-cyan: #4ecdc4;
+  --accent-cyan-dim: rgba(0, 184, 148, 0.12);
+
+  --border-card: rgba(26, 76, 142, 0.15);
+  --border-subtle: #d1dce8;
+
+  --shadow-card: 0 4px 20px rgba(26, 76, 142, 0.08);
+
+  /* === LP surface（design-guide.md / ライトブルー基調）=== */
+  --lp-hero-gradient: linear-gradient(135deg, #f5f9ff 0%, #eaf2fb 100%);
+  --lp-card-radius: 12px;
+  --lp-card-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+
   /* === Brand（#0F2027 → #2C5364 → #00c6ff） === */
   --brand-900: #0f2027;
   --brand-500: #2c5364;
@@ -43,13 +69,14 @@
   --info:        #2c5364;
   --warning:     #d4930d;
 
-  /* === タイポグラフィ（Google Fonts: Inter / IBM Plex Mono / Cormorant Garamond） === */
-  --font-body: "Inter", var(--font-noto-sans-jp), "Noto Sans JP", sans-serif;
-  --font-heading: "Cormorant Garamond", "Yu Mincho", "Hiragino Mincho ProN",
-    "MS PMincho", serif;
-  --font-display: "Inter", var(--font-noto-sans-jp), "Noto Sans JP", sans-serif;
-  --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Monaco,
-    Consolas, monospace;
+  /* === タイポグラフィ（Zen Kaku Gothic New 本文 / Poppins 見出し・英数） === */
+  --font-body: var(--font-zen-kaku-gothic-new), "Zen Kaku Gothic New", sans-serif;
+  --font-heading: var(--font-poppins), "Poppins", var(--font-zen-kaku-gothic-new),
+    "Zen Kaku Gothic New", sans-serif;
+  --font-display: var(--font-poppins), "Poppins", var(--font-zen-kaku-gothic-new),
+    "Zen Kaku Gothic New", sans-serif;
+  --font-mono: var(--font-ibm-plex-mono), "IBM Plex Mono", ui-monospace,
+    SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 
   --text-hero:    clamp(1.75rem, 5vw, 3.5rem);
   --text-h1:      clamp(1.75rem, 4vw, 2.5rem);
@@ -160,10 +187,313 @@
 }
 
 body {
-  background: var(--neutral-100);
-  color: var(--neutral-900);
+  background-color: var(--bg-base);
+  color: var(--text-primary);
   font-family: var(--font-body);
   line-height: var(--leading-normal);
+}
+
+@layer base {
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-heading);
+  }
+
+  h1 {
+    font-size: clamp(2.2rem, 5vw, 4rem);
+    font-weight: 700;
+    line-height: 1.2;
+    color: var(--text-primary);
+  }
+
+  h2 {
+    font-size: clamp(1.6rem, 3.5vw, 2.5rem);
+    font-weight: 700;
+    line-height: 1.25;
+    color: var(--text-primary);
+  }
+
+  p {
+    font-size: 1rem;
+    line-height: 1.85;
+    color: var(--text-secondary);
+  }
+}
+
+.check-portal h1,
+.check-portal h2,
+.check-portal h3,
+.check-portal p {
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  color: inherit;
+}
+
+/* --- LP セクション・UI ユーティリティ --- */
+
+.section-hero {
+  position: relative;
+  isolation: isolate;
+  background: var(--lp-hero-gradient);
+}
+
+.section-hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.08;
+  background-image:
+    repeating-linear-gradient(
+      -14deg,
+      rgba(26, 76, 142, 0.14) 0 1px,
+      transparent 1px 18px
+    ),
+    repeating-linear-gradient(
+      76deg,
+      rgba(47, 107, 255, 0.1) 0 1px,
+      transparent 1px 26px
+    );
+}
+
+.section-hero > * {
+  position: relative;
+  z-index: 1;
+}
+
+.section-white {
+  background: var(--bg-white);
+}
+
+.section-alt {
+  background: var(--bg-section-alt);
+}
+
+.section-tag-band {
+  background: var(--bg-tag-band);
+}
+
+.section-cta {
+  background: linear-gradient(135deg, #1a4c8e 0%, #0f3468 100%);
+  color: #ffffff;
+}
+
+.section-cta h1,
+.section-cta h2,
+.section-cta h3 {
+  color: #ffffff;
+}
+
+.section-cta p {
+  color: rgba(255, 255, 255, 0.88);
+}
+
+.card {
+  background: var(--bg-white);
+  border: 1px solid var(--border-card);
+  border-radius: 16px;
+  box-shadow: var(--shadow-card);
+  transition:
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+}
+
+.card:hover {
+  box-shadow: 0 8px 32px rgba(26, 76, 142, 0.14);
+  transform: translateY(-2px);
+}
+
+/* トップLP：仕様書のカード（枠線なし・12px・ニュートラル影） */
+.card.lp-card-surface {
+  border: none;
+  border-radius: var(--lp-card-radius);
+  box-shadow: var(--lp-card-shadow);
+}
+
+.card.lp-card-surface:hover {
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+.btn-primary {
+  background: var(--accent-navy);
+  color: #ffffff;
+  font-weight: 700;
+  border-radius: 8px;
+  padding: 14px 32px;
+  font-family: var(--font-heading);
+  letter-spacing: 0.02em;
+  transition:
+    background 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.btn-primary:hover {
+  background: #1557a8;
+  box-shadow: 0 4px 16px rgba(26, 76, 142, 0.35);
+}
+
+.btn-secondary {
+  background: transparent;
+  color: var(--accent-navy);
+  border: 2px solid var(--accent-navy);
+  border-radius: 8px;
+  padding: 12px 30px;
+  font-weight: 600;
+}
+
+.btn-secondary:hover {
+  background: var(--accent-navy);
+  color: #ffffff;
+}
+
+.btn-teal {
+  background: var(--accent-teal);
+  color: #ffffff;
+  font-weight: 700;
+  border-radius: 8px;
+  padding: 14px 32px;
+}
+
+.btn-teal:hover {
+  background: #00a07e;
+  box-shadow: 0 4px 16px rgba(0, 184, 148, 0.35);
+}
+
+.label-section {
+  font-family: var(--font-poppins), "Poppins", sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent-teal);
+}
+
+.text-highlight-gold {
+  color: var(--accent-gold);
+}
+
+.text-highlight-teal {
+  color: var(--accent-teal);
+  font-weight: 700;
+}
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 16px;
+  background: rgba(255, 255, 255, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 999px;
+  font-size: 0.875rem;
+  color: var(--text-primary);
+  white-space: nowrap;
+  backdrop-filter: blur(4px);
+}
+
+nav,
+header.lp-site-header:not([data-hero-transparent]) {
+  background: rgba(255, 255, 255, 0.92);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+nav a,
+header.lp-site-header:not([data-hero-transparent]) a {
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+nav .btn-cta,
+header.lp-site-header:not([data-hero-transparent]) .btn-cta {
+  background: var(--accent-navy);
+  color: #ffffff;
+  border-radius: 6px;
+  padding: 10px 24px;
+  font-weight: 700;
+}
+
+/* 共通ヘッダー — コンパクトCTAs */
+.header-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  line-height: 1.2;
+  white-space: nowrap;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+@media (min-width: 640px) {
+  .header-cta {
+    min-height: 42px;
+    padding: 9px 18px;
+    font-size: 0.875rem;
+  }
+}
+
+.header-cta--primary {
+  background: var(--accent-navy);
+  color: #ffffff;
+  box-shadow: 0 1px 2px rgba(26, 76, 142, 0.12);
+}
+
+.header-cta--primary:hover {
+  background: #1557a8;
+  box-shadow: 0 2px 8px rgba(26, 76, 142, 0.2);
+}
+
+.header-cta--secondary {
+  border: 1.5px solid var(--accent-navy);
+  color: var(--accent-navy);
+  background: rgba(255, 255, 255, 0.85);
+}
+
+.header-cta--secondary:hover {
+  background: rgba(255, 255, 255, 1);
+  border-color: #1557a8;
+  color: #1557a8;
+}
+
+header.lp-site-header[data-hero-transparent="true"] .header-cta--secondary {
+  background: rgba(255, 255, 255, 0.72);
+  border-color: var(--accent-navy);
+  color: var(--accent-navy);
+}
+
+header.lp-site-header[data-hero-transparent="true"] .header-cta--secondary:hover {
+  background: rgba(255, 255, 255, 0.92);
+}
+
+hr,
+[class*="divider"] {
+  border-color: var(--border-subtle);
+}
+
+.partner-lp-light-overlay {
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(
+    180deg,
+    rgba(238, 242, 247, 0.94) 0%,
+    rgba(228, 235, 244, 0.9) 45%,
+    rgba(238, 242, 247, 0.93) 100%
+  );
 }
 
 @layer utilities {
@@ -359,4 +689,112 @@ body {
   transform: translateX(20px);
   transition: all 0.5s ease;
   animation: subsidy-detail-panel-slide-in 0.5s ease 0.3s forwards;
+}
+
+/* ============================================
+   セクション共通レイアウト（LP根本構造）
+   ============================================ */
+
+.section-inner {
+  width: 100%;
+  max-width: 1160px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 48px;
+  padding-right: 48px;
+}
+
+@media (max-width: 768px) {
+  .section-inner {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+}
+
+.section-block {
+  padding-top: 100px;
+  padding-bottom: 100px;
+}
+
+@media (max-width: 768px) {
+  .section-block {
+    padding-top: 64px;
+    padding-bottom: 64px;
+  }
+}
+
+.bg-section-white {
+  background-color: #ffffff;
+}
+
+.bg-section-gray {
+  background-color: #eef2f7;
+}
+
+.sec-label {
+  display: block;
+  font-family: var(--font-poppins), "Poppins", sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #00b894;
+  margin-bottom: 12px;
+}
+
+.two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 72px;
+  align-items: center;
+}
+
+@media (max-width: 1024px) {
+  .two-col {
+    grid-template-columns: 1fr;
+    gap: 48px;
+  }
+}
+
+.two-col.img-right .col-img {
+  order: 2;
+}
+
+.two-col.img-right .col-text {
+  order: 1;
+}
+
+.two-col.img-left .col-img {
+  order: 1;
+}
+
+.two-col.img-left .col-text {
+  order: 2;
+}
+
+@media (max-width: 1024px) {
+  .two-col.img-right .col-img,
+  .two-col.img-left .col-img {
+    order: 1;
+  }
+
+  .two-col.img-right .col-text,
+  .two-col.img-left .col-text {
+    order: 2;
+  }
+}
+
+.nts-card {
+  background: #ffffff;
+  border: 1px solid rgba(26, 76, 142, 0.12);
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(26, 76, 142, 0.07);
+  transition:
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+}
+
+.nts-card:hover {
+  box-shadow: 0 8px 32px rgba(26, 76, 142, 0.13);
+  transform: translateY(-2px);
 }

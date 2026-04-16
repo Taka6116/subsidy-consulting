@@ -19,14 +19,17 @@ export default function NewSubsidySection() {
   const reduce = useReducedMotion();
 
   return (
-    <section className={sectionStackClass} aria-labelledby="home-subsidy-news-heading">
+    <section
+      className={`${sectionStackClass} section-alt`}
+      aria-labelledby="home-subsidy-news-heading"
+    >
       <div className={sectionContainerClass}>
         <motion.div
           initial={reduce ? fadeInUpReduced : fadeInUpInitial}
           whileInView={reduce ? fadeInUpReduced : fadeInUpInView}
           viewport={fadeInUpViewport}
           transition={fadeInUpTransition}
-          className="mx-auto max-w-3xl text-center text-white"
+          className="mx-auto max-w-3xl text-center text-[var(--text-primary)]"
         >
           <h2
             id="home-subsidy-news-heading"
@@ -34,7 +37,7 @@ export default function NewSubsidySection() {
           >
             新着・注目の補助金制度
           </h2>
-          <p className="mt-5 text-base leading-relaxed text-white/80 md:text-lg">
+          <p className="mt-5 text-base leading-relaxed text-[var(--text-secondary)] md:text-lg">
             知らないと損する制度が、今日も動いています。
             <br />
             NTSが最新の補助金情報をいち早くお届けします。
@@ -51,22 +54,22 @@ export default function NewSubsidySection() {
           {subsidyNews.map((item) => (
             <li
               key={item.id}
-              className={`min-w-[min(100%,320px)] shrink-0 snap-center text-white md:min-w-0 ${glassCardClass}`}
+              className={`min-w-[min(100%,320px)] shrink-0 snap-center text-[var(--text-primary)] md:min-w-0 ${glassCardClass}`}
             >
-              <span className="inline-block rounded-full border border-green-500/30 bg-green-500/20 px-3 py-1 text-xs font-bold text-green-300">
+              <span className="inline-block rounded-full border border-[var(--accent-teal)]/35 bg-[var(--accent-teal)]/15 px-3 py-1 text-xs font-bold text-[var(--accent-teal)]">
                 {item.label}
               </span>
               <h3 className="mt-4 font-heading text-lg font-bold leading-snug md:text-xl">
                 {item.name}
               </h3>
-              <p className="mt-3 text-sm text-white/65">対象: {item.target}</p>
-              <p className="mt-2 text-sm font-semibold">{item.maxAmount}</p>
-              <p className="mt-2 text-sm font-medium text-orange-300">
+              <p className="mt-3 text-sm text-[var(--text-secondary)]">対象: {item.target}</p>
+              <p className="text-highlight-gold mt-2 text-sm font-semibold">{item.maxAmount}</p>
+              <p className="mt-2 text-sm font-medium text-[var(--accent-gold)]">
                 締切: {item.deadline}
               </p>
               <Link
                 href="#"
-                className="mt-5 inline-flex items-center gap-1 text-sm font-bold text-[#7ec8ff] underline-offset-4 hover:underline"
+                className="text-highlight-teal mt-5 inline-flex items-center gap-1 text-sm font-bold underline-offset-4 hover:underline"
               >
                 詳細を見る
                 <ChevronRight className="h-4 w-4" aria-hidden />
@@ -84,7 +87,7 @@ export default function NewSubsidySection() {
         >
           <Link
             href="/subsidies"
-            className="inline-flex items-center gap-1 text-sm font-bold text-white/90 underline-offset-4 hover:text-white hover:underline"
+            className="inline-flex items-center gap-1 text-sm font-bold text-[var(--accent-navy)] underline-offset-4 hover:underline"
           >
             補助金情報を見る
             <ChevronRight className="h-4 w-4" aria-hidden />

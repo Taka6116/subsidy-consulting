@@ -34,17 +34,21 @@ const CARDS = [
 
 export default function PartnerUseCasesSection() {
   return (
-    <section id="use-cases" className="relative py-32 md:py-40" style={{ zIndex: 10 }}>
+    <section
+      id="use-cases"
+      className="section-alt relative py-32 md:py-40"
+      style={{ zIndex: 10 }}
+    >
       <div className="mx-auto max-w-4xl px-6 md:px-8">
         <div className="mb-20 text-center">
           <motion.p
-            className="mb-4 text-[11px] font-bold uppercase tracking-[0.25em] text-white/35"
+            className="label-section mb-4"
             {...fadeUp(0)}
           >
             FOR PARTNERS
           </motion.p>
           <motion.h2
-            className="font-heading text-3xl font-bold leading-tight text-white md:text-4xl lg:text-5xl"
+            className="font-heading text-3xl font-bold leading-tight text-[var(--text-primary)] md:text-4xl lg:text-5xl"
             {...fadeUp(0.05)}
           >
             どんな方が、
@@ -52,7 +56,7 @@ export default function PartnerUseCasesSection() {
             提携先になっていますか。
           </motion.h2>
           <motion.p
-            className="mt-8 text-lg leading-relaxed text-white/[0.58] md:text-xl"
+            className="mt-8 text-lg leading-relaxed text-[var(--text-secondary)] md:text-xl"
             {...fadeUp(0.12)}
           >
             業種を問わず、「補助金」という選択肢を持つことで、顧客への提案力が変わります。
@@ -64,14 +68,14 @@ export default function PartnerUseCasesSection() {
             <motion.div
               key={card.tag}
               {...fadeUp(i * 0.1)}
-              className="rounded-2xl border border-white/[0.08] bg-white/[0.04] p-7 backdrop-blur-[12px] [-webkit-backdrop-filter:blur(12px)]"
+              className="card p-7"
             >
-              <p className="mb-3 text-xs text-white/[0.38]">{card.tag}</p>
-              <h3 className="mb-5 font-heading text-xl font-bold leading-snug text-white md:text-2xl">
+              <p className="mb-3 text-xs text-[var(--text-muted)]">{card.tag}</p>
+              <h3 className="mb-5 font-heading text-xl font-bold leading-snug text-[var(--text-primary)] md:text-2xl">
                 {card.title}
               </h3>
-              <div className="border-t border-white/10 pt-4">
-                <p className="text-sm leading-relaxed text-white/55">{card.body}</p>
+              <div className="border-t border-[var(--border-subtle)] pt-4">
+                <p className="text-sm leading-relaxed text-[var(--text-secondary)]">{card.body}</p>
               </div>
             </motion.div>
           ))}

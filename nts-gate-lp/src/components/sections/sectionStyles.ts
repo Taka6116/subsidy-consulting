@@ -1,25 +1,25 @@
 import type { Transition } from "framer-motion";
 
-/** セクション外枠（背景は透過、fixed 海の上に載せる） */
+/** セクション外枠（背景は section-white / section-alt で付与） */
 export const sectionStackClass = "relative z-10 py-24 md:py-32";
 
-/** 標準コンテナ（左右に余白、海が見える） */
+/** 標準コンテナ */
 export const sectionContainerClass = "mx-auto max-w-5xl px-6 md:px-8";
 
-/**
- * メインの glass パネル（1枚で包む用）
- * 文言どおり `text-white` を含む
- */
+/** メインのカードパネル（1枚で包む用） */
 export const glassShellClass =
-  "rounded-2xl border border-white/10 bg-white/[0.06] p-8 text-white shadow-none backdrop-blur-[12px] [-webkit-backdrop-filter:blur(12px)] md:p-12";
+  "card p-8 text-[var(--text-primary)] md:p-12";
 
-/** 旧来互換・個別カード用（FAQ カード・補助金カード等） */
+/** トップLP：design-guide 準拠のサーフェス（glassShell / nested と併用） */
+export const lpCardSurfaceClass = "lp-card-surface";
+
+/** 個別カード（FAQ・補助金ニュース等） */
 export const glassCardClass =
-  "rounded-2xl border border-white/10 bg-white/[0.06] p-6 shadow-none backdrop-blur-[12px] [-webkit-backdrop-filter:blur(12px)] sm:p-8";
+  "card p-6 sm:p-8 text-[var(--text-primary)]";
 
-/** Section B 内のネスト glass */
+/** ネストカード */
 export const nestedGlassCardClass =
-  "rounded-2xl border border-white/10 bg-white/[0.04] p-6 shadow-none backdrop-blur-md [-webkit-backdrop-filter:blur(12px)] sm:p-8";
+  "card p-6 sm:p-8 text-[var(--text-primary)]";
 
 export const fadeInUpInitial = { opacity: 0, y: 30 };
 export const fadeInUpInView = { opacity: 1, y: 0 };

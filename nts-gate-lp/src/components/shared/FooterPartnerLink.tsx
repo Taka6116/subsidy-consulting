@@ -10,9 +10,9 @@ export default function FooterPartnerLink() {
       href={getPartnerUrl()}
       onClick={() => trackPartnerLinkClick("footer")}
       className="
-        text-small text-white/85 transition-colors duration-200
-        hover:text-white
-        focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white rounded-sm
+        text-small text-[var(--accent-navy)] transition-colors duration-200
+        hover:text-[var(--accent-teal)]
+        focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent-navy)] rounded-sm
       "
     >
       パートナー企業の方はこちら

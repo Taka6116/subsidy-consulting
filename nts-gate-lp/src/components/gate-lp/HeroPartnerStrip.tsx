@@ -10,13 +10,13 @@ type HeroPartnerStripProps = {
   variant?: HeroPartnerStripVariant;
 };
 
-/** エンドユーザー／パートナー共通: 背景が透けるガラスカード（提携先LPに寄せる） */
+/** ロゴカード（タグ帯上の白カード） */
 const LOGO_GLASS_CARD =
-  "flex h-10 w-auto flex-shrink-0 items-center justify-center rounded-xl border border-white/15 bg-white/[0.1] px-3 py-1.5 shadow-[0_2px_12px_rgba(0,0,0,0.16)] backdrop-blur-md sm:h-11 sm:px-3.5";
+  "flex h-10 w-auto flex-shrink-0 items-center justify-center rounded-xl border border-[var(--border-card)] bg-[var(--bg-white)] px-3 py-1.5 shadow-[var(--shadow-card)] sm:h-11 sm:px-3.5";
 
-/** 不透明白帯をやめ、ヒーロー背景が透けるガラス帯に統一 */
+/** 提携ロゴ帯 */
 const STRIP_GLASS_SHELL =
-  "relative z-[6] flex w-full flex-none flex-col border-t border-white/12 bg-white/[0.07] py-2 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] backdrop-blur-md sm:py-3";
+  "section-tag-band relative z-[6] flex w-full flex-none flex-col border-t border-[var(--border-subtle)] py-2 sm:py-3";
 
 function logoCells(logos: PartnerLogo[], keySuffix: string) {
   return logos.map((logo, i) => (

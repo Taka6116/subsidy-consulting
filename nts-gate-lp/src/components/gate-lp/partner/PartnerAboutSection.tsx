@@ -13,14 +13,15 @@ const fadeUp = (delay: number) => ({
 
 export default function PartnerAboutSection() {
   return (
-    <section className="relative py-32 md:py-40" style={{ zIndex: 10 }}>
+    <section
+      className="section-white relative py-32 md:py-40"
+      style={{ zIndex: 10 }}
+    >
       <div className="mx-auto max-w-4xl px-6 md:px-8">
-        <div className="rounded-2xl border border-white/[0.08] bg-white/[0.05] p-10 backdrop-blur-[12px] [-webkit-backdrop-filter:blur(12px)] md:p-14">
+        <div className="card p-10 md:p-14">
           <motion.div {...fadeUp(0)}>
-            <p className="mb-4 text-[11px] font-bold uppercase tracking-[0.25em] text-white/35">
-              About NTS
-            </p>
-            <h2 className="font-heading text-3xl font-bold leading-snug text-white md:text-4xl">
+            <p className="label-section mb-4">About NTS</p>
+            <h2 className="font-heading text-3xl font-bold leading-snug text-[var(--text-primary)] md:text-4xl">
               補助金活用の専門チームが、
               <br />
               提携先とともに動きます。
@@ -28,7 +29,7 @@ export default function PartnerAboutSection() {
           </motion.div>
 
           <motion.p
-            className="mt-6 text-base leading-relaxed text-white/60"
+            className="mt-6 text-base leading-relaxed text-[var(--text-secondary)]"
             {...fadeUp(0.1)}
           >
             申請サポートにとどまらず、採択後の1年間もお客様の経営に寄り添います。
@@ -55,10 +56,10 @@ export default function PartnerAboutSection() {
             ].map((item) => (
               <div
                 key={item.title}
-                className="rounded-xl border border-white/[0.08] bg-white/[0.04] px-6 py-5 text-center"
+                className="rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-base)] px-6 py-5 text-center"
               >
-                <p className="mb-2 text-xl font-bold text-white">{item.title}</p>
-                <p className="text-sm leading-relaxed text-white/60">{item.body}</p>
+                <p className="mb-2 text-xl font-bold text-[var(--text-primary)]">{item.title}</p>
+                <p className="text-sm leading-relaxed text-[var(--text-secondary)]">{item.body}</p>
               </div>
             ))}
           </motion.div>

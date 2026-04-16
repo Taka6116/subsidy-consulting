@@ -10,8 +10,7 @@
   height: 100%;
   min-height: 100%;
   overflow: hidden;
-  /* prefers-reduced-motion 時の静止背景色 */
-  background: #0d2660;
+  background: transparent;
   font-family: var(--font-body);
 }
 
@@ -26,13 +25,54 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  text-align: center;
   width: 100%;
   /* Header 分（top-4 + h-16 ≈ 80px）＋余白 */
   padding: 72px 52px 72px;
   box-sizing: border-box;
-  /* 背面の Three.js キャンバスで制度名ホバーを検出するためクリックは CTA のみ通す */
-  pointer-events: none;
+}
+
+.heroInner {
+  width: 100%;
+}
+
+/* 2カラム時：左カラムは lg で左寄せ */
+.textCol {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+@media (min-width: 1024px) {
+  .textCol {
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  .textCol .headline {
+    align-items: flex-start;
+    margin-left: 0;
+    margin-right: auto;
+  }
+
+  .textCol .headlineLine {
+    text-align: left;
+  }
+
+  .textCol .sub {
+    align-items: flex-start;
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  .textCol .subLine {
+    text-align: left;
+  }
+
+  .textCol .ctaRow {
+    justify-content: flex-start;
+    align-self: flex-start;
+  }
 }
 
 /*
@@ -54,7 +94,7 @@
   padding: 0 1rem;
   box-sizing: border-box;
   font-size: clamp(14.4px, 3.18vw, 40.8px);
-  color: #fff;
+  color: var(--text-primary);
   line-height: 1.55;
   letter-spacing: -0.02em;
   opacity: 0;
@@ -82,7 +122,7 @@
   padding: 0 0.25rem;
   box-sizing: border-box;
   font-size: clamp(14.4px, 1.44vw, 16.8px);
-  color: rgba(180, 220, 255, 0.65);
+  color: var(--text-secondary);
   line-height: 1.75;
   opacity: 0;
   animation: fadeUp 0.8s 0.48s ease forwards;
@@ -105,36 +145,62 @@
   align-items: center;
   gap: 14px 18px;
   align-self: center;
-  pointer-events: auto;
   opacity: 0;
   animation: fadeUp 0.8s 0.68s ease forwards;
 }
 
-/* CTA（照会・オレンジ） */
+/* CTA（照会・ティール） — HeroCheckCtaLink */
 .cta {
   display: inline-flex;
   align-items: center;
   gap: 12px;
-  padding: 18px 41px;
-  background: #e8880a;
-  border-radius: 4px;
+  padding: 14px 32px;
+  background: var(--accent-teal);
+  border-radius: 8px;
   color: #fff;
+  font-family: var(--font-heading);
   font-size: 18px;
   font-weight: 700;
-  letter-spacing: 0.3px;
+  letter-spacing: 0.02em;
   text-decoration: none;
   transition: background 0.25s, transform 0.25s, box-shadow 0.25s;
   width: fit-content;
   outline-offset: 3px;
-  pointer-events: auto;
 }
 .cta:hover {
-  background: #d07a08;
+  background: #00a07e;
   transform: translateY(-2px);
-  box-shadow: 0 8px 28px rgba(232, 136, 10, 0.35);
+  box-shadow: 0 4px 16px rgba(0, 184, 148, 0.35);
 }
 .cta:focus-visible {
-  outline: 2px solid #00c4ff;
+  outline: 2px solid var(--accent-navy);
+}
+
+/* CTA（無料相談・ネイビー） */
+.ctaConsult {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 32px;
+  background: var(--accent-navy);
+  border-radius: 8px;
+  color: #fff;
+  font-family: var(--font-heading);
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-decoration: none;
+  transition: background 0.25s, transform 0.25s, box-shadow 0.25s;
+  width: fit-content;
+  outline-offset: 3px;
+}
+.ctaConsult:hover {
+  background: #1557a8;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(26, 76, 142, 0.35);
+}
+.ctaConsult:focus-visible {
+  outline: 2px solid var(--accent-teal);
 }
 
 /* CTA（相談・枠線） */
@@ -160,7 +226,6 @@
     box-shadow 0.25s;
   width: fit-content;
   outline-offset: 3px;
-  pointer-events: auto;
 }
 .ctaSecondary:hover {
   background: rgba(255, 255, 255, 0.2);
@@ -177,7 +242,8 @@
   transition: transform 0.2s;
 }
 .cta:hover .ctaArrow,
-.ctaSecondary:hover .ctaArrow {
+.ctaSecondary:hover .ctaArrow,
+.ctaConsult:hover .ctaArrow {
   transform: translateX(4px);
 }
 
@@ -199,13 +265,17 @@
 .scrollLine {
   width: 1px;
   height: 32px;
-  background: linear-gradient(to bottom, transparent, rgba(0, 196, 255, 0.5));
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    rgba(26, 76, 142, 0.35)
+  );
   animation: scrollLine 1.8s ease-in-out infinite;
 }
 
 .scrollText {
   font-size: 10.8px;
-  color: rgba(180, 220, 255, 0.35);
+  color: var(--text-muted);
   letter-spacing: 2px;
   text-transform: uppercase;
   writing-mode: vertical-rl;

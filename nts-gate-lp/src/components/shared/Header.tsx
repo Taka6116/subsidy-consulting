@@ -3,15 +3,43 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { trackPartnerLinkClick } from "@/lib/analytics";
+import { trackCTAClick, trackPartnerLinkClick } from "@/lib/analytics";
 import { getPartnerUrl } from "@/lib/partnerUrl";
 
 const navLinkClass = (heroStyle: boolean) =>
-  `rounded-sm text-xs transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 sm:text-sm ${
+  `rounded-sm text-sm font-medium transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent-navy)] sm:text-[0.9375rem] ${
     heroStyle
-      ? "text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.4)] hover:text-white/95"
-      : "text-neutral-600 hover:text-primary-700"
+      ? "text-[var(--text-primary)] hover:text-[var(--accent-navy)]"
+      : "text-[var(--text-secondary)] hover:text-[var(--accent-navy)]"
   }`;
+
+const partnerTextClass = (heroStyle: boolean) =>
+  `shrink-0 text-sm font-medium transition-colors duration-200 rounded-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent-navy)] sm:text-[0.9375rem] ${
+    heroStyle
+      ? "text-[var(--text-primary)] hover:text-[var(--accent-navy)]"
+      : "text-[var(--text-secondary)] hover:text-[var(--accent-navy)]"
+  }`;
+
+function HeaderCtaGroup() {
+  return (
+    <div className="flex shrink-0 flex-wrap items-center justify-end gap-2 sm:gap-2.5">
+      <Link
+        href="/check"
+        onClick={() => trackCTAClick("header_subsidy_lookup")}
+        className="header-cta header-cta--secondary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent-navy)]"
+      >
+        対象補助金を調べる
+      </Link>
+      <Link
+        href="/consult"
+        onClick={() => trackCTAClick("header_consult")}
+        className="header-cta header-cta--primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent-navy)]"
+      >
+        無料相談する
+      </Link>
+    </div>
+  );
+}
 
 export default function Header() {
   const pathname = usePathname();
@@ -31,33 +59,32 @@ export default function Header() {
   const heroStyle = isHome && !scrolled;
   const partnerHref = getPartnerUrl();
   /** トップ以外は常に視認性のあるヘッダー帯（ロゴ反転のため） */
-  const barClass =
-    heroStyle
-      ? "border-transparent bg-transparent"
-      : !isHome
-        ? "border-b border-neutral-200 bg-neutral-50/95 backdrop-blur-[12px]"
-        : scrolled
-          ? "border-b border-neutral-200 bg-neutral-50/90 backdrop-blur-[12px]"
-          : "border-transparent bg-transparent";
+  const barClass = heroStyle
+    ? "border-transparent bg-transparent"
+    : !isHome
+      ? "lp-site-header border-b"
+      : scrolled
+        ? "lp-site-header border-b"
+        : "border-transparent bg-transparent";
 
   return (
     <header
       className={`
-        absolute left-0 right-0 top-4 z-[10]
-        flex flex-col items-stretch gap-3 px-6 py-2 transition-all duration-300
-        sm:h-16 sm:flex-row sm:items-center sm:gap-4 sm:py-0
+        lp-site-header absolute left-0 right-0 top-3 z-[10]
+        flex flex-col items-stretch gap-2.5 px-4 py-2.5 transition-all duration-300
+        sm:top-4 sm:min-h-[3.5rem] sm:flex-row sm:items-center sm:gap-4 sm:px-6 sm:py-0
         ${barClass}
       `}
       data-hero-transparent={heroStyle ? "true" : undefined}
     >
       <Link
         href="/"
-        className={`flex shrink-0 items-center justify-center rounded-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 sm:justify-start ${heroStyle ? "drop-shadow-[0_1px_3px_rgba(0,0,0,0.45)]" : ""}`}
+        className="flex shrink-0 items-center justify-center rounded-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent-navy)] sm:justify-start"
       >
         <img
           src="/nts-logo.svg"
           alt="日本提携支援"
-          className={`h-7 w-auto sm:h-8 ${heroStyle ? "brightness-0 invert contrast-[1.05]" : ""}`}
+          className="h-8 w-auto sm:h-9"
           width={200}
           height={29}
         />
@@ -66,7 +93,7 @@ export default function Header() {
       {isSubsidies ? (
         <>
           <nav
-            className="flex w-full flex-wrap items-center justify-start gap-x-4 gap-y-2 sm:ml-6 sm:w-auto sm:shrink-0 sm:gap-x-5 lg:ml-10 lg:gap-x-8"
+            className="flex w-full flex-wrap items-center justify-start gap-x-3 gap-y-2 sm:ml-4 sm:w-auto sm:flex-1 sm:justify-end sm:gap-x-4 lg:ml-8 lg:gap-x-6"
             aria-label="補助金プラットフォーム"
           >
             <Link href="/subsidies/list" className={`${navLinkClass(heroStyle)} shrink-0`}>
@@ -94,33 +121,25 @@ export default function Header() {
                 →
               </span>
             </Link>
+            <span className="hidden h-6 w-px shrink-0 bg-[var(--border-subtle)] sm:inline-block lg:mx-1" aria-hidden />
+            <HeaderCtaGroup />
           </nav>
-          <div
-            className="hidden min-h-0 min-w-0 flex-1 sm:block"
-            aria-hidden
-          />
         </>
       ) : (
-        <div className="flex flex-1 justify-end sm:items-center">
+        <div className="flex min-w-0 flex-1 flex-col gap-2.5 sm:flex-row sm:items-center sm:justify-end sm:gap-4 md:gap-5">
           <Link
             href={partnerHref}
             onClick={() => trackPartnerLinkClick("header")}
-            className={`
-          shrink-0 text-small transition-colors duration-200
-          rounded-sm
-          focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500
-          ${
-            heroStyle
-              ? "text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.4)] hover:text-white/95"
-              : "text-neutral-600 hover:text-primary-700"
-          }
-        `}
+            className={`${partnerTextClass(heroStyle)} order-2 text-center sm:order-1 sm:mr-auto sm:text-left`}
           >
             パートナー企業の方へ
             <span className="ml-1" aria-hidden="true">
               →
             </span>
           </Link>
+          <div className="order-1 flex justify-center sm:order-2 sm:justify-end">
+            <HeaderCtaGroup />
+          </div>
         </div>
       )}
     </header>

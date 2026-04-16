@@ -5,7 +5,9 @@ import HomeEntrance from "@/components/gate-lp/HomeEntrance";
 import HeroSection from "@/components/gate-lp/hero-three/HeroSection";
 import HeroPartnerStrip from "@/components/gate-lp/HeroPartnerStrip";
 import AwarenessSection from "@/components/sections/AwarenessSection";
+import NtsWarmIntroSection from "@/components/sections/NtsWarmIntroSection";
 import SubsidyKindsSection from "@/components/sections/SubsidyKindsSection";
+import SubsidyMatchCtaSection from "@/components/sections/SubsidyMatchCtaSection";
 import WhatIsNtsSection from "@/components/sections/WhatIsNtsSection";
 import NtsServicesSection from "@/components/sections/NtsServicesSection";
 import FeeStructureSection from "@/components/sections/FeeStructureSection";
@@ -35,7 +37,9 @@ export default function Home() {
           </div>
         </div>
         <AwarenessSection />
+        <NtsWarmIntroSection />
         <SubsidyKindsSection />
+        <SubsidyMatchCtaSection />
         <WhatIsNtsSection />
         <NtsServicesSection />
         <FeeStructureSection />

@@ -9,9 +9,6 @@ import {
   fadeInUpReduced,
   fadeInUpTransition,
   fadeInUpViewport,
-  glassCardClass,
-  sectionContainerClass,
-  sectionStackClass,
 } from "@/components/sections/sectionStyles";
 
 const FAQ_ITEMS = [
@@ -43,15 +40,15 @@ export default function FaqSection() {
   const [openId, setOpenId] = useState<string | null>(null);
 
   return (
-    <section className={sectionStackClass} aria-labelledby={`${baseId}-faq-title`}>
-      <div className={sectionContainerClass}>
+    <section className="section-block bg-section-white" aria-labelledby={`${baseId}-faq-title`}>
+      <div className="section-inner">
         <motion.h2
           id={`${baseId}-faq-title`}
           initial={reduce ? fadeInUpReduced : fadeInUpInitial}
           whileInView={reduce ? fadeInUpReduced : fadeInUpInView}
           viewport={fadeInUpViewport}
           transition={fadeInUpTransition}
-          className="text-center font-heading text-3xl font-bold text-white md:text-4xl"
+          className="text-center font-heading text-3xl font-bold text-[var(--text-primary)] md:text-4xl"
         >
           よくあるご質問
         </motion.h2>
@@ -69,20 +66,20 @@ export default function FaqSection() {
             const aId = `${baseId}-faq-a-${item.id}`;
             const open = openId === item.id;
             return (
-              <li key={item.id} className={`text-white ${glassCardClass}`}>
+              <li key={item.id} className="nts-card overflow-hidden text-[var(--text-primary)]">
                 <button
                   type="button"
                   id={qId}
                   aria-expanded={open}
                   aria-controls={aId}
                   onClick={() => setOpenId(open ? null : item.id)}
-                  className="flex w-full items-start justify-between gap-4 text-left"
+                  className="flex w-full items-start justify-between gap-4 px-6 py-5 text-left sm:px-8 sm:py-6"
                 >
                   <span className="text-base font-bold leading-snug md:text-lg">
                     Q. {item.q}
                   </span>
                   <ChevronDown
-                    className={`mt-0.5 h-5 w-5 shrink-0 text-white/60 transition-transform duration-200 ${
+                    className={`mt-0.5 h-5 w-5 shrink-0 text-[var(--text-muted)] transition-transform duration-200 ${
                       open ? "rotate-180" : ""
                     }`}
                     aria-hidden
@@ -98,9 +95,9 @@ export default function FaqSection() {
                       animate={{ opacity: 1, height: "auto" }}
                       exit={{ opacity: 0, height: 0 }}
                       transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
-                      className="overflow-hidden"
+                      className="overflow-hidden px-6 pb-6 sm:px-8 sm:pb-8"
                     >
-                      <p className="mt-4 border-t border-white/10 pt-4 text-sm leading-relaxed text-white/70 md:text-base">
+                      <p className="mt-4 border-t border-[var(--border-subtle)] pt-4 text-sm leading-relaxed text-[var(--text-secondary)] md:text-base">
                         A. {item.a}
                       </p>
                     </motion.div>

@@ -37,16 +37,17 @@ const fadeUp = (delay: number) => ({
 
 export default function PartnerSubsidySection() {
   return (
-    <section className="relative py-32 md:py-40" style={{ zIndex: 10 }}>
+    <section
+      className="section-white relative py-32 md:py-40"
+      style={{ zIndex: 10 }}
+    >
       <div className="mx-auto max-w-5xl px-6 md:px-8">
         <motion.div className="mb-16 text-center" {...fadeUp(0)}>
-          <p className="mb-4 text-[11px] font-bold uppercase tracking-[0.25em] text-white/35">
-            Target Subsidies
-          </p>
-          <h2 className="font-heading text-3xl font-bold leading-tight text-white md:text-4xl">
+          <p className="label-section mb-4">Target Subsidies</p>
+          <h2 className="font-heading text-3xl font-bold leading-tight text-[var(--text-primary)] md:text-4xl">
             提携先に使える補助金、3種。
           </h2>
-          <p className="mt-4 text-base text-white/55">
+          <p className="mt-4 text-base text-[var(--text-secondary)]">
             NTSが現在サポートしている補助金です。
             <br />
             御社の顧客の業種・課題に合わせて、最適な制度をNTSが選定します。
@@ -58,20 +59,20 @@ export default function PartnerSubsidySection() {
             <motion.div
               key={s.name}
               {...fadeUp(i * 0.1)}
-              className="group flex flex-col rounded-2xl border border-white/[0.08] bg-white/[0.05] p-7 backdrop-blur-[12px] [-webkit-backdrop-filter:blur(12px)] transition-all duration-300 hover:border-white/[0.15] hover:bg-white/[0.08]"
+              className="card group flex flex-col p-7 transition-all duration-300"
             >
-              <p className="mb-2 text-[10px] font-bold uppercase tracking-wider text-white/35">
+              <p className="mb-2 text-[10px] font-bold uppercase tracking-wider text-[var(--text-muted)]">
                 {s.category}
               </p>
-              <h3 className="mb-1 text-lg font-bold leading-snug text-white">{s.name}</h3>
-              <p className="mb-4 text-2xl font-bold" style={{ color: "#F5A623" }}>
+              <h3 className="mb-1 text-lg font-bold leading-snug text-[var(--text-primary)]">{s.name}</h3>
+              <p className="text-highlight-gold mb-4 text-2xl font-bold">
                 {s.max}
               </p>
-              <p className="mb-5 flex-1 text-sm leading-relaxed text-white/[0.58]">
+              <p className="mb-5 flex-1 text-sm leading-relaxed text-[var(--text-secondary)]">
                 {s.body}
               </p>
-              <div className="rounded-lg border border-white/[0.08] bg-white/[0.04] px-4 py-2.5">
-                <p className="text-[11px] text-white/40">{s.fit}</p>
+              <div className="rounded-lg border border-[var(--border-subtle)] bg-[var(--bg-section-alt)] px-4 py-2.5">
+                <p className="text-[11px] text-[var(--text-muted)]">{s.fit}</p>
               </div>
             </motion.div>
           ))}

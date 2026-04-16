@@ -36,13 +36,14 @@ const fadeUp = (delay: number) => ({
 
 export default function PartnerFlowSection() {
   return (
-    <section className="relative py-32 md:py-40" style={{ zIndex: 10 }}>
+    <section
+      className="section-alt relative py-32 md:py-40"
+      style={{ zIndex: 10 }}
+    >
       <div className="mx-auto max-w-5xl px-6 md:px-8">
         <motion.div className="mb-16 text-center" {...fadeUp(0)}>
-          <p className="mb-4 text-[11px] font-bold uppercase tracking-[0.25em] text-white/35">
-            How It Works
-          </p>
-          <h2 className="font-heading text-3xl font-bold text-white md:text-4xl">
+          <p className="label-section mb-4">How It Works</p>
+          <h2 className="font-heading text-3xl font-bold text-[var(--text-primary)] md:text-4xl">
             紹介するだけ。
             <br />
             あとはNTSが動きます。
@@ -77,26 +78,26 @@ export default function PartnerFlowSection() {
               <motion.div
                 key={step.number}
                 {...fadeUp(i * 0.08)}
-                className="group relative flex items-start gap-5 rounded-2xl border border-white/[0.08] bg-white/[0.05] p-6 backdrop-blur-[12px] [-webkit-backdrop-filter:blur(12px)] transition-all duration-300 hover:border-white/[0.15] hover:bg-white/[0.08] lg:flex-col"
+                className="card group relative flex items-start gap-5 p-6 transition-all duration-300 lg:flex-col"
               >
                 <div className="relative flex-none">
                   <div
-                    className="flex h-[3.2rem] w-[3.2rem] items-center justify-center rounded-full border text-lg font-bold text-white"
+                    className="flex h-[3.2rem] w-[3.2rem] items-center justify-center rounded-full border text-lg font-bold text-[var(--accent-navy)]"
                     style={{
-                      borderColor: "rgba(245,166,35,0.4)",
-                      background: "rgba(245,166,35,0.10)",
+                      borderColor: "rgba(245, 166, 35, 0.4)",
+                      background: "rgba(245, 166, 35, 0.12)",
                     }}
                   >
                     {step.number}
                   </div>
                   <div
                     className="absolute inset-0 rounded-full opacity-0 blur-md transition-opacity duration-300 group-hover:opacity-100"
-                    style={{ background: "rgba(245,166,35,0.2)" }}
+                    style={{ background: "rgba(245, 166, 35, 0.2)" }}
                   />
                 </div>
                 <div className="flex-1 lg:pt-4">
-                  <h3 className="mb-2 text-base font-bold text-white">{step.title}</h3>
-                  <p className="text-sm leading-relaxed text-white/[0.58]">{step.body}</p>
+                  <h3 className="mb-2 text-base font-bold text-[var(--text-primary)]">{step.title}</h3>
+                  <p className="text-sm leading-relaxed text-[var(--text-secondary)]">{step.body}</p>
                 </div>
               </motion.div>
             ))}

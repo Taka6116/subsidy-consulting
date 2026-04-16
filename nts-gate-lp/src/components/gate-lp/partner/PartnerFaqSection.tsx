@@ -32,17 +32,21 @@ const FAQ_ITEMS = [
 
 export default function PartnerFaqSection() {
   return (
-    <section id="faq" className="relative py-32 md:py-40" style={{ zIndex: 10 }}>
+    <section
+      id="faq"
+      className="section-alt relative py-32 md:py-40"
+      style={{ zIndex: 10 }}
+    >
       <div className="mx-auto max-w-3xl px-6 md:px-8">
         <div className="mb-14 text-center">
           <motion.p
-            className="mb-4 text-[11px] font-bold uppercase tracking-[0.25em] text-white/35"
+            className="label-section mb-4"
             {...fadeUp(0)}
           >
             FAQ
           </motion.p>
           <motion.h2
-            className="font-heading text-3xl font-bold leading-tight text-white md:text-4xl lg:text-5xl"
+            className="font-heading text-3xl font-bold leading-tight text-[var(--text-primary)] md:text-4xl lg:text-5xl"
             {...fadeUp(0.06)}
           >
             よくある疑問に答えます。
@@ -54,12 +58,12 @@ export default function PartnerFaqSection() {
             <motion.div
               key={item.q}
               {...fadeUp(0.08 + i * 0.06)}
-              className="rounded-2xl border border-white/[0.08] bg-white/[0.04] p-6 backdrop-blur-[12px] [-webkit-backdrop-filter:blur(12px)] md:p-8"
+              className="card p-6 md:p-8"
             >
-              <p className="font-heading text-lg font-bold leading-snug text-white md:text-xl">
+              <p className="font-heading text-lg font-bold leading-snug text-[var(--text-primary)] md:text-xl">
                 Q. {item.q}
               </p>
-              <p className="mt-4 border-t border-white/10 pt-4 text-sm leading-relaxed text-white/60 md:text-base">
+              <p className="mt-4 border-t border-[var(--border-subtle)] pt-4 text-sm leading-relaxed text-[var(--text-secondary)] md:text-base">
                 A. {item.a}
               </p>
             </motion.div>

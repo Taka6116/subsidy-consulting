@@ -1,16 +1,14 @@
 "use client";
 
 import { motion, useReducedMotion } from "framer-motion";
-import { BarChart3, Factory, TrendingUp } from "lucide-react";
+import { Settings, TrendingUp, Wrench } from "lucide-react";
+import ImagePlaceholder from "@/components/ui/ImagePlaceholder";
 import {
   fadeInUpInitial,
   fadeInUpInView,
   fadeInUpReduced,
   fadeInUpTransition,
   fadeInUpViewport,
-  glassShellClass,
-  sectionContainerClass,
-  sectionStackClass,
 } from "@/components/sections/sectionStyles";
 
 const BENEFITS = [
@@ -24,7 +22,7 @@ const BENEFITS = [
         自己資金だけでは踏み出せなかった投資が、現実的な選択肢になります。
       </>
     ),
-    Icon: Factory,
+    Icon: Wrench,
   },
   {
     num: "02",
@@ -36,7 +34,7 @@ const BENEFITS = [
         NTSは導入後の運用フォローまで伴走し、投資効果が出る状態をつくります。
       </>
     ),
-    Icon: TrendingUp,
+    Icon: Settings,
   },
   {
     num: "03",
@@ -48,7 +46,7 @@ const BENEFITS = [
         次の経営判断を、勘ではなく実績で下せるようになります。
       </>
     ),
-    Icon: BarChart3,
+    Icon: TrendingUp,
   },
 ] as const;
 
@@ -56,48 +54,44 @@ export default function BenefitSection() {
   const reduce = useReducedMotion();
 
   return (
-    <section
-      className={`${sectionStackClass} section-alt`}
-      aria-labelledby="home-benefit-heading"
-    >
-      <div className={sectionContainerClass}>
+    <section className="section-block bg-section-gray" aria-labelledby="home-benefit-heading">
+      <div className="section-inner">
         <motion.div
           initial={reduce ? fadeInUpReduced : fadeInUpInitial}
           whileInView={reduce ? fadeInUpReduced : fadeInUpInView}
           viewport={fadeInUpViewport}
           transition={fadeInUpTransition}
-          className={glassShellClass}
         >
-          <p className="label-section mb-3 text-center">導入効果</p>
-          <h2
-            id="home-benefit-heading"
-            className="text-center font-heading text-3xl font-bold leading-tight text-[var(--text-primary)] md:text-4xl"
-          >
-            補助金を「使い切る」と、経営はこう変わります。
-          </h2>
+          <div className="mb-14 text-center">
+            <p className="label-section mb-3">導入効果</p>
+            <h2
+              id="home-benefit-heading"
+              className="font-heading text-3xl font-bold leading-tight text-[var(--text-primary)] md:text-4xl"
+            >
+              補助金を「使い切る」と、経営はこう変わります。
+            </h2>
+          </div>
 
-          <div className="mt-12 grid grid-cols-1 gap-6 md:grid-cols-3">
+          <div className="mb-14 grid grid-cols-1 gap-6 md:mb-16 md:grid-cols-3">
             {BENEFITS.map(({ num, title, body, Icon }) => (
-              <div key={num} className="card flex flex-col p-6 md:p-7">
-                <div className="mb-4 flex items-center gap-3">
-                  <span className="font-heading text-sm font-bold tabular-nums text-[var(--accent-navy)]">
-                    {num}
-                  </span>
-                  <div
-                    className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-[var(--border-card)] bg-[var(--bg-section-alt)] text-[var(--accent-teal)]"
-                    aria-hidden
-                  >
-                    <Icon className="h-5 w-5" strokeWidth={2} />
-                  </div>
+              <div key={num} className="nts-card flex flex-col p-9">
+                <div
+                  className="mb-6 flex h-14 w-14 items-center justify-center rounded-[14px] text-[var(--accent-teal)]"
+                  style={{ backgroundColor: "rgba(0, 184, 148, 0.1)" }}
+                >
+                  <Icon className="h-7 w-7" strokeWidth={2} aria-hidden />
                 </div>
-                <h3 className="font-heading text-lg font-bold leading-snug text-[var(--text-primary)] md:text-xl">
+                <p className="mb-2 text-xs font-bold text-[var(--accent-teal)]">{num}</p>
+                <h3 className="mb-3 font-heading text-xl font-bold leading-snug text-[var(--text-primary)] md:text-[1.2rem]">
                   {title}
                 </h3>
-                <p className="mt-3 flex-1 text-sm leading-relaxed text-[var(--text-secondary)] md:text-base">
-                  {body}
-                </p>
+                <p className="flex-1 text-sm leading-[1.9] text-[var(--text-secondary)] md:text-base">{body}</p>
               </div>
             ))}
+          </div>
+
+          <div className="mx-auto max-w-[280px]">
+            <ImagePlaceholder label="握手・成立イラスト" aspectRatio="4/3" />
           </div>
         </motion.div>
       </div>

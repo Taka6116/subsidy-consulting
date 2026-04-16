@@ -15,15 +15,13 @@ interface CTAButtonProps {
 }
 
 const variantStyles: Record<CTAButtonVariant, string> = {
-  primary:
-    "bg-accent-500 text-white shadow-[0_2px_8px_rgba(224,112,64,0.25)] hover:shadow-[0_4px_16px_rgba(224,112,64,0.35)]",
-  secondary:
-    "bg-white text-primary-700 border border-primary-300 hover:bg-primary-50",
+  primary: "btn-primary",
+  secondary: "btn-secondary",
 };
 
 const sizeStyles: Record<CTAButtonSize, string> = {
-  default: "px-12 py-4 text-body",
-  large: "px-16 py-5 text-lg",
+  default: "text-body",
+  large: "text-lg !px-16 !py-[1.125rem]",
 };
 
 export default function CTAButton({
@@ -49,10 +47,10 @@ export default function CTAButton({
         onClick={onClick}
         aria-label={text}
         className={`
-          inline-block w-full text-center whitespace-nowrap min-h-[44px] min-w-[44px] rounded-card
+          inline-block w-full text-center whitespace-nowrap min-h-[44px] min-w-[44px]
           font-medium transition-colors duration-200
           ease-[cubic-bezier(0.16,1,0.3,1)]
-          focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500
+          focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent-navy)]
           ${variantStyles[variant]}
           ${sizeStyles[size]}
         `}

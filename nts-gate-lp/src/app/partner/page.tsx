@@ -21,34 +21,32 @@ export const metadata: Metadata = {
 
 export default function PartnerPage() {
   return (
-    <div
-      className="relative min-h-screen font-body text-white"
-      style={{ background: "#041e42" }}
-    >
+    <div className="relative min-h-screen bg-[var(--bg-base)] font-body text-[var(--text-primary)]">
       <PartnerLpWebGLBackground />
+      <div className="partner-lp-light-overlay" aria-hidden />
 
-      <header className="fixed left-0 right-0 top-0 z-50 flex items-center justify-between bg-transparent px-6 py-5 sm:px-8">
+      <header className="lp-site-header fixed left-0 right-0 top-0 z-50 flex items-center justify-between px-6 py-5 sm:px-8">
         <Link
           href="/"
-          className="flex shrink-0 items-center rounded-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+          className="flex shrink-0 items-center rounded-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent-navy)]"
         >
           <img
             src="/nts-logo.svg"
             alt="日本提携支援"
-            className="h-7 w-auto brightness-0 invert sm:h-8"
+            className="h-7 w-auto sm:h-8"
             width={200}
             height={29}
           />
         </Link>
         <Link
           href="/"
-          className="text-sm font-medium text-white transition hover:text-white/90"
+          className="text-sm font-medium text-[var(--text-secondary)] transition hover:text-[var(--accent-navy)]"
         >
           ← エンドユーザー向けはこちら
         </Link>
       </header>
 
-      <main className="relative pt-20" style={{ zIndex: 2 }}>
+      <main className="relative z-[2] pt-20">
         <HeroSection />
         <PartnerAgitationSection />
         <PartnerMeritSection />

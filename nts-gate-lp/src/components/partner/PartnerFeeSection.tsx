@@ -53,7 +53,7 @@ export default function PartnerFeeSection() {
   return (
     <section
       id="fee-flow"
-      className="relative overflow-hidden py-24 px-6 md:py-32"
+      className="section-white relative overflow-hidden px-6 py-24 md:py-32"
       style={{ zIndex: 10 }}
     >
       <div className="mx-auto max-w-6xl">
@@ -66,13 +66,13 @@ export default function PartnerFeeSection() {
         >
           <motion.p
             variants={itemVariants}
-            className="mb-6 text-xs uppercase tracking-[0.3em] text-[#1A7B6F]"
+            className="label-section mb-6"
           >
             HOW IT WORKS
           </motion.p>
           <motion.h2
             variants={itemVariants}
-            className="font-heading mb-4 text-4xl font-bold leading-tight text-white md:text-5xl"
+            className="font-heading mb-4 text-4xl font-bold leading-tight text-[var(--text-primary)] md:text-5xl"
           >
             紹介するだけで、
             <br />
@@ -80,7 +80,7 @@ export default function PartnerFeeSection() {
           </motion.h2>
           <motion.p
             variants={itemVariants}
-            className="mx-auto max-w-2xl text-base leading-relaxed text-white/70 md:text-lg"
+            className="mx-auto max-w-2xl text-base leading-relaxed text-[var(--text-secondary)] md:text-lg"
           >
             申請・採択から採択後の1年間まで、すべてNTSが対応します。
             <br className="hidden sm:block" />
@@ -99,24 +99,24 @@ export default function PartnerFeeSection() {
                 whileInView="visible"
                 viewport={VIEWPORT}
                 transition={{ delay: i * 0.15 }}
-                className="w-full max-w-sm flex-1 rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur-sm [-webkit-backdrop-filter:blur(12px)] md:max-w-none md:min-w-0 md:flex-[1_1_0%]"
+                className="card w-full max-w-sm flex-1 p-6 md:max-w-none md:min-w-0 md:flex-[1_1_0%]"
               >
                 <div className="mb-4 flex items-center gap-3">
                   <div
-                    className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-white/15 text-[#1A7B6F]"
-                    style={{ background: "rgba(26, 123, 111, 0.15)" }}
+                    className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-[var(--border-card)] text-[var(--accent-teal)]"
+                    style={{ background: "rgba(0, 184, 148, 0.12)" }}
                     aria-hidden
                   >
                     <Icon className="h-5 w-5" strokeWidth={2} />
                   </div>
-                  <span className="text-xs font-bold tabular-nums tracking-wider text-white/40">
+                  <span className="text-xs font-bold tabular-nums tracking-wider text-[var(--text-muted)]">
                     {s.step}
                   </span>
                 </div>
-                <h3 className="font-heading text-lg font-bold text-white md:text-xl">
+                <h3 className="font-heading text-lg font-bold text-[var(--text-primary)] md:text-xl">
                   {s.title}
                 </h3>
-                <p className="mt-2 text-sm leading-relaxed text-white/65">{s.body}</p>
+                <p className="mt-2 text-sm leading-relaxed text-[var(--text-secondary)]">{s.body}</p>
               </motion.div>
             );
 
@@ -138,7 +138,7 @@ export default function PartnerFeeSection() {
                 aria-hidden
               >
                 <ArrowRight
-                  className="h-8 w-8 rotate-90 text-[#1A7B6F] md:rotate-0"
+                  className="h-8 w-8 rotate-90 text-[var(--accent-teal)] md:rotate-0"
                   strokeWidth={2.25}
                 />
               </motion.div>
@@ -155,38 +155,33 @@ export default function PartnerFeeSection() {
           viewport={VIEWPORT}
           transition={{ duration: 0.5, delay: 0.1 }}
         >
-          <div
-            className="rounded-xl border border-white/10 py-6 pl-5 pr-5 md:pl-6 md:pr-8"
-            style={{
-              background: "rgba(26, 123, 111, 0.1)",
-            }}
-          >
-            <p className="mb-4 text-xs font-bold uppercase tracking-wider text-white/45">
+          <div className="rounded-xl border border-[var(--accent-teal)]/30 bg-[var(--accent-teal)]/10 py-6 pl-5 pr-5 md:pl-6 md:pr-8">
+            <p className="mb-4 text-xs font-bold uppercase tracking-wider text-[var(--text-muted)]">
               活用例
             </p>
-            <p className="text-sm font-medium text-white/90 md:text-base">
+            <p className="text-sm font-medium text-[var(--text-primary)] md:text-base">
               省力化補助金で600万円の設備投資が採択された場合
             </p>
-            <div className="mt-5 space-y-3 text-sm text-white/80 md:text-base">
+            <div className="mt-5 space-y-3 text-sm text-[var(--text-secondary)] md:text-base">
               <div className="flex flex-col gap-1 sm:flex-row sm:items-baseline sm:gap-3">
-                <span className="shrink-0 text-white/55">顧客の自己負担</span>
-                <span className="hidden text-[#1A7B6F] sm:inline" aria-hidden>
+                <span className="shrink-0 text-[var(--text-muted)]">顧客の自己負担</span>
+                <span className="hidden text-[var(--accent-teal)] sm:inline" aria-hidden>
                   →
                 </span>
                 <span>最大 300万円以下（半額以下）</span>
               </div>
               <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3">
-                <span className="shrink-0 text-white/55">御社の紹介フィー</span>
-                <span className="hidden text-[#1A7B6F] sm:inline" aria-hidden>
+                <span className="shrink-0 text-[var(--text-muted)]">御社の紹介フィー</span>
+                <span className="hidden text-[var(--accent-teal)] sm:inline" aria-hidden>
                   →
                 </span>
                 <span className="flex flex-wrap items-baseline gap-2">
-                  <span className="text-3xl font-bold text-[#1A7B6F]">60万円</span>
-                  <span className="text-white/70">（採択額600万円の10%）</span>
+                  <span className="text-3xl font-bold text-[var(--accent-teal)]">60万円</span>
+                  <span className="text-[var(--text-secondary)]">（採択額600万円の10%）</span>
                 </span>
               </div>
             </div>
-            <p className="mt-4 text-xs leading-relaxed text-white/50 md:text-sm">
+            <p className="mt-4 text-xs leading-relaxed text-[var(--text-muted)] md:text-sm">
               ※採択されなかった場合、紹介フィーは発生しません。
               <br />
               御社はゼロリスクで、新しい収益の柱を持てます。
@@ -194,7 +189,7 @@ export default function PartnerFeeSection() {
           </div>
         </motion.div>
 
-        <p className="mt-4 text-center text-sm text-white/60">
+        <p className="mt-4 text-center text-sm text-[var(--text-secondary)]">
           採択されなければ、御社への費用請求も紹介フィーの義務も一切発生しません。
           <br className="hidden sm:block" />
           完全成功報酬型だから、紹介することにリスクはありません。
@@ -209,17 +204,13 @@ export default function PartnerFeeSection() {
         >
           <a
             href="#contact"
-            className="inline-flex w-full max-w-xs items-center justify-center rounded px-8 py-3.5 text-sm font-bold text-white transition-all sm:w-auto sm:px-10 sm:text-base"
-            style={{
-              background: "#F5A623",
-              boxShadow: "0 4px 24px rgba(245,166,35,0.35)",
-            }}
+            className="btn-teal inline-flex w-full max-w-xs items-center justify-center text-sm font-bold transition-all sm:w-auto sm:text-base"
           >
             まず話を聞く →
           </a>
           <Link
             href="#merit"
-            className="inline-flex w-full max-w-xs items-center justify-center rounded border border-white/25 bg-white/[0.06] px-6 py-3.5 text-sm text-white/70 transition hover:border-white/45 hover:bg-white/[0.10] sm:w-auto"
+            className="btn-secondary inline-flex w-full max-w-xs items-center justify-center text-sm sm:w-auto"
           >
             提携のメリットを見る
           </Link>

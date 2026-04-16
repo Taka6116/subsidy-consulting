@@ -9,7 +9,7 @@ export default function PartnerCtaSection() {
   return (
     <section
       id="contact"
-      className="relative py-32 md:py-40"
+      className="section-cta relative py-32 md:py-40"
       style={{ zIndex: 10 }}
     >
       <div className="mx-auto max-w-3xl px-6 text-center md:px-8">
@@ -19,13 +19,13 @@ export default function PartnerCtaSection() {
           viewport={{ once: true, amount: 0.2 }}
           transition={{ duration: 0.6, ease: EASE_OUT }}
         >
-          <p className="mb-6 text-[11px] font-bold uppercase tracking-[0.25em] text-white/35">
+          <p className="mb-6 text-[11px] font-bold uppercase tracking-[0.25em] text-white/75">
             Contact
           </p>
           <h2 className="font-heading text-3xl font-bold leading-tight text-white md:text-4xl lg:text-5xl">
             まず、話を聞かせてください。
           </h2>
-          <p className="mt-6 text-lg leading-relaxed text-white/[0.58]">
+          <p className="mt-6 text-lg leading-relaxed text-white/85">
             提携のご相談、御社の商材が補助金の対象になるかの確認など、
             <br />
             まずは気軽にお声がけください。
@@ -39,33 +39,20 @@ export default function PartnerCtaSection() {
           viewport={{ once: true }}
           transition={{ delay: 0.2, duration: 0.6 }}
         >
-          <a
-            href="XXX"
-            className="inline-flex items-center gap-2 rounded px-10 py-4 text-base font-bold text-white transition-all"
-            style={{
-              background: "#F5A623",
-              boxShadow: "0 4px 32px rgba(245,166,35,0.4)",
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.background = "#d4920f";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = "#F5A623";
-            }}
-          >
+          <a href="XXX" className="btn-teal inline-flex items-center gap-2 text-base font-bold">
             提携について相談する
           </a>
 
           <Link
             href="/consult"
-            className="inline-flex items-center gap-2 rounded border border-white/25 bg-white/[0.06] px-6 py-4 text-sm text-white/65 transition hover:border-white/45 hover:bg-white/[0.10]"
+            className="inline-flex items-center gap-2 rounded-lg border-2 border-white/85 bg-transparent px-6 py-3.5 text-sm font-semibold text-white transition hover:bg-white hover:text-[var(--accent-navy)]"
           >
             お問い合わせ ↗
           </Link>
         </motion.div>
 
         <motion.p
-          className="mt-10 text-xs text-white/30"
+          className="mt-10 text-xs text-white/65"
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}

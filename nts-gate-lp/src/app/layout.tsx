@@ -1,18 +1,34 @@
 import type { Metadata } from "next";
-import { Noto_Sans_JP } from "next/font/google";
+import {
+  IBM_Plex_Mono,
+  Poppins,
+  Zen_Kaku_Gothic_New,
+} from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
 
-const notoSansJP = Noto_Sans_JP({
+/** 模倣元サイトに合わせたフォント（Poppins + Zen Kaku Gothic New） */
+const zenKakuGothicNew = Zen_Kaku_Gothic_New({
   subsets: ["latin"],
-  weight: ["400", "500", "700"],
-  variable: "--font-noto-sans-jp",
+  /** 参照サイトの Google Fonts 指定（400, 500）に合わせる */
+  weight: ["400", "500"],
+  variable: "--font-zen-kaku-gothic-new",
   display: "swap",
 });
 
-/** Google Fonts（Inter / IBM Plex Mono / Cormorant Garamond）— link は要件どおり <head> 内 */
-const GOOGLE_FONTS_HREF =
-  "https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;600;800&family=IBM+Plex+Mono:wght@300;400;600&family=Cormorant+Garamond:wght@300;400;500&display=swap";
+const poppins = Poppins({
+  subsets: ["latin"],
+  weight: ["400", "600", "700"],
+  variable: "--font-poppins",
+  display: "swap",
+});
+
+const ibmPlexMono = IBM_Plex_Mono({
+  subsets: ["latin"],
+  weight: ["400", "600"],
+  variable: "--font-ibm-plex-mono",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title:
@@ -36,15 +52,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ja" className={notoSansJP.variable}>
+    <html
+      lang="ja"
+      className={`${zenKakuGothicNew.variable} ${poppins.variable} ${ibmPlexMono.variable}`}
+    >
       <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link
-          rel="preconnect"
-          href="https://fonts.gstatic.com"
-          crossOrigin="anonymous"
-        />
-        <link href={GOOGLE_FONTS_HREF} rel="stylesheet" />
         {GA_ID && (
           <>
             <Script
