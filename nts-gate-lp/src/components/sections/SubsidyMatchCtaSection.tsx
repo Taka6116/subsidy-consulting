@@ -26,10 +26,10 @@ export default function SubsidyMatchCtaSection() {
           className="two-col img-right"
         >
           <div className="col-text space-y-6 text-center lg:text-left">
-            <p className="label-section mb-2">補助金照会</p>
+            <p className="sec-label mb-2">補助金照会</p>
             <h2
               id="home-subsidy-match-heading"
-              className="font-heading text-2xl font-bold leading-snug text-[var(--text-primary)] md:text-3xl lg:text-4xl"
+              className="font-heading text-[1.75rem] font-bold leading-snug text-[var(--text-primary)] md:text-[2.25rem]"
             >
               対象の補助金を確認する
             </h2>

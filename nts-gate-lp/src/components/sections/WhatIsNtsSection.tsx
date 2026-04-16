@@ -58,12 +58,11 @@ export default function WhatIsNtsSection() {
           viewport={fadeInUpViewport}
           transition={fadeInUpTransition}
         >
-          <div className="mx-auto max-w-[1100px] py-20">
             <div className="mb-12 text-center md:mb-16">
-              <p className="label-section mb-2">NTSとは</p>
+              <p className="sec-label mb-2">NTSとは</p>
               <h2
                 id="home-what-is-nts-heading"
-                className="font-heading text-3xl font-bold leading-tight text-[var(--text-primary)] md:text-4xl"
+                className="font-heading text-[1.75rem] font-bold leading-snug text-[var(--text-primary)] md:text-[2.25rem]"
               >
                 補助金活用から伴走までのフロー
               </h2>
@@ -76,8 +75,8 @@ export default function WhatIsNtsSection() {
               return (
                 <div key={step.title} className="relative flex flex-col items-center">
                   <div
-                    className="relative w-full overflow-hidden rounded-2xl border"
-                    style={{ minHeight: "160px", height: "160px", background: step.bg, borderColor: step.border }}
+                    className="relative h-40 w-full overflow-hidden rounded-2xl border md:h-44 lg:h-40"
+                    style={{ background: step.bg, borderColor: step.border }}
                   >
                     <Image
                       src={step.image}
@@ -105,7 +104,6 @@ export default function WhatIsNtsSection() {
               );
             })}
             </div>
-          </div>
         </motion.div>
       </div>
     </section>

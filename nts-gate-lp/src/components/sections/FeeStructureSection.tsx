@@ -80,15 +80,17 @@ export default function FeeStructureSection() {
 
           <hr className="mb-16 border-0 border-t border-[rgba(26,76,142,0.1)] lg:mb-20" />
 
-          <p className="label-section mb-4 text-center">FEE STRUCTURE</p>
-          <h2
-            id="home-fee-structure-heading"
-            className="text-center font-heading text-3xl font-bold leading-tight text-[var(--text-primary)] md:text-5xl"
-          >
-            採択された瞬間に
-            <br />
-            全額請求しない理由。
-          </h2>
+          <div className="mb-12 text-center md:mb-16">
+            <p className="sec-label mb-4">FEE STRUCTURE</p>
+            <h2
+              id="home-fee-structure-heading"
+              className="font-heading text-[1.75rem] font-bold leading-snug text-[var(--text-primary)] md:text-[2.25rem]"
+            >
+              採択された瞬間に
+              <br />
+              全額請求しない理由。
+            </h2>
+          </div>
           <p className="mx-auto mt-6 max-w-3xl text-center text-base leading-relaxed text-[var(--text-secondary)] md:text-lg">
             私たちのフィーは、1年間の成果を見届けながら段階的に発生します。
             <br />

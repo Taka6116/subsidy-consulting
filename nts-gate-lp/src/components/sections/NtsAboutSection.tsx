@@ -9,7 +9,7 @@ const HERO_BG = "/images/subsidy-footer.jpg";
  */
 export default function NtsAboutSection() {
   return (
-    <section className="section-alt relative z-10 overflow-hidden py-[calc(5rem+2.35rem)] md:py-[calc(7rem+2.35rem)] lg:py-[calc(8rem+2.35rem)]">
+    <section className="section-block section-alt relative z-10 overflow-hidden">
       <Image
         src={HERO_BG}
         alt=""
@@ -27,14 +27,17 @@ export default function NtsAboutSection() {
         aria-hidden
       />
 
-      <div className="relative z-10 mx-auto max-w-container px-6">
-        <h2 className="font-heading text-h1 font-bold leading-tight text-[var(--text-primary)]">
-          補助金活用の専門チームが、
-          <br />
-          あなたの経営課題に寄り添います。
-        </h2>
+      <div className="section-inner relative z-10">
+        <div className="mb-12 text-center md:mb-16">
+          <p className="sec-label mb-3">NTSとは</p>
+          <h2 className="font-heading text-[1.75rem] font-bold leading-snug text-[var(--text-primary)] md:text-[2.25rem]">
+            補助金活用の専門チームが、
+            <br />
+            あなたの経営課題に寄り添います。
+          </h2>
+        </div>
 
-        <div className="mt-10 grid max-w-5xl grid-cols-1 gap-4 text-body leading-loose text-[var(--text-secondary)] md:mt-12 md:grid-cols-3 md:text-lg md:leading-loose">
+        <div className="grid max-w-5xl grid-cols-1 gap-4 text-body leading-loose text-[var(--text-secondary)] md:grid-cols-3 md:text-lg md:leading-loose">
           <div className="card border-[var(--border-card)] p-5">
             <p className="mb-2 text-xs font-bold uppercase tracking-[0.2em] text-[var(--text-muted)]">
               戦略設計

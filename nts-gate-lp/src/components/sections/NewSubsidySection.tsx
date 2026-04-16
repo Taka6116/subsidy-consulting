@@ -11,29 +11,25 @@ import {
   fadeInUpTransition,
   fadeInUpViewport,
   glassCardClass,
-  sectionContainerClass,
-  sectionStackClass,
 } from "@/components/sections/sectionStyles";
 
 export default function NewSubsidySection() {
   const reduce = useReducedMotion();
 
   return (
-    <section
-      className={`${sectionStackClass} section-alt`}
-      aria-labelledby="home-subsidy-news-heading"
-    >
-      <div className={sectionContainerClass}>
+    <section className="section-block section-alt" aria-labelledby="home-subsidy-news-heading">
+      <div className="section-inner">
         <motion.div
           initial={reduce ? fadeInUpReduced : fadeInUpInitial}
           whileInView={reduce ? fadeInUpReduced : fadeInUpInView}
           viewport={fadeInUpViewport}
           transition={fadeInUpTransition}
-          className="mx-auto max-w-3xl text-center text-[var(--text-primary)]"
+          className="text-center text-[var(--text-primary)]"
         >
+          <p className="sec-label mb-3">新着情報</p>
           <h2
             id="home-subsidy-news-heading"
-            className="font-heading text-3xl font-bold md:text-4xl"
+            className="font-heading text-[1.75rem] font-bold leading-snug text-[var(--text-primary)] md:text-[2.25rem]"
           >
             新着・注目の補助金制度
           </h2>

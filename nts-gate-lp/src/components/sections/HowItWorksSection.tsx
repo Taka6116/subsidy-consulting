@@ -9,8 +9,6 @@ import {
   fadeInUpTransition,
   fadeInUpViewport,
   glassShellClass,
-  sectionContainerClass,
-  sectionStackClass,
 } from "@/components/sections/sectionStyles";
 
 const STEPS = [
@@ -38,8 +36,8 @@ export default function HowItWorksSection() {
   const reduce = useReducedMotion();
 
   return (
-    <section className={sectionStackClass} aria-labelledby="home-how-heading">
-      <div className={sectionContainerClass}>
+    <section className="section-block bg-section-white" aria-labelledby="home-how-heading">
+      <div className="section-inner">
         <motion.div
           initial={reduce ? fadeInUpReduced : fadeInUpInitial}
           whileInView={reduce ? fadeInUpReduced : fadeInUpInView}
@@ -47,14 +45,17 @@ export default function HowItWorksSection() {
           transition={fadeInUpTransition}
           className={glassShellClass}
         >
-          <h2
-            id="home-how-heading"
-            className="text-center font-heading text-3xl font-bold text-white md:text-4xl"
-          >
-            ご利用の流れ
-          </h2>
+          <div className="mb-12 text-center md:mb-16">
+            <p className="sec-label mb-3">FLOW</p>
+            <h2
+              id="home-how-heading"
+              className="font-heading text-[1.75rem] font-bold leading-snug text-[var(--text-primary)] md:text-[2.25rem]"
+            >
+              ご利用の流れ
+            </h2>
+          </div>
 
-          <div className="mt-10 flex flex-col items-stretch gap-6 md:flex-row md:items-stretch md:justify-center md:gap-0">
+          <div className="flex flex-col items-stretch gap-6 md:flex-row md:items-stretch md:justify-center md:gap-0">
             {STEPS.map((step, i) => (
               <div
                 key={step.n}

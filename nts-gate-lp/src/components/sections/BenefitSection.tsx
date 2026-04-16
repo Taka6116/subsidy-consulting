@@ -73,11 +73,11 @@ export default function BenefitSection() {
           viewport={fadeInUpViewport}
           transition={fadeInUpTransition}
         >
-          <div className="mb-14 text-center">
-            <p className="label-section mb-3">導入効果</p>
+          <div className="mb-12 text-center md:mb-16">
+            <p className="sec-label mb-3">導入効果</p>
             <h2
               id="home-benefit-heading"
-              className="font-heading text-3xl font-bold leading-tight text-[var(--text-primary)] md:text-4xl"
+              className="font-heading text-[1.75rem] font-bold leading-snug text-[var(--text-primary)] md:text-[2.25rem]"
             >
               補助金が「使える」と、経営はこう変わります。
             </h2>

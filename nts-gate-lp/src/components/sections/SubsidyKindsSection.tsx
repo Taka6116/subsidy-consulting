@@ -62,19 +62,16 @@ export default function SubsidyKindsSection() {
           viewport={fadeInUpViewport}
           transition={fadeInUpTransition}
         >
-          <div className="mb-14 text-center">
-            <p className="label-section mb-3">対象業種</p>
-            <h2 id="home-subsidy-kinds-heading" className="sr-only">
-              補助金の種類と規模
-            </h2>
-            <p
-              className="mb-2 text-lg font-medium text-[var(--text-primary)] md:text-xl"
-              aria-hidden="true"
+          <div className="mb-12 text-center md:mb-16">
+            <p className="sec-label mb-3">対象業種</p>
+            <h2
+              id="home-subsidy-kinds-heading"
+              className="font-heading text-[1.75rem] font-bold leading-snug text-[var(--text-primary)] md:text-[2.25rem]"
             >
               建設業・運送業に特化した、
               <br />
               補助金活用の実績。
-            </p>
+            </h2>
             <p className="mx-auto mt-4 max-w-xl text-base leading-relaxed text-[var(--text-secondary)] md:text-lg">
               業種特有の課題に合わせて、最適な補助金活用戦略を設計します。
             </p>

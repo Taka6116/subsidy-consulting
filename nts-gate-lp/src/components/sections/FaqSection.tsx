@@ -42,23 +42,28 @@ export default function FaqSection() {
   return (
     <section className="section-block bg-section-white" aria-labelledby={`${baseId}-faq-title`}>
       <div className="section-inner">
-        <motion.h2
-          id={`${baseId}-faq-title`}
+        <motion.div
           initial={reduce ? fadeInUpReduced : fadeInUpInitial}
           whileInView={reduce ? fadeInUpReduced : fadeInUpInView}
           viewport={fadeInUpViewport}
           transition={fadeInUpTransition}
-          className="text-center font-heading text-3xl font-bold text-[var(--text-primary)] md:text-4xl"
+          className="mb-12 text-center md:mb-16"
         >
-          よくあるご質問
-        </motion.h2>
+          <p className="sec-label mb-3">FAQ</p>
+          <h2
+            id={`${baseId}-faq-title`}
+            className="font-heading text-[1.75rem] font-bold leading-snug text-[var(--text-primary)] md:text-[2.25rem]"
+          >
+            よくあるご質問
+          </h2>
+        </motion.div>
 
         <motion.ul
           initial={reduce ? fadeInUpReduced : fadeInUpInitial}
           whileInView={reduce ? fadeInUpReduced : fadeInUpInView}
           viewport={fadeInUpViewport}
           transition={{ ...fadeInUpTransition, delay: 0.06 }}
-          className="mt-12 space-y-4"
+          className="space-y-4"
           role="list"
         >
           {FAQ_ITEMS.map((item) => {

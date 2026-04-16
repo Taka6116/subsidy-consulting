@@ -63,10 +63,10 @@ export default function NtsServicesSection() {
           viewport={fadeInUpViewport}
           transition={fadeInUpTransition}
         >
-          <p className="label-section mb-4">NTSの支援の特長</p>
+          <p className="sec-label mb-4">NTSの支援の特長</p>
           <h2
             id="home-nts-services-heading"
-            className="font-heading text-3xl font-bold leading-tight text-[var(--text-primary)] md:text-[2.6rem]"
+            className="font-heading text-[1.75rem] font-bold leading-snug text-[var(--text-primary)] md:text-[2.25rem]"
           >
             「申請して終わり」ではない、
             <br />

@@ -100,11 +100,11 @@ export default function AwarenessSection() {
           viewport={fadeInUpViewport}
           transition={fadeInUpTransition}
         >
-          <div className="mb-12 text-center md:mb-[72px]">
+          <div className="mb-12 text-center md:mb-16">
             <span className="sec-label">課題共感</span>
             <h2
               id="home-awareness-heading"
-              className="font-heading mt-3 text-3xl font-bold leading-snug text-[var(--text-primary)] md:text-5xl"
+              className="font-heading mt-3 text-[1.75rem] font-bold leading-snug text-[var(--text-primary)] md:text-[2.25rem]"
             >
               その「とりあえず申請」が、
               <br />

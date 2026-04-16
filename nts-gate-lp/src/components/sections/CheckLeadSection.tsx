@@ -9,19 +9,14 @@ import {
   fadeInUpTransition,
   fadeInUpViewport,
   glassShellClass,
-  sectionContainerClass,
-  sectionStackClass,
 } from "@/components/sections/sectionStyles";
 
 export default function CheckLeadSection() {
   const reduce = useReducedMotion();
 
   return (
-    <section
-      className={`${sectionStackClass} section-white`}
-      aria-labelledby="home-check-lead-heading"
-    >
-      <div className={sectionContainerClass}>
+    <section className="section-block section-white" aria-labelledby="home-check-lead-heading">
+      <div className="section-inner">
         <motion.div
           initial={reduce ? fadeInUpReduced : fadeInUpInitial}
           whileInView={reduce ? fadeInUpReduced : fadeInUpInView}
@@ -29,15 +24,17 @@ export default function CheckLeadSection() {
           transition={fadeInUpTransition}
           className={`${glassShellClass} text-center`}
         >
-          <p className="label-section mb-4">1分で確認できます</p>
-          <h2
-            id="home-check-lead-heading"
-            className="font-heading text-2xl font-bold leading-snug text-[var(--text-primary)] md:text-3xl lg:text-4xl"
-          >
-            企業名と業種を入力するだけで、
-            <br />
-            対象の補助金がわかります。
-          </h2>
+          <div className="mb-12 text-center md:mb-16">
+            <p className="sec-label mb-4">1分で確認できます</p>
+            <h2
+              id="home-check-lead-heading"
+              className="font-heading text-[1.75rem] font-bold leading-snug text-[var(--text-primary)] md:text-[2.25rem]"
+            >
+              企業名と業種を入力するだけで、
+              <br />
+              対象の補助金がわかります。
+            </h2>
+          </div>
           <p className="mt-6 text-base leading-relaxed text-[var(--text-secondary)] md:text-lg">
             難しい質問はありません。
             <br />

@@ -25,7 +25,7 @@ export default function FinalCtaSection() {
         >
           <h2
             id="home-final-cta-heading"
-            className="font-heading text-3xl font-bold leading-snug text-white md:text-4xl"
+            className="font-heading text-[1.75rem] font-bold leading-snug text-[var(--text-primary)] md:text-[2.25rem]"
           >
             まず、話を聞かせてください。
           </h2>
