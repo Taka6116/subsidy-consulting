@@ -31,21 +31,14 @@ export default function PartnerMeritSection() {
           </h2>
         </motion.div>
 
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-          <motion.div {...fadeUp(0.1)} className="card overflow-hidden p-0">
-            <div
-              className="relative h-[180px] overflow-hidden rounded-t-[16px] bg-[#E8F9F4]"
-              data-placeholder="benefit-card-1"
-            >
-              <Image
-                src={isometric14}
-                alt="（後から差し替え）ベネフィットイラスト"
-                width={640}
-                height={640}
-                className="absolute bottom-0 right-6 h-[88%] w-auto object-contain"
-              />
-            </div>
-            <div className="px-8 py-7 md:px-8">
+        <div className="flex flex-col gap-20">
+          {/* Merit 01: テキスト左 / 画像右 */}
+          <motion.div
+            {...fadeUp(0.1)}
+            className="flex flex-col items-center gap-10 lg:flex-row lg:gap-16"
+          >
+            {/* テキスト */}
+            <div className="flex-1">
               <div className="mb-6 flex items-center gap-4">
                 <div
                   className="flex h-12 w-12 flex-none items-center justify-center rounded-full border border-[var(--border-card)] text-lg font-bold text-[var(--accent-navy)]"
@@ -76,22 +69,37 @@ export default function PartnerMeritSection() {
                 </p>
               </div>
             </div>
-          </motion.div>
 
-          <motion.div {...fadeUp(0.2)} className="card overflow-hidden p-0">
-            <div
-              className="relative h-[180px] overflow-hidden rounded-t-[16px] bg-[#EEF6FF]"
-              data-placeholder="benefit-card-2"
-            >
+            {/* 画像 */}
+            <div className="flex w-full items-end justify-center lg:w-[40%] lg:flex-none">
               <Image
-                src={isometric09}
-                alt="（後から差し替え）ベネフィットイラスト"
+                src={isometric14}
+                alt="成約率が上がるイラスト"
                 width={640}
                 height={640}
-                className="absolute bottom-0 right-4 h-[85%] w-auto object-contain"
+                className="h-[280px] w-auto object-contain"
               />
             </div>
-            <div className="px-8 py-7 md:px-8">
+          </motion.div>
+
+          {/* Merit 02: 画像左 / テキスト右 */}
+          <motion.div
+            {...fadeUp(0.2)}
+            className="flex flex-col items-center gap-10 lg:flex-row lg:gap-16"
+          >
+            {/* 画像（モバイルでは先・PCでは左） */}
+            <div className="flex w-full items-end justify-center lg:order-first lg:w-[40%] lg:flex-none">
+              <Image
+                src={isometric09}
+                alt="紹介フィーで新しい収益が生まれるイラスト"
+                width={640}
+                height={640}
+                className="h-[280px] w-auto object-contain"
+              />
+            </div>
+
+            {/* テキスト */}
+            <div className="flex-1">
               <div className="mb-6 flex items-center gap-4">
                 <div
                   className="flex h-12 w-12 flex-none items-center justify-center rounded-full border border-[var(--border-card)] text-lg font-bold text-[var(--accent-navy)]"

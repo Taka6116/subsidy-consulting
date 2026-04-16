@@ -4,7 +4,6 @@ import PartnerLpWebGLBackground from "@/components/partner-lp/PartnerLpWebGLBack
 import HeroSection from "@/components/partner-lp/HeroSection";
 import PartnerAgitationSection from "@/components/gate-lp/partner/PartnerAgitationSection";
 import PartnerMeritSection from "@/components/gate-lp/partner/PartnerMeritSection";
-import PartnerFeeSection from "@/components/partner/PartnerFeeSection";
 import PartnerUseCasesSection from "@/components/gate-lp/partner/PartnerUseCasesSection";
 import PartnerSubsidySection from "@/components/gate-lp/partner/PartnerSubsidySection";
 import PartnerFlowSection from "@/components/gate-lp/partner/PartnerFlowSection";
@@ -49,7 +48,6 @@ export default function PartnerPage() {
         <HeroSection />
         <PartnerAgitationSection />
         <PartnerMeritSection />
-        <PartnerFeeSection />
         <PartnerUseCasesSection />
         <PartnerSubsidySection />
         <PartnerFlowSection />

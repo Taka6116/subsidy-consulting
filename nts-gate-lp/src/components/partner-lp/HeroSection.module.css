@@ -95,10 +95,10 @@
 .heroMidImage {
   position: absolute;
   bottom: 0;
-  left: 50%;
+  left: 30%;
   transform: translateX(-50%);
   width: auto;
-  height: 82%;
+  height: 75%;
   object-fit: contain;
   z-index: 2;
 }
@@ -106,9 +106,9 @@
 .heroEndImage {
   position: absolute;
   bottom: 0;
-  right: -4%;
+  right: 0;
   width: auto;
-  height: 108%;
+  height: 95%;
   object-fit: contain;
   z-index: 3;
 }
@@ -116,9 +116,9 @@
 .heroBackImage {
   position: absolute;
   bottom: 0;
-  left: 8px;
+  left: 4%;
   width: auto;
-  height: 58%;
+  height: 55%;
   object-fit: contain;
   opacity: 0.75;
   z-index: 1;
