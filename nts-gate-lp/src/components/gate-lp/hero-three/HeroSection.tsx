@@ -19,8 +19,8 @@ export default function HeroSection() {
         <div className={`two-col img-right ${styles.heroSplit}`}>
           <div className={`${styles.textCol} col-text space-y-6`}>
             <h1 className={styles.headline}>
-              <span className={styles.headlineLine}>補助金だけでなく、経営課題を超えて</span>
-              <span className={styles.headlineLine}>前に進みたい方へ</span>
+              <span className={styles.headlineLine}>補助金だけでなく、</span>
+              <span className={styles.headlineLine}>経営課題を超えて前に進みたい方へ</span>
             </h1>
 
             <p className={`${styles.sub} font-body`}>

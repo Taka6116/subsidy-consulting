@@ -1,7 +1,7 @@
 import type { MatchedSubsidyPreview } from "@/lib/subsidyCheckMocks";
 
 /** 概要タブのビル背景などで使う（差し替えしやすいよう定数化） */
-export const RESULT_DASHBOARD_HERO_IMAGE = "/images/subsidy-footer.jpg";
+export const RESULT_DASHBOARD_HERO_IMAGE = "/images/team-portrait.webp";
 
 export type EligibilityPair = { label: string; text: string };
 

@@ -49,7 +49,7 @@ const FRAMES = [
 ];
 
 const FRAME_DURATION = 6500;
-const FADE_DURATION = 700;
+const TRANSITION_DURATION = 0.5;
 /** API 完了後、最終フレームを見せてから結果へ遷移するまで（ms） */
 const FINAL_HOLD_MS = 1600;
 
@@ -68,12 +68,8 @@ export default function SubsidyMatchLoading({
   const shouldReduceMotion = useReducedMotion();
   const [frameIndex, setFrameIndex] = useState(0);
   const [progress, setProgress] = useState(0);
-  const [curtain, setCurtain] = useState(false);
   const startTimeRef = useRef(Date.now());
-  const timersRef = useRef<{
-    step1?: ReturnType<typeof setTimeout>;
-    step2?: ReturnType<typeof setTimeout>;
-  }>({});
+  const timerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const finaleHoldRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
   // プログレスバー
@@ -95,18 +91,12 @@ export default function SubsidyMatchLoading({
     if (apiComplete) return;
     if (frameIndex >= FRAMES.length - 1) return;
 
-    timersRef.current.step1 = setTimeout(() => {
-      setCurtain(true);
-      timersRef.current.step2 = setTimeout(() => {
-        setFrameIndex((i) => i + 1);
-        setCurtain(false);
-      }, FADE_DURATION);
+    timerRef.current = setTimeout(() => {
+      setFrameIndex((i) => i + 1);
     }, FRAME_DURATION);
 
     return () => {
-      const { step1, step2 } = timersRef.current;
-      if (step1) clearTimeout(step1);
-      if (step2) clearTimeout(step2);
+      if (timerRef.current) clearTimeout(timerRef.current);
     };
   }, [frameIndex, apiComplete]);
 
@@ -114,24 +104,18 @@ export default function SubsidyMatchLoading({
   useEffect(() => {
     if (!apiComplete || !onReadyToTransition) return;
     let cancelled = false;
-    if (timersRef.current.step1) clearTimeout(timersRef.current.step1);
-    if (timersRef.current.step2) clearTimeout(timersRef.current.step2);
+    if (timerRef.current) clearTimeout(timerRef.current);
 
-    setCurtain(true);
-    const t1 = setTimeout(() => {
+    setFrameIndex(FRAMES.length - 1);
+    setProgress(100);
+
+    finaleHoldRef.current = setTimeout(() => {
       if (cancelled) return;
-      setFrameIndex(FRAMES.length - 1);
-      setCurtain(false);
-      setProgress(100);
-      finaleHoldRef.current = setTimeout(() => {
-        if (cancelled) return;
-        onReadyToTransition();
-      }, FINAL_HOLD_MS);
-    }, FADE_DURATION);
+      onReadyToTransition();
+    }, FINAL_HOLD_MS);
 
     return () => {
       cancelled = true;
-      clearTimeout(t1);
       if (finaleHoldRef.current) clearTimeout(finaleHoldRef.current);
     };
   }, [apiComplete, onReadyToTransition]);
@@ -147,20 +131,6 @@ export default function SubsidyMatchLoading({
       aria-label="補助金を照合しています"
       style={{ background: "var(--bg-base)" }}
     >
-      <AnimatePresence>
-        {curtain && (
-          <motion.div
-            key="curtain"
-            className="pointer-events-none fixed inset-0 z-50"
-            style={{ background: "var(--bg-base)" }}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: FADE_DURATION / 1000 }}
-          />
-        )}
-      </AnimatePresence>
-
       <header
         className="fixed left-0 right-0 top-0 z-40 flex items-center justify-between border-b border-[var(--border-subtle)] px-6 py-5 sm:px-8"
         style={{ background: "var(--bg-base)" }}
@@ -186,38 +156,40 @@ export default function SubsidyMatchLoading({
       </header>
 
       <main className="relative z-10 flex w-full max-w-2xl flex-col items-center px-6 pb-16 pt-24 text-center sm:px-8">
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={frameIndex}
-            className="mb-16 flex flex-col items-center gap-3 sm:mb-20"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: shouldReduceMotion ? 0 : 0.4 }}
-          >
-            {frame.lines.map((line, i) => (
-              <motion.p
-                key={`${frameIndex}-${i}-${line.text}`}
-                className={
-                  line.large
-                    ? "font-heading text-3xl font-bold leading-tight text-[var(--text-primary)] md:text-4xl"
-                    : "text-lg leading-relaxed text-[var(--text-secondary)]"
-                }
-                initial={
-                  shouldReduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 18 }
-                }
-                animate={{ opacity: 1, y: 0 }}
-                transition={{
-                  duration: shouldReduceMotion ? 0 : 0.65,
-                  delay: shouldReduceMotion ? 0 : i * 0.45,
-                  ease: [0.22, 1, 0.36, 1] as const,
-                }}
-              >
-                {line.text}
-              </motion.p>
-            ))}
-          </motion.div>
-        </AnimatePresence>
+        <div className="mb-16 flex min-h-[11rem] w-full flex-col items-center justify-center sm:mb-20">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={frameIndex}
+              className="flex flex-col items-center gap-3"
+              initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={shouldReduceMotion ? { opacity: 1 } : { opacity: 0 }}
+              transition={{ duration: shouldReduceMotion ? 0 : TRANSITION_DURATION, ease: "easeInOut" }}
+            >
+              {frame.lines.map((line, i) => (
+                <motion.p
+                  key={i}
+                  className={
+                    line.large
+                      ? "font-heading text-3xl font-bold leading-tight text-[var(--text-primary)] md:text-4xl"
+                      : "text-base leading-relaxed text-[var(--text-secondary)] md:text-lg"
+                  }
+                  initial={
+                    shouldReduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 14 }
+                  }
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{
+                    duration: shouldReduceMotion ? 0 : 0.55,
+                    delay: shouldReduceMotion ? 0 : i * 0.35,
+                    ease: [0.22, 1, 0.36, 1] as const,
+                  }}
+                >
+                  {line.text}
+                </motion.p>
+              ))}
+            </motion.div>
+          </AnimatePresence>
+        </div>
 
         <div className="flex items-center gap-2">
           {FRAMES.map((_, i) => (

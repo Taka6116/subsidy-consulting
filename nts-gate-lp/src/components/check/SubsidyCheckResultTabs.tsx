@@ -166,12 +166,12 @@ export default function SubsidyCheckResultTabs({
               aria-label="制度概要"
             >
               {/* ヒーロー画像エリア（画像あり） */}
-              <div className="relative h-48 w-full overflow-hidden md:h-56">
+              <div className="relative h-56 w-full overflow-hidden md:h-64">
                 <Image
                   src={RESULT_DASHBOARD_HERO_IMAGE}
                   alt=""
                   fill
-                  className="object-cover opacity-60"
+                  className="object-cover object-top opacity-70"
                   sizes="(max-width: 768px) 100vw, 896px"
                   priority
                 />
