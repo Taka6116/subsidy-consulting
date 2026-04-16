@@ -3,6 +3,8 @@
 import Image from "next/image";
 import { motion, useReducedMotion } from "framer-motion";
 import HeroCheckCtaLink from "@/components/shared/HeroCheckCtaLink";
+import isometric08 from "../../../icon-assets/isometric_08.webp";
+import isometric11 from "../../../icon-assets/isometric_11.webp";
 import {
   fadeInUpInitial,
   fadeInUpInView,
@@ -50,14 +52,14 @@ export default function SubsidyMatchCtaSection() {
           <div className="col-img w-full max-w-md justify-self-center lg:max-w-lg">
             <div className="relative min-h-[280px] overflow-hidden rounded-2xl bg-[#EEF6FF] max-md:h-[200px]">
               <Image
-                src="/images/isometric_08.webp"
+                src={isometric08}
                 alt="補助金照会を検討するグループのイラスト"
                 width={640}
                 height={640}
                 className="absolute bottom-0 right-[120px] z-[1] h-[60%] w-auto object-contain opacity-85 md:right-[160px]"
               />
               <Image
-                src="/images/isometric_11.webp"
+                src={isometric11}
                 alt="補助金照会を案内する人物のイラスト"
                 width={640}
                 height={640}
