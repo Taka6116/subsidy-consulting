@@ -79,7 +79,7 @@ export default function BenefitSection() {
               id="home-benefit-heading"
               className="font-heading text-3xl font-bold leading-tight text-[var(--text-primary)] md:text-4xl"
             >
-              補助金を「使い切る」と、経営はこう変わります。
+              補助金が「使える」と、経営はこう変わります。
             </h2>
           </div>
 

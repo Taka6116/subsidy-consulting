@@ -29,7 +29,7 @@ const SERVICES: ServiceTab[] = [
       title: "活用例",
       body: "建設業：主力重機の更新 × 省力化補助金の組み合わせを設計\n運送業：デジタコ・Gマーク取得 × 複数補助金の活用順序を整理",
     },
-    imageSrc: "/images/PANA3061.jpg",
+    imageSrc: "/images/PANA3362.jpg",
     imageAlt: "経営課題のヒアリング・戦略整理のイメージ",
   },
   {
