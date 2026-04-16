@@ -1,8 +1,11 @@
+/* ================================================================
+   Partner LP — Hero Section
+   Layout: mobile 1-col center → lg+ 2-col (text left / image right)
+   ================================================================ */
+
 .page {
   position: relative;
   z-index: 10;
-  /* main の pt-20（5rem）下で 1 画面に収め、ロゴ帯を下端付近に固定（Hero.tsx と同型） */
-  height: max(560px, calc(100dvh - 5rem));
   min-height: max(560px, calc(100dvh - 5rem));
   display: flex;
   flex-direction: column;
@@ -12,37 +15,106 @@
   overflow-x: hidden;
 }
 
+/* ── 上部: テキスト + 画像の横並び ───────────────────────── */
 .heroMain {
   flex: 1;
   min-height: 0;
   display: flex;
   flex-direction: column;
+  align-items: center;
+  padding: 0 5vw 48px;
+  gap: 40px;
 }
 
+@media (min-width: 1024px) {
+  .heroMain {
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 56px;
+    padding: 0 6vw 64px;
+    max-width: 1280px;
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+/* ── ロゴ帯: heroMain の外・負marginなし ─────────────────── */
 .heroStrip {
   flex-shrink: 0;
   position: relative;
   z-index: 6;
-  margin-top: -2rem;
+  /* 重なりを解消: margin-top をゼロに */
+  margin-top: 0;
 }
 
-@media (min-width: 640px) {
-  .heroStrip {
-    margin-top: -3.5rem;
-  }
-}
-
+/* ── 左カラム: テキスト ──────────────────────────────────── */
 .content {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  flex: 1;
+  text-align: center;
   width: 100%;
   min-height: 0;
-  padding: 0 5vw 20px;
 }
 
+@media (min-width: 1024px) {
+  .content {
+    align-items: flex-start;
+    text-align: left;
+    flex: 0 0 auto;
+    width: min(520px, 45%);
+  }
+}
+
+/* ── 右カラム: 画像プレースホルダー ─────────────────────── */
+.imgCol {
+  width: 100%;
+  max-width: 480px;
+  flex-shrink: 0;
+}
+
+@media (min-width: 1024px) {
+  .imgCol {
+    flex: 1;
+    max-width: none;
+  }
+}
+
+.imgPlaceholder {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  border-radius: 20px;
+  border: 2px dashed var(--border-card);
+  background: rgba(26, 76, 142, 0.04);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(26, 76, 142, 0.08);
+}
+
+.imgPlaceholderIcon {
+  width: 48px;
+  height: 48px;
+  opacity: 0.25;
+  color: var(--accent-navy);
+}
+
+.imgPlaceholderLabel {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  text-align: center;
+  line-height: 1.6;
+}
+
+/* ── テキスト要素 ────────────────────────────────────────── */
 .eyebrow {
   font-size: 10px;
   letter-spacing: 0.3em;
@@ -54,15 +126,22 @@
 }
 
 .headline {
-  font-size: clamp(28px, 4.5vw, 58px);
+  font-size: clamp(26px, 3.8vw, 50px);
   font-weight: 700;
-  line-height: 1.2;
+  line-height: 1.25;
   color: var(--text-primary);
   text-align: center;
-  max-width: 740px;
-  margin-bottom: 16px;
+  max-width: 640px;
+  margin-bottom: 18px;
   opacity: 0;
   transform: translateY(20px);
+}
+
+@media (min-width: 1024px) {
+  .headline {
+    text-align: left;
+    max-width: none;
+  }
 }
 
 .headline em {
@@ -75,37 +154,59 @@
   font-weight: 400;
   color: var(--text-secondary);
   text-align: center;
-  max-width: min(720px, 92vw);
-  line-height: 1.8;
+  max-width: min(560px, 92vw);
+  line-height: 1.9;
   margin-bottom: 40px;
   opacity: 0;
   transform: translateY(16px);
 }
 
+@media (min-width: 1024px) {
+  .sub {
+    text-align: left;
+    max-width: none;
+  }
+}
+
+/* ── フローステップ ──────────────────────────────────────── */
 .flow {
-  --partner-flow-scale: 1.3;
+  --partner-flow-scale: 1;
   display: flex;
   align-items: flex-start;
   gap: 0;
-  margin-bottom: calc(36px * var(--partner-flow-scale));
+  margin-bottom: 36px;
   width: 100%;
-  max-width: calc(820px * var(--partner-flow-scale));
+  max-width: 560px;
   justify-content: center;
   flex-wrap: wrap;
+}
+
+@media (min-width: 480px) {
+  .flow {
+    --partner-flow-scale: 1.1;
+  }
+}
+
+@media (min-width: 1024px) {
+  .flow {
+    --partner-flow-scale: 1;
+    max-width: none;
+    justify-content: flex-start;
+  }
 }
 
 .step {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: calc(12px * var(--partner-flow-scale));
+  gap: calc(10px * var(--partner-flow-scale));
   opacity: 0;
   transform: translateY(calc(24px * var(--partner-flow-scale)));
 }
 
 .stepIcon {
-  width: calc(72px * var(--partner-flow-scale));
-  height: calc(72px * var(--partner-flow-scale));
+  width: calc(64px * var(--partner-flow-scale));
+  height: calc(64px * var(--partner-flow-scale));
   border-radius: 50%;
   border: calc(1.5px * var(--partner-flow-scale)) solid var(--border-card);
   background: rgba(255, 255, 255, 0.85);
@@ -117,8 +218,8 @@
 }
 
 .stepIcon svg {
-  width: calc(26px * var(--partner-flow-scale));
-  height: calc(26px * var(--partner-flow-scale));
+  width: calc(24px * var(--partner-flow-scale));
+  height: calc(24px * var(--partner-flow-scale));
   fill: none;
   stroke: var(--accent-navy);
   stroke-width: calc(1.8 * var(--partner-flow-scale));
@@ -128,10 +229,10 @@
 
 .stepNum {
   position: absolute;
-  top: calc(-6px * var(--partner-flow-scale));
-  right: calc(-6px * var(--partner-flow-scale));
-  width: calc(20px * var(--partner-flow-scale));
-  height: calc(20px * var(--partner-flow-scale));
+  top: calc(-5px * var(--partner-flow-scale));
+  right: calc(-5px * var(--partner-flow-scale));
+  width: calc(18px * var(--partner-flow-scale));
+  height: calc(18px * var(--partner-flow-scale));
   border-radius: 50%;
   background: rgba(26, 76, 142, 0.12);
   border: calc(1px * var(--partner-flow-scale)) solid rgba(26, 76, 142, 0.35);
@@ -144,33 +245,32 @@
 }
 
 .stepLabel {
-  font-size: calc(12px * var(--partner-flow-scale));
+  font-size: calc(11px * var(--partner-flow-scale));
   font-weight: 600;
   color: var(--text-primary);
   letter-spacing: 0.04em;
   text-align: center;
   line-height: 1.4;
-  max-width: calc(90px * var(--partner-flow-scale));
+  max-width: calc(80px * var(--partner-flow-scale));
 }
 
 .stepSub {
-  font-size: calc(10px * var(--partner-flow-scale));
+  font-size: calc(9px * var(--partner-flow-scale));
   color: var(--text-secondary);
   text-align: center;
-  max-width: calc(100px * var(--partner-flow-scale));
+  max-width: calc(90px * var(--partner-flow-scale));
   line-height: 1.5;
 }
 
 .arrow {
-  width: calc(48px * var(--partner-flow-scale));
+  width: calc(36px * var(--partner-flow-scale));
   height: calc(2px * var(--partner-flow-scale));
   background: rgba(26, 76, 142, 0.2);
   position: relative;
   align-self: flex-start;
-  margin-top: calc(36px * var(--partner-flow-scale) - 1px * var(--partner-flow-scale));
-  margin-right: calc(4px * var(--partner-flow-scale));
-  margin-bottom: 0;
-  margin-left: calc(4px * var(--partner-flow-scale));
+  margin-top: calc(32px * var(--partner-flow-scale));
+  margin-right: calc(2px * var(--partner-flow-scale));
+  margin-left: calc(2px * var(--partner-flow-scale));
   flex-shrink: 0;
   opacity: 0;
 }
@@ -224,6 +324,7 @@
   }
 }
 
+/* ── CTAボタン群 ─────────────────────────────────────────── */
 .ctas {
   display: flex;
   gap: 12px;
@@ -231,6 +332,12 @@
   justify-content: center;
   opacity: 0;
   transform: translateY(12px);
+}
+
+@media (min-width: 1024px) {
+  .ctas {
+    justify-content: flex-start;
+  }
 }
 
 .btnP {
@@ -275,12 +382,13 @@
   color: #fff;
 }
 
+/* ── パルスリング ────────────────────────────────────────── */
 .pulseRing {
   position: absolute;
   width: 100%;
   height: 100%;
   border-radius: 50%;
-  border: calc(1px * var(--partner-flow-scale, 1.3)) solid rgba(0, 184, 148, 0.35);
+  border: calc(1px * var(--partner-flow-scale, 1)) solid rgba(0, 184, 148, 0.35);
   animation: pulse 2.8s ease-out infinite;
 }
 

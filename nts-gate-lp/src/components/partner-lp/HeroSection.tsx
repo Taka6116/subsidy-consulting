@@ -17,6 +17,7 @@ export default function HeroSection() {
   const a3Ref = useRef<HTMLDivElement>(null);
   const s4Ref = useRef<HTMLDivElement>(null);
   const ctRef = useRef<HTMLDivElement>(null);
+  const imgColRef = useRef<HTMLDivElement>(null);
   const stepIconRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   useLayoutEffect(() => {
@@ -36,6 +37,7 @@ export default function HeroSection() {
       a3Ref.current,
       s4Ref.current,
       ctRef.current,
+      imgColRef.current,
     ].filter(Boolean) as HTMLElement[];
 
     if (prefersReduced) {
@@ -54,7 +56,8 @@ export default function HeroSection() {
       .to(s3Ref.current, { opacity: 1, y: 0, duration: 0.7 }, 1.4)
       .to(a3Ref.current, { opacity: 1, duration: 0.5 }, 1.65)
       .to(s4Ref.current, { opacity: 1, y: 0, duration: 0.7 }, 1.75)
-      .to(ctRef.current, { opacity: 1, y: 0, duration: 0.7 }, 1.95);
+      .to(ctRef.current, { opacity: 1, y: 0, duration: 0.7 }, 1.95)
+      .to(imgColRef.current, { opacity: 1, y: 0, duration: 0.9 }, 0.3);
 
     const icons = stepIconRefs.current.filter(Boolean) as HTMLDivElement[];
     const bindings = icons.map((el) => {
@@ -84,113 +87,159 @@ export default function HeroSection() {
 
   return (
     <section className={`section-hero ${styles.page}`}>
+      {/* ── 上部: テキスト（左） + 画像プレースホルダー（右） ── */}
       <div className={styles.heroMain}>
-      <div className={styles.content}>
-      <p ref={eyebrowRef} className={`${styles.eyebrow} font-body`}>
-        PARTNER PROGRAM — NTS
-      </p>
-      <h1 ref={headlineRef} className={`${styles.headline} font-heading`}>
-        顧客の『できない』を、
-        <br />
-        『できる』に変える一言がある。
-      </h1>
-      <p ref={subRef} className={`${styles.sub} font-body`}>
-        御社の顧客に、補助金という選択肢を渡してください。
-        <br />
-        採択後も1年間、NTSがお客様に寄り添います。
-        <br />
-        紹介フィーは成功報酬制です。
-      </p>
+        {/* 左カラム: テキスト + フロー + CTA */}
+        <div className={styles.content}>
+          <p ref={eyebrowRef} className={`${styles.eyebrow} font-body`}>
+            PARTNER PROGRAM — NTS
+          </p>
+          <h1 ref={headlineRef} className={`${styles.headline} font-heading`}>
+            顧客の『できない』を、
+            <br />
+            『できる』に変える一言がある。
+          </h1>
+          <p ref={subRef} className={`${styles.sub} font-body`}>
+            御社の顧客に、補助金という選択肢を渡してください。
+            <br />
+            採択後も1年間、NTSがお客様に寄り添います。
+            <br />
+            紹介フィーは成功報酬制です。
+          </p>
 
-      <div className={`${styles.flow} font-body`}>
-        <div ref={s1Ref} className={styles.step}>
-          <div ref={setStepIconRef(0)} className={styles.stepIcon}>
-            <div className={styles.pulseRing} aria-hidden />
-            <span className={styles.stepNum}>1</span>
-            <svg viewBox="0 0 24 24" aria-hidden>
-              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
-              <circle cx="9" cy="7" r="4" />
-              <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
-              <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+          <div className={`${styles.flow} font-body`}>
+            <div ref={s1Ref} className={styles.step}>
+              <div ref={setStepIconRef(0)} className={styles.stepIcon}>
+                <div className={styles.pulseRing} aria-hidden />
+                <span className={styles.stepNum}>1</span>
+                <svg viewBox="0 0 24 24" aria-hidden>
+                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                  <circle cx="9" cy="7" r="4" />
+                  <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                  <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                </svg>
+              </div>
+              <div className={styles.stepLabel}>顧客を紹介</div>
+              <div className={styles.stepSub}>
+                御社→NTS
+                <br />
+                1分で完了
+              </div>
+            </div>
+            <div ref={a1Ref} className={styles.arrow}>
+              <div className={styles.arrowDot} />
+            </div>
+            <div ref={s2Ref} className={styles.step}>
+              <div ref={setStepIconRef(1)} className={styles.stepIcon}>
+                <span className={styles.stepNum}>2</span>
+                <svg viewBox="0 0 24 24" aria-hidden>
+                  <circle cx="11" cy="11" r="8" />
+                  <path d="m21 21-4.35-4.35" />
+                  <path d="M11 8v6M8 11h6" />
+                </svg>
+              </div>
+              <div className={styles.stepLabel}>補助金マッチング</div>
+              <div className={styles.stepSub}>
+                NTSが診断
+                <br />
+                最適制度を選定
+              </div>
+            </div>
+            <div ref={a2Ref} className={styles.arrow}>
+              <div className={`${styles.arrowDot} ${styles.arrowDotDelay1}`} />
+            </div>
+            <div ref={s3Ref} className={styles.step}>
+              <div ref={setStepIconRef(2)} className={styles.stepIcon}>
+                <span className={styles.stepNum}>3</span>
+                <svg viewBox="0 0 24 24" aria-hidden>
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                  <polyline points="14 2 14 8 20 8" />
+                  <line x1="16" y1="13" x2="8" y2="13" />
+                  <line x1="16" y1="17" x2="8" y2="17" />
+                </svg>
+              </div>
+              <div className={styles.stepLabel}>申請〜採択</div>
+              <div className={styles.stepSub}>
+                全てNTSが
+                <br />
+                一括対応
+              </div>
+            </div>
+            <div ref={a3Ref} className={styles.arrow}>
+              <div className={`${styles.arrowDot} ${styles.arrowDotDelay2}`} />
+            </div>
+            <div ref={s4Ref} className={styles.step}>
+              <div ref={setStepIconRef(3)} className={styles.stepIcon}>
+                <span className={styles.stepNum}>4</span>
+                <svg viewBox="0 0 24 24" aria-hidden>
+                  <line x1="12" y1="1" x2="12" y2="23" />
+                  <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+                </svg>
+              </div>
+              <div className={styles.stepLabel}>紹介フィー受取</div>
+              <div className={styles.stepSub}>
+                採択額の
+                <br />
+                一定割合をお支払
+              </div>
+            </div>
+          </div>
+
+          <div ref={ctRef} className={`${styles.ctas} font-body`}>
+            <a href="#merit" className={styles.btnP}>
+              提携の詳細を見る
+            </a>
+            <a href="#contact" className={styles.btnS}>
+              まず話を聞く →
+            </a>
+          </div>
+        </div>
+
+        {/* 右カラム: 画像プレースホルダー */}
+        <div
+          ref={imgColRef}
+          className={styles.imgCol}
+          style={{ opacity: 0, transform: "translateY(20px)" }}
+        >
+          <div className={styles.imgPlaceholder}>
+            {/* ── 画像差し替えガイド ──────────────────────────────
+                この div を next/image に置き換えるだけで画像が入ります:
+
+                import Image from "next/image";
+                import imgPartner from "/public/images/PANA2822-2.jpg";
+
+                <Image
+                  src={imgPartner}
+                  alt="パートナー事例の現場写真"
+                  fill
+                  className="rounded-[20px] object-cover"
+                  sizes="(max-width: 1024px) 90vw, 50vw"
+                />
+            ─────────────────────────────────────────────────── */}
+            <svg
+              className={styles.imgPlaceholderIcon}
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden
+            >
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+              <circle cx="8.5" cy="8.5" r="1.5" />
+              <polyline points="21 15 16 10 5 21" />
             </svg>
-          </div>
-          <div className={styles.stepLabel}>顧客を紹介</div>
-          <div className={styles.stepSub}>
-            御社→NTS
-            <br />
-            1分で完了
-          </div>
-        </div>
-        <div ref={a1Ref} className={styles.arrow}>
-          <div className={styles.arrowDot} />
-        </div>
-        <div ref={s2Ref} className={styles.step}>
-          <div ref={setStepIconRef(1)} className={styles.stepIcon}>
-            <span className={styles.stepNum}>2</span>
-            <svg viewBox="0 0 24 24" aria-hidden>
-              <circle cx="11" cy="11" r="8" />
-              <path d="m21 21-4.35-4.35" />
-              <path d="M11 8v6M8 11h6" />
-            </svg>
-          </div>
-          <div className={styles.stepLabel}>補助金マッチング</div>
-          <div className={styles.stepSub}>
-            NTSが診断
-            <br />
-            最適制度を選定
-          </div>
-        </div>
-        <div ref={a2Ref} className={styles.arrow}>
-          <div className={`${styles.arrowDot} ${styles.arrowDotDelay1}`} />
-        </div>
-        <div ref={s3Ref} className={styles.step}>
-          <div ref={setStepIconRef(2)} className={styles.stepIcon}>
-            <span className={styles.stepNum}>3</span>
-            <svg viewBox="0 0 24 24" aria-hidden>
-              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-              <polyline points="14 2 14 8 20 8" />
-              <line x1="16" y1="13" x2="8" y2="13" />
-              <line x1="16" y1="17" x2="8" y2="17" />
-            </svg>
-          </div>
-          <div className={styles.stepLabel}>申請〜採択</div>
-          <div className={styles.stepSub}>
-            全てNTSが
-            <br />
-            一括対応
-          </div>
-        </div>
-        <div ref={a3Ref} className={styles.arrow}>
-          <div className={`${styles.arrowDot} ${styles.arrowDotDelay2}`} />
-        </div>
-        <div ref={s4Ref} className={styles.step}>
-          <div ref={setStepIconRef(3)} className={styles.stepIcon}>
-            <span className={styles.stepNum}>4</span>
-            <svg viewBox="0 0 24 24" aria-hidden>
-              <line x1="12" y1="1" x2="12" y2="23" />
-              <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
-            </svg>
-          </div>
-          <div className={styles.stepLabel}>紹介フィー受取</div>
-          <div className={styles.stepSub}>
-            採択額の
-            <br />
-            一定割合をお支払
+            <span className={styles.imgPlaceholderLabel}>
+              パートナー紹介 画像
+              <br />
+              （差し替え可能）
+            </span>
           </div>
         </div>
       </div>
 
-      <div ref={ctRef} className={`${styles.ctas} font-body`}>
-        <a href="#merit" className={styles.btnP}>
-          提携の詳細を見る
-        </a>
-        <a href="#contact" className={styles.btnS}>
-          まず話を聞く →
-        </a>
-      </div>
-      </div>
-      </div>
-
+      {/* ── ロゴスクロール帯: heroMain の外に置き重なりをゼロに ── */}
       <div className={styles.heroStrip}>
         <HeroPartnerStrip variant="dark" />
       </div>
