@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { motion, useReducedMotion } from "framer-motion";
 import ImagePlaceholder from "@/components/ui/ImagePlaceholder";
 import {
@@ -9,11 +10,20 @@ import {
   fadeInUpTransition,
   fadeInUpViewport,
 } from "@/components/sections/sectionStyles";
+import imgIsometric10 from "../../../icon-assets/isometric_10.webp";
+import imgIsometric13 from "../../../icon-assets/isometric_13.webp";
+import imgIsometric14 from "../../../icon-assets/isometric_14.webp";
 
 const HIGHLIGHTS = [
   { main: "最大半額以下", sub: "" },
   { main: "1年間", sub: "の伴走" },
   { main: "ROI", sub: "を数字で" },
+] as const;
+
+const BENEFIT_IMAGES = [
+  { src: imgIsometric13, alt: "導入効果1を表す設備投資イメージ" },
+  { src: imgIsometric10, alt: "導入効果2を表す運用定着イメージ" },
+  { src: imgIsometric14, alt: "導入効果3を表す投資判断イメージ" },
 ] as const;
 
 const BENEFITS = [
@@ -77,26 +87,38 @@ export default function BenefitSection() {
           <div className="mb-14 grid grid-cols-1 gap-6 md:mb-16 md:grid-cols-3">
             {BENEFITS.map(({ num, title, body }, idx) => {
               const hi = HIGHLIGHTS[idx];
+              const image = BENEFIT_IMAGES[idx];
               return (
-                <div key={num} className="nts-card flex flex-col p-9 md:p-10">
-                  <p className="mb-3 font-heading text-[0.7rem] font-bold tracking-[0.12em] text-[var(--accent-teal)]">
-                    {num}
-                  </p>
-                  <h3 className="mb-4 font-heading text-xl font-extrabold leading-snug text-[var(--text-primary)] md:text-[1.25rem]">
-                    {title}
-                  </h3>
-                  <div
-                    className="mb-4 rounded-[10px] px-4 py-3"
-                    style={{ backgroundColor: "rgba(0, 184, 148, 0.06)" }}
-                  >
-                    <span className="font-heading text-2xl font-extrabold leading-none text-[var(--accent-teal)] md:text-[1.5rem]">
-                      {hi.main}
-                    </span>
-                    {hi.sub ? (
-                      <span className="ml-2 text-[0.8rem] text-[var(--text-secondary)]">{hi.sub}</span>
-                    ) : null}
+                <div key={num} className="nts-card relative overflow-hidden p-9 md:p-10">
+                  <div className="pointer-events-none absolute right-4 top-4 z-[1] w-[min(38%,9rem)] sm:right-5 sm:top-5 sm:w-[min(36%,9.5rem)]">
+                    <Image
+                      src={image.src}
+                      alt={image.alt}
+                      className="h-auto w-full object-contain"
+                      sizes="(max-width: 640px) 36vw, 152px"
+                      priority={false}
+                    />
                   </div>
-                  <p className="flex-1 text-sm leading-[1.9] text-[var(--text-secondary)] md:text-base">{body}</p>
+                  <div className="relative z-[2] flex h-full flex-col pr-[min(40%,10rem)]">
+                    <p className="mb-3 font-heading text-[0.7rem] font-bold tracking-[0.12em] text-[var(--accent-teal)]">
+                      {num}
+                    </p>
+                    <h3 className="mb-4 font-heading text-xl font-extrabold leading-snug text-[var(--text-primary)] md:text-[1.25rem]">
+                      {title}
+                    </h3>
+                    <div
+                      className="mb-4 rounded-[10px] px-4 py-3"
+                      style={{ backgroundColor: "rgba(0, 184, 148, 0.06)" }}
+                    >
+                      <span className="font-heading text-2xl font-extrabold leading-none text-[var(--accent-teal)] md:text-[1.5rem]">
+                        {hi.main}
+                      </span>
+                      {hi.sub ? (
+                        <span className="ml-2 text-[0.8rem] text-[var(--text-secondary)]">{hi.sub}</span>
+                      ) : null}
+                    </div>
+                    <p className="flex-1 text-sm leading-[1.9] text-[var(--text-secondary)] md:text-base">{body}</p>
+                  </div>
                 </div>
               );
             })}
