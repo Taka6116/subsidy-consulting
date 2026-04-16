@@ -7,12 +7,15 @@ type Props = {
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export default function CheckPortalHeader({ audience }: Props) {
   return (
-    <header className="check-portal-glass-nav fixed left-0 right-0 top-0 z-50 text-white">
+    <header
+      className="fixed left-0 right-0 top-0 z-50 border-b border-[var(--border-subtle)]"
+      style={{ background: "var(--bg-base)" }}
+    >
       <div className="mx-auto flex max-w-5xl items-center justify-between gap-4 px-6 py-4">
         <div className="flex min-w-0 flex-1 items-center gap-6">
           <Link
             href="/"
-            className="shrink-0 rounded-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-portal-primary"
+            className="shrink-0 rounded-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent-teal)]"
           >
             <img
               src="/nts-logo.svg"
@@ -26,7 +29,7 @@ export default function CheckPortalHeader({ audience }: Props) {
         <div className="flex shrink-0 items-center gap-3">
           <Link
             href="/"
-            className="text-sm font-medium text-white underline-offset-4 drop-shadow-[0_1px_2px_rgba(0,0,0,0.35)] hover:text-white/90 hover:underline"
+            className="text-sm font-medium text-[var(--text-secondary)] underline-offset-4 transition hover:text-[var(--text-primary)] hover:underline"
           >
             トップへ
           </Link>

@@ -221,19 +221,19 @@ export default function SubsidyCheckClient({ audience }: Props) {
           <section className="mb-10" aria-labelledby="check-intro-heading">
             <h1
               id="check-intro-heading"
-              className="font-heading text-h1 font-bold leading-tight text-white drop-shadow-[0_1px_3px_rgba(0,0,0,0.35)]"
+              className="font-heading text-h1 font-bold leading-tight text-[var(--text-primary)]"
             >
               {formTitle}
             </h1>
-            <p className="mt-4 max-w-2xl text-body leading-loose text-white/90 drop-shadow-[0_1px_2px_rgba(0,0,0,0.25)]">
+            <p className="mt-4 max-w-2xl text-body leading-loose text-[var(--text-secondary)]">
               {formLead}
             </p>
           </section>
-          <div className="rounded-xl border border-white/10 bg-white p-6 shadow-[0_8px_32px_rgba(0,0,0,0.4)] sm:p-8">
-            <h2 className="font-heading text-h2 font-bold text-[#0F2027]">
+          <div className="nts-card p-6 sm:p-8">
+            <h2 className="font-heading text-h2 font-bold text-[var(--text-primary)]">
               {isPartner ? "顧客企業の情報を入力" : "会社情報を入力"}
             </h2>
-            <p className="mt-2 text-sm leading-relaxed text-[#5a7080]">
+            <p className="mt-2 text-sm leading-relaxed text-[var(--text-secondary)]">
               {isPartner
                 ? "顧客企業の会社名と業種が必須です。公式サイトURLは任意です。法人の正式な特定は行わず、入力内容をもとに対象制度のイメージを表示します。"
                 : "会社名と業種が必須です。公式サイトURLは任意です。法人の正式な特定は行わず、入力内容をもとに対象制度のイメージを表示します。"}
@@ -242,10 +242,10 @@ export default function SubsidyCheckClient({ audience }: Props) {
               <div>
                 <label
                   htmlFor="check-company"
-                  className="block text-sm font-bold text-[#1a3a4a]"
+                  className="block text-sm font-bold text-[var(--text-primary)]"
                 >
                   {isPartner ? "顧客企業の会社名" : "会社名"}
-                  <span className="ml-1 text-portal-error">*</span>
+                  <span className="ml-1 text-red-500">*</span>
                 </label>
                 <input
                   id="check-company"
@@ -254,22 +254,22 @@ export default function SubsidyCheckClient({ audience }: Props) {
                   value={companyName}
                   onChange={(e) => setCompanyName(e.target.value)}
                   placeholder={isPartner ? "例：株式会社○○" : "例：株式会社○○"}
-                  className="mt-2 w-full rounded-lg border border-[#d0dde5] bg-[#f8fbfd] px-4 py-3 text-body text-[#0F2027] outline-none transition-colors focus:border-[#00a0cc] focus:ring-2 focus:ring-[#00a0cc]/20 placeholder:text-[#a0b4bf]"
+                  className="mt-2 w-full rounded-lg border border-[var(--border-subtle)] bg-white px-4 py-3 text-body text-[var(--text-primary)] outline-none transition-colors focus:border-[var(--accent-teal)] focus:ring-2 focus:ring-[var(--accent-teal)]/20 placeholder:text-[var(--text-muted)]"
                 />
               </div>
               <div>
                 <label
                   htmlFor="check-industry"
-                  className="block text-sm font-bold text-[#1a3a4a]"
+                  className="block text-sm font-bold text-[var(--text-primary)]"
                 >
                   業種
-                  <span className="ml-1 text-portal-error">*</span>
+                  <span className="ml-1 text-red-500">*</span>
                 </label>
                 <select
                   id="check-industry"
                   value={industryId}
                   onChange={(e) => setIndustryId(e.target.value)}
-                  className="mt-2 w-full rounded-lg border border-[#d0dde5] bg-[#f8fbfd] px-4 py-3 text-body text-[#0F2027] outline-none transition-colors focus:border-[#00a0cc] focus:ring-2 focus:ring-[#00a0cc]/20"
+                  className="mt-2 w-full rounded-lg border border-[var(--border-subtle)] bg-white px-4 py-3 text-body text-[var(--text-primary)] outline-none transition-colors focus:border-[var(--accent-teal)] focus:ring-2 focus:ring-[var(--accent-teal)]/20"
                 >
                   <option value="">選択してください</option>
                   {INDUSTRY_OPTIONS.map((opt) => (
@@ -282,11 +282,11 @@ export default function SubsidyCheckClient({ audience }: Props) {
               <div>
                 <label
                   htmlFor="check-company-website"
-                  className="block text-sm font-bold text-[#1a3a4a]"
+                  className="block text-sm font-bold text-[var(--text-primary)]"
                 >
                   会社の公式サイトURL（任意）
                 </label>
-                <p className="mt-1 text-xs text-[#8aa0ad]">
+                <p className="mt-1 text-xs text-[var(--text-muted)]">
                   入力があればサーバーがページを取得し、照合キーワード・マッチングに使います。取得できない場合は無視されます（サイトの利用規約・robots
                   等はご確認ください）。
                 </p>
@@ -298,17 +298,17 @@ export default function SubsidyCheckClient({ audience }: Props) {
                   value={companyWebsiteUrl}
                   onChange={(e) => setCompanyWebsiteUrl(e.target.value)}
                   placeholder="https://example.co.jp"
-                  className="mt-2 w-full rounded-lg border border-[#d0dde5] bg-[#f8fbfd] px-4 py-3 text-body text-[#0F2027] outline-none transition-colors focus:border-[#00a0cc] focus:ring-2 focus:ring-[#00a0cc]/20 placeholder:text-[#a0b4bf]"
+                  className="mt-2 w-full rounded-lg border border-[var(--border-subtle)] bg-white px-4 py-3 text-body text-[var(--text-primary)] outline-none transition-colors focus:border-[var(--accent-teal)] focus:ring-2 focus:ring-[var(--accent-teal)]/20 placeholder:text-[var(--text-muted)]"
                 />
               </div>
               {formError ? (
-                <p className="text-sm font-medium text-portal-error">{formError}</p>
+                <p className="text-sm font-medium text-red-500">{formError}</p>
               ) : null}
               <div className="flex w-full justify-center pt-1">
                 <button
                   type="submit"
                   disabled={searchLoading}
-                  className="w-full rounded-full bg-[#00c6ff] px-6 py-4 text-base font-bold text-[#0b1a22] shadow-sm transition-all hover:bg-[#00b0e6] hover:shadow-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00c6ff] disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto sm:min-w-[240px]"
+                  className="w-full rounded-full bg-[var(--accent-teal)] px-6 py-4 text-base font-bold text-white shadow-sm transition-all hover:brightness-105 hover:shadow-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent-teal)] disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto sm:min-w-[240px]"
                 >
                   {searchLoading ? "照合中…" : "補助金を照合する"}
                 </button>
@@ -328,11 +328,11 @@ export default function SubsidyCheckClient({ audience }: Props) {
       {step === "results" && confirmed && (
         <div className="space-y-12">
           <div>
-            <p className="mb-1 text-[11px] font-bold uppercase tracking-[0.2em] text-white/35">
+            <p className="mb-1 text-[11px] font-bold uppercase tracking-[0.2em] text-[var(--text-muted)]">
               照合結果
             </p>
-            <p className="text-base font-medium text-white/70">
-              <span className="font-bold text-white">{confirmed.name}</span>
+            <p className="text-base font-medium text-[var(--text-secondary)]">
+              <span className="font-bold text-[var(--text-primary)]">{confirmed.name}</span>
               {locationLine}
               <span className="mx-1">　·　</span>
               {INDUSTRY_OPTIONS.find((o) => o.id === industryId)?.label ?? industryId}
@@ -341,20 +341,20 @@ export default function SubsidyCheckClient({ audience }: Props) {
 
           {results.length === 0 ? (
             <>
-              <h1 className="font-heading text-h1 font-bold text-white drop-shadow-[0_1px_3px_rgba(0,0,0,0.35)]">
+              <h1 className="font-heading text-h1 font-bold text-[var(--text-primary)]">
                 照合結果
               </h1>
-              <div className="mt-6 max-w-2xl space-y-4 rounded-xl border border-white/10 bg-white p-6 text-sm leading-relaxed text-[#0F2027] shadow-[0_8px_32px_rgba(0,0,0,0.35)] sm:p-8">
-                <p className="font-medium text-[#1a3a4a]">
+              <div className="nts-card mt-6 max-w-2xl space-y-4 p-6 text-sm leading-relaxed sm:p-8">
+                <p className="font-medium text-[var(--text-primary)]">
                   現在、御社の条件に完全に合致する公募中の補助金が見つかりませんでした。
                 </p>
-                <p className="text-[#5a7080]">これは以下の可能性があります：</p>
-                <ul className="list-inside list-disc space-y-1 text-[#5a7080]">
+                <p className="text-[var(--text-secondary)]">これは以下の可能性があります：</p>
+                <ul className="list-inside list-disc space-y-1 text-[var(--text-secondary)]">
                   <li>現在、公募が始まっていない（近日公募予定の制度あり）</li>
                   <li>業種・地域の条件が特殊なケース</li>
                   <li>御社の課題に合う制度が複数省庁にまたがるケース</li>
                 </ul>
-                <p className="text-[#5a7080]">
+                <p className="text-[var(--text-secondary)]">
                   補助金は年間を通じて新規公募が出ます。
                   <br />
                   専門家への無料相談で、最新情報と合わせてご案内します。
@@ -389,7 +389,7 @@ export default function SubsidyCheckClient({ audience }: Props) {
             <button
               type="button"
               onClick={reset}
-              className="inline-flex items-center gap-2 text-sm text-white/40 transition hover:text-white/70"
+              className="inline-flex items-center gap-2 text-sm text-[var(--text-muted)] transition hover:text-[var(--text-primary)]"
             >
               ← 条件を変えてやり直す
             </button>

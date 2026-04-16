@@ -2,7 +2,6 @@
 
 import Image from "next/image";
 import { motion, useReducedMotion } from "framer-motion";
-import ImagePlaceholder from "@/components/ui/ImagePlaceholder";
 import {
   fadeInUpInitial,
   fadeInUpInView,
@@ -84,22 +83,24 @@ export default function BenefitSection() {
             </h2>
           </div>
 
-          <div className="mb-14 grid grid-cols-1 gap-6 md:mb-16 md:grid-cols-3">
+          <div className="mb-14 grid grid-cols-1 gap-x-6 gap-y-2 md:mb-16 md:grid-cols-3">
             {BENEFITS.map(({ num, title, body }, idx) => {
               const hi = HIGHLIGHTS[idx];
               const image = BENEFIT_IMAGES[idx];
               return (
-                <div key={num} className="nts-card relative overflow-hidden p-9 md:p-10">
-                  <div className="pointer-events-none absolute right-4 top-4 z-[1] w-[min(38%,9rem)] sm:right-5 sm:top-5 sm:w-[min(36%,9.5rem)]">
+                <div key={num} className="flex flex-col">
+                  {/* カード外・上部 — 全カード共通 h-36 で高さを揃える */}
+                  <div className="flex h-36 w-full items-end justify-center pb-3">
                     <Image
                       src={image.src}
                       alt={image.alt}
-                      className="h-auto w-full object-contain"
-                      sizes="(max-width: 640px) 36vw, 152px"
+                      className="max-h-full w-auto object-contain drop-shadow-sm"
+                      sizes="160px"
                       priority={false}
                     />
                   </div>
-                  <div className="relative z-[2] flex h-full flex-col pr-[min(40%,10rem)]">
+                  {/* カード本体 */}
+                  <div className="nts-card flex flex-1 flex-col p-9 md:p-10">
                     <p className="mb-3 font-heading text-[0.7rem] font-bold tracking-[0.12em] text-[var(--accent-teal)]">
                       {num}
                     </p>
@@ -122,10 +123,6 @@ export default function BenefitSection() {
                 </div>
               );
             })}
-          </div>
-
-          <div className="mx-auto max-w-[280px]">
-            <ImagePlaceholder label="握手・成立イラスト" aspectRatio="4/3" />
           </div>
         </motion.div>
       </div>

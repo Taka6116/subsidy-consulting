@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import CheckPortalHeader from "@/components/check/CheckPortalHeader";
 import SubsidyCheckClient from "@/components/check/SubsidyCheckClient";
-import HeroThreeWebGLBackground from "@/components/gate-lp/hero-three/HeroThreeWebGLBackground";
 
 export const metadata: Metadata = {
   title: "対象補助金の確認（デモ） | 日本提携支援",
@@ -21,24 +20,20 @@ export default async function CheckPage({
   const raw = params.audience;
   const audienceParam = Array.isArray(raw) ? raw[0] : raw;
   const audience = audienceParam === "partner" ? "partner" : "end_user";
-  const useEndUserTone = true;
 
   return (
-    <div
-      className={`check-portal min-h-screen font-body text-portal-on-surface${useEndUserTone ? " check-portal-lp-bg" : ""}`}
-    >
-      {useEndUserTone ? <HeroThreeWebGLBackground interactive={false} /> : null}
+    <div className="check-lp min-h-screen font-body" style={{ background: "var(--bg-base)" }}>
       <CheckPortalHeader audience={audience} />
-      <main className="relative z-[2] min-h-[calc(100vh-5rem)] px-6 pb-16 pt-24">
+      <main className="min-h-[calc(100vh-5rem)] px-6 pb-16 pt-24">
         <div className="mx-auto max-w-5xl">
           <SubsidyCheckClient audience={audience} />
         </div>
       </main>
-      <footer className="relative z-[2] border-t border-white/10 bg-[rgba(6,14,28,0.35)] py-8">
+      <footer className="border-t border-[var(--border-subtle)] bg-[var(--bg-base)] py-8">
         <div className="mx-auto max-w-5xl px-6 text-center text-caption">
           <Link
             href="/"
-            className="font-medium text-white/60 underline-offset-4 transition hover:text-white hover:underline"
+            className="font-medium text-[var(--text-muted)] underline-offset-4 transition hover:text-[var(--text-primary)] hover:underline"
           >
             日本提携支援 トップへ戻る
           </Link>
