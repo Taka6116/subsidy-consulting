@@ -1,6 +1,8 @@
 "use client";
 
+import Image from "next/image";
 import { motion } from "framer-motion";
+import isometric09 from "../../../../icon-assets/isometric_09.webp";
 
 const EASE_OUT = [0.22, 1, 0.36, 1] as const;
 
@@ -19,27 +21,42 @@ export default function PartnerAboutSection() {
     >
       <div className="mx-auto max-w-4xl px-6 md:px-8">
         <div className="card p-10 md:p-14">
-          <motion.div {...fadeUp(0)}>
-            <p className="label-section mb-4">About NTS</p>
-            <h2 className="font-heading text-3xl font-bold leading-snug text-[var(--text-primary)] md:text-4xl">
-              補助金活用の専門チームが、
-              <br />
-              提携先とともに動きます。
-            </h2>
-          </motion.div>
+          <div className="grid grid-cols-1 gap-10 lg:grid-cols-[minmax(0,1fr)_320px] lg:items-center">
+            <div>
+              <motion.div {...fadeUp(0)}>
+                <p className="label-section mb-4">About NTS</p>
+                <h2 className="font-heading text-3xl font-bold leading-snug text-[var(--text-primary)] md:text-4xl">
+                  補助金活用の専門チームが、
+                  <br />
+                  提携先とともに動きます。
+                </h2>
+              </motion.div>
 
-          <motion.p
-            className="mt-6 text-base leading-relaxed text-[var(--text-secondary)]"
-            {...fadeUp(0.1)}
-          >
-            申請サポートにとどまらず、採択後の1年間もお客様の経営に寄り添います。
-            御社が紹介してくださった顧客に、NTSが責任を持って伴走します。
-          </motion.p>
+              <motion.p
+                className="mt-6 text-base leading-relaxed text-[var(--text-secondary)]"
+                {...fadeUp(0.1)}
+              >
+                申請サポートにとどまらず、採択後の1年間もお客様の経営に寄り添います。
+                御社が紹介してくださった顧客に、NTSが責任を持って伴走します。
+              </motion.p>
+            </div>
 
-          <motion.div
-            className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-3"
-            {...fadeUp(0.2)}
-          >
+            <motion.div
+              className="relative h-[240px] overflow-hidden rounded-2xl bg-[#EEF6FF]"
+              data-placeholder="team-main"
+              {...fadeUp(0.12)}
+            >
+              <Image
+                src={isometric09}
+                alt="（後から差し替え）専門チームイラスト"
+                width={640}
+                height={640}
+                className="absolute bottom-0 left-1/2 h-[90%] w-auto -translate-x-1/2 object-contain"
+              />
+            </motion.div>
+          </div>
+
+          <motion.div className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-3" {...fadeUp(0.2)}>
             {[
               {
                 title: "3種類",

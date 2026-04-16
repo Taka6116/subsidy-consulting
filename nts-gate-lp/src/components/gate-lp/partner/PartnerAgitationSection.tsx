@@ -16,6 +16,7 @@ const CARDS: {
   situation: string;
   pain: string;
   note: ReactNode;
+  placeholder: string;
 }[] = [
   {
     situation: "顧客に提案しても",
@@ -29,6 +30,7 @@ const CARDS: {
         NTSが採択後も1年間伴走するので、紹介した後も顧客に責任を果たせます。
       </>
     ),
+    placeholder: "awareness-card-1",
   },
   {
     situation: "せっかく興味を持ってもらっても",
@@ -40,6 +42,7 @@ const CARDS: {
         NTSが採択後も継続的に関わるので、紹介した後のフォローも安心です。
       </>
     ),
+    placeholder: "awareness-card-2",
   },
   {
     situation: "検討が長引いて",
@@ -51,6 +54,7 @@ const CARDS: {
         採択後も1年間伴走する体制があることが、顧客の背中を押す武器になります。
       </>
     ),
+    placeholder: "awareness-card-3",
   },
 ];
 
@@ -89,14 +93,24 @@ export default function PartnerAgitationSection() {
             <motion.div
               key={i}
               {...fadeUp(i * 0.1)}
-              className="card p-7"
+              className="card overflow-hidden p-0"
             >
-              <p className="mb-3 text-xs text-[var(--text-muted)]">{card.situation}</p>
-              <p className="mb-5 font-heading text-2xl font-bold leading-snug whitespace-pre-line text-[var(--text-primary)]">
-                {card.pain}
-              </p>
-              <div className="border-t border-[var(--border-subtle)] pt-4">
-                <p className="text-sm leading-relaxed text-[var(--text-secondary)]">{card.note}</p>
+              <div
+                className="relative h-[140px] overflow-hidden rounded-t-[12px] bg-[#F0F6FF]"
+                data-placeholder={card.placeholder}
+              >
+                <p className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-center text-xs text-[#B0C4D8]">
+                  画像を入れる場所
+                </p>
+              </div>
+              <div className="p-7">
+                <p className="mb-3 text-xs text-[var(--text-muted)]">{card.situation}</p>
+                <p className="mb-5 whitespace-pre-line font-heading text-2xl font-bold leading-snug text-[var(--text-primary)]">
+                  {card.pain}
+                </p>
+                <div className="border-t border-[var(--border-subtle)] pt-4">
+                  <p className="text-sm leading-relaxed text-[var(--text-secondary)]">{card.note}</p>
+                </div>
               </div>
             </motion.div>
           ))}

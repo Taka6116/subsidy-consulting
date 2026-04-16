@@ -59,12 +59,18 @@ export default function PartnerSubsidySection() {
             <motion.div
               key={s.name}
               {...fadeUp(i * 0.1)}
-              className="card group flex flex-col p-7 transition-all duration-300"
+              className="card group relative flex flex-col p-7 transition-all duration-300"
             >
+              <div
+                className={`absolute right-4 top-4 h-20 w-20 rounded-lg ${
+                  i === 0 ? "bg-[#EEF6FF]" : i === 1 ? "bg-[#E8F9F4]" : "bg-[#FFF4E8]"
+                }`}
+                data-placeholder={`subsidy-icon-${i + 1}`}
+              />
               <p className="mb-2 text-[10px] font-bold uppercase tracking-wider text-[var(--text-muted)]">
                 {s.category}
               </p>
-              <h3 className="mb-1 text-lg font-bold leading-snug text-[var(--text-primary)]">{s.name}</h3>
+              <h3 className="mb-1 pr-24 text-lg font-bold leading-snug text-[var(--text-primary)]">{s.name}</h3>
               <p className="text-highlight-gold mb-4 text-2xl font-bold">
                 {s.max}
               </p>

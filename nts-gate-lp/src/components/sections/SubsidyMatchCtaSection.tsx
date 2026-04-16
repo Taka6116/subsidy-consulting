@@ -49,7 +49,7 @@ export default function SubsidyMatchCtaSection() {
           </div>
 
           <div className="col-img w-full max-w-md justify-self-center lg:max-w-lg">
-            <div className="relative min-h-[280px] overflow-hidden rounded-2xl bg-[#EEF6FF] max-md:h-[200px]">
+            <div className="relative min-h-[280px] overflow-hidden max-md:h-[200px]">
               <Image
                 src={isometric08}
                 alt="補助金照会を検討するグループのイラスト"

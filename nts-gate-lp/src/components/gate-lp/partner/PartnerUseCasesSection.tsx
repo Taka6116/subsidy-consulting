@@ -68,14 +68,20 @@ export default function PartnerUseCasesSection() {
             <motion.div
               key={card.tag}
               {...fadeUp(i * 0.1)}
-              className="card p-7"
+              className="card overflow-hidden p-0"
             >
-              <p className="mb-3 text-xs text-[var(--text-muted)]">{card.tag}</p>
-              <h3 className="mb-5 font-heading text-xl font-bold leading-snug text-[var(--text-primary)] md:text-2xl">
-                {card.title}
-              </h3>
-              <div className="border-t border-[var(--border-subtle)] pt-4">
-                <p className="text-sm leading-relaxed text-[var(--text-secondary)]">{card.body}</p>
+              <div
+                className="h-[120px] rounded-t-[12px] bg-[#F5F8FF]"
+                data-placeholder={`target-card-${i + 1}`}
+              />
+              <div className="p-7">
+                <p className="mb-3 text-xs text-[var(--text-muted)]">{card.tag}</p>
+                <h3 className="mb-5 font-heading text-xl font-bold leading-snug text-[var(--text-primary)] md:text-2xl">
+                  {card.title}
+                </h3>
+                <div className="border-t border-[var(--border-subtle)] pt-4">
+                  <p className="text-sm leading-relaxed text-[var(--text-secondary)]">{card.body}</p>
+                </div>
               </div>
             </motion.div>
           ))}

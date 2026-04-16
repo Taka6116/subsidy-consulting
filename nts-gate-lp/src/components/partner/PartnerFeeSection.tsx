@@ -1,8 +1,11 @@
 "use client";
 
+import Image from "next/image";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { ArrowRight, DollarSign, FileText, Search, UserPlus } from "lucide-react";
+import isometric09 from "../../../icon-assets/isometric_09.webp";
+import isometric12 from "../../../icon-assets/isometric_12.webp";
 
 const VIEWPORT = { once: true, margin: "-100px" } as const;
 
@@ -194,6 +197,37 @@ export default function PartnerFeeSection() {
           <br className="hidden sm:block" />
           完全成功報酬型だから、紹介することにリスクはありません。
         </p>
+
+        <motion.div
+          className="relative mt-12 h-[200px] w-full overflow-hidden rounded-2xl"
+          style={{ background: "linear-gradient(135deg, #EEF6FF, #E8F9F4)" }}
+          data-placeholder="flow-main"
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={VIEWPORT}
+          transition={{ duration: 0.5, delay: 0.12 }}
+        >
+          <div
+            className="absolute bottom-0 left-8 text-sm text-[#B0C4D8]"
+            data-placeholder="flow-illustration"
+          >
+            画像を入れる場所
+          </div>
+          <Image
+            src={isometric09}
+            alt="（後から差し替え）仕組み説明イラスト"
+            width={640}
+            height={640}
+            className="absolute bottom-0 right-[220px] h-[70%] w-auto object-contain opacity-85"
+          />
+          <Image
+            src={isometric12}
+            alt="（後から差し替え）仕組み説明イラスト"
+            width={640}
+            height={640}
+            className="absolute bottom-0 right-10 h-[85%] w-auto object-contain"
+          />
+        </motion.div>
 
         <motion.div
           className="mt-12 flex flex-col items-center justify-center gap-4 sm:flex-row"

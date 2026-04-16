@@ -1,8 +1,11 @@
 "use client";
 
+import Image from "next/image";
 import { useLayoutEffect, useRef } from "react";
 import gsap from "gsap";
 import HeroPartnerStrip from "@/components/gate-lp/HeroPartnerStrip";
+import isometric08 from "../../../icon-assets/isometric_08.webp";
+import isometric16 from "../../../icon-assets/isometric_16.webp";
 import styles from "./HeroSection.module.css";
 
 export default function HeroSection() {
@@ -201,40 +204,21 @@ export default function HeroSection() {
           className={styles.imgCol}
           style={{ opacity: 0, transform: "translateY(20px)" }}
         >
-          <div className={styles.imgPlaceholder}>
-            {/* ── 画像差し替えガイド ──────────────────────────────
-                この div を next/image に置き換えるだけで画像が入ります:
-
-                import Image from "next/image";
-                import imgPartner from "/public/images/PANA2822-2.jpg";
-
-                <Image
-                  src={imgPartner}
-                  alt="パートナー事例の現場写真"
-                  fill
-                  className="rounded-[20px] object-cover"
-                  sizes="(max-width: 1024px) 90vw, 50vw"
-                />
-            ─────────────────────────────────────────────────── */}
-            <svg
-              className={styles.imgPlaceholderIcon}
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              aria-hidden
-            >
-              <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
-              <circle cx="8.5" cy="8.5" r="1.5" />
-              <polyline points="21 15 16 10 5 21" />
-            </svg>
-            <span className={styles.imgPlaceholderLabel}>
-              パートナー紹介 画像
-              <br />
-              （差し替え可能）
-            </span>
+          <div className={styles.imgPlaceholder} data-placeholder="hero-main">
+            <Image
+              src={isometric08}
+              alt="（後から差し替え）Heroイラスト"
+              width={640}
+              height={640}
+              className={styles.heroBackImage}
+            />
+            <Image
+              src={isometric16}
+              alt="（後から差し替え）Heroイラスト"
+              width={640}
+              height={640}
+              className={styles.heroMainImage}
+            />
           </div>
         </div>
       </div>
