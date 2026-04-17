@@ -92,7 +92,12 @@ export default function WhatIsNtsSection() {
             <div className="lg:flex lg:h-full lg:min-h-0 lg:w-[58%] lg:flex-col">
               <div className="grid flex-1 grid-cols-2 gap-4 md:gap-6 lg:min-h-0 lg:grid-rows-2">
                 {FLOW_STEPS.map((step, i) => {
-                  const stepNo = String(i + 1).padStart(2, "0");
+                  const stepNo =
+                    step.title === "採択・1年間伴走"
+                      ? "04"
+                      : step.title === "書類作成・申請"
+                        ? "03"
+                        : String(i + 1).padStart(2, "0");
                   // 01→02（右矢印）、03→04（右矢印）
                   const showRightArrow = i === 0 || i === 2;
                   // 02の下に↓矢印（行間ギャップの中央）

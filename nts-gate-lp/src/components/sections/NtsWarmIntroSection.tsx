@@ -36,9 +36,9 @@ export default function NtsWarmIntroSection() {
               id="home-nts-warm-intro-heading"
               className="font-heading text-[1.75rem] font-bold leading-snug text-[var(--text-primary)] md:text-[2.25rem]"
             >
-              「補助金が使えます」——その一言の先に、
+              「補助金が使えます」
               <br />
-              1年間の伴走があります。
+              その一言の先に、1年間の伴走があります。
             </h2>
           </div>
 

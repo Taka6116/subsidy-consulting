@@ -68,9 +68,9 @@ export default function NtsServicesSection() {
             id="home-nts-services-heading"
             className="font-heading text-[1.75rem] font-bold leading-snug text-[var(--text-primary)] md:text-[2.25rem]"
           >
-            「申請して終わり」ではない、
+            申請が目的ではありません。
             <br />
-            NTSの補助金活用支援。
+            経営課題に寄り添います。
           </h2>
         </motion.div>
 
