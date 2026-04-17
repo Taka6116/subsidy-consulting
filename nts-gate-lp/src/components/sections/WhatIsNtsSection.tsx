@@ -81,110 +81,108 @@ export default function WhatIsNtsSection() {
             </h2>
           </div>
 
-          <div className="flex flex-col gap-10 lg:flex-row lg:gap-12">
-            {/* 左カラム: 2×2 フロー図 */}
-            <div className="lg:w-[58%]">
-              <div className="grid grid-cols-2 gap-4 md:gap-6">
+          <div className="flex flex-col gap-10 lg:flex-row lg:items-stretch lg:gap-12">
+            {/* 左カラム: 2×2 フロー（各セル＝画像＋テキスト一体カード） */}
+            <div className="lg:flex lg:h-full lg:min-h-0 lg:w-[58%] lg:flex-col">
+              <div className="grid flex-1 grid-cols-2 gap-4 md:gap-6 lg:min-h-0 lg:grid-rows-2">
                 {FLOW_STEPS.map((step, i) => {
                   const stepNo = String(i + 1).padStart(2, "0");
-                  // 横矢印: 上段左(i=0)は →、下段左(i=2)は ←
                   const showRowArrow = i === 0 || i === 2;
                   const isLeftArrow = i === 2;
-                  // 下矢印: ①(i=0)の下のみ
-                  const showDownArrow = i === 0;
                   return (
-                    <div key={step.title} className="relative flex flex-col items-center">
-                      {/* ステップカード */}
+                    <div
+                      key={step.title}
+                      className="relative flex min-h-0 flex-col items-stretch"
+                    >
                       <div
-                        className="relative h-36 w-full overflow-hidden rounded-2xl border md:h-40"
+                        className="flex h-full min-h-0 flex-col overflow-hidden rounded-2xl border shadow-[0_2px_12px_rgba(26,76,142,0.06)]"
                         style={{ background: step.bg, borderColor: step.border }}
                       >
-                        <Image
-                          src={step.image}
-                          alt={step.title}
-                          className="absolute bottom-0 left-1/2 h-[88%] w-auto -translate-x-1/2 object-contain"
-                        />
+                        {/* イラスト */}
+                        <div className="relative h-28 w-full shrink-0 overflow-hidden md:h-32">
+                          <Image
+                            src={step.image}
+                            alt={step.title}
+                            width={640}
+                            height={640}
+                            className="absolute bottom-0 left-1/2 h-[92%] w-auto max-w-[95%] -translate-x-1/2 object-contain object-bottom"
+                          />
+                        </div>
+                        {/* 番号・タイトル・本文 */}
+                        <div className="flex flex-1 flex-col items-center px-3 pb-3 pt-1 text-center">
+                          <div className="mb-2 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#1A7B6F] text-xs font-semibold text-white">
+                            {stepNo}
+                          </div>
+                          <p className="mb-1 text-sm font-semibold leading-snug text-[var(--text-primary)]">
+                            {step.title}
+                          </p>
+                          <p className="text-[12px] leading-[1.65] text-[var(--text-secondary)]">
+                            {step.body}
+                          </p>
+                        </div>
                       </div>
 
-                      {/* 横矢印 */}
                       {showRowArrow && (
                         <span
-                          className="absolute right-[-18px] top-[70px] z-10 hidden text-[#1A7B6F] lg:flex"
+                          className="absolute right-[-14px] top-1/2 z-10 hidden -translate-y-1/2 text-[#1A7B6F] md:right-[-16px] lg:flex"
                           aria-hidden
                         >
-                          {isLeftArrow
-                            ? <ArrowLeft className="h-5 w-5" />
-                            : <ArrowRight className="h-5 w-5" />}
+                          {isLeftArrow ? (
+                            <ArrowLeft className="h-5 w-5" />
+                          ) : (
+                            <ArrowRight className="h-5 w-5" />
+                          )}
                         </span>
                       )}
-
-                      {/* 下矢印（①の下のみ） */}
-                      {showDownArrow && (
-                        <span
-                          className="mt-2 hidden text-[#1A7B6F] lg:flex"
-                          aria-hidden
-                        >
-                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                            <path d="M12 5v14M5 12l7 7 7-7" />
-                          </svg>
-                        </span>
-                      )}
-
-                      <div className="mx-auto mb-2 mt-3 flex h-7 w-7 items-center justify-center rounded-full bg-[#1A7B6F] text-xs font-semibold text-white">
-                        {stepNo}
-                      </div>
-                      <p className="mb-1 text-center text-sm font-semibold text-[var(--text-primary)]">
-                        {step.title}
-                      </p>
-                      <p className="text-center text-[12px] leading-[1.7] text-[var(--text-secondary)]">
-                        {step.body}
-                      </p>
                     </div>
                   );
                 })}
               </div>
             </div>
 
-            {/* 右カラム: PANA 5枚「2・1・2」配置 */}
-            <div className="hidden lg:flex lg:w-[42%] lg:flex-col lg:gap-4">
-              {/* 上段: 2枚 */}
-              <div className="grid grid-cols-2 gap-4">
+            {/* 右カラム: PANA 5枚「2・1・2」— 高さを左に合わせて縮小 */}
+            <div className="hidden lg:flex lg:h-full lg:min-h-0 lg:w-[42%] lg:flex-col lg:justify-between lg:gap-2">
+              <div className="grid min-h-0 grid-cols-2 gap-2">
                 {PANA_IMAGES.slice(0, 2).map((img) => (
-                  <div key={img.src.src} className="overflow-hidden rounded-xl">
+                  <div
+                    key={img.src.src}
+                    className="max-h-[132px] min-h-0 overflow-hidden rounded-xl"
+                  >
                     <Image
                       src={img.src}
                       alt={img.alt}
                       width={400}
                       height={520}
-                      className="h-auto w-full object-cover"
+                      className="h-full max-h-[132px] w-full object-cover"
                     />
                   </div>
                 ))}
               </div>
 
-              {/* 中段: 1枚（中央） */}
-              <div className="flex justify-center">
-                <div className="w-[50%] overflow-hidden rounded-xl">
+              <div className="flex min-h-0 shrink-0 justify-center py-0.5">
+                <div className="w-[46%] max-w-[200px] overflow-hidden rounded-xl">
                   <Image
                     src={PANA_IMAGES[2].src}
                     alt={PANA_IMAGES[2].alt}
                     width={400}
                     height={520}
-                    className="h-auto w-full object-cover"
+                    className="h-full max-h-[132px] w-full object-cover"
                   />
                 </div>
               </div>
 
-              {/* 下段: 2枚 */}
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid min-h-0 grid-cols-2 gap-2">
                 {PANA_IMAGES.slice(3, 5).map((img) => (
-                  <div key={img.src.src} className="overflow-hidden rounded-xl">
+                  <div
+                    key={img.src.src}
+                    className="max-h-[132px] min-h-0 overflow-hidden rounded-xl"
+                  >
                     <Image
                       src={img.src}
                       alt={img.alt}
                       width={400}
                       height={520}
-                      className="h-auto w-full object-cover"
+                      className="h-full max-h-[132px] w-full object-cover"
                     />
                   </div>
                 ))}

@@ -68,9 +68,9 @@ export default function SubsidyKindsSection() {
               id="home-subsidy-kinds-heading"
               className="font-heading text-[1.75rem] font-bold leading-snug text-[var(--text-primary)] md:text-[2.25rem]"
             >
-              建設業・運送業に特化した、
+              建設業・運送業にも特化し、
               <br />
-              補助金活用の実績。
+              サポートをしています。
             </h2>
             <p className="mx-auto mt-4 max-w-xl text-base leading-relaxed text-[var(--text-secondary)] md:text-lg">
               業種特有の課題に合わせて、最適な補助金活用戦略を設計します。
