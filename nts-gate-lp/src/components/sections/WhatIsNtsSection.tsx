@@ -2,7 +2,8 @@
 
 import Image from "next/image";
 import { ArrowDown, ArrowRight } from "lucide-react";
-import { motion, useReducedMotion } from "framer-motion";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { useEffect, useState } from "react";
 import isometric11 from "../../../icon-assets/isometric_11.webp";
 import isometric13 from "../../../icon-assets/isometric_13.webp";
 import isometric15 from "../../../icon-assets/isometric_15.webp";
@@ -10,6 +11,8 @@ import isometric14 from "../../../icon-assets/isometric_14.webp";
 import PANA3025 from "../../../icon-assets/PANA3025.webp";
 import PANA2727 from "../../../icon-assets/PANA2727.webp";
 import PANA2741 from "../../../icon-assets/PANA2741.webp";
+import PANA2962 from "../../../icon-assets/PANA2962.webp";
+import PANA2975 from "../../../icon-assets/PANA2975.webp";
 import {
   fadeInUpInitial,
   fadeInUpInView,
@@ -35,30 +38,35 @@ const FLOW_STEPS = [
     border: "#9FE1CB",
   },
   {
-    title: "書類作成・申請",
-    body: "提携行政書士と連携し、採択率を高める申請書類を一緒に作ります。",
-    image: isometric15,
-    bg: "#EEF6FF",
-    border: "#B5D4F4",
-  },
-  {
     title: "採択・1年間伴走",
     body: "採択後の効果検証・実績報告まで、1年間サポートを継続します。",
     image: isometric14,
     bg: "#E8F9F4",
     border: "#9FE1CB",
   },
+  {
+    title: "書類作成・申請",
+    body: "提携行政書士と連携し、採択率を高める申請書類を一緒に作ります。",
+    image: isometric15,
+    bg: "#EEF6FF",
+    border: "#B5D4F4",
+  },
 ] as const;
 
-// ヒーロー1枚＋サブ2枚
-const HERO_IMG = { src: PANA3025, alt: "NTSコンサルタント", pos: "50% 18%" };
-const SUB_IMGS = [
-  { src: PANA2727, alt: "NTSコンサルタント", pos: "50% 18%" },
-  { src: PANA2741, alt: "NTSコンサルタント", pos: "50% 18%" },
-] as const;
+// 写真ローテーション用プール（5枚）
+const PANA_ALL = [PANA3025, PANA2727, PANA2741, PANA2962, PANA2975];
 
 export default function WhatIsNtsSection() {
   const reduce = useReducedMotion();
+  const [offset, setOffset] = useState(0);
+
+  useEffect(() => {
+    const id = setInterval(
+      () => setOffset((o) => (o + 1) % PANA_ALL.length),
+      3000,
+    );
+    return () => clearInterval(id);
+  }, []);
 
   return (
     <section className="section-block bg-section-white" aria-labelledby="home-what-is-nts-heading">
@@ -147,35 +155,60 @@ export default function WhatIsNtsSection() {
               </div>
             </div>
 
-            {/* 右カラム: ヒーロー1枚大＋サブ2枚 — 高さは左カラムに追従 */}
+            {/* 右カラム: ヒーロー1枚大＋サブ2枚 — 3秒ごとに時計回りローテーション */}
             <div className="hidden lg:flex lg:w-[42%] lg:flex-row lg:gap-3 lg:self-stretch">
-              {/* ヒーロー: 左側に縦長で大きく表示 */}
+              {/* ヒーロー枠（左、縦長大） */}
               <div className="relative min-h-0 flex-1 overflow-hidden rounded-2xl">
-                <Image
-                  src={HERO_IMG.src}
-                  alt={HERO_IMG.alt}
-                  fill
-                  sizes="(max-width: 1280px) 18vw, 22vw"
-                  className="object-cover object-[50%_18%]"
-                />
-              </div>
-
-              {/* サブ: 右側に2枚縦積み */}
-              <div className="flex min-h-0 flex-1 flex-col gap-3">
-                {SUB_IMGS.map((img) => (
-                  <div
-                    key={img.src.src}
-                    className="relative min-h-0 flex-1 overflow-hidden rounded-2xl"
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={PANA_ALL[offset % PANA_ALL.length].src}
+                    className="absolute inset-0"
+                    initial={reduce ? false : { opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={reduce ? undefined : { opacity: 0 }}
+                    transition={{ duration: 0.5 }}
                   >
                     <Image
-                      src={img.src}
-                      alt={img.alt}
+                      src={PANA_ALL[offset % PANA_ALL.length]}
+                      alt="NTSコンサルタント"
                       fill
-                      sizes="(max-width: 1280px) 9vw, 11vw"
+                      sizes="(max-width: 1280px) 18vw, 22vw"
                       className="object-cover object-[50%_18%]"
                     />
-                  </div>
-                ))}
+                  </motion.div>
+                </AnimatePresence>
+              </div>
+
+              {/* サブ枠（右側2枚縦積み） */}
+              <div className="flex min-h-0 flex-1 flex-col gap-3">
+                {[1, 2].map((delta) => {
+                  const src = PANA_ALL[(offset + delta) % PANA_ALL.length];
+                  return (
+                    <div
+                      key={delta}
+                      className="relative min-h-0 flex-1 overflow-hidden rounded-2xl"
+                    >
+                      <AnimatePresence mode="wait">
+                        <motion.div
+                          key={src.src}
+                          className="absolute inset-0"
+                          initial={reduce ? false : { opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          exit={reduce ? undefined : { opacity: 0 }}
+                          transition={{ duration: 0.5 }}
+                        >
+                          <Image
+                            src={src}
+                            alt="NTSコンサルタント"
+                            fill
+                            sizes="(max-width: 1280px) 9vw, 11vw"
+                            className="object-cover object-[50%_18%]"
+                          />
+                        </motion.div>
+                      </AnimatePresence>
+                    </div>
+                  );
+                })}
               </div>
             </div>
           </div>
