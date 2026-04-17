@@ -37,6 +37,7 @@ function HeaderCtaGroup() {
 export default function Header() {
   const pathname = usePathname();
   const isHome = pathname === "/";
+  const isPartnerPage = pathname === "/partner";
   const isSubsidies =
     pathname === "/subsidies" || pathname.startsWith("/subsidies/");
   const [scrolled, setScrolled] = useState(false);
@@ -51,6 +52,8 @@ export default function Header() {
 
   const heroStyle = isHome && !scrolled;
   const partnerHref = getPartnerUrl();
+  const partnerNavHref = isPartnerPage ? "/" : partnerHref;
+  const partnerNavLabel = isPartnerPage ? "補助金活用ご希望の方" : "パートナー企業の方へ";
   /** トップ以外は常に視認性のあるヘッダー帯（ロゴ反転のため） */
   const barClass = heroStyle
     ? "border-transparent bg-transparent"
@@ -122,11 +125,11 @@ export default function Header() {
         <div className="flex min-w-0 flex-1 flex-col gap-2.5 sm:flex-row sm:items-center sm:justify-end sm:gap-4 md:gap-5">
           <div className="order-1 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 sm:justify-end sm:gap-x-5">
             <Link
-              href={partnerHref}
+              href={partnerNavHref}
               onClick={() => trackPartnerLinkClick("header")}
               className={`${navLinkClass(heroStyle)} shrink-0`}
             >
-              パートナー企業の方へ
+              {partnerNavLabel}
             </Link>
             <Link
               href="/subsidies"
