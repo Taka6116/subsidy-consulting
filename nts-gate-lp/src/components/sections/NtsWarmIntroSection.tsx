@@ -49,7 +49,7 @@ export default function NtsWarmIntroSection() {
                   src={PHOTO_SRC}
                   alt="日本提携支援のスタッフが対話している様子"
                   fill
-                  className="object-cover object-[50%_38%] brightness-[1.02] saturate-[1.03]"
+                  className="object-cover object-[50%_10%] brightness-[1.02] saturate-[1.03]"
                   sizes="(max-width: 1024px) 100vw, 46vw"
                   priority={false}
                 />
@@ -58,10 +58,15 @@ export default function NtsWarmIntroSection() {
 
             <div className="col-text flex flex-col justify-center gap-5 text-center lg:text-left">
               <p className="font-heading text-xl font-bold leading-snug text-[var(--text-primary)] md:text-2xl">
-                私たちは補助金だけではなく、あなたが直面している経営課題にも寄り添います。
+                補助金はあくまで手段。
+                <br />
+                目的は、一緒に経営課題へ向き合うことです。
               </p>
-              <p className="text-base font-medium leading-loose text-[var(--text-secondary)] md:text-lg md:leading-loose">
-                採択して終わりではなく、1年間にわたり伴走いたします。
+              <p className="text-base leading-loose text-[var(--text-secondary)] md:text-lg">
+                私たちは「申請して終わり」ではなく、採択後1年間にわたり
+                経営者のパートナーとして伴走します。数字を追うだけでなく、
+                現場の悩みに寄り添い、補助金を本当の意味で活かすための
+                支援を続けます。
               </p>
             </div>
           </div>
