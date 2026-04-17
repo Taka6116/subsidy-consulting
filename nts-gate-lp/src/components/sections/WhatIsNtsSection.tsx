@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { ArrowRight, ArrowLeft } from "lucide-react";
+import { ArrowDownLeft, ArrowLeft, ArrowRight } from "lucide-react";
 import { motion, useReducedMotion } from "framer-motion";
 import isometric11 from "../../../icon-assets/isometric_11.webp";
 import isometric13 from "../../../icon-assets/isometric_13.webp";
@@ -19,6 +19,7 @@ import {
   fadeInUpTransition,
   fadeInUpViewport,
 } from "@/components/sections/sectionStyles";
+import styles from "./WhatIsNtsSection.module.css";
 
 const FLOW_STEPS = [
   {
@@ -89,6 +90,7 @@ export default function WhatIsNtsSection() {
                   const stepNo = String(i + 1).padStart(2, "0");
                   const showRowArrow = i === 0 || i === 2;
                   const isLeftArrow = i === 2;
+                  const showDownDiagArrow = i === 1;
                   return (
                     <div
                       key={step.title}
@@ -124,7 +126,7 @@ export default function WhatIsNtsSection() {
 
                       {showRowArrow && (
                         <span
-                          className="absolute right-[-14px] top-1/2 z-10 hidden -translate-y-1/2 text-[#1A7B6F] md:right-[-16px] lg:flex"
+                          className={`absolute right-[-14px] top-1/2 z-10 hidden -translate-y-1/2 md:right-[-16px] lg:flex ${styles.flowArrow}`}
                           aria-hidden
                         >
                           {isLeftArrow ? (
@@ -134,55 +136,64 @@ export default function WhatIsNtsSection() {
                           )}
                         </span>
                       )}
+
+                      {showDownDiagArrow && (
+                        <span
+                          className={`absolute -bottom-5 left-[24%] z-10 hidden lg:flex ${styles.flowArrow}`}
+                          aria-hidden
+                        >
+                          <ArrowDownLeft className="h-5 w-5" />
+                        </span>
+                      )}
                     </div>
                   );
                 })}
               </div>
             </div>
 
-            {/* 右カラム: PANA 5枚「2・1・2」— 高さを左に合わせて縮小 */}
-            <div className="hidden lg:flex lg:h-full lg:min-h-0 lg:w-[42%] lg:flex-col lg:justify-between lg:gap-2">
-              <div className="grid min-h-0 grid-cols-2 gap-2">
+            {/* 右カラム: PANA 5枚「2・1・2」— 顔を見せつつ高さを左とバランス */}
+            <div className="hidden lg:flex lg:h-full lg:min-h-0 lg:w-[42%] lg:flex-col lg:justify-start lg:gap-3">
+              <div className="grid min-h-0 grid-cols-2 gap-3">
                 {PANA_IMAGES.slice(0, 2).map((img) => (
                   <div
                     key={img.src.src}
-                    className="max-h-[132px] min-h-0 overflow-hidden rounded-xl"
+                    className="h-[170px] min-h-0 overflow-hidden rounded-xl xl:h-[182px]"
                   >
                     <Image
                       src={img.src}
                       alt={img.alt}
                       width={400}
                       height={520}
-                      className="h-full max-h-[132px] w-full object-cover"
+                      className="h-full w-full object-cover object-[50%_22%]"
                     />
                   </div>
                 ))}
               </div>
 
-              <div className="flex min-h-0 shrink-0 justify-center py-0.5">
-                <div className="w-[46%] max-w-[200px] overflow-hidden rounded-xl">
+              <div className="flex min-h-0 shrink-0 justify-center">
+                <div className="h-[170px] w-[52%] max-w-[220px] overflow-hidden rounded-xl xl:h-[182px]">
                   <Image
                     src={PANA_IMAGES[2].src}
                     alt={PANA_IMAGES[2].alt}
                     width={400}
                     height={520}
-                    className="h-full max-h-[132px] w-full object-cover"
+                    className="h-full w-full object-cover object-[50%_22%]"
                   />
                 </div>
               </div>
 
-              <div className="grid min-h-0 grid-cols-2 gap-2">
+              <div className="grid min-h-0 grid-cols-2 gap-3">
                 {PANA_IMAGES.slice(3, 5).map((img) => (
                   <div
                     key={img.src.src}
-                    className="max-h-[132px] min-h-0 overflow-hidden rounded-xl"
+                    className="h-[170px] min-h-0 overflow-hidden rounded-xl xl:h-[182px]"
                   >
                     <Image
                       src={img.src}
                       alt={img.alt}
                       width={400}
                       height={520}
-                      className="h-full max-h-[132px] w-full object-cover"
+                      className="h-full w-full object-cover object-[50%_22%]"
                     />
                   </div>
                 ))}

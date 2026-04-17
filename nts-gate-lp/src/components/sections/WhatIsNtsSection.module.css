@@ -1,0 +1,11 @@
+.flowArrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  padding: 0.45rem;
+  background: #ffffff;
+  color: #0f6e56;
+  box-shadow: 0 8px 20px rgba(15, 110, 86, 0.18);
+  border: 1px solid rgba(15, 110, 86, 0.22);
+}
