@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { ArrowDownLeft, ArrowLeft, ArrowRight } from "lucide-react";
+import { ArrowDown, ArrowRight } from "lucide-react";
 import { motion, useReducedMotion } from "framer-motion";
 import isometric11 from "../../../icon-assets/isometric_11.webp";
 import isometric13 from "../../../icon-assets/isometric_13.webp";
@@ -10,8 +10,6 @@ import isometric14 from "../../../icon-assets/isometric_14.webp";
 import PANA3025 from "../../../icon-assets/PANA3025.webp";
 import PANA2727 from "../../../icon-assets/PANA2727.webp";
 import PANA2741 from "../../../icon-assets/PANA2741.webp";
-import PANA2962 from "../../../icon-assets/PANA2962.webp";
-import PANA2975 from "../../../icon-assets/PANA2975.webp";
 import {
   fadeInUpInitial,
   fadeInUpInView,
@@ -37,27 +35,26 @@ const FLOW_STEPS = [
     border: "#9FE1CB",
   },
   {
-    title: "採択・1年間伴走",
-    body: "採択後の効果検証・実績報告まで、1年間サポートを継続します。",
-    image: isometric14,
-    bg: "#E8F9F4",
-    border: "#9FE1CB",
-  },
-  {
     title: "書類作成・申請",
     body: "提携行政書士と連携し、採択率を高める申請書類を一緒に作ります。",
     image: isometric15,
     bg: "#EEF6FF",
     border: "#B5D4F4",
   },
+  {
+    title: "採択・1年間伴走",
+    body: "採択後の効果検証・実績報告まで、1年間サポートを継続します。",
+    image: isometric14,
+    bg: "#E8F9F4",
+    border: "#9FE1CB",
+  },
 ] as const;
 
-const PANA_IMAGES = [
-  { src: PANA3025, alt: "NTSコンサルタント" },
-  { src: PANA2727, alt: "NTSコンサルタント" },
-  { src: PANA2741, alt: "NTSコンサルタント" },
-  { src: PANA2962, alt: "NTSコンサルタント" },
-  { src: PANA2975, alt: "NTSコンサルタント" },
+// ヒーロー1枚＋サブ2枚
+const HERO_IMG = { src: PANA3025, alt: "NTSコンサルタント", pos: "50% 18%" };
+const SUB_IMGS = [
+  { src: PANA2727, alt: "NTSコンサルタント", pos: "50% 18%" },
+  { src: PANA2741, alt: "NTSコンサルタント", pos: "50% 18%" },
 ] as const;
 
 export default function WhatIsNtsSection() {
@@ -88,9 +85,10 @@ export default function WhatIsNtsSection() {
               <div className="grid flex-1 grid-cols-2 gap-4 md:gap-6 lg:min-h-0 lg:grid-rows-2">
                 {FLOW_STEPS.map((step, i) => {
                   const stepNo = String(i + 1).padStart(2, "0");
-                  const showRowArrow = i === 0 || i === 2;
-                  const isLeftArrow = i === 2;
-                  const showDownDiagArrow = i === 1;
+                  // 01→02（右矢印）、03→04（右矢印）
+                  const showRightArrow = i === 0 || i === 2;
+                  // 02の下に↓矢印（行間ギャップの中央）
+                  const showDownArrow = i === 1;
                   return (
                     <div
                       key={step.title}
@@ -124,25 +122,23 @@ export default function WhatIsNtsSection() {
                         </div>
                       </div>
 
-                      {showRowArrow && (
+                      {/* → 横矢印（01→02 / 03→04） */}
+                      {showRightArrow && (
                         <span
                           className={`absolute right-[-14px] top-1/2 z-10 hidden -translate-y-1/2 md:right-[-16px] lg:flex ${styles.flowArrow}`}
                           aria-hidden
                         >
-                          {isLeftArrow ? (
-                            <ArrowLeft className="h-5 w-5" />
-                          ) : (
-                            <ArrowRight className="h-5 w-5" />
-                          )}
+                          <ArrowRight className="h-5 w-5" />
                         </span>
                       )}
 
-                      {showDownDiagArrow && (
+                      {/* ↓ 縦矢印（02の下端中央 → 03へ） */}
+                      {showDownArrow && (
                         <span
-                          className={`absolute -bottom-5 left-[24%] z-10 hidden lg:flex ${styles.flowArrow}`}
+                          className={`absolute -bottom-[22px] left-1/2 z-10 hidden -translate-x-1/2 lg:flex ${styles.flowArrow}`}
                           aria-hidden
                         >
-                          <ArrowDownLeft className="h-5 w-5" />
+                          <ArrowDown className="h-5 w-5" />
                         </span>
                       )}
                     </div>
@@ -151,49 +147,32 @@ export default function WhatIsNtsSection() {
               </div>
             </div>
 
-            {/* 右カラム: PANA 5枚「2・1・2」— 顔を見せつつ高さを左とバランス */}
-            <div className="hidden lg:flex lg:h-full lg:min-h-0 lg:w-[42%] lg:flex-col lg:justify-start lg:gap-3">
-              <div className="grid min-h-0 grid-cols-2 gap-3">
-                {PANA_IMAGES.slice(0, 2).map((img) => (
+            {/* 右カラム: ヒーロー1枚大＋サブ2枚 — 高さは左カラムに追従 */}
+            <div className="hidden lg:flex lg:w-[42%] lg:flex-row lg:gap-3 lg:self-stretch">
+              {/* ヒーロー: 左側に縦長で大きく表示 */}
+              <div className="relative min-h-0 flex-1 overflow-hidden rounded-2xl">
+                <Image
+                  src={HERO_IMG.src}
+                  alt={HERO_IMG.alt}
+                  fill
+                  sizes="(max-width: 1280px) 18vw, 22vw"
+                  className="object-cover object-[50%_18%]"
+                />
+              </div>
+
+              {/* サブ: 右側に2枚縦積み */}
+              <div className="flex min-h-0 flex-1 flex-col gap-3">
+                {SUB_IMGS.map((img) => (
                   <div
                     key={img.src.src}
-                    className="h-[170px] min-h-0 overflow-hidden rounded-xl xl:h-[182px]"
+                    className="relative min-h-0 flex-1 overflow-hidden rounded-2xl"
                   >
                     <Image
                       src={img.src}
                       alt={img.alt}
-                      width={400}
-                      height={520}
-                      className="h-full w-full object-cover object-[50%_22%]"
-                    />
-                  </div>
-                ))}
-              </div>
-
-              <div className="flex min-h-0 shrink-0 justify-center">
-                <div className="h-[170px] w-[52%] max-w-[220px] overflow-hidden rounded-xl xl:h-[182px]">
-                  <Image
-                    src={PANA_IMAGES[2].src}
-                    alt={PANA_IMAGES[2].alt}
-                    width={400}
-                    height={520}
-                    className="h-full w-full object-cover object-[50%_22%]"
-                  />
-                </div>
-              </div>
-
-              <div className="grid min-h-0 grid-cols-2 gap-3">
-                {PANA_IMAGES.slice(3, 5).map((img) => (
-                  <div
-                    key={img.src.src}
-                    className="h-[170px] min-h-0 overflow-hidden rounded-xl xl:h-[182px]"
-                  >
-                    <Image
-                      src={img.src}
-                      alt={img.alt}
-                      width={400}
-                      height={520}
-                      className="h-full w-full object-cover object-[50%_22%]"
+                      fill
+                      sizes="(max-width: 1280px) 9vw, 11vw"
+                      className="object-cover object-[50%_18%]"
                     />
                   </div>
                 ))}
