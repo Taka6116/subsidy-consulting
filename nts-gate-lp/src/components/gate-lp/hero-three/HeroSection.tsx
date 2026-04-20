@@ -1,10 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import ImagePlaceholder from "@/components/ui/ImagePlaceholder";
+import Image from "next/image";
 import HeroCheckCtaLink from "@/components/shared/HeroCheckCtaLink";
 import { trackCTAClick } from "@/lib/analytics";
 import styles from "./HeroSection.module.css";
+import isometric09 from "../../../../icon-assets/isometric_09.webp";
+import isometric21 from "../../../../icon-assets/isometric_21.webp";
 
 export default function HeroSection() {
   return (
@@ -46,10 +48,22 @@ export default function HeroSection() {
           </div>
 
           <div className={`col-img w-full ${styles.heroImgCol}`}>
-            <ImagePlaceholder
-              label="メインビジュアル（等角イラストまたはダッシュボード画像）"
-              aspectRatio="3/2"
-            />
+            <div className={styles.heroVisual}>
+              <Image
+                src={isometric21}
+                alt=""
+                aria-hidden="true"
+                className={styles.heroCharSub}
+                priority
+              />
+              <Image
+                src={isometric09}
+                alt=""
+                aria-hidden="true"
+                className={styles.heroCharMain}
+                priority
+              />
+            </div>
           </div>
         </div>
       </div>
