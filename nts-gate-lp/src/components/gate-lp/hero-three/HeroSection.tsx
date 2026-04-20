@@ -5,8 +5,7 @@ import Image from "next/image";
 import HeroCheckCtaLink from "@/components/shared/HeroCheckCtaLink";
 import { trackCTAClick } from "@/lib/analytics";
 import styles from "./HeroSection.module.css";
-import isometric09 from "../../../../icon-assets/isometric_09.webp";
-import isometric21 from "../../../../icon-assets/isometric_21.webp";
+import isometric22 from "../../../../icon-assets/isometric_22.png";
 
 export default function HeroSection() {
   return (
@@ -50,14 +49,7 @@ export default function HeroSection() {
           <div className={`col-img w-full ${styles.heroImgCol}`}>
             <div className={styles.heroVisual}>
               <Image
-                src={isometric21}
-                alt=""
-                aria-hidden="true"
-                className={styles.heroCharSub}
-                priority
-              />
-              <Image
-                src={isometric09}
+                src={isometric22}
                 alt=""
                 aria-hidden="true"
                 className={styles.heroCharMain}
