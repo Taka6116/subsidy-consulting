@@ -238,11 +238,12 @@
 }
 
 /* メインキャラ（isometric_09 / 3人グループ） */
+/* 修正G: ヒーロー右ビジュアルを 1.2 倍にスケールアップ（110% → 132%） */
 .heroCharMain {
   position: absolute;
   bottom: -24px;
   right: -32px;
-  height: 110%;
+  height: 132%;
   width: auto;
   object-fit: contain;
   object-position: bottom right;
@@ -282,6 +283,8 @@
 
   .textCol .headlineLine {
     text-align: left;
+    /* 修正F: 句点だけが単独行に流れるのを防ぐ（ワイド画面でのみ） */
+    white-space: nowrap;
   }
 
   .textCol .sub {
@@ -325,7 +328,8 @@
   box-sizing: border-box;
   font-family: var(--font-body);
   /* 修正A: ノートPC帯域で文字が大きくなりすぎないよう係数・上限を縮小 */
-  font-size: clamp(1.75rem, 3.2vw, 3.2rem);
+  /* 修正F: 「。」だけが次行に押し出される現象を避けるため上限を 2.7rem に縮小 */
+  font-size: clamp(1.75rem, 2.6vw, 2.7rem);
   font-weight: 800;
   color: var(--text-primary);
   line-height: 1.25;
@@ -628,8 +632,9 @@
     overflow: hidden;
   }
 
+  /* 修正G: 狭幅帯でもビジュアルを 1.2 倍に（95% → 114%） */
   .heroCharMain {
-    height: 95%;
+    height: 114%;
     bottom: 0;
     right: -16px;
   }
