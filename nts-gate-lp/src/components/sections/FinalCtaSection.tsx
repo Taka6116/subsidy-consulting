@@ -77,7 +77,7 @@ export default function FinalCtaSection({ variant = "home" }: FinalCtaSectionPro
           {
             title: "商材の補助金適性を確認",
             body: "御社の商材・サービスが補助金の対象になるか確認します。",
-            ctaLabel: "対象か確認する（無料）",
+            ctaLabel: "無料で確認する",
             href: "/check",
             icon: Search,
             onClick: () => trackCTAClick("final_cta_check"),
