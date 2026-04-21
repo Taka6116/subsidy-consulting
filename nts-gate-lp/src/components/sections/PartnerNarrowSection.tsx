@@ -1,8 +1,9 @@
 "use client";
 
+import Image from "next/image";
 import { motion, useReducedMotion } from "framer-motion";
 import CTAButton from "@/components/shared/CTAButton";
-import ImagePlaceholder from "@/components/ui/ImagePlaceholder";
+import isometric08 from "../../../icon-assets/isometric_08.webp";
 import { getPartnerUrl } from "@/lib/partnerUrl";
 import { trackPartnerLinkClick } from "@/lib/analytics";
 import {
@@ -28,7 +29,15 @@ export default function PartnerNarrowSection() {
           className="two-col img-left"
         >
           <div className="col-img w-full max-w-md justify-self-center lg:max-w-lg">
-            <ImagePlaceholder label="パートナー・提携プログラム（ビジュアル）" aspectRatio="4/3" />
+            <div className="relative min-h-[280px] overflow-hidden max-md:h-[200px]">
+              <Image
+                src={isometric08}
+                alt="パートナー企業と顧客をつなぐイラスト"
+                width={640}
+                height={640}
+                className="absolute bottom-0 left-1/2 h-[85%] w-auto -translate-x-1/2 object-contain"
+              />
+            </div>
           </div>
 
           <div className="col-text space-y-6 text-center lg:text-left">

@@ -10,3 +10,6 @@ npm-debug.log*
 skills/
 
 .vercel
+
+# Local source videos (copy processed file into nts-gate-lp/public/video/ before commit)
+/video/

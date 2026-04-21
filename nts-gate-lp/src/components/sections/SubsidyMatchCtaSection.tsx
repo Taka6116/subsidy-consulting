@@ -1,9 +1,7 @@
 "use client";
 
-import Image from "next/image";
 import { motion, useReducedMotion } from "framer-motion";
 import HeroCheckCtaLink from "@/components/shared/HeroCheckCtaLink";
-import isometric08 from "../../../icon-assets/isometric_08.webp";
 import {
   fadeInUpInitial,
   fadeInUpInView,
@@ -52,15 +50,21 @@ export default function SubsidyMatchCtaSection() {
           </div>
 
           <div className="col-img w-full max-w-md justify-self-center lg:max-w-lg">
-            <div className="relative min-h-[280px] overflow-hidden max-md:h-[200px]">
-              <Image
-                src={isometric08}
-                alt="補助金照会を検討するグループのイラスト"
-                width={640}
-                height={640}
-                className="absolute bottom-0 left-1/2 h-[85%] w-auto -translate-x-1/2 object-contain"
+            <div className="relative overflow-hidden rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-section-alt)] shadow-[0_12px_40px_rgba(10,34,64,0.12)]">
+              <video
+                className="block h-auto w-full"
+                src="/video/subsidy-check-demo.mp4"
+                autoPlay
+                muted
+                loop
+                playsInline
+                preload="metadata"
+                aria-label="補助金照会の操作デモ動画"
               />
             </div>
+            <p className="mt-3 text-center text-xs text-[var(--text-muted)] lg:text-left">
+              実際の照会画面のデモ。会社名を入力するだけで、対象となる補助金が表示されます。
+            </p>
           </div>
         </motion.div>
       </div>
