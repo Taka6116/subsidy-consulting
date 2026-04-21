@@ -3,11 +3,22 @@
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { INDUSTRY_OPTIONS } from "@/data/industryOptions";
+import { JAPAN_PREFECTURES } from "@/data/japanPrefectures";
 import type { MatchedSubsidyPreview } from "@/lib/subsidyCheckMocks";
 import type { CorporateCandidate } from "@/types/corporateSearch";
 import SubsidyMatchLoading from "@/components/check/SubsidyMatchLoading";
 import SubsidyCheckResultTabs from "@/components/check/SubsidyCheckResultTabs";
 import heroStyles from "@/components/gate-lp/hero-three/HeroSection.module.css";
+
+const EMPLOYEE_OPTIONS: { id: string; label: string }[] = [
+  { id: "", label: "選択しない" },
+  { id: "1〜5人", label: "1〜5人" },
+  { id: "6〜20人", label: "6〜20人" },
+  { id: "21〜50人", label: "21〜50人" },
+  { id: "51〜100人", label: "51〜100人" },
+  { id: "101〜300人", label: "101〜300人" },
+  { id: "301人以上", label: "301人以上" },
+];
 
 function parseStringArray(v: unknown): string[] {
   if (!Array.isArray(v)) return [];
@@ -91,12 +102,12 @@ type Props = {
   audience: "end_user" | "partner";
 };
 
-function syntheticCorporate(name: string): CorporateCandidate {
+function syntheticCorporate(name: string, prefecture: string): CorporateCandidate {
   const n = name.trim();
   return {
     corporateNumber: "",
     name: n,
-    prefecture: "",
+    prefecture: prefecture.trim(),
     city: "",
   };
 }
@@ -105,6 +116,9 @@ export default function SubsidyCheckClient({ audience }: Props) {
   const [step, setStep] = useState<Step>("form");
   const [companyName, setCompanyName] = useState("");
   const [industryId, setIndustryId] = useState("");
+  const [prefecture, setPrefecture] = useState("");
+  const [employees, setEmployees] = useState("");
+  const [businessNotes, setBusinessNotes] = useState("");
   const [companyWebsiteUrl, setCompanyWebsiteUrl] = useState("");
   const [formError, setFormError] = useState<string | null>(null);
   const [confirmed, setConfirmed] = useState<CorporateCandidate | null>(null);
@@ -129,6 +143,9 @@ export default function SubsidyCheckClient({ audience }: Props) {
     setStep("form");
     setCompanyName("");
     setIndustryId("");
+    setPrefecture("");
+    setEmployees("");
+    setBusinessNotes("");
     setCompanyWebsiteUrl("");
     setFormError(null);
     setConfirmed(null);
@@ -152,9 +169,9 @@ export default function SubsidyCheckClient({ audience }: Props) {
             companyName: corp.name,
             industryLabel,
             prefecture: corp.prefecture || "",
-            employees: "",
+            employees: employees.trim(),
             revenueBand: "",
-            businessNotes: "",
+            businessNotes: businessNotes.trim(),
             companyWebsiteUrl: companyWebsiteUrl.trim(),
           }),
         });
@@ -174,7 +191,7 @@ export default function SubsidyCheckClient({ audience }: Props) {
         setMatchApiComplete(true);
       }
     },
-    [industryId, companyWebsiteUrl],
+    [industryId, employees, businessNotes, companyWebsiteUrl],
   );
 
   const submitForm = async (e: React.FormEvent) => {
@@ -188,8 +205,12 @@ export default function SubsidyCheckClient({ audience }: Props) {
       setFormError("業種を選択してください。");
       return;
     }
+    if (!prefecture) {
+      setFormError("都道府県を選択してください。");
+      return;
+    }
 
-    const corp = syntheticCorporate(companyName);
+    const corp = syntheticCorporate(companyName, prefecture);
     setConfirmed(corp);
     setSearchLoading(true);
     setMatchApiComplete(false);
@@ -212,7 +233,7 @@ export default function SubsidyCheckClient({ audience }: Props) {
     : "対象補助金が把握できます";
 
   const formLead =
-    "個人の氏名・連絡先は不要です。会社名と業種のみで照合できます。公式サイトURLを任意で入れると、ページ抜粋を照合に使い精度が上がりやすくなります（法人の正式な特定は行いません）。";
+    "個人の氏名・連絡先は不要です。会社名・業種・所在地で照合します。事業内容・従業員数・公式サイトURLを任意で入れると、御社に合った制度を見つけやすくなります（法人の正式な特定は行いません）。";
 
   return (
     <div className="mx-auto w-full max-w-5xl">
@@ -235,8 +256,8 @@ export default function SubsidyCheckClient({ audience }: Props) {
             </h2>
             <p className="mt-2 text-sm leading-relaxed text-[var(--text-secondary)]">
               {isPartner
-                ? "顧客企業の会社名と業種が必須です。公式サイトURLは任意です。法人の正式な特定は行わず、入力内容をもとに対象制度のイメージを表示します。"
-                : "会社名と業種が必須です。公式サイトURLは任意です。法人の正式な特定は行わず、入力内容をもとに対象制度のイメージを表示します。"}
+                ? "顧客企業の会社名・業種・所在地（都道府県）が必須です。従業員数や公式サイトURLは任意です。法人の正式な特定は行わず、入力内容をもとに対象制度のイメージを表示します。"
+                : "会社名・業種・所在地（都道府県）が必須です。従業員数や公式サイトURLは任意です。法人の正式な特定は行わず、入力内容をもとに対象制度のイメージを表示します。"}
             </p>
             <form onSubmit={submitForm} className="mt-8 space-y-6">
               <div>
@@ -278,6 +299,79 @@ export default function SubsidyCheckClient({ audience }: Props) {
                     </option>
                   ))}
                 </select>
+              </div>
+              <div>
+                <label
+                  htmlFor="check-prefecture"
+                  className="block text-sm font-bold text-[var(--text-primary)]"
+                >
+                  所在地（都道府県）
+                  <span className="ml-1 text-red-500">*</span>
+                </label>
+                <p className="mt-1 text-xs text-[var(--text-muted)]">
+                  地域限定の補助金を正しく判定するために使用します。
+                </p>
+                <select
+                  id="check-prefecture"
+                  value={prefecture}
+                  onChange={(e) => setPrefecture(e.target.value)}
+                  className="mt-2 w-full rounded-lg border border-[var(--border-subtle)] bg-white px-4 py-3 text-body text-[var(--text-primary)] outline-none transition-colors focus:border-[var(--accent-teal)] focus:ring-2 focus:ring-[var(--accent-teal)]/20"
+                >
+                  <option value="">選択してください</option>
+                  {JAPAN_PREFECTURES.filter((p) => p.id).map((p) => (
+                    <option key={p.id} value={p.id}>
+                      {p.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label
+                  htmlFor="check-employees"
+                  className="block text-sm font-bold text-[var(--text-primary)]"
+                >
+                  従業員数（任意）
+                </label>
+                <p className="mt-1 text-xs text-[var(--text-muted)]">
+                  小規模事業者・中小企業向け制度の判定に使えます。
+                </p>
+                <select
+                  id="check-employees"
+                  value={employees}
+                  onChange={(e) => setEmployees(e.target.value)}
+                  className="mt-2 w-full rounded-lg border border-[var(--border-subtle)] bg-white px-4 py-3 text-body text-[var(--text-primary)] outline-none transition-colors focus:border-[var(--accent-teal)] focus:ring-2 focus:ring-[var(--accent-teal)]/20"
+                >
+                  {EMPLOYEE_OPTIONS.map((opt) => (
+                    <option key={opt.id} value={opt.id}>
+                      {opt.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label
+                  htmlFor="check-business-notes"
+                  className="block text-sm font-bold text-[var(--text-primary)]"
+                >
+                  事業内容・取扱い（任意）
+                </label>
+                <p className="mt-1 text-xs text-[var(--text-muted)]">
+                  数行で結構です。会社固有の事業内容が分かるとマッチング精度が大きく上がります。
+                  <br />
+                  例：「ゴルフスクール運営・ゴルフ用品のEC販売」「金属加工部品の製造（自動車向け）」「地域のデイサービス事業」
+                </p>
+                <textarea
+                  id="check-business-notes"
+                  value={businessNotes}
+                  onChange={(e) => setBusinessNotes(e.target.value)}
+                  placeholder="例：ゴルフスクール運営、ゴルフ用品のEC販売"
+                  rows={3}
+                  maxLength={500}
+                  className="mt-2 w-full resize-y rounded-lg border border-[var(--border-subtle)] bg-white px-4 py-3 text-body text-[var(--text-primary)] outline-none transition-colors focus:border-[var(--accent-teal)] focus:ring-2 focus:ring-[var(--accent-teal)]/20 placeholder:text-[var(--text-muted)]"
+                />
+                <p className="mt-1 text-right text-xs text-[var(--text-muted)]">
+                  {businessNotes.length} / 500
+                </p>
               </div>
               <div>
                 <label

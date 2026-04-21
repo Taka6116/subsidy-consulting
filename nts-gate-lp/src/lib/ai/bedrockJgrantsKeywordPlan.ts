@@ -132,29 +132,68 @@ export async function runJgrantsKeywordPlanBedrock(
 }
 
 /**
+ * 業種ラベルから汎用的な検索キーワードへのマッピング（業種名そのままは使わない）。
+ * jGrantsのキーワード検索で有効な語を使う。
+ */
+const INDUSTRY_TO_FALLBACK_KEYWORDS: Record<string, string[]> = {
+  "農業":         ["農業 補助金", "農業 支援"],
+  "林業":         ["林業 補助金", "森林 支援"],
+  "漁業":         ["漁業 補助金", "水産 支援"],
+  "鉱業":         ["鉱業 補助金", "採掘 支援"],
+  "建設":         ["建設業 補助金", "建築 省力化 支援"],
+  "製造":         ["製造業 設備投資 補助金", "生産性向上 補助金"],
+  "食品製造":     ["食品製造 補助金", "HACCP 支援"],
+  "卸売":         ["販路開拓 補助金", "卸売 小売 支援"],
+  "小売":         ["販路開拓 補助金", "小売 デジタル化 支援"],
+  "運輸":         ["物流 補助金", "運輸業 支援"],
+  "情報通信":     ["デジタル化 補助金", "システム開発 支援"],
+  "IT":           ["デジタル化 補助金", "IT導入 生産性向上 支援"],
+  "ソフトウェア": ["デジタル化 補助金", "クラウド 補助金"],
+  "金融":         ["金融 補助金", "FinTech 支援"],
+  "不動産":       ["不動産 補助金", "省エネ 改修 支援"],
+  "専門":         ["専門サービス 補助金", "生産性向上 補助金"],
+  "広告":         ["販路開拓 補助金", "広告 デジタル化 支援"],
+  "コンサル":     ["事業再構築 補助金", "生産性向上 補助金"],
+  "宿泊":         ["宿泊業 補助金", "観光 設備投資 支援"],
+  "飲食":         ["飲食業 補助金", "省力化 設備投資 補助金"],
+  "教育":         ["教育 補助金", "人材育成 支援"],
+  "医療":         ["医療 補助金", "福祉 設備投資 支援"],
+  "福祉":         ["介護 補助金", "福祉 ICT 支援"],
+  "芸術":         ["文化 補助金", "芸術 支援"],
+  "娯楽":         ["観光 補助金", "エンタメ 支援"],
+  "生活":         ["生活サービス 補助金", "省力化 支援"],
+  "エネルギー":   ["省エネ 補助金", "再生可能エネルギー 支援"],
+  "廃棄物":       ["廃棄物処理 補助金", "環境 支援"],
+};
+
+/**
  * Bedrock 未使用・失敗時の決定的なキーワード（入力のみから生成）。
+ * 業種名をそのままキーワードにせず、jGrantsで有効な汎用語を使う。
  */
 export function defaultJgrantsKeywordPlan(
   industryLabel: string,
   businessNotes: string,
 ): string[] {
-  const t = industryLabel.trim();
-  const short = t
-    .replace(/・/g, " ")
-    .replace(/、/g, " ")
-    .replace(/\s+/g, " ")
-    .trim();
-
   const out: string[] = [];
-  if (short) {
-    out.push(`${short} 補助金`.slice(0, 100));
-    out.push(`${short} 支援`.slice(0, 100));
+
+  // 業種ラベルからマッピングされたキーワードを使う
+  const matched = Object.entries(INDUSTRY_TO_FALLBACK_KEYWORDS).find(([key]) =>
+    industryLabel.includes(key),
+  );
+  if (matched) {
+    out.push(...matched[1]);
+  } else {
+    // マッピングなし：汎用キーワードのみ
+    out.push("生産性向上 補助金", "事業再構築 補助金");
   }
+
+  // businessNotes があれば追加
   const notes = businessNotes.trim();
   if (notes) {
     const snippet = notes.slice(0, 48).replace(/\s+/g, " ");
     out.push(`${snippet} 補助金`.slice(0, 100));
   }
+
   if (out.length === 0) {
     out.push("補助金");
   }

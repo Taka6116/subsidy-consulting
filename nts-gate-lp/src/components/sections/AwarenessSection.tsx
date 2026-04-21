@@ -31,33 +31,33 @@ const CARD_STYLES = [
 const IMAGE_ASSETS = [
   {
     src: imgIsometric10,
-    alt: "建設業の職人不足を表すイメージ",
+    alt: "人手不足に悩む経営者のイメージ",
   },
   {
     src: imgIsometric07,
-    alt: "運送業のドライバー不足を表すイメージ",
+    alt: "設備更新の先送りを表すイメージ",
   },
   {
     src: imgIsometric11,
-    alt: "後継者への引き継ぎ課題を表すイメージ",
+    alt: "次の一手を一人で考える経営者のイメージ",
   },
 ] as const;
 
 const CARDS = [
   {
-    label: "建設業の現場では",
-    title: "「職人が\nいない」",
-    body: "元請・下請を問わず、人が足りない。主力重機も更新時期を過ぎている。省力化補助金を使えば、IoT機器やロボット導入の費用を最大半額以下に抑えられます。ただし申請して終わりでは、設備が現場に定着しません。",
+    label: "止まらない現場の課題",
+    title: "「人手不足が、\n止まらない」",
+    body: "職人やドライバーが集まらない。育てる前に辞めていく。この問題を根本から動かすには、設備投資や体制づくりへの踏み込みが必要です。",
   },
   {
-    label: "運送業の経営では",
-    title: "「ドライバーが\n足りない」",
-    body: "主要荷主への依存リスクを抱えながら、人とコストの問題が増し続けている。デジタコ導入やGマーク取得と併せて補助金を活用し、設備投資に踏み切っても、定着・活用まで伴走する人間が必要です。",
+    label: "先送りにしている決断",
+    title: "「設備の更新を、\n先送りにしている」",
+    body: "古い機械や車両を使い続けている。でも投資に踏み切れない。補助金という選択肢を知らないまま、機会を逃している会社が多くあります。",
   },
   {
-    label: "両業種で共通して",
-    title: "「後継者に\nどう引き継ぐか」",
-    body: "事業承継補助金を使って設備を整え、引き継ぎやすい会社にする。その設計から一緒に考えます。",
+    label: "ひとりで抱える経営判断",
+    title: "「次の一手を、\n一人で考えている」",
+    body: "事業承継、組織の将来、競合との差——重要な意思決定を、誰かと一緒に考えられる環境がない。それが、多くの経営者の本音です。",
   },
 ] as const;
 
@@ -116,18 +116,18 @@ export default function AwarenessSection() {
           transition={fadeInUpTransition}
         >
           <div className="mb-12 text-center md:mb-16">
-            <span className="sec-label">課題共感</span>
+            <span className="sec-label">ISSUES</span>
             <h2
               id="home-awareness-heading"
               className="font-heading mt-3 text-[1.75rem] font-bold leading-snug text-[var(--text-primary)] md:text-[2.25rem]"
             >
-              その「とりあえず申請」が、
+              「申請できればいい」だけでは、
               <br />
-              会社の機会損失になっていませんか。
+              もったいない。
             </h2>
             <div className="mx-auto mt-4 max-w-2xl space-y-3 text-base leading-loose text-[var(--text-secondary)] md:mt-4 md:text-lg">
-              <p>補助金を取った後、何も変わらなかった——そういう会社が、実はたくさんあります。</p>
-              <p>採択はスタートです。使い切って、初めて意味がある。</p>
+              <p>補助金は、取ることがゴールではありません。</p>
+              <p>採択後の1年間をどう動くかで、会社の未来が変わります。</p>
             </div>
           </div>
 

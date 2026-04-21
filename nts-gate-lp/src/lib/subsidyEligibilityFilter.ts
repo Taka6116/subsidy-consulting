@@ -70,6 +70,28 @@ export function isRegionIncompatible(userPrefecture: string, corpus: string): bo
   return !mentions.includes(u);
 }
 
+/**
+ * 補助金が「特定地域限定」かどうかを判定する。
+ * - コーパス内に都道府県名の言及があり、かつタイトルが "全国" でない場合は地域限定とみなす
+ * - target_area_search が「全国」なら地域限定ではない
+ */
+export function isLocallyRestricted(
+  targetAreaSearch: string | undefined,
+  corpus: string,
+  title?: string,
+): boolean {
+  const area = (targetAreaSearch ?? "").trim();
+  if (area.includes("全国")) return false;
+  // タイトル冒頭に都道府県・市区町村名が【】付きで含まれる場合は地域限定（例: 【長野県茅野市】）
+  const t = (title ?? "").trim();
+  if (/^【[^】]*(県|府|都|道|市|区|町|村)/.test(t)) return true;
+  // target_area_search に特定の都道府県名が含まれる場合は地域限定
+  if (area && PREFECTURE_LABELS.some((p) => area.includes(p))) return true;
+  // コーパスに都道府県名の言及がある → 地域限定の可能性
+  const mentions = extractMentionedPrefectures(corpus);
+  return mentions.length > 0;
+}
+
 export type IndustryMatchClass = "match" | "mismatch" | "unknown";
 
 export type EligibilityFilterRow = {

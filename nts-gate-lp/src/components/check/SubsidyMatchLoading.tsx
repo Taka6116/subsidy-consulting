@@ -35,7 +35,7 @@ const FRAMES = [
     lines: [
       {
         text: "日本提携支援は採択後も1年間お客様の経営に寄り添い続けます。",
-        large: false,
+        large: true,
       },
     ],
   },

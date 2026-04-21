@@ -24,29 +24,29 @@ import styles from "./WhatIsNtsSection.module.css";
 
 const FLOW_STEPS = [
   {
-    title: "無料で補助金を照会",
-    body: "会社名・業種を入力するだけで、対象補助金をすぐに確認できます。",
+    title: "無料ヒアリング",
+    body: "経営課題と現状をお聞きします。補助金の話より先に、あなたの会社のことを理解するところから始めます。",
     image: isometric11,
     bg: "#EEF6FF",
     border: "#B5D4F4",
   },
   {
-    title: "戦略設計・ご相談",
-    body: "経営課題に合わせた補助金活用プランを専門家が設計します。",
+    title: "補助金活用戦略の設計",
+    body: "課題に合った補助金を選定し、活用戦略を設計します。着手金15万円をいただいた後、具体的なプランをご提示します。",
     image: isometric13,
     bg: "#E8F9F4",
     border: "#9FE1CB",
   },
   {
-    title: "採択・1年間伴走",
-    body: "採択後の効果検証・実績報告まで、1年間サポートを継続します。",
+    title: "採択後1年間の伴走",
+    body: "採択がゴールではありません。実績報告・精算完了時に5%、1年後の効果検証時に5%。最後まで責任を持って、一緒に動き続けます。",
     image: isometric14,
     bg: "#E8F9F4",
     border: "#9FE1CB",
   },
   {
-    title: "書類作成・申請",
-    body: "提携行政書士と連携し、採択率を高める申請書類を一緒に作ります。",
+    title: "採択に向けた準備・申請",
+    body: "提携行政書士と連携しながら申請を進めます。採択が決まった時点で、補助額の5%を成果報酬としていただきます。",
     image: isometric15,
     bg: "#EEF6FF",
     border: "#B5D4F4",
@@ -78,12 +78,14 @@ export default function WhatIsNtsSection() {
           transition={fadeInUpTransition}
         >
           <div className="mb-12 text-center md:mb-16">
-            <p className="sec-label mb-2">NTSとは</p>
+            <p className="sec-label mb-2">FLOW</p>
             <h2
               id="home-what-is-nts-heading"
               className="font-heading text-[1.75rem] font-bold leading-snug text-[var(--text-primary)] md:text-[2.25rem]"
             >
-              補助金活用から伴走までのフロー
+              相談から採択、そして1年後まで。
+              <br />
+              私たちが一緒に動きます。
             </h2>
           </div>
 
@@ -93,9 +95,9 @@ export default function WhatIsNtsSection() {
               <div className="grid flex-1 grid-cols-2 gap-4 md:gap-6 lg:min-h-0 lg:grid-rows-2">
                 {FLOW_STEPS.map((step, i) => {
                   const stepNo =
-                    step.title === "採択・1年間伴走"
+                    step.title === "採択後1年間の伴走"
                       ? "04"
-                      : step.title === "書類作成・申請"
+                      : step.title === "採択に向けた準備・申請"
                         ? "03"
                         : String(i + 1).padStart(2, "0");
                   // 01→02（右矢印）のみ

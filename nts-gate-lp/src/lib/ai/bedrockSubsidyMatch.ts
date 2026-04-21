@@ -149,6 +149,7 @@ const SYSTEM_PROMPT = `あなたは日本の補助金制度に特化したマッ
 # 地域整合（厳守）
 - company.prefecture が具体的な都道府県名（「（未指定）」以外）のとき、subsidies[].region・targetIndustries・description・eligibility に記載された対象地域と照合すること。
 - 制度側に **特定の都道府県名が列挙・明示**されており、かつ **ユーザーの都道府県がそのいずれにも含まれない** と判断できる場合は、matchScore を **30 以下**に抑え、riskFlags に **「地域対象外の可能性」** を必ず含めること。
+- **company.prefecture が「（未指定）」のとき**、制度側に特定の都道府県名・市区町村名が明示されている（= 地域限定制度）場合は、所在地が照合できないため matchScore を **25 以下**に抑え、riskFlags に **「所在地未確認・地域限定の可能性」** を必ず含めること。全国対象・記載なしの制度は通常どおり評価する。
 - 対象地域が全国・記載なし・解釈が割れる場合は、無理に低スコアにせず「要確認」でよい（APIにない推測はしない）。
 
 ---
@@ -342,12 +343,12 @@ export async function runSubsidyMatchBedrock(
 
   try {
     const client = new BedrockRuntimeClient({ region });
-    const subsidiesForBedrock = subsidies.slice(0, 4);
+    const subsidiesForBedrock = subsidies.slice(0, 8);
     const userPayload = JSON.stringify({ company, subsidies: subsidiesForBedrock });
 
     const body = JSON.stringify({
       anthropic_version: "bedrock-2023-05-31",
-      max_tokens: 3000,
+      max_tokens: 5000,
       temperature: 0.5,
       system: SYSTEM_PROMPT,
       messages: [{ role: "user", content: userPayload }],

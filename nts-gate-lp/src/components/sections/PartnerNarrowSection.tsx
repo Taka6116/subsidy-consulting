@@ -37,18 +37,14 @@ export default function PartnerNarrowSection() {
               id="home-partner-heading"
               className="font-heading text-[1.75rem] font-bold leading-snug text-[var(--text-primary)] md:text-[2.25rem]"
             >
-              クライアントに、
+              パートナー企業の方へ。
               <br />
-              補助金の提案ができていますか？
+              補助金を、御社の営業の武器に。
             </h2>
             <p className="mx-auto max-w-xl text-base leading-loose text-[var(--text-secondary)] md:mx-0 md:text-lg">
-              取引先の設備投資やDX・人手不足の解消が、
-              <br className="hidden md:inline" />
-              補助金で前に進むケースは少なくありません。
+              税理士・ベンダー・士業の方々と提携しています。「補助金が使えますよ」その一言が、顧客との関係を深めます。
               <br />
-              提案の幅を広げたいパートナー企業様向けに、
-              <br className="hidden md:inline" />
-              制度の整理から申請サポートまでご案内しています。
+              紹介いただいた案件は、私たちが責任を持って対応します。
             </p>
             <div className="flex justify-center lg:justify-start">
               <div className="w-full max-w-sm sm:w-auto">

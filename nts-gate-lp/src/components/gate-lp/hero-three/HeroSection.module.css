@@ -14,6 +14,156 @@
   font-family: var(--font-body);
 }
 
+/* ── 装飾あしらい（浮遊シェイプ／ドット／リング） ─────
+   ・pointer-events: none で操作を邪魔しない
+   ・prefers-reduced-motion でアニメ停止
+───────────────────────────────────────────── */
+.decorWrap {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+/* ソフトブロブ（navy ／ teal ／ gold のごく淡いグラデーション） */
+.decorBlob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(60px);
+  will-change: transform;
+}
+
+.decorBlobNavy {
+  width: 480px;
+  height: 480px;
+  background: radial-gradient(
+    closest-side,
+    rgba(26, 76, 142, 0.22),
+    rgba(26, 76, 142, 0) 70%
+  );
+  top: -160px;
+  left: -140px;
+  animation: floatSlow 14s ease-in-out infinite;
+}
+
+.decorBlobTeal {
+  width: 420px;
+  height: 420px;
+  background: radial-gradient(
+    closest-side,
+    rgba(0, 184, 148, 0.2),
+    rgba(0, 184, 148, 0) 70%
+  );
+  bottom: -120px;
+  left: 22%;
+  animation: floatSlow 18s ease-in-out infinite reverse;
+}
+
+.decorBlobGold {
+  width: 280px;
+  height: 280px;
+  background: radial-gradient(
+    closest-side,
+    rgba(245, 166, 35, 0.16),
+    rgba(245, 166, 35, 0) 70%
+  );
+  top: 12%;
+  right: 10%;
+  animation: floatSlow 12s ease-in-out infinite;
+}
+
+/* 斜めドットパターン（gold） */
+.decorDots {
+  position: absolute;
+  width: 160px;
+  height: 160px;
+  background-image: radial-gradient(
+    circle,
+    rgba(245, 166, 35, 0.45) 1.6px,
+    transparent 2px
+  );
+  background-size: 14px 14px;
+  opacity: 0.7;
+}
+
+.decorDotsTopRight {
+  top: 72px;
+  right: 6%;
+}
+
+.decorDotsBottomLeft {
+  bottom: 80px;
+  left: 4%;
+  width: 120px;
+  height: 120px;
+  background-image: radial-gradient(
+    circle,
+    rgba(26, 76, 142, 0.32) 1.6px,
+    transparent 2px
+  );
+}
+
+/* 極細リング（teal outline） */
+.decorRing {
+  position: absolute;
+  border-radius: 50%;
+  will-change: transform;
+}
+
+.decorRing1 {
+  width: 104px;
+  height: 104px;
+  top: 26%;
+  left: 3%;
+  border: 1.5px solid rgba(0, 184, 148, 0.35);
+  animation: floatSoft 9s ease-in-out infinite;
+}
+
+.decorRing2 {
+  width: 58px;
+  height: 58px;
+  bottom: 24%;
+  left: 44%;
+  border: 1.5px solid rgba(245, 166, 35, 0.42);
+  animation: floatSoft 11s ease-in-out infinite reverse;
+}
+
+.decorRing3 {
+  width: 74px;
+  height: 74px;
+  top: 18%;
+  right: 42%;
+  border: 1.5px dashed rgba(26, 76, 142, 0.2);
+  animation: floatSoft 13s ease-in-out infinite;
+}
+
+/* 小さな塗りつぶしドット（アクセント） */
+.decorAccent {
+  position: absolute;
+  border-radius: 50%;
+}
+
+.decorAccentTeal {
+  width: 14px;
+  height: 14px;
+  background: rgba(0, 184, 148, 0.75);
+  top: 40%;
+  left: 8%;
+  box-shadow: 0 4px 12px rgba(0, 184, 148, 0.25);
+  animation: floatSoft 7s ease-in-out infinite reverse;
+}
+
+.decorAccentGold {
+  width: 10px;
+  height: 10px;
+  background: rgba(245, 166, 35, 0.85);
+  top: 60%;
+  right: 38%;
+  box-shadow: 0 4px 10px rgba(245, 166, 35, 0.3);
+  animation: floatSoft 8s ease-in-out infinite;
+}
+
 /* ── メインコンテンツ ──────────────────────────
    Header が absolute z-[10] で被さるため padding-top で確保
 ─────────────────────────────────────────── */
@@ -397,6 +547,26 @@
   }
 }
 
+@keyframes floatSlow {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(14px, -18px, 0) scale(1.04);
+  }
+}
+
+@keyframes floatSoft {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(6px, -10px, 0);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .headline,
   .sub,
@@ -409,6 +579,37 @@
   .scrollLine {
     animation: none;
     opacity: 0.5;
+  }
+  .decorBlob,
+  .decorRing,
+  .decorAccent {
+    animation: none !important;
+  }
+}
+
+/* モバイル（768px 未満）では装飾を控えめに */
+@media (max-width: 767px) {
+  .decorBlobGold,
+  .decorDotsTopRight,
+  .decorRing2,
+  .decorRing3,
+  .decorAccentGold {
+    display: none;
+  }
+  .decorBlobNavy {
+    width: 320px;
+    height: 320px;
+    top: -100px;
+    left: -110px;
+  }
+  .decorBlobTeal {
+    width: 280px;
+    height: 280px;
+  }
+  .decorDotsBottomLeft {
+    width: 90px;
+    height: 90px;
+    bottom: 40px;
   }
 }
 

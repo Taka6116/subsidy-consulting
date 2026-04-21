@@ -23,22 +23,22 @@ type ServiceTab = {
 const SERVICES: ServiceTab[] = [
   {
     number: "01",
-    label: "補助金活用戦略の設計から始める",
-    body: "いきなり申請書類に入りません。まずヒアリングで、あなたの会社の課題・投資計画・タイミングを整理します。「どの補助金を、いつ、どう使うか」という戦略を最初に設計します。",
+    label: "経営課題を起点に、戦略を設計する",
+    body: "一般的な補助金コンサルは「使える補助金ありき」で話が進みます。私たちは逆で、まずあなたの会社の経営課題を聞くところから始めます。「どの補助金を、いつ、何のために使うか」——戦略を一緒に設計するのが、私たちの最初の仕事です。",
     imageSrc: "/images/PANA3362.jpg",
     imageAlt: "経営課題のヒアリング・戦略整理のイメージ",
   },
   {
     number: "02",
-    label: "提携行政書士と連携し、採択まで伴走する",
-    body: "申請書類の作成は提携行政書士と連携して進めます。NTSは申請の上流にある「何のために使うか」の設計と、申請プロセス全体の進行管理を担当します。",
+    label: "提携行政書士と連携し、申請プロセスを管理する",
+    body: "補助金申請書類の作成は、今やAIでも対応できる時代になりつつあります。私たちは、提携する行政書士と連携しながら申請プロセス全体を管理し、「何のために使うか」という申請の上流設計に責任を持ちます。",
     imageSrc: "/images/PANA3202-2.jpg",
     imageAlt: "申請書類・行政書士連携のイメージ",
   },
   {
     number: "03",
-    label: "採択後も1年間、経営に関わり続ける",
-    body: "採択がゴールではありません。補助金を使って設備を入れ、現場に定着させ、効果を検証するまでが私たちの仕事です。採択後も継続的にお客様の経営に関わり続けます。",
+    label: "採択後1年間、伴走し続ける",
+    body: "従来のコンサルは、採択が決まれば関係が終わります。私たちの仕事はその先にあります。補助金を使って設備を入れ、現場に定着させ、1年後に効果を検証する——そこまで一緒に動き続けるのが、私たちの提供価値です。",
     imageSrc: "/images/PANA3955.jpg",
     imageAlt: "採択後の伴走・経営支援のイメージ",
   },
@@ -63,15 +63,16 @@ export default function NtsServicesSection() {
           viewport={fadeInUpViewport}
           transition={fadeInUpTransition}
         >
-          <p className="sec-label mb-4">NTSの支援の特長</p>
+          <p className="sec-label mb-4">DIFFERENCE</p>
           <h2
             id="home-nts-services-heading"
             className="font-heading text-[1.75rem] font-bold leading-snug text-[var(--text-primary)] md:text-[2.25rem]"
           >
-            申請が目的ではありません。
-            <br />
-            経営課題に寄り添います。
+            申請が、ゴールではありません。
           </h2>
+          <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-[var(--text-secondary)] md:text-lg">
+            従来の補助金コンサルとの違い——私たちが提供するのは、書類ではなく「伴走」です。
+          </p>
         </motion.div>
 
         <motion.div

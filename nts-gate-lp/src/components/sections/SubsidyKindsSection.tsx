@@ -15,7 +15,7 @@ import imgDelivery from "../../../icon-assets/delivery.webp";
 const CARDS = [
   {
     industry: "建設業",
-    title: "職人不足・設備老朽化・事業承継",
+    title: "職人不足・設備更新・事業承継",
     imageSrc: imgCraftswoman,
     imageAlt: "建設業の職人不足と現場課題のイメージ",
     keywords: [
@@ -26,7 +26,7 @@ const CARDS = [
       "建設業許可",
       "後継者不在",
     ],
-    body: "元請・下請を問わず、人が足りない・設備を更新したい・後継者に引き継ぎたい、という課題に対して補助金活用の戦略を設計します。",
+    body: "2024年問題による工期制約、主力重機の老朽化、後継者問題——建設業が今抱える課題に直結する補助金活用を、業界の実情を理解した視点でご提案します。",
     useCase:
       "現場の人手不足や主力重機の更新タイミングが重なり、投資判断を迫られている元請・下請の経営者。許可更新や事業承継を見据え、補助金の枠に沿った投資順序を整理したいケースに合います。",
   },
@@ -43,7 +43,7 @@ const CARDS = [
       "2024年問題",
       "主要荷主への依存",
     ],
-    body: "主要荷主への依存リスクを抱えながら、人とコストの問題に直面している運送会社の経営者に、補助金という選択肢を届けます。",
+    body: "ドライバー不足、デジタコ・Gマーク対応、荷主依存からの脱却——運送業が直面する経営課題を補助金で動かすための戦略を、一緒に設計します。",
     useCase:
       "荷主依存やドライバー確保、デジタコ・車両更新のコストが同時に押し寄せている運送会社。省力化投資や2代目への引き継ぎを、補助金を組み込んだ計画で進めたい経営者向けです。",
   },
@@ -68,12 +68,12 @@ export default function SubsidyKindsSection() {
               id="home-subsidy-kinds-heading"
               className="font-heading text-[1.75rem] font-bold leading-snug text-[var(--text-primary)] md:text-[2.25rem]"
             >
-              建設業・運送業にも特化し、
+              建設業・運送業の経営者に、
               <br />
-              サポートをしています。
+              特化してサポートしています。
             </h2>
-            <p className="mx-auto mt-4 max-w-xl text-base leading-relaxed text-[var(--text-secondary)] md:text-lg">
-              業種特有の課題に合わせて、最適な補助金活用戦略を設計します。
+            <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-[var(--text-secondary)] md:text-lg">
+              業界の構造と現場の悩みを理解した上で、あなたの会社に合った補助金活用戦略を一緒に設計します。
             </p>
           </div>
 

@@ -18,7 +18,10 @@ import {
 } from "@/lib/ai/bedrockJgrantsKeywordPlan";
 import { INDUSTRY_OPTIONS } from "@/data/industryOptions";
 import { fetchWebsiteExcerpt } from "@/lib/fetchWebsiteExcerpt";
-import { applyEligibilityPrefilters } from "@/lib/subsidyEligibilityFilter";
+import {
+  applyEligibilityPrefilters,
+  isLocallyRestricted,
+} from "@/lib/subsidyEligibilityFilter";
 import {
   fetchStaticSubsidies,
   staticSubsidyDeadlineLabel,
@@ -203,9 +206,23 @@ export async function POST(req: Request) {
     console.log("[subsidy/match] jGrants summaries count (final):", summaries.length);
 
     if (summaries.length === 0) {
-      const staticFallback = await fetchStaticSubsidies();
+      const staticFallbackRaw = await fetchStaticSubsidies();
+      const userPrefFallback = prefecture.trim();
+      const staticFallback = staticFallbackRaw.filter((s) => {
+        const corpus = `${s.target_area_search ?? ""}\n${s.summary ?? ""}`;
+        const locallyRestricted = isLocallyRestricted(
+          s.target_area_search,
+          corpus,
+          s.title,
+        );
+        if (!locallyRestricted) return true;
+        if (!userPrefFallback) return false;
+        return corpus.includes(userPrefFallback);
+      });
       console.log(
         "[subsidy/match] jGrants 0件 — static fallback:",
+        staticFallbackRaw.length,
+        "→ after region filter:",
         staticFallback.length,
       );
       if (staticFallback.length === 0) {
@@ -324,9 +341,30 @@ export async function POST(req: Request) {
     const top = eligibilityRows.slice(0, FINAL_TOP);
 
     // ---- 独自DB補助金をマージ ----
-    const staticSubsidies = await fetchStaticSubsidies();
+    const staticSubsidiesRaw = await fetchStaticSubsidies();
+    // 都道府県ベースで地域限定の補助金を絞り込み
+    // - prefecture 入力あり: 対象地域に県名が含まれるもの or 全国 or 地域言及なしのもの のみ残す
+    // - prefecture 未入力: 地域限定の補助金は除外（全国対象・地域言及なしのみ残す）
+    const userPref = prefecture.trim();
+    const staticSubsidies = staticSubsidiesRaw.filter((s) => {
+      const corpus = `${s.target_area_search ?? ""}\n${s.summary ?? ""}`;
+      const locallyRestricted = isLocallyRestricted(
+        s.target_area_search,
+        corpus,
+        s.title,
+      );
+      if (!locallyRestricted) return true;
+      if (!userPref) return false;
+      // 地域限定だが、ユーザーの県と一致するなら残す
+      return corpus.includes(userPref);
+    });
     const staticInputs = staticSubsidies.map(toBedrockInput);
-    console.log("[subsidy/match] static subsidies loaded:", staticInputs.length);
+    console.log(
+      "[subsidy/match] static subsidies loaded:",
+      staticSubsidiesRaw.length,
+      "→ after region filter:",
+      staticInputs.length,
+    );
     // ---- ここまで ----
 
     // Phase B: 候補に対するスコア・要約（既存 Bedrock マッチ）
@@ -356,11 +394,14 @@ export async function POST(req: Request) {
       };
     });
 
-    // 独自DBを先頭に置き、jGrants結果を後ろに追加（合計8件上限）
+    // jGrants結果を先頭に置き、独自DBを補完として追加（合計8件上限）
+    // jGrantsが取れている場合はjGrantsを優先し、staticは残枠に収める
+    const jgrantsSlots = Math.min(jgrantsNormalizedForBedrock.length, 5);
+    const staticSlots = Math.max(0, 8 - jgrantsSlots);
     const normalizedForBedrock: NormalizedSubsidyForMatch[] = [
-      ...staticInputs,
-      ...jgrantsNormalizedForBedrock,
-    ].slice(0, 8);
+      ...jgrantsNormalizedForBedrock.slice(0, jgrantsSlots),
+      ...staticInputs.slice(0, staticSlots),
+    ];
 
     const company: CompanyProfileForMatch = {
       industryLabel,

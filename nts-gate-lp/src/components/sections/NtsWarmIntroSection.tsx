@@ -36,9 +36,9 @@ export default function NtsWarmIntroSection() {
               id="home-nts-warm-intro-heading"
               className="font-heading text-[1.75rem] font-bold leading-snug text-[var(--text-primary)] md:text-[2.25rem]"
             >
-              「補助金が使えます」
+              「補助金が使えます」。
               <br />
-              その一言の先に、1年間の伴走があります。
+              その先に、1年間の伴走があります。
             </h2>
           </div>
 
@@ -58,15 +58,14 @@ export default function NtsWarmIntroSection() {
 
             <div className="col-text flex flex-col justify-center gap-5 text-center lg:text-left">
               <p className="font-heading text-xl font-bold leading-snug text-[var(--text-primary)] md:text-2xl">
-                補助金はあくまで手段。
-                <br />
-                目的は、一緒に経営課題へ向き合うことです。
+                「補助金は手段です。大切なのは、
+                <br className="hidden md:inline" />
+                その先に会社がどう変わるか。」
               </p>
               <p className="text-base leading-loose text-[var(--text-secondary)] md:text-lg">
-                私たちは「申請して終わり」ではなく、採択後1年間にわたり
-                経営者のパートナーとして伴走します。数字を追うだけでなく、
-                現場の悩みに寄り添い、補助金を本当の意味で活かすための
-                支援を続けます。
+                弊社が提供するのは、書類を作って終わりのサービスではありません。補助金の活用戦略を設計し、採択に向けて動き、採択後の1年間も、あなたの経営に寄り添い続けます。
+                <br />
+                段階的にフィーをいただくのは、1年後の成果まで、責任を持つためです。
               </p>
             </div>
           </div>

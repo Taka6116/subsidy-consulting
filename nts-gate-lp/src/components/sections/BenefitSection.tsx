@@ -14,48 +14,48 @@ import imgIsometric13 from "../../../icon-assets/isometric_13.webp";
 import imgIsometric14 from "../../../icon-assets/isometric_14.webp";
 
 const HIGHLIGHTS = [
-  { main: "最大半額以下", sub: "" },
-  { main: "1年間", sub: "の伴走" },
-  { main: "ROI", sub: "を数字で" },
+  { main: "150,000円", sub: "" },
+  { main: "5%", sub: "（補助額）" },
+  { main: "5% × 2回", sub: "（補助額）" },
 ] as const;
 
 const BENEFIT_IMAGES = [
-  { src: imgIsometric13, alt: "導入効果1を表す設備投資イメージ" },
-  { src: imgIsometric10, alt: "導入効果2を表す運用定着イメージ" },
-  { src: imgIsometric14, alt: "導入効果3を表す投資判断イメージ" },
+  { src: imgIsometric13, alt: "着手金・戦略設計のイメージ" },
+  { src: imgIsometric10, alt: "採択時の成果報酬のイメージ" },
+  { src: imgIsometric14, alt: "実績報告・1年後の効果検証のイメージ" },
 ] as const;
 
 const BENEFITS = [
   {
     num: "01",
-    title: "設備投資コストが半分以下に",
+    title: "着手金",
     body: (
       <>
-        省力化補助金を使えば、IoT機器やロボット導入の費用を最大半額以下に抑えられます。
+        初回ヒアリング・補助金活用戦略の設計費用です。
         <br />
-        自己資金だけでは踏み出せなかった投資が、現実的な選択肢になります。
+        まず会社の課題を理解し、方針を固めます。
       </>
     ),
   },
   {
     num: "02",
-    title: "設備が現場に根付く",
+    title: "成果報酬（採択時）",
     body: (
       <>
-        申請して終わりでは、設備は現場に定着しません。
+        採択が決まった時点でいただきます。
         <br />
-        NTSは導入後の運用フォローまで伴走し、投資効果が出る状態をつくります。
+        結果が出て初めて発生するフィーです。
       </>
     ),
   },
   {
     num: "03",
-    title: "「次の投資」の判断軸ができる",
+    title: "成果報酬（報告完了・1年後）",
     body: (
       <>
-        1年間の伴走を通じて、設備投資のROIを数字で確認できます。
+        実績報告・精算完了時と、1年後の効果検証時にそれぞれ5%。
         <br />
-        次の経営判断を、勘ではなく実績で下せるようになります。
+        最後まで関わり続けるからこそ、この設計です。
       </>
     ),
   },
@@ -74,13 +74,18 @@ export default function BenefitSection() {
           transition={fadeInUpTransition}
         >
           <div className="mb-12 text-center md:mb-16">
-            <p className="sec-label mb-3">導入効果</p>
+            <p className="sec-label mb-3">FEE STRUCTURE</p>
             <h2
               id="home-benefit-heading"
               className="font-heading text-[1.75rem] font-bold leading-snug text-[var(--text-primary)] md:text-[2.25rem]"
             >
-              補助金が「使える」と、経営はこう変わります。
+              段階的な成果報酬で、
+              <br />
+              最後まで責任を共有します。
             </h2>
+            <p className="mx-auto mt-6 max-w-2xl text-base leading-relaxed text-[var(--text-secondary)] md:text-lg">
+              「採択された瞬間に全額請求」ではありません。1年間の成果を見届けながら、3つのタイミングでお支払いいただく構造です。
+            </p>
           </div>
 
           <div className="mb-14 grid grid-cols-1 gap-x-6 gap-y-2 md:mb-16 md:grid-cols-3">

@@ -17,18 +17,30 @@ export default function HeroSection() {
       }}
       aria-label="補助金照会サービス ヒーローセクション"
     >
-      <div className={`section-inner w-full shrink-0 py-8 ${styles.heroInnerWide}`}>
+      <div className={styles.decorWrap} aria-hidden="true">
+        <span className={`${styles.decorBlob} ${styles.decorBlobNavy}`} />
+        <span className={`${styles.decorBlob} ${styles.decorBlobTeal}`} />
+        <span className={`${styles.decorBlob} ${styles.decorBlobGold}`} />
+        <span className={`${styles.decorDots} ${styles.decorDotsTopRight}`} />
+        <span className={`${styles.decorDots} ${styles.decorDotsBottomLeft}`} />
+        <span className={`${styles.decorRing} ${styles.decorRing1}`} />
+        <span className={`${styles.decorRing} ${styles.decorRing2}`} />
+        <span className={`${styles.decorRing} ${styles.decorRing3}`} />
+        <span className={`${styles.decorAccent} ${styles.decorAccentTeal}`} />
+        <span className={`${styles.decorAccent} ${styles.decorAccentGold}`} />
+      </div>
+      <div className={`section-inner relative z-[1] w-full shrink-0 py-8 ${styles.heroInnerWide}`}>
         <div className={`two-col img-right ${styles.heroSplit}`}>
           <div className={`${styles.textCol} col-text space-y-6`}>
             <h1 className={styles.headline}>
-              <span className={styles.headlineLine}>補助金だけでなく、</span>
-              <span className={styles.headlineLine}>経営課題を超えて</span>
-              <span className={styles.headlineLine}>前に進みたい方へ</span>
+              <span className={styles.headlineLine}>重要な決断を、</span>
+              <span className={styles.headlineLine}>ひとりで抱えていませんか。</span>
             </h1>
 
             <p className={`${styles.sub} font-body`}>
-              <span className={styles.subLine}>補助金活用の戦略から採択後の伴走まで、</span>
-              <span className={styles.subLine}>経営者のパートナーとして伴います。</span>
+              <span className={styles.subLine}>人手不足、設備の更新、この先の経営——</span>
+              <span className={styles.subLine}>答えのない問いを、誰かと一緒に考える。</span>
+              <span className={styles.subLine}>補助金の活用は、その第一歩です。</span>
             </p>
 
             <div className={`${styles.ctaRow} font-body`}>
@@ -37,12 +49,17 @@ export default function HeroSection() {
                 className={styles.ctaConsult}
                 onClick={() => trackCTAClick("hero_consult")}
               >
-                無料相談申し込み
+                まず話を聞いてみる（無料）
                 <span className={styles.ctaArrow} aria-hidden="true">
                   →
                 </span>
               </Link>
-              <HeroCheckCtaLink location="home_subsidy_check" className={styles.cta} />
+              <HeroCheckCtaLink location="home_subsidy_check" className={styles.cta}>
+                自社に使える補助金を調べる
+                <span className={styles.ctaArrow} aria-hidden="true">
+                  →
+                </span>
+              </HeroCheckCtaLink>
             </div>
           </div>
 
@@ -60,7 +77,7 @@ export default function HeroSection() {
         </div>
       </div>
 
-      <div className={`${styles.scrollHint} font-body`} aria-hidden="true">
+      <div className={`${styles.scrollHint} relative z-[1] font-body`} aria-hidden="true">
         <div className={styles.scrollLine} />
         <span className={styles.scrollText}>scroll</span>
       </div>
