@@ -1,11 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import HeroCheckCtaLink from "@/components/shared/HeroCheckCtaLink";
 import { trackCTAClick } from "@/lib/analytics";
 import styles from "./HeroSection.module.css";
-import isometric22 from "../../../../icon-assets/isometric_22.png";
 
 export default function HeroSection() {
   return (
@@ -65,12 +63,16 @@ export default function HeroSection() {
 
           <div className={`col-img w-full ${styles.heroImgCol}`}>
             <div className={styles.heroVisual}>
-              <Image
-                src={isometric22}
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/icon-assets/undraw_thinking-mode_7czd.svg"
                 alt=""
                 aria-hidden="true"
                 className={styles.heroCharMain}
-                priority
+                width={928}
+                height={871}
+                loading="eager"
+                decoding="async"
               />
             </div>
           </div>

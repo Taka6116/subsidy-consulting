@@ -237,16 +237,30 @@
   overflow: visible;
 }
 
-/* メインキャラ（isometric_09 / 3人グループ） */
-/* 修正G: ヒーロー右ビジュアルを 1.2 倍にスケールアップ（110% → 132%） */
+/* メインビジュアル（undraw_thinking-mode / ひとりで考え込む人物） */
+/* SVG は約 1:1 の正方形のため、コンテナ内に余白を持たせて中央寄せで配置 */
 .heroCharMain {
   position: absolute;
-  bottom: -24px;
-  right: -32px;
-  height: 132%;
+  inset: 0;
+  margin: auto;
+  max-width: 92%;
+  max-height: 96%;
   width: auto;
+  height: 100%;
   object-fit: contain;
-  object-position: bottom right;
+  object-position: center;
+  animation: heroFloatY 8s ease-in-out infinite;
+  will-change: transform;
+}
+
+@keyframes heroFloatY {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(0, -8px, 0);
+  }
 }
 
 /* サブキャラ（isometric_21） */
@@ -586,7 +600,8 @@
   }
   .decorBlob,
   .decorRing,
-  .decorAccent {
+  .decorAccent,
+  .heroCharMain {
     animation: none !important;
   }
 }
@@ -632,11 +647,11 @@
     overflow: hidden;
   }
 
-  /* 修正G: 狭幅帯でもビジュアルを 1.2 倍に（95% → 114%） */
+  /* 狭幅帯：SVG を中央寄せ・コンテナ内に収める */
   .heroCharMain {
-    height: 114%;
-    bottom: 0;
-    right: -16px;
+    height: 100%;
+    max-height: 100%;
+    inset: 0;
   }
 
   .heroCharSub {
