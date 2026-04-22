@@ -83,9 +83,9 @@ export default function FinalCtaSection({ variant = "home" }: FinalCtaSectionPro
             onClick: () => trackCTAClick("final_cta_check"),
           },
           {
-            title: "実際に補助金を活用したい方へ",
-            body: "エンドユーザー向けのサイトでは、無料相談・補助金診断・制度情報からご利用いただけます。紹介先のお客様には、こちらをご案内ください。",
-            ctaLabel: "エンドユーザー向けLPを見る",
+            title: "補助金を活用したい方へ",
+            body: "エンドユーザー向けサイトでは、無料相談・補助金診断・制度情報をご案内しています。紹介先のお客様には、こちらのLPをご紹介ください。",
+            ctaLabel: "利用者向けLPを見る",
             href: "/",
             icon: Home,
             onClick: () => trackCTAClick("partner_final_cta_home"),

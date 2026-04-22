@@ -13,10 +13,50 @@
   padding: 48px 0 0;
   box-sizing: border-box;
   overflow-x: hidden;
+
+  /* 空間に奥行きを。左上と右下に極薄の放射グロー */
+  background-image:
+    radial-gradient(
+      circle at 12% 18%,
+      rgba(26, 76, 142, 0.06) 0%,
+      rgba(26, 76, 142, 0) 42%
+    ),
+    radial-gradient(
+      circle at 88% 82%,
+      rgba(0, 184, 148, 0.05) 0%,
+      rgba(0, 184, 148, 0) 42%
+    );
+}
+
+/* ドットグリッド — 装飾のみ。ビューポートに固定せずセクション内で完結 */
+.dotGrid {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background-image: radial-gradient(
+    circle,
+    rgba(26, 76, 142, 0.08) 1px,
+    transparent 1px
+  );
+  background-size: 16px 16px;
+  mask-image: radial-gradient(
+    ellipse at center,
+    black 40%,
+    transparent 85%
+  );
+  -webkit-mask-image: radial-gradient(
+    ellipse at center,
+    black 40%,
+    transparent 85%
+  );
+  opacity: 0.7;
 }
 
 /* ── 上部: テキスト + 画像の横並び ───────────────────────── */
 .heroMain {
+  position: relative;
+  z-index: 2; /* dotGrid より前面 */
   flex: 1;
   min-height: 0;
   display: flex;
@@ -84,18 +124,34 @@
 }
 
 .imgPlaceholder {
+  position: relative; /* chip を配置する基準 */
   display: flex;
   align-items: flex-end;
   justify-content: center;
   gap: 8px;
   width: 100%;
   min-height: 340px;
-  border-radius: 16px;
-  background: #eef6ff;
-  overflow: hidden;
+  border-radius: 20px;
+  /* 中央 → 外縁 へ向けてごく自然なグラデ */
+  background:
+    radial-gradient(
+      circle at 50% 30%,
+      #f4faff 0%,
+      #eef6ff 60%,
+      #e6effa 100%
+    );
+  overflow: visible; /* chip がはみ出すので visible */
   padding: 0 16px;
   box-sizing: border-box;
+  /* 多層シャドウで浮遊感 */
+  box-shadow:
+    0 12px 40px rgba(26, 76, 142, 0.1),
+    0 2px 8px rgba(26, 76, 142, 0.06),
+    inset 0 0 0 1px rgba(26, 76, 142, 0.06);
 }
+
+/* 画像そのものは角丸の内側に閉じ込めるため、imgPlaceholder内部でmaskがわりの擬似要素は使わず、
+   overflow: visible のまま chip と共存させる（画像の形が矩形でないため切れて見えない） */
 
 @media (min-width: 1024px) {
   .imgPlaceholder {
@@ -127,13 +183,27 @@
 
 /* ── テキスト要素 ────────────────────────────────────────── */
 .eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
   font-size: 10px;
   letter-spacing: 0.3em;
   color: var(--accent-teal);
   text-transform: uppercase;
   margin-bottom: 20px;
+  padding: 6px 14px;
+  border: 1px solid rgba(0, 184, 148, 0.35);
+  border-radius: 999px;
+  background: rgba(0, 184, 148, 0.06);
   opacity: 0;
   transform: translateY(16px);
+}
+
+.eyebrowIcon {
+  width: 14px;
+  height: 14px;
+  color: var(--accent-teal);
+  flex-shrink: 0;
 }
 
 .headline {
@@ -150,6 +220,34 @@
 
 .headlineLine {
   display: block;
+}
+
+/* 2行目「その一言で、営業が変わる。」の直下に短いアクセント線 */
+.headlineAccent {
+  position: relative;
+  display: inline-block;
+}
+
+.headlineAccent::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -8px;
+  width: 56px;
+  height: 2px;
+  background: var(--accent-teal);
+  border-radius: 999px;
+}
+
+@media (max-width: 1023px) {
+  .headlineAccent {
+    display: block;
+  }
+
+  .headlineAccent::after {
+    left: 50%;
+    transform: translateX(-50%);
+  }
 }
 
 @media (min-width: 1024px) {
@@ -249,5 +347,121 @@
 .btnS:hover {
   background: var(--accent-navy);
   color: #fff;
+}
+
+/* ── ロゴ帯上のセクションラベル ──────────────────────────── */
+.stripLabel {
+  font-family: var(--font-body);
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  color: var(--text-tertiary, #7a8697);
+  text-transform: uppercase;
+  text-align: center;
+  margin: 0 0 14px;
+  opacity: 0.85;
+}
+
+/* ── フローティング・キーワードチップ ────────────────────── */
+.chip {
+  position: absolute;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 12px;
+  border-radius: 999px;
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  background: #fff;
+  box-shadow:
+    0 4px 14px rgba(26, 76, 142, 0.12),
+    0 1px 3px rgba(26, 76, 142, 0.06);
+  backdrop-filter: blur(4px);
+  pointer-events: none;
+  z-index: 3;
+}
+
+.chipDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  flex-shrink: 0;
+  background: currentColor;
+  opacity: 0.85;
+}
+
+.chipTeal {
+  color: var(--accent-teal);
+  border: 1px solid rgba(0, 184, 148, 0.25);
+}
+
+.chipNavy {
+  color: var(--accent-navy);
+  border: 1px solid rgba(26, 76, 142, 0.22);
+}
+
+.chipGold {
+  color: #b8841a;
+  border: 1px solid rgba(184, 132, 26, 0.28);
+}
+
+/* 配置 — モバイル時は控えめに、lg+ で画像まわりに浮かせる */
+.chipTopLeft {
+  top: 10%;
+  left: -4px;
+  animation: floatA 5s ease-in-out infinite;
+}
+
+.chipTopRight {
+  top: 16%;
+  right: -4px;
+  animation: floatB 5.8s ease-in-out infinite;
+}
+
+.chipBottomCenter {
+  bottom: 6%;
+  left: 50%;
+  transform: translateX(-50%);
+  animation: floatC 6.4s ease-in-out infinite;
+}
+
+@media (min-width: 1024px) {
+  .chipTopLeft {
+    top: 8%;
+    left: -12px;
+  }
+
+  .chipTopRight {
+    top: 22%;
+    right: 8px;
+  }
+
+  .chipBottomCenter {
+    bottom: 10%;
+  }
+}
+
+@keyframes floatA {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+@keyframes floatB {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+@keyframes floatC {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50% { transform: translateX(-50%) translateY(-5px); }
+}
+
+/* アクセシビリティ: モーション低減の希望を尊重 */
+@media (prefers-reduced-motion: reduce) {
+  .chip {
+    animation: none !important;
+  }
 }
 

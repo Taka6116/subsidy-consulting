@@ -27,7 +27,7 @@ const CARDS: {
 }[] = [
   {
     situation: "提案したとき",
-    pain: "「費用が\nネック…」",
+    pain: "「費用がネック…」",
     note: (
       <>
         設備投資に二の足を踏む顧客に「補助金が使えます」と伝えられたら、商談の結末が変わります。
@@ -39,7 +39,7 @@ const CARDS: {
   },
   {
     situation: "せっかく興味を持ってもらっても",
-    pain: "「今期の\n予算が…」",
+    pain: "「今期の予算が…」",
     note: (
       <>
         予算不足を理由に見送った顧客が、補助金を知っていれば発注できたケースがあります。
@@ -51,7 +51,7 @@ const CARDS: {
   },
   {
     situation: "判断を保留されて",
-    pain: "「少し\n考えます…」",
+    pain: "「少し考えます…」",
     note: (
       <>
         判断を保留した顧客の背景に、資金調達の不安があることは珍しくありません。
@@ -112,7 +112,7 @@ export default function PartnerAgitationSection() {
               </div>
               <div className="p-7">
                 <p className="mb-3 text-xs text-[var(--text-muted)]">{card.situation}</p>
-                <p className="mb-5 whitespace-pre-line font-heading text-2xl font-bold leading-snug text-[var(--text-primary)]">
+                <p className="mb-5 whitespace-nowrap font-heading text-[clamp(1.125rem,2.1vw,1.5rem)] font-bold leading-snug tracking-tight text-[var(--text-primary)]">
                   {card.pain}
                 </p>
                 <div className="border-t border-[var(--border-subtle)] pt-4">

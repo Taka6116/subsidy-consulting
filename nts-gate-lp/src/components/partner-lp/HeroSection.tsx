@@ -10,7 +10,6 @@ import isometric16 from "../../../icon-assets/isometric_16.webp";
 import styles from "./HeroSection.module.css";
 
 export default function HeroSection() {
-  const eyebrowRef = useRef<HTMLParagraphElement>(null);
   const headlineRef = useRef<HTMLHeadingElement>(null);
   const subRef = useRef<HTMLParagraphElement>(null);
   const ctRef = useRef<HTMLDivElement>(null);
@@ -22,7 +21,6 @@ export default function HeroSection() {
       window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     const allEls = [
-      eyebrowRef.current,
       headlineRef.current,
       subRef.current,
       ctRef.current,
@@ -35,11 +33,10 @@ export default function HeroSection() {
     }
 
     const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
-    tl.to(eyebrowRef.current, { opacity: 1, y: 0, duration: 0.8 }, 0)
-      .to(headlineRef.current, { opacity: 1, y: 0, duration: 0.9 }, 0.2)
-      .to(subRef.current, { opacity: 1, y: 0, duration: 0.8 }, 0.4)
-      .to(ctRef.current, { opacity: 1, y: 0, duration: 0.7 }, 0.75)
-      .to(imgColRef.current, { opacity: 1, y: 0, duration: 0.9 }, 0.3);
+    tl.to(headlineRef.current, { opacity: 1, y: 0, duration: 0.9 }, 0)
+      .to(subRef.current, { opacity: 1, y: 0, duration: 0.8 }, 0.2)
+      .to(ctRef.current, { opacity: 1, y: 0, duration: 0.7 }, 0.55)
+      .to(imgColRef.current, { opacity: 1, y: 0, duration: 0.9 }, 0.1);
 
     return () => {
       tl.kill();
@@ -48,16 +45,18 @@ export default function HeroSection() {
 
   return (
     <section className={`section-hero ${styles.page}`}>
+      {/* 装飾: dot grid overlay（低コントラスト・装飾のみ・非インタラクティブ） */}
+      <div className={styles.dotGrid} aria-hidden="true" />
+
       {/* ── 上部: テキスト（左） + 画像プレースホルダー（右） ── */}
       <div className={styles.heroMain}>
         {/* 左カラム: テキスト + CTA */}
         <div className={styles.content}>
-          <p ref={eyebrowRef} className={`${styles.eyebrow} font-body`}>
-            PARTNER PROGRAM — NTS
-          </p>
           <h1 ref={headlineRef} className={`${styles.headline} font-heading`}>
             <span className={styles.headlineLine}>「補助金が使えますよ」</span>
-            <span className={styles.headlineLine}>その一言で、営業が変わる。</span>
+            <span className={`${styles.headlineLine} ${styles.headlineAccent}`}>
+              その一言で、営業が変わる。
+            </span>
           </h1>
           <p ref={subRef} className={`${styles.sub} font-body`}>
             御社の商材を提案するとき、「補助金の対象です」と添えるだけで顧客の反応が変わります。
@@ -96,12 +95,36 @@ export default function HeroSection() {
               height={640}
               className={styles.heroImageRight}
             />
+
+            {/* フローティング・キーワードチップ — 価値提案を視覚的に先取り */}
+            <div
+              className={`${styles.chip} ${styles.chipTeal} ${styles.chipTopLeft}`}
+              aria-hidden="true"
+            >
+              <span className={styles.chipDot} />
+              紹介フィーあり
+            </div>
+            <div
+              className={`${styles.chip} ${styles.chipNavy} ${styles.chipTopRight}`}
+              aria-hidden="true"
+            >
+              <span className={styles.chipDot} />
+              採択後1年伴走
+            </div>
+            <div
+              className={`${styles.chip} ${styles.chipGold} ${styles.chipBottomCenter}`}
+              aria-hidden="true"
+            >
+              <span className={styles.chipDot} />
+              「補助金が使えますよ」
+            </div>
           </div>
         </div>
       </div>
 
       {/* ── ロゴスクロール帯: heroMain の外に置き重なりをゼロに ── */}
       <div className={styles.heroStrip}>
+        <p className={styles.stripLabel}>PARTNER COMPANIES</p>
         <HeroPartnerStrip variant="dark" />
       </div>
     </section>
