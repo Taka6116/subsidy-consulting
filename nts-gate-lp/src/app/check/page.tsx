@@ -24,13 +24,13 @@ export default async function CheckPage({
   return (
     <div className="check-lp min-h-screen font-body" style={{ background: "var(--bg-base)" }}>
       <CheckPortalHeader audience={audience} />
-      <main className="min-h-[calc(100vh-5rem)] px-6 pb-16 pt-24">
+      <main className="min-h-[calc(100vh-5rem)] px-4 pb-16 pt-24 sm:px-6">
         <div className="mx-auto max-w-5xl">
           <SubsidyCheckClient audience={audience} />
         </div>
       </main>
       <footer className="border-t border-[var(--border-subtle)] bg-[var(--bg-base)] py-8">
-        <div className="mx-auto max-w-5xl px-6 text-center text-caption">
+        <div className="mx-auto max-w-5xl px-4 text-center text-caption sm:px-6">
           <Link
             href="/"
             className="font-medium text-[var(--text-muted)] underline-offset-4 transition hover:text-[var(--text-primary)] hover:underline"

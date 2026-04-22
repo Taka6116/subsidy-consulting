@@ -21,7 +21,11 @@ const variantStyles: Record<CTAButtonVariant, string> = {
 
 const sizeStyles: Record<CTAButtonSize, string> = {
   default: "text-body",
-  large: "text-lg !px-16 !py-[1.125rem]",
+  /**
+   * `large` はPC向け設計 (`!px-16`)。375pxでは 128px の左右パディングが内包を
+   * 食い潰すため、モバイルのみ `!px-6` に締めてラベルが親を食い破らないようにする。
+   */
+  large: "text-lg !px-6 sm:!px-16 !py-[1.125rem]",
 };
 
 export default function CTAButton({

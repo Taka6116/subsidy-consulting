@@ -162,7 +162,7 @@ export default function SubsidyCheckResultTabs({
               tabIndex={selected ? 0 : -1}
               onClick={() => setTab(id)}
               onKeyDown={(e) => onTabKeyDown(e, i)}
-              className={`min-w-[112px] flex-1 rounded-lg px-5 py-2.5 text-center text-sm font-bold transition-all sm:min-w-[120px] ${
+              className={`min-w-0 flex-1 rounded-lg px-3 py-2.5 text-center text-sm font-bold transition-all sm:min-w-[120px] sm:px-5 ${
                 selected
                   ? "bg-[var(--accent-navy)] text-white shadow-md"
                   : "text-[var(--text-muted)] hover:bg-[var(--bg-base)] hover:text-[var(--text-primary)]"
