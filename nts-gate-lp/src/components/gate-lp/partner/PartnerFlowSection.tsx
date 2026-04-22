@@ -57,14 +57,14 @@ export default function PartnerFlowSection() {
         <motion.div className="mb-16 text-center" {...fadeUp(0)}>
           <p className="label-section mb-4">How It Works</p>
           <h2 className="font-heading text-3xl font-bold text-[var(--text-primary)] md:text-4xl">
-            紹介するだけ。
+            お客様をご紹介いただいたら、
             <br />
-            あとはNTSが動きます。
+            あとは我々が伴走します。
           </h2>
           <p className="mt-6 text-base leading-relaxed text-[var(--text-secondary)] md:text-lg">
-            ご紹介からヒアリング・補助金申請・採択後の伴走まで、
+            ヒアリングから補助金の活用戦略の設計、提携行政書士との連携を通じた申請のサポート、採択後の伴走まで、NTSが段階を追って進めます。
             <br className="hidden md:inline" />
-            すべてNTSが対応します。御社の手間は最初の一言だけです。
+            制度の細部まで御社で説明いただく必要はありません。まずはお声がけをお願いします。
           </p>
         </motion.div>
 
@@ -107,30 +107,6 @@ export default function PartnerFlowSection() {
               </motion.div>
             ))}
           </div>
-
-          <motion.div
-            className="mt-10 rounded-xl bg-[#E8F9F4] px-6 py-5"
-            initial={{ opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.15 }}
-            transition={{ duration: 0.5, ease: EASE_OUT, delay: 0.12 }}
-          >
-            <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between md:gap-6">
-              <div>
-                <p className="text-[11px] font-bold uppercase tracking-wider text-[#085041]">
-                  Referral Fee
-                </p>
-                <p className="mt-2 font-heading text-xl font-bold text-[#0F6E56] md:text-2xl">
-                  紹介フィーあり ／ 詳細はお問い合わせください
-                </p>
-              </div>
-              <p className="text-[13px] leading-relaxed text-[#085041]">
-                採択確定後にお支払い。採択後1年間はNTSが顧客に伴走するため、
-                <br className="hidden md:inline" />
-                御社は安心してご紹介いただけます。
-              </p>
-            </div>
-          </motion.div>
         </div>
       </div>
     </section>

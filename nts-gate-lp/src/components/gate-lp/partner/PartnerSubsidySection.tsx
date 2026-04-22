@@ -70,7 +70,7 @@ export default function PartnerSubsidySection() {
         <motion.div className="mb-16 text-center" {...fadeUp(0)}>
           <p className="label-section mb-4">Target Subsidies</p>
           <h2 className="font-heading text-3xl font-bold leading-tight text-[var(--text-primary)] md:text-4xl">
-            紹介先の顧客に使える補助金、代表的な3つ。
+            例えばこんな補助金もあります。
           </h2>
           <p className="mt-4 text-base text-[var(--text-secondary)]">
             顧客の課題に応じて、活用できる補助金をNTSが選定します。

@@ -200,21 +200,38 @@ export default function HomeEntrance({ children }: { children: ReactNode }) {
     finishIntro(true);
   }, [finishIntro]);
 
-  // スプラッシュ表示中は裏のLP本体（長い縦コンテンツ）による
-  // ブラウザのスクロールバー発生を抑止する
-  useEffect(() => {
+  // スプラッシュ表示中はスクロール抑止（useLayoutEffect で初回ペイント前に反映）
+  useLayoutEffect(() => {
     if (phase !== "splash") return;
     if (typeof document === "undefined") return;
 
     const { body, documentElement: html } = document;
-    const prevBodyOverflow = body.style.overflow;
-    const prevHtmlOverflow = html.style.overflow;
-    body.style.overflow = "hidden";
+    const prev = {
+      htmlOverflow: html.style.overflow,
+      bodyOverflow: body.style.overflow,
+      htmlHeight: html.style.height,
+      bodyHeight: body.style.height,
+      htmlOverscroll: html.style.overscrollBehavior,
+      bodyOverscroll: body.style.overscrollBehavior,
+      bodyTouch: body.style.touchAction,
+    };
+
     html.style.overflow = "hidden";
+    html.style.height = "100%";
+    html.style.overscrollBehavior = "none";
+    body.style.overflow = "hidden";
+    body.style.height = "100%";
+    body.style.overscrollBehavior = "none";
+    body.style.touchAction = "none";
 
     return () => {
-      body.style.overflow = prevBodyOverflow;
-      html.style.overflow = prevHtmlOverflow;
+      html.style.overflow = prev.htmlOverflow;
+      html.style.height = prev.htmlHeight;
+      html.style.overscrollBehavior = prev.htmlOverscroll;
+      body.style.overflow = prev.bodyOverflow;
+      body.style.height = prev.bodyHeight;
+      body.style.overscrollBehavior = prev.bodyOverscroll;
+      body.style.touchAction = prev.bodyTouch;
     };
   }, [phase]);
 
@@ -222,7 +239,13 @@ export default function HomeEntrance({ children }: { children: ReactNode }) {
 
   return (
     <HomeIntroContext.Provider value={{ suppressHeroMotion }}>
-      <div className="relative min-h-screen">
+      <div
+        className={
+          showSplash
+            ? "relative h-[100dvh] max-h-[100dvh] overflow-hidden"
+            : "relative min-h-screen"
+        }
+      >
         <motion.div
           inert={showSplash}
           initial={false}
@@ -245,15 +268,15 @@ export default function HomeEntrance({ children }: { children: ReactNode }) {
             role="dialog"
             aria-modal="true"
             aria-label={FULL_INTRO_ARIA}
-            className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-[var(--bg-base)] px-2 sm:px-6"
+            className="fixed inset-0 z-[9999] flex flex-col items-center justify-center overflow-hidden bg-[var(--bg-base)] px-4 sm:px-6"
           >
-            <div className="mx-auto inline-block max-w-[min(100%,calc(100vw-1rem))] overflow-x-hidden text-center font-heading">
+            <div className="mx-auto w-full max-w-[min(100%,36rem)] shrink-0 text-center font-heading">
               <p
                 ref={(el) => {
                   lineRefs.current[0] = el;
                 }}
                 aria-hidden="true"
-                className="opacity-0 will-change-[opacity] text-[clamp(1.96875rem,6.75vw,2.8125rem)] font-bold leading-snug text-[var(--text-secondary)]"
+                className="opacity-0 will-change-[opacity] text-[clamp(1.375rem,5.2vmin,2.5rem)] font-bold leading-snug text-[var(--text-secondary)]"
               >
                 {SPLASH_LINES[0]}
               </p>
@@ -262,7 +285,7 @@ export default function HomeEntrance({ children }: { children: ReactNode }) {
                   lineRefs.current[1] = el;
                 }}
                 aria-hidden="true"
-                className="opacity-0 will-change-[opacity] mt-[1.40625rem] text-[clamp(2.25rem,7.5vw,3.46875rem)] font-bold leading-snug text-[var(--text-primary)]"
+                className="opacity-0 will-change-[opacity] mt-[clamp(0.75rem,2.8vmin,1.25rem)] text-[clamp(1.5rem,5.8vmin,2.75rem)] font-bold leading-snug text-[var(--text-primary)]"
               >
                 {SPLASH_LINES[1]}
               </p>

@@ -3,7 +3,7 @@
 import { motion, useReducedMotion } from "framer-motion";
 import Link from "next/link";
 import type { LucideIcon } from "lucide-react";
-import { BookOpen, FileText, Handshake, Mail, Search } from "lucide-react";
+import { BookOpen, Handshake, Home, Mail, Search } from "lucide-react";
 import { trackCTAClick, trackPartnerLinkClick } from "@/lib/analytics";
 import { getPartnerUrl } from "@/lib/partnerUrl";
 import {
@@ -68,32 +68,32 @@ export default function FinalCtaSection({ variant = "home" }: FinalCtaSectionPro
       ? [
           {
             title: "無料相談",
-            body: "提携の詳細や条件について、まずお話しします。",
-            ctaLabel: "相談を申し込む",
+            body: "経営課題と補助金の可能性について、まずお話しします。",
+            ctaLabel: "相談を予約する",
             href: "/consult",
             icon: Mail,
             onClick: () => trackCTAClick("final_cta_consult"),
           },
           {
-            title: "商材の補助金適性を確認",
-            body: "御社の商材・サービスが補助金の対象になるか確認します。",
-            ctaLabel: "無料で確認する",
+            title: "補助金診断",
+            body: "会社名・URLを入力するだけで、使える可能性のある補助金をご案内します。",
+            ctaLabel: "無料で診断する",
             href: "/check",
             icon: Search,
             onClick: () => trackCTAClick("final_cta_check"),
           },
           {
-            title: "提携プログラムの詳細を受け取る",
-            body: "提携プログラムの詳細・対象補助金・紹介フローを個別にご案内します。まずはお問い合わせください。",
-            ctaLabel: "資料を請求する",
-            href: "/consult?intent=partner_document",
-            icon: FileText,
-            onClick: () => trackCTAClick("partner_final_cta_document"),
+            title: "実際に補助金を活用したい方へ",
+            body: "エンドユーザー向けのサイトでは、無料相談・補助金診断・制度情報からご利用いただけます。紹介先のお客様には、こちらをご案内ください。",
+            ctaLabel: "エンドユーザー向けLPを見る",
+            href: "/",
+            icon: Home,
+            onClick: () => trackCTAClick("partner_final_cta_end_user_lp"),
           },
           {
-            title: "補助金情報を見る",
+            title: "補助金情報",
             body: "現在公募中の補助金一覧を確認できます。",
-            ctaLabel: "補助金一覧を見る",
+            ctaLabel: "補助金を検索する",
             href: "/subsidies",
             icon: BookOpen,
             onClick: () => trackCTAClick("final_cta_subsidies"),
