@@ -39,14 +39,14 @@ export default function PartnerAboutSection() {
           className="overflow-hidden rounded-3xl border border-[var(--border-subtle)] bg-white shadow-[0_20px_60px_rgba(10,34,64,0.12)]"
           {...fadeUp(0)}
         >
-          {/* 上段：チーム写真を全幅バナーで自然比率表示（1024x543） */}
-          <div className="relative aspect-[1024/543] w-full overflow-hidden">
+          {/* 上段：チーム写真バナー（上下をトリミングして顔まわりにフォーカス） */}
+          <div className="relative aspect-[16/7] w-full overflow-hidden sm:aspect-[1024/340]">
             <Image
               src="/images/subsidy-footer.webp"
               alt="日本提携支援株式会社 チームメンバー"
               fill
               sizes="(min-width: 1024px) 960px, 100vw"
-              className="object-cover object-center"
+              className="object-cover object-[center_42%]"
               priority={false}
             />
             {/* 下部にソフトなグラデーションオーバーレイ（キャプションの可読性確保） */}

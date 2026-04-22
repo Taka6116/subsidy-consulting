@@ -200,6 +200,24 @@ export default function HomeEntrance({ children }: { children: ReactNode }) {
     finishIntro(true);
   }, [finishIntro]);
 
+  // スプラッシュ表示中は裏のLP本体（長い縦コンテンツ）による
+  // ブラウザのスクロールバー発生を抑止する
+  useEffect(() => {
+    if (phase !== "splash") return;
+    if (typeof document === "undefined") return;
+
+    const { body, documentElement: html } = document;
+    const prevBodyOverflow = body.style.overflow;
+    const prevHtmlOverflow = html.style.overflow;
+    body.style.overflow = "hidden";
+    html.style.overflow = "hidden";
+
+    return () => {
+      body.style.overflow = prevBodyOverflow;
+      html.style.overflow = prevHtmlOverflow;
+    };
+  }, [phase]);
+
   const showSplash = phase === "splash";
 
   return (
