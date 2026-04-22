@@ -94,12 +94,12 @@ export default function BenefitSection() {
               const image = BENEFIT_IMAGES[idx];
               return (
                 <div key={num} className="flex flex-col">
-                  {/* カード外・上部 — 全カード共通 h-36 で高さを揃える */}
+                  {/* カード外・上部 — 全カードで描画サイズを統一（高さ固定・幅 auto） */}
                   <div className="flex h-36 w-full items-end justify-center pb-3">
                     <Image
                       src={image.src}
                       alt={image.alt}
-                      className="max-h-full w-auto object-contain drop-shadow-sm"
+                      className="h-[120px] w-auto object-contain drop-shadow-sm md:h-[132px]"
                       sizes="160px"
                       priority={false}
                     />

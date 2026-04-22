@@ -83,11 +83,14 @@ export default function SubsidyKindsSection() {
           >
             {CARDS.map((c) => (
               <li key={c.title} className="nts-card p-8 md:p-10">
-                <div className="mx-auto mb-6 w-[94%] overflow-hidden rounded-xl">
+                {/* 画像はアスペクト比を固定して上部にクロップ。
+                    2枚のサイズを完全に揃えつつ、縦を詰めて情報密度を上げる */}
+                <div className="relative mx-auto mb-6 aspect-[16/7] w-[94%] overflow-hidden rounded-xl">
                   <Image
                     src={c.imageSrc}
                     alt={c.imageAlt}
-                    className="h-auto w-full object-cover"
+                    fill
+                    className="object-cover object-[center_32%]"
                     sizes="(max-width: 768px) 100vw, 540px"
                     priority={false}
                   />
