@@ -1,7 +1,12 @@
 "use client";
 
 import type { ReactNode } from "react";
+import type { StaticImageData } from "next/image";
+import Image from "next/image";
 import { motion } from "framer-motion";
+import isometric24 from "../../../../icon-assets/isometric_24.webp";
+import isometric14 from "../../../../icon-assets/isometric_14.webp";
+import isometric12 from "../../../../icon-assets/isometric_12.webp";
 
 const EASE_OUT = [0.22, 1, 0.36, 1] as const;
 
@@ -17,6 +22,8 @@ const CARDS: {
   pain: string;
   note: ReactNode;
   placeholder: string;
+  image: StaticImageData;
+  imageAlt: string;
 }[] = [
   {
     situation: "提案したとき",
@@ -27,6 +34,8 @@ const CARDS: {
       </>
     ),
     placeholder: "awareness-card-1",
+    image: isometric24,
+    imageAlt: "",
   },
   {
     situation: "せっかく興味を持ってもらっても",
@@ -37,6 +46,8 @@ const CARDS: {
       </>
     ),
     placeholder: "awareness-card-2",
+    image: isometric14,
+    imageAlt: "",
   },
   {
     situation: "判断を保留されて",
@@ -47,6 +58,8 @@ const CARDS: {
       </>
     ),
     placeholder: "awareness-card-3",
+    image: isometric12,
+    imageAlt: "",
   },
 ];
 
@@ -86,12 +99,16 @@ export default function PartnerAgitationSection() {
               className="card overflow-hidden p-0"
             >
               <div
-                className="relative h-[140px] overflow-hidden rounded-t-[12px] bg-[#F0F6FF]"
+                className="relative h-[160px] overflow-hidden rounded-t-[12px] bg-[#F0F6FF]"
                 data-placeholder={card.placeholder}
               >
-                <p className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-center text-xs text-[#B0C4D8]">
-                  画像を入れる場所
-                </p>
+                <Image
+                  src={card.image}
+                  alt={card.imageAlt}
+                  aria-hidden="true"
+                  className="h-full w-full object-contain object-center p-3"
+                  sizes="(min-width: 768px) 33vw, 100vw"
+                />
               </div>
               <div className="p-7">
                 <p className="mb-3 text-xs text-[var(--text-muted)]">{card.situation}</p>
