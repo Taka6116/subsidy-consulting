@@ -1,14 +1,11 @@
 "use client";
 
-import Image from "next/image";
-import {
-  type LucideIcon,
-  Eye,
-  MessageSquareWarning,
-  TrendingDown,
-} from "lucide-react";
+import Image, { type StaticImageData } from "next/image";
 import { motion, useReducedMotion } from "framer-motion";
 import imgNtsGap from "../../../icon-assets/isometric23.webp";
+import imgPit01 from "../../../icon-assets/isometric_24.webp";
+import imgPit02 from "../../../icon-assets/isometric_12.webp";
+import imgPit03 from "../../../icon-assets/isometric_09.webp";
 import {
   fadeInUpInitial,
   fadeInUpInView,
@@ -19,29 +16,33 @@ import {
 
 type Pitfall = {
   num: string;
-  Icon: LucideIcon;
-  title: string;
-  body: string;
+  textLead: string;
+  textHighlight: string;
+  image: StaticImageData;
+  alt: string;
 };
 
 const PITFALLS: readonly Pitfall[] = [
   {
     num: "01",
-    Icon: TrendingDown,
-    title: "AI生成の書類では、通過率が下がる",
-    body: "似通った申請書が増えるほど、審査で差がつくのは“戦略と文脈”。テンプレ出力では選ばれにくくなっています。",
+    textLead: "AIで書類は作れても、",
+    textHighlight: "通過率は下がる時代。",
+    image: imgPit01,
+    alt: "AI生成の書類で通過率が下がるイメージ",
   },
   {
     num: "02",
-    Icon: Eye,
-    title: "審査側の視点がないと、徒労に終わる",
-    body: "どこを見られているかを理解せずに書類を作っても、通りません。採択される書類には、読む順番まで設計が必要です。",
+    textLead: "審査視点を知らないと、",
+    textHighlight: "対策は徒労に終わる。",
+    image: imgPit02,
+    alt: "審査側の視点が抜けて書類づくりが徒労に終わるイメージ",
   },
   {
     num: "03",
-    Icon: MessageSquareWarning,
-    title: "申請書ができても、事務局対応は残る",
-    body: "不備対応・差し戻し・問い合わせ——最後は社長ご本人の時間を使うことに。AIには肩代わりできない領域です。",
+    textLead: "書類が出来ても、",
+    textHighlight: "事務局対応で時間が削られる。",
+    image: imgPit03,
+    alt: "事務局対応で社長の時間が削られるイメージ",
   },
 ] as const;
 
@@ -85,76 +86,71 @@ export default function NtsAiGapSection() {
           </p>
         </motion.div>
 
-        {/* ===== 3 pitfall cards (editorial-refined) ===== */}
-        <div className="grid grid-cols-1 gap-5 md:grid-cols-3 md:gap-6">
-          {PITFALLS.map((p, i) => {
-            const Icon = p.Icon;
-            return (
-              <motion.article
-                key={p.num}
-                initial={reduce ? fadeInUpReduced : fadeInUpInitial}
-                whileInView={reduce ? fadeInUpReduced : fadeInUpInView}
-                viewport={fadeInUpViewport}
-                transition={{
-                  ...fadeInUpTransition,
-                  delay: 0.06 + i * 0.06,
-                }}
-                className="group relative flex flex-col overflow-hidden rounded-2xl border border-[var(--border-subtle)] bg-white p-7 shadow-[0_6px_22px_rgba(26,76,142,0.06)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_14px_36px_rgba(26,76,142,0.12)] md:p-8"
-              >
-                {/* Watermark number */}
-                <span
-                  aria-hidden
-                  className="pointer-events-none absolute -right-2 -top-6 select-none font-heading text-[7.5rem] font-black leading-none text-[#eef2f7] md:text-[8.5rem]"
-                >
-                  {p.num}
-                </span>
+        {/* ===== 3 pitfall cards (illustration-led pastel style) ===== */}
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-3 md:gap-7 pt-5">
+          {PITFALLS.map((p, i) => (
+            <motion.article
+              key={p.num}
+              initial={reduce ? fadeInUpReduced : fadeInUpInitial}
+              whileInView={reduce ? fadeInUpReduced : fadeInUpInView}
+              viewport={fadeInUpViewport}
+              transition={{
+                ...fadeInUpTransition,
+                delay: 0.06 + i * 0.06,
+              }}
+              className="relative flex flex-col items-center rounded-[28px] bg-[#e4ecf5] px-5 pb-6 pt-10 shadow-[0_4px_18px_rgba(26,76,142,0.05)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_14px_34px_rgba(26,76,142,0.10)] md:px-6 md:pb-7 md:pt-11"
+            >
+              {/* Pill label */}
+              <span className="absolute -top-4 left-1/2 inline-flex -translate-x-1/2 items-center rounded-full bg-[var(--text-primary)] px-4 py-1.5 font-heading text-[0.78rem] font-bold tracking-[0.06em] text-white shadow-[0_6px_16px_rgba(26,43,60,0.25)] md:text-[0.82rem]">
+                落とし穴 {p.num}
+              </span>
 
-                {/* Icon badge */}
-                <div className="relative mb-5 inline-flex h-14 w-14 items-center justify-center rounded-2xl border border-[var(--border-subtle)] bg-[linear-gradient(135deg,#f4f7fb_0%,#ffffff_100%)] shadow-[inset_0_1px_0_rgba(255,255,255,0.9)]">
-                  <Icon
-                    className="h-7 w-7 text-[#5a6b7e]"
-                    strokeWidth={1.75}
-                    aria-hidden
-                  />
-                </div>
-
-                <span className="relative font-heading text-[0.7rem] font-bold uppercase tracking-[0.18em] text-[var(--accent-teal)]">
-                  Pitfall {p.num}
+              {/* Title with highlight */}
+              <h3 className="mt-1 mb-5 text-center font-heading text-[1.02rem] font-bold leading-[1.7] text-[var(--text-primary)] md:mb-6 md:text-[1.08rem] md:leading-[1.75]">
+                {p.textLead}
+                <br />
+                <span className="text-[var(--accent-teal)]">
+                  {p.textHighlight}
                 </span>
-                <h3 className="relative mb-3 mt-2 font-heading text-[1.18rem] font-bold leading-snug text-[var(--text-primary)] md:text-[1.22rem]">
-                  {p.title}
-                </h3>
-                <p className="relative text-[0.93rem] leading-[1.95] text-[var(--text-secondary)] md:text-[0.95rem]">
-                  {p.body}
-                </p>
-              </motion.article>
-            );
-          })}
+              </h3>
+
+              {/* Illustration */}
+              <div className="relative mt-auto aspect-[4/3] w-full max-w-[280px]">
+                <Image
+                  src={p.image}
+                  alt={p.alt}
+                  fill
+                  sizes="(max-width: 768px) 80vw, 280px"
+                  className="object-contain"
+                />
+              </div>
+            </motion.article>
+          ))}
         </div>
 
-        {/* ===== Bridge: pattern interrupt "so, NTS handles it" ===== */}
+        {/* ===== Bridge: pattern interrupt "so, NTS handles it" (enlarged) ===== */}
         <motion.div
           initial={reduce ? fadeInUpReduced : fadeInUpInitial}
           whileInView={reduce ? fadeInUpReduced : fadeInUpInView}
           viewport={fadeInUpViewport}
           transition={{ ...fadeInUpTransition, delay: 0.15 }}
-          className="relative flex flex-col items-center py-10 md:py-14"
+          className="relative flex flex-col items-center py-12 md:py-16"
           aria-hidden={false}
         >
           <span
             aria-hidden
-            className="h-10 w-px bg-[var(--border-subtle)] md:h-14"
+            className="h-12 w-px bg-[var(--border-subtle)] md:h-16"
           />
-          <span className="my-3 inline-flex items-center gap-2 rounded-full border border-[rgba(0,184,148,0.35)] bg-white px-4 py-1.5 font-heading text-[0.78rem] font-bold tracking-[0.04em] text-[var(--accent-teal)] shadow-[0_4px_14px_rgba(0,184,148,0.12)] md:text-[0.82rem]">
+          <span className="my-4 inline-flex items-center gap-2.5 rounded-full border border-[rgba(0,184,148,0.4)] bg-white px-6 py-2.5 font-heading text-[0.95rem] font-bold tracking-[0.04em] text-[var(--accent-teal)] shadow-[0_8px_22px_rgba(0,184,148,0.18)] md:px-8 md:py-3.5 md:text-[1.1rem]">
             <span
               aria-hidden
-              className="inline-block h-1.5 w-1.5 rounded-full bg-[var(--accent-teal)]"
+              className="inline-block h-2 w-2 rounded-full bg-[var(--accent-teal)]"
             />
             だから、NTSが担います
           </span>
           <span
             aria-hidden
-            className="h-10 w-px bg-gradient-to-b from-[var(--accent-teal)] to-transparent md:h-14"
+            className="h-12 w-px bg-gradient-to-b from-[var(--accent-teal)] to-transparent md:h-16"
           />
         </motion.div>
 
@@ -166,7 +162,7 @@ export default function NtsAiGapSection() {
           transition={{ ...fadeInUpTransition, delay: 0.22 }}
           className="relative overflow-hidden rounded-[28px] border border-[rgba(0,184,148,0.28)] bg-[linear-gradient(135deg,rgba(0,184,148,0.12)_0%,rgba(26,76,142,0.07)_100%)] shadow-[0_16px_48px_rgba(26,76,142,0.10)]"
         >
-          {/* Decorative radial blob */}
+          {/* Decorative radial blobs */}
           <span
             aria-hidden
             className="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full bg-[radial-gradient(closest-side,rgba(0,184,148,0.22),transparent_70%)]"
@@ -220,7 +216,6 @@ export default function NtsAiGapSection() {
 
             {/* Image with soft frame */}
             <div className="relative mx-auto w-full max-w-[420px] md:max-w-none">
-              {/* Shadow card (offset) */}
               <span
                 aria-hidden
                 className="absolute inset-0 translate-x-3 translate-y-3 rounded-[24px] bg-white/50"
