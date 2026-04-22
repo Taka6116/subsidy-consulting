@@ -8,6 +8,7 @@ import type { MatchedSubsidyPreview } from "@/lib/subsidyCheckMocks";
 import type { CorporateCandidate } from "@/types/corporateSearch";
 import SubsidyMatchLoading from "@/components/check/SubsidyMatchLoading";
 import SubsidyCheckResultTabs from "@/components/check/SubsidyCheckResultTabs";
+import { cleanSubsidyName } from "@/lib/subsidyCheckResultHelpers";
 import heroStyles from "@/components/gate-lp/hero-three/HeroSection.module.css";
 
 const EMPLOYEE_OPTIONS: { id: string; label: string }[] = [
@@ -53,7 +54,9 @@ function parseMatchApiResults(payload: unknown): MatchedSubsidyPreview[] {
       const row = r as Record<string, unknown>;
       const id = typeof row.id === "string" ? row.id : "";
       if (!id) return null;
-      const name = typeof row.name === "string" ? row.name : "名称未設定";
+      const rawName = typeof row.name === "string" ? row.name : "名称未設定";
+      /** 末尾の「（21次締切）」等、一般ユーザーに意味不明な公募回数表記を落として表示 */
+      const name = cleanSubsidyName(rawName) || rawName;
       const description = typeof row.description === "string" ? row.description : "";
       const maxAmountLabel = typeof row.maxAmountLabel === "string" ? row.maxAmountLabel : "—";
       const deadlineLabel = typeof row.deadlineLabel === "string" ? row.deadlineLabel : "—";

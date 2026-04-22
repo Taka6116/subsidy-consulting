@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Lightbulb, ListChecks, TrendingUp } from "lucide-react";
 import type { SubsidyInsightCard } from "@/lib/ai/bedrockSubsidyMatch";
 import type { MatchedSubsidyPreview } from "@/lib/subsidyCheckMocks";
-import { eligibilityPair } from "@/lib/subsidyCheckResultHelpers";
+import { eligibilityPair, isMeaningfulDeadline } from "@/lib/subsidyCheckResultHelpers";
 
 type Props = {
   item: MatchedSubsidyPreview;
@@ -85,16 +85,16 @@ export default function SubsidyResultHero({ item }: Props) {
                   {item.maxAmountLabel}
                 </p>
               </div>
-              <div>
-                <h2 className="mb-1 text-xs font-semibold uppercase tracking-widest text-portal-on-surface-card-sub">
-                  公募期限
-                </h2>
-                <p className="text-sm font-medium text-portal-on-surface-card">
-                  {item.deadlineLabel && item.deadlineLabel !== "—"
-                    ? item.deadlineLabel
-                    : "制度により異なります"}
-                </p>
-              </div>
+              {isMeaningfulDeadline(item.deadlineLabel) ? (
+                <div>
+                  <h2 className="mb-1 text-xs font-semibold uppercase tracking-widest text-portal-on-surface-card-sub">
+                    公募期限
+                  </h2>
+                  <p className="text-sm font-medium text-portal-on-surface-card">
+                    {item.deadlineLabel}
+                  </p>
+                </div>
+              ) : null}
             </div>
           </div>
 
@@ -201,18 +201,16 @@ export default function SubsidyResultHero({ item }: Props) {
 
         {/* ── サイドバー ── */}
         <aside className="space-y-6 lg:col-span-4" aria-label="評価サマリー">
-          <div className="check-portal-editorial-gradient rounded-xl p-8 text-white shadow-xl">
-            <div className="space-y-5">
-              <div className="flex items-end justify-between gap-2">
-                <span className="text-sm opacity-80">公募期限</span>
-                <span className="text-sm font-medium">
-                  {item.deadlineLabel && item.deadlineLabel !== "—"
-                    ? item.deadlineLabel
-                    : "要確認"}
-                </span>
+          {isMeaningfulDeadline(item.deadlineLabel) ? (
+            <div className="check-portal-editorial-gradient rounded-xl p-8 text-white shadow-xl">
+              <div className="space-y-5">
+                <div className="flex items-end justify-between gap-2">
+                  <span className="text-sm opacity-80">公募期限</span>
+                  <span className="text-sm font-medium">{item.deadlineLabel}</span>
+                </div>
               </div>
             </div>
-          </div>
+          ) : null}
 
           {item.institutionName ? (
             <div className="rounded-xl border border-white/10 bg-white p-6 shadow-[0_4px_24px_rgba(0,0,0,0.2)]">

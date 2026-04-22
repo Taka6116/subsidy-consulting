@@ -10,7 +10,10 @@ import {
   FileText,
 } from "lucide-react";
 import type { MatchedSubsidyPreview } from "@/lib/subsidyCheckMocks";
-import { eligibilityPair } from "@/lib/subsidyCheckResultHelpers";
+import {
+  eligibilityPair,
+  isMeaningfulDeadline,
+} from "@/lib/subsidyCheckResultHelpers";
 import heroStyles from "@/components/gate-lp/hero-three/HeroSection.module.css";
 
 type TabId = "overview" | "examples" | "checks" | "related";
@@ -77,24 +80,27 @@ export default function SubsidyCheckResultTabs({
   /** メイン切替後も元の候補へ戻せるよう、全件を一覧に含める（index 0 も表示） */
   const relatedCandidates = results;
 
+  const showDeadline = isMeaningfulDeadline(item.deadlineLabel);
+
   return (
     <div className="results-dashboard nts-card p-4 sm:p-6 md:p-8">
-      <header className="mb-8 flex flex-col gap-6 md:mb-10 md:flex-row md:items-end md:justify-between">
-        <div className="min-w-0">
-          <p className="mb-2 text-[11px] font-bold uppercase tracking-[0.2em] text-[var(--text-muted)]">
-            照合結果
-          </p>
+      <header className="mb-8 flex flex-col gap-6 md:mb-10 md:flex-row md:items-start md:justify-between">
+        <div className="min-w-0 flex-1">
+          <span className="mb-3 inline-flex items-center gap-1.5 rounded-full border border-[var(--accent-teal)]/30 bg-[var(--accent-teal)]/10 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.18em] text-[var(--accent-teal)]">
+            <span className="h-1.5 w-1.5 rounded-full bg-[var(--accent-teal)]" aria-hidden />
+            対象の可能性がある制度
+          </span>
           <h1 className="font-heading text-2xl font-bold leading-tight text-[var(--text-primary)] md:text-3xl">
             {item.name}
           </h1>
           {item.institutionName ? (
-            <p className="mt-2 text-sm text-[var(--text-secondary)]">
+            <p className="mt-3 text-sm text-[var(--text-secondary)]">
               実施主体（参考）: {item.institutionName}
             </p>
           ) : null}
         </div>
-        <div className="flex flex-wrap gap-3 md:gap-4">
-          <div className="min-w-[140px] rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-section-alt)] px-5 py-3">
+        <div className="flex flex-wrap gap-3 md:gap-4 md:shrink-0">
+          <div className="min-w-[160px] rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-section-alt)] px-5 py-3">
             <p className="mb-1 text-[10px] font-semibold uppercase tracking-wide text-[var(--text-muted)]">
               最大補助（参照）
             </p>
@@ -102,18 +108,38 @@ export default function SubsidyCheckResultTabs({
               {item.maxAmountLabel}
             </p>
           </div>
-          <div className="min-w-[140px] rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-section-alt)] px-5 py-3">
-            <p className="mb-1 text-[10px] font-semibold uppercase tracking-wide text-[var(--text-muted)]">
-              公募期限
-            </p>
-            <p className="text-base font-bold text-[var(--text-primary)]">
-              {item.deadlineLabel && item.deadlineLabel !== "—"
-                ? item.deadlineLabel
-                : "要確認"}
-            </p>
-          </div>
+          {showDeadline ? (
+            <div className="min-w-[160px] rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-section-alt)] px-5 py-3">
+              <p className="mb-1 text-[10px] font-semibold uppercase tracking-wide text-[var(--text-muted)]">
+                公募期限
+              </p>
+              <p className="text-base font-bold text-[var(--text-primary)]">
+                {item.deadlineLabel}
+              </p>
+            </div>
+          ) : null}
         </div>
       </header>
+
+      {/* 公募期限データが取得できなかった場合、硬い「要確認」の代わりに
+          柔らかい導線を示して無料相談に誘導する */}
+      {!showDeadline ? (
+        <p className="mb-8 flex flex-wrap items-center gap-x-2 gap-y-1 rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-section-alt)] px-5 py-3 text-sm text-[var(--text-secondary)]">
+          <span className="font-semibold text-[var(--text-primary)]">
+            公募スケジュールについて
+          </span>
+          <span>
+            通年または随時で公募される場合があります。最新の公募情報は
+            <Link
+              href="/consult"
+              className="mx-1 font-semibold text-[var(--accent-teal)] underline underline-offset-2 hover:opacity-80"
+            >
+              無料相談
+            </Link>
+            でご案内します。
+          </span>
+        </p>
+      ) : null}
 
       <div
         role="tablist"
