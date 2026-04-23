@@ -16,11 +16,11 @@ import type { GeneratedArticleDraft } from "@/lib/ai/bedrockArticleGenerate";
 /**
  * 絶対に自動公開させない強度の禁止語（1 件でもヒットしたら reject）
  *
- * 注: 記事内で「申請代行ではなく戦略設計」のような否定文脈で語が登場する可能性があるため、
- *     裸の「申請代行」は SOFT_BAN_WORDS に回し、ここには動詞形で断定している表現のみを置く。
+ * 注: 「申請代行ではなく戦略設計」のような否定文脈での登場を誤爆しないよう、
+ *     動詞形・断定形のみをここに置く。
  */
 const HARD_BAN_WORDS: string[] = [
-  // 採択保証系（代行業者と誤認される最大リスク）
+  // 採択保証系
   "採択保証",
   "100%採択",
   "100% 採択",
@@ -29,7 +29,7 @@ const HARD_BAN_WORDS: string[] = [
   "必ず採択",
   "絶対採択",
   "確実に採択",
-  // 代行系（動詞形のみ。否定文脈「申請代行ではなく」を誤爆しないよう語尾必須）
+  // 代行系（動詞形・断定形のみ）
   "申請代行します",
   "申請代行いたします",
   "申請代行致します",
@@ -39,22 +39,25 @@ const HARD_BAN_WORDS: string[] = [
   "代理申請します",
   "代理申請いたします",
   "代理申請致します",
+  "書類を代わりに作成",
+  "書類作成を代行",
   "代書します",
+  // 代行印象を強く与える表現
+  "申請書を作成いたします",
+  "申請書を作成します",
   // 誇大広告
   "業界No.1",
   "業界ナンバーワン",
   "日本一の採択率",
   "最高の採択率",
-  // 具体的な競合社名（例示。必要に応じて追加）
+  // 競合社名
   "補助金ポータル",
   "ミラサポ",
 ];
 
 /**
- * soft ban: 1 件で reject はしないが、合計 3 件以上で reject（薬機法/景表法グレー）
- *
- * 「申請代行」「代理申請」は否定文脈で正当に使われうるが、何度も連呼すると代行業者の印象になるため
- * ここで閾値管理する。
+ * soft ban: 単独では reject しないが、3 件以上で reject。
+ * 「申請代行」は否定文脈（「申請代行ではなく」）でも登場しうるため閾値管理。
  */
 const SOFT_BAN_WORDS: string[] = [
   "絶対",
@@ -64,11 +67,12 @@ const SOFT_BAN_WORDS: string[] = [
   "期間限定",
   "特別価格",
   "誰でも",
-  "簡単",
-  // 代行系（否定文脈を許容するため、閾値ベース）
+  "簡単に申請",
+  // 代行印象（閾値管理）
   "申請代行",
   "代理申請",
   "代書",
+  "申請を手伝",
 ];
 
 export type QualityVerdict =
@@ -95,43 +99,38 @@ export function checkArticleQuality(draft: GeneratedArticleDraft): QualityVerdic
     violations.push(`soft-ban-threshold:${softHits.join(",")}`);
   }
 
-  // 3. 本文長の最低基準（プロンプトで 2000-3000 字を要求、活用例分を含めて長くなっている）
+  // 3. 本文長の最低基準（5 セクション構造で 1500〜2500 字）
   const bodyChars = draft.body.trim().length;
-  if (bodyChars < 1500) {
+  if (bodyChars < 1200) {
     violations.push(`too-short:${bodyChars}`);
   }
 
-  // 4. H2 の数（新構造は 8 H2。LLM が 1-2 欠落する余地を残して 6 以上を合格）
+  // 4. H2 の数（新構造は 5 H2。LLM の欠落を考慮し 4 以上で合格）
   const h2Count = (draft.body.match(/^##\s+/gm) ?? []).length;
-  if (h2Count < 6) {
+  if (h2Count < 4) {
     violations.push(`too-few-h2:${h2Count}`);
   }
 
-  // 5. Markdown 直リンクに jGrants 以外の問合せ URL が紛れ込んでいないか
-  //    （プロンプトで /#contact のみ許可しているが念のため）
+  // 5. 外部 URL の混入チェック（CTA の相対パス /#contact のみ許可）
   const externalLinks = draft.body.match(/\bhttps?:\/\/[^\s)]+/g) ?? [];
   for (const url of externalLinks) {
-    // 許可ドメイン: なし（社内 CTA は相対パス /#contact）
     violations.push(`external-link:${url}`);
   }
 
-  // 6. undefined / NaN / null / [object Object] の混入
+  // 6. 壊れたトークンの混入チェック
   const brokenPattern = /(undefined|NaN|\[object Object\]|<null>)/g;
   const brokenMatches = draft.body.match(brokenPattern);
   if (brokenMatches && brokenMatches.length > 0) {
     violations.push(`broken-token:${brokenMatches.join(",")}`);
   }
 
-  // 7. 必須セクションのキーワード（新 8 H2 構造の要所が含まれているか）
-  //    「できること」「活用例」が新構造の核なので必須キーワードに含める
+  // 7. 新 5 セクション構造の必須キーワードチェック
   const requiredSectionKeywords = [
-    "できること",
-    "活用例",
-    "概要",
-    "対象",
-    "補助",
-    "申請",
-    "ポイント",
+    "経営課題",    // ## 1
+    "活用",        // ## 2
+    "補助額",      // ## 3
+    "申請",        // ## 4
+    "無料相談",    // ## 5 CTA
     "NTS",
   ];
   const missingSections = requiredSectionKeywords.filter(
@@ -141,19 +140,22 @@ export function checkArticleQuality(draft: GeneratedArticleDraft): QualityVerdic
     violations.push(`missing-sections:${missingSections.join(",")}`);
   }
 
-  // 8. 活用例セクションの「【架空の事例】」ラベル必須化
-  //    （活用例を実例と誤認させないための景表法ガード）
-  if (draft.body.includes("活用例") && !draft.body.includes("架空")) {
+  // 8. 活用例セクションの【架空の事例】ラベル必須（景表法対応）
+  if (draft.body.includes("活用") && !draft.body.includes("架空")) {
     violations.push("missing-fictitious-label");
   }
 
-  // 9. 数値断定の検出（「2 倍」「3 倍」「500 万円削減」等の具体数値での成果断定）
-  //    活用例セクションで成果を断定していないかチェック
+  // 9. 数値断定の検出（「2 倍」「500 万円削減」等の成果断定は禁止）
   const numericClaimPattern =
     /\d+\s*(?:倍|%|％)\s*(?:の?)?(?:向上|増加|改善|削減|アップ|UP)/g;
   const numericClaims = draft.body.match(numericClaimPattern);
   if (numericClaims && numericClaims.length > 0) {
     violations.push(`numeric-claim:${numericClaims.slice(0, 3).join(",")}`);
+  }
+
+  // 10. CTA リンクの存在チェック（## 5 に /#contact が含まれているか）
+  if (!draft.body.includes("/#contact")) {
+    violations.push("missing-cta-link");
   }
 
   if (violations.length === 0) return { ok: true };

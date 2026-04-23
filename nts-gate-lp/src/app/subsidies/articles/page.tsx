@@ -19,6 +19,32 @@ function formatPublishedAt(date: Date | null): string {
   return `${date.getFullYear()}.${date.getMonth() + 1}.${date.getDate()}`;
 }
 
+const DEADLINE_MAX = new Date("2050-01-01");
+
+function formatDeadlineLabelForCard(
+  deadlineLabel: string | null | undefined,
+  deadline: Date | null | undefined,
+  rawPayload: unknown,
+): string | null {
+  const raw = rawPayload as Record<string, unknown> | null;
+  const dateFromRaw = raw?.application_end_date
+    ? new Date(String(raw.application_end_date))
+    : null;
+
+  const candidates = [
+    deadline instanceof Date ? deadline : null,
+    dateFromRaw,
+    deadlineLabel ? new Date(deadlineLabel) : null,
+  ];
+
+  for (const d of candidates) {
+    if (d && !Number.isNaN(d.getTime()) && d < DEADLINE_MAX) {
+      return `${d.getFullYear()}年${d.getMonth() + 1}月${d.getDate()}日`;
+    }
+  }
+  return null;
+}
+
 /**
  * 最大補助額ラベルを整形する。
  * - maxAmountLabel が設定されていれば、それに "最大" を補って返す。
@@ -49,7 +75,7 @@ export default async function SubsidiesArticlesPage() {
     where: {
       contentType: "article",
       status: "published",
-      slug: { not: null },
+      slug: { not: undefined },
     },
     orderBy: { publishedAt: "desc" },
     take: 60,
@@ -59,6 +85,9 @@ export default async function SubsidiesArticlesPage() {
           name: true,
           maxAmountLabel: true,
           subsidyAmount: true,
+          deadlineLabel: true,
+          deadline: true,
+          rawPayload: true,
           prefecture: true,
         },
       },
@@ -77,6 +106,11 @@ export default async function SubsidiesArticlesPage() {
       maxAmountLabel: formatMaxAmount(
         r.grant?.maxAmountLabel,
         r.grant?.subsidyAmount,
+      ),
+      deadlineLabel: formatDeadlineLabelForCard(
+        r.grant?.deadlineLabel,
+        r.grant?.deadline,
+        r.grant?.rawPayload,
       ),
       prefecture: r.grant?.prefecture ?? null,
       tags: r.tags ?? [],

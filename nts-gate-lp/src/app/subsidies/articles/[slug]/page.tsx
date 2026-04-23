@@ -22,7 +22,7 @@ export async function generateStaticParams(): Promise<Array<{ slug: string }>> {
     where: {
       contentType: "article",
       status: "published",
-      slug: { not: null },
+      slug: { not: undefined },
     },
     select: { slug: true },
     take: 200,
@@ -170,10 +170,6 @@ export default async function SubsidyArticlePage({ params }: PageProps) {
                 <span className="text-accent-600">
                   {formatPublishedJP(article.publishedAt)}
                 </span>
-                <span className="mx-2 text-neutral-300" aria-hidden>
-                  |
-                </span>
-                <span className="text-neutral-600">お役立ち情報</span>
               </p>
 
               <h1 className="font-heading mt-3 text-2xl font-bold leading-snug text-primary-900 sm:text-3xl lg:text-4xl">

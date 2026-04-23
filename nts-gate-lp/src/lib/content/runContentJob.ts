@@ -124,6 +124,7 @@ export async function runContentJob(
           : null,
       targetIndustries: grant.targetIndustries ?? [],
       targetIndustryNote: grant.targetIndustryNote ?? null,
+      prefecture: grant.prefecture ?? null,
     };
 
     const draft = await generateSubsidyArticleDraft(subsidyForArticle);
