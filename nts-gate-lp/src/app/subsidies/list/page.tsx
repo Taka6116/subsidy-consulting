@@ -33,28 +33,35 @@ type SubsidiesResponse = {
   offset: number;
 };
 
-function isDeadlineSoon(deadline: string | null): boolean {
-  if (!deadline) return false;
+/** 2050年より先の日付は jGrants のデータ不備とみなす */
+const DEADLINE_MAX = new Date("2050-01-01");
+
+function parseDeadlineDate(deadline: string | null): Date | null {
+  if (!deadline) return null;
   const date = new Date(deadline);
-  if (Number.isNaN(date.getTime())) return false;
-  const now = new Date();
-  const diffMs = date.getTime() - now.getTime();
-  const diffDays = diffMs / (1000 * 60 * 60 * 24);
+  if (Number.isNaN(date.getTime())) return null;
+  if (date > DEADLINE_MAX) return null; // 2124年など異常値を除外
+  return date;
+}
+
+function isDeadlineSoon(deadline: string | null): boolean {
+  const date = parseDeadlineDate(deadline);
+  if (!date) return false;
+  const diffDays = (date.getTime() - Date.now()) / (1000 * 60 * 60 * 24);
   return diffDays >= 0 && diffDays <= 30;
 }
 
 function isExpiredDeadline(deadline: string | null): boolean {
-  if (!deadline) return false;
-  const date = new Date(deadline);
-  if (Number.isNaN(date.getTime())) return false;
+  const date = parseDeadlineDate(deadline);
+  if (!date) return false;
   return date < new Date();
 }
 
 function formatDeadlineLabel(grant: SubsidyCard): string {
   const raw = grant.deadlineLabel ?? grant.deadline;
-  if (!raw) return "-";
-  const date = new Date(raw);
-  if (Number.isNaN(date.getTime())) return "-";
+  if (!raw) return "公募中";
+  const date = parseDeadlineDate(raw);
+  if (!date) return "公募中"; // 異常値（2124年など）は「公募中」と表示
   return `${date.getFullYear()}年${date.getMonth() + 1}月${date.getDate()}日`;
 }
 

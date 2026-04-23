@@ -120,11 +120,15 @@ function classifyGrantContext(text: string): {
   };
 }
 
+/** 2050年より先は jGrants のデータ不備とみなし null 扱い */
+const DEADLINE_MAX_DETAIL = new Date("2050-01-01");
+
 function remainingDays(deadlineLabel: string | null, deadline: Date | null): number | null {
   const raw = deadlineLabel ?? deadline?.toISOString() ?? null;
   if (!raw) return null;
   const target = new Date(raw);
   if (Number.isNaN(target.getTime())) return null;
+  if (target > DEADLINE_MAX_DETAIL) return null; // 異常値（2124年など）は非表示
   const diff = target.getTime() - Date.now();
   return Math.ceil(diff / (1000 * 60 * 60 * 24));
 }
@@ -189,7 +193,7 @@ export default async function SubsidyDetailPage({ params }: DetailPageProps) {
   const amountValue = grant ? parseAmount(grant.maxAmountLabel, raw) : null;
   const subsidyRate = formatRate(raw);
   const remaining = grant ? remainingDays(grant.deadlineLabel, grant.deadline) : null;
-  const remainingText = remaining === null ? "-" : remaining < 0 ? "締切済み" : `残り${remaining}日`;
+  const remainingText = remaining === null ? "公募中" : remaining < 0 ? "締切済み" : `残り${remaining}日`;
   const remainingTone =
     remaining !== null && remaining <= 30
       ? "text-red-600"
