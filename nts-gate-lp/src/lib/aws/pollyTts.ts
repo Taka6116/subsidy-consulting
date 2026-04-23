@@ -42,7 +42,9 @@ export async function synthesizeAndUpload(
   subsidyId: string,
   voiceId: VoiceId = "Takumi",
 ): Promise<PollyTtsResult | null> {
-  const region = process.env.AWS_REGION ?? "ap-northeast-1";
+  // Polly の日本語 neural 音声は ap-northeast-1 でのみ利用可能
+  const pollyRegion = process.env.VIDEO_S3_REGION ?? "ap-northeast-1";
+  const s3Region = process.env.VIDEO_S3_REGION ?? process.env.AWS_REGION ?? "ap-northeast-1";
   const bucket = process.env.VIDEO_S3_BUCKET;
   const baseUrl = process.env.VIDEO_S3_BASE_URL;
 
@@ -51,8 +53,8 @@ export async function synthesizeAndUpload(
     return null;
   }
 
-  const polly = new PollyClient({ region });
-  const s3 = new S3Client({ region });
+  const polly = new PollyClient({ region: pollyRegion });
+  const s3 = new S3Client({ region: s3Region });
 
   const s3Key = `videos/${subsidyId}/audio.mp3`;
 
@@ -86,7 +88,7 @@ export async function synthesizeAndUpload(
 
     const publicUrl = baseUrl
       ? `${baseUrl}/${s3Key}`
-      : `https://${bucket}.s3.${region}.amazonaws.com/${s3Key}`;
+      : `https://${bucket}.s3.${s3Region}.amazonaws.com/${s3Key}`;
 
     const durationSec = estimateDurationFromText(text);
 
