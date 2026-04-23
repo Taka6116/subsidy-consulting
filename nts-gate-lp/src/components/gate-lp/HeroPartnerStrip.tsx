@@ -1,7 +1,10 @@
 "use client";
 
 import { useReducedMotion } from "framer-motion";
-import { SUBSIDY_PROGRAMS, PREFECTURES } from "@/data/heroStripData";
+import {
+  SUBSIDY_PROGRAMS_PRIMARY,
+  SUBSIDY_PROGRAMS_SECONDARY,
+} from "@/data/heroStripData";
 
 export type HeroPartnerStripVariant = "default" | "dark";
 
@@ -53,15 +56,15 @@ export default function HeroPartnerStrip({
     return (
       <div
         className={STRIP_GLASS_SHELL}
-        aria-label="対応可能な補助金制度と対応都道府県"
+        aria-label="対応可能な補助金制度一覧"
         data-hero-partner-strip-variant={variant}
       >
         <div className="flex flex-col gap-3 px-4 sm:gap-4">
           <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 sm:gap-x-5">
-            {textCells(SUBSIDY_PROGRAMS, "static-top")}
+            {textCells(SUBSIDY_PROGRAMS_PRIMARY, "static-top")}
           </div>
           <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 sm:gap-x-5">
-            {textCells(PREFECTURES, "static-bottom")}
+            {textCells(SUBSIDY_PROGRAMS_SECONDARY, "static-bottom")}
           </div>
         </div>
       </div>
@@ -71,26 +74,26 @@ export default function HeroPartnerStrip({
   return (
     <div
       className={STRIP_GLASS_SHELL}
-      aria-label="対応可能な補助金制度と対応都道府県"
+      aria-label="対応可能な補助金制度一覧"
       data-hero-partner-strip-variant={variant}
     >
       <div className="flex flex-col gap-2 sm:gap-3">
-        {/* Top: 対応補助金制度 (RTL) */}
+        {/* Top: 主要補助金制度 (RTL) */}
         <div className="hero-partner-logo-mask relative overflow-hidden">
           {scrollTrack(
             "hero-partner-logo-track flex items-center gap-6 sm:gap-8",
-            SUBSIDY_PROGRAMS,
-            "subsidy-a",
-            "subsidy-b",
+            SUBSIDY_PROGRAMS_PRIMARY,
+            "subsidy-primary-a",
+            "subsidy-primary-b",
           )}
         </div>
-        {/* Bottom: 対応都道府県 (LTR) */}
+        {/* Bottom: 雇用系・専門領域助成金 (LTR) — 件数を上段と揃えることで速度一致 */}
         <div className="hero-partner-logo-mask relative overflow-hidden">
           {scrollTrack(
             "hero-partner-logo-track-reverse flex items-center gap-6 sm:gap-8",
-            PREFECTURES,
-            "pref-a",
-            "pref-b",
+            SUBSIDY_PROGRAMS_SECONDARY,
+            "subsidy-secondary-a",
+            "subsidy-secondary-b",
           )}
         </div>
       </div>
