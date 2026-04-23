@@ -157,7 +157,7 @@ articleExcerpt: ${subsidy.articleExcerpt ?? "（情報なし）"}`;
     };
     const raw = outer.content?.[0]?.text ?? "";
 
-    const parsed = parseAssistantJson<GeneratedVideoScript>(raw);
+    const parsed = parseAssistantJson(raw) as GeneratedVideoScript | null;
     if (!parsed || !parsed.slug || !parsed.narration_text) {
       console.error(LOG_PREFIX, "invalid response structure", raw.slice(0, 200));
       return null;
