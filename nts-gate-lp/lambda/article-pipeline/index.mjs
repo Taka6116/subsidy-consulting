@@ -27,6 +27,148 @@ const LOG = "[article-pipeline]";
 const JGRANTS_BASE = "https://api.jgrants-portal.go.jp/exp/v1/public";
 
 // -----------------------------------------------------------------------------
+// 省庁クローラー設定
+// 各ソースから最新 MINISTRY_FETCH_LIMIT 件を取得し、以降は差分のみ追記する。
+// -----------------------------------------------------------------------------
+const MINISTRY_FETCH_LIMIT = 20; // 初回・通常実行ともに最新 20 件を対象とする
+
+/** 補助金・公募関連のキーワード（タイトルフィルタ用） */
+const SUBSIDY_KEYWORDS = [
+  "補助金", "補助事業", "助成金", "支援事業",
+  "公募", "募集開始", "交付申請", "申請受付",
+];
+
+function isSubsidyRelated(title) {
+  return SUBSIDY_KEYWORDS.some((kw) => title.includes(kw));
+}
+
+/**
+ * RSS/Atom フィードを fetch して { title, link, pubDate } の配列を返す。
+ * 外部ライブラリ不使用・正規表現のみで処理する。
+ */
+async function fetchRssItems(url, userAgent) {
+  const res = await fetch(url, {
+    headers: { Accept: "application/rss+xml, application/atom+xml, text/xml, */*", "User-Agent": userAgent },
+    signal: AbortSignal.timeout(15_000),
+  });
+  if (!res.ok) throw new Error(`RSS fetch error: ${res.status} ${url}`);
+  const xml = await res.text();
+
+  const items = [];
+
+  // ----- Atom <entry> -----
+  const entryRegex = /<entry[^>]*>([\s\S]*?)<\/entry>/g;
+  let m;
+  while ((m = entryRegex.exec(xml)) !== null) {
+    const block = m[1];
+    const title = extractXmlText(block, "title");
+    const link =
+      block.match(/<link[^>]+href="([^"]+)"/)?.[1] ??
+      extractXmlText(block, "link") ?? "";
+    const pubDate = extractXmlText(block, "updated") ?? extractXmlText(block, "published") ?? "";
+    if (title) items.push({ title, link, pubDate });
+  }
+
+  // ----- RSS <item> -----
+  const itemRegex = /<item[^>]*>([\s\S]*?)<\/item>/g;
+  while ((m = itemRegex.exec(xml)) !== null) {
+    const block = m[1];
+    const title = extractXmlText(block, "title");
+    const link = extractXmlText(block, "link") ?? "";
+    const pubDate = extractXmlText(block, "pubDate") ?? "";
+    if (title) items.push({ title, link, pubDate });
+  }
+
+  return items.slice(0, MINISTRY_FETCH_LIMIT);
+}
+
+/** XML タグの中身を取り出す（CDATA 対応） */
+function extractXmlText(block, tag) {
+  const m = block.match(
+    new RegExp(`<${tag}[^>]*>(?:<!\\[CDATA\\[([\\s\\S]*?)\\]\\]>|([\\s\\S]*?))<\\/${tag}>`, "i"),
+  );
+  if (!m) return null;
+  return (m[1] ?? m[2] ?? "").trim() || null;
+}
+
+/**
+ * HTMLページから補助金らしいリンクを最大 MINISTRY_FETCH_LIMIT 件抽出する。
+ * 農水省・国交省など RSS を持たない省庁向け。
+ */
+async function fetchHtmlLinks(pageUrl, linkBaseUrl, userAgent) {
+  const res = await fetch(pageUrl, {
+    headers: { "User-Agent": userAgent },
+    signal: AbortSignal.timeout(15_000),
+  });
+  if (!res.ok) throw new Error(`HTML fetch error: ${res.status} ${pageUrl}`);
+  const html = await res.text();
+
+  const anchors = [];
+  const aRegex = /<a\s[^>]*href="([^"]+)"[^>]*>([\s\S]*?)<\/a>/gi;
+  let m;
+  while ((m = aRegex.exec(html)) !== null) {
+    const href = m[1].trim();
+    const rawText = m[2].replace(/<[^>]+>/g, "").trim();
+    if (!isSubsidyRelated(rawText)) continue;
+    // 絶対 URL に変換
+    let link = href;
+    if (href.startsWith("/")) link = `${linkBaseUrl}${href}`;
+    else if (!href.startsWith("http")) continue;
+    anchors.push({ title: rawText, link, pubDate: "" });
+    if (anchors.length >= MINISTRY_FETCH_LIMIT) break;
+  }
+  return anchors;
+}
+
+/** 省庁データを SubsidyGrant に UPSERT する（externalId = "ministry-{source}-{url}"） */
+async function upsertMinistryGrant(client, { title, link, pubDate, source }) {
+  // link が空の場合はスキップ
+  if (!link) return null;
+
+  const externalId = `ministry-${source}-${link}`;
+  const deadlineRaw = pubDate ? new Date(pubDate) : null;
+  const deadline = deadlineRaw && !Number.isNaN(deadlineRaw.getTime()) ? deadlineRaw : null;
+
+  const query = `
+    INSERT INTO "SubsidyGrant" (
+      id, "externalId", name, description,
+      "maxAmountLabel", "deadlineLabel",
+      deadline, status, source,
+      "targetIndustries", "targetIndustryNote", prefecture,
+      "rawPayload", "updatedAt", "syncedAt"
+    )
+    VALUES (
+      $1, $2, $3, NULL,
+      NULL, $4,
+      $5, 'open', $6,
+      '{}', NULL, NULL,
+      $7::jsonb, NOW(), NOW()
+    )
+    ON CONFLICT ("externalId") DO UPDATE SET
+      name            = EXCLUDED.name,
+      "deadlineLabel" = EXCLUDED."deadlineLabel",
+      deadline        = EXCLUDED.deadline,
+      "rawPayload"    = EXCLUDED."rawPayload",
+      status          = 'open',
+      "updatedAt"     = NOW()
+    RETURNING id, (xmax = 0) AS is_new
+  `;
+
+  const values = [
+    randomUUID(),
+    externalId,
+    title.slice(0, 400),
+    pubDate || null,
+    deadline,
+    source,
+    JSON.stringify({ source, url: link, pubDate, fetchedAt: new Date().toISOString() }),
+  ];
+
+  const result = await client.query(query, values);
+  return result.rows[0];
+}
+
+// -----------------------------------------------------------------------------
 // jGrants fetcher（sync-jgrants.mjs と同等のロジックを埋め込み版で保持）
 // -----------------------------------------------------------------------------
 function extractItems(payload) {
@@ -207,6 +349,18 @@ async function enqueueArticleJob(client, subsidyId) {
   );
 }
 
+/** 記事が published になった補助金に対して video ジョブをキューイングする */
+async function enqueueVideoJob(client, subsidyId) {
+  await client.query(
+    `
+    INSERT INTO content_jobs (id, subsidy_id, job_type, status, triggered_at)
+    VALUES ($1, $2, 'video', 'pending', NOW())
+    ON CONFLICT (subsidy_id, job_type) DO NOTHING
+    `,
+    [randomUUID(), subsidyId],
+  );
+}
+
 async function selectPendingJobs(client, limit) {
   const res = await client.query(
     `
@@ -221,11 +375,44 @@ async function selectPendingJobs(client, limit) {
   return res.rows.map((r) => r.subsidy_id);
 }
 
+async function selectPendingVideoJobs(client, limit) {
+  const res = await client.query(
+    `
+    SELECT subsidy_id
+    FROM content_jobs
+    WHERE job_type = 'video' AND status = 'pending'
+    ORDER BY triggered_at ASC
+    LIMIT $1
+    `,
+    [limit],
+  );
+  return res.rows.map((r) => r.subsidy_id);
+}
+
 // -----------------------------------------------------------------------------
 // Vercel API 呼び出し
 // -----------------------------------------------------------------------------
 async function callGenerate({ vercelUrl, token, subsidyId }) {
   const res = await fetch(`${vercelUrl}/api/articles/generate`, {
+    method: "POST",
+    headers: {
+      "content-type": "application/json",
+      "x-internal-token": token,
+    },
+    body: JSON.stringify({ subsidyId }),
+  });
+  const text = await res.text();
+  let json;
+  try {
+    json = JSON.parse(text);
+  } catch {
+    json = { ok: false, error: text.slice(0, 200) };
+  }
+  return { httpStatus: res.status, ...json };
+}
+
+async function callGenerateVideo({ vercelUrl, token, subsidyId }) {
+  const res = await fetch(`${vercelUrl}/api/videos/generate`, {
     method: "POST",
     headers: {
       "content-type": "application/json",
@@ -288,14 +475,61 @@ export async function handler(event = {}) {
   const report = {
     ok: true,
     event,
+    ministry: { fetched: 0, newGrants: 0, errors: [] },
     sync: { fetched: 0, newGrants: 0, updatedGrants: 0 },
     generate: { picked: 0, published: 0, rejected: 0, failed: 0, details: [] },
+    video: { picked: 0, published: 0, script_only: 0, failed: 0, details: [] },
     revalidate: null,
     elapsedMs: 0,
   };
 
   try {
     await client.connect();
+
+    // ----- 0) 省庁クローラー（RSS + HTML）-----
+    // 各ソースから最新 MINISTRY_FETCH_LIMIT 件を取得し、新規のみ記事ジョブをキューイングする。
+    // 差分検知は externalId の ON CONFLICT で自動処理される。
+    const ministrySources = [
+      // 経済産業省 報道発表 Atom フィード
+      { type: "rss",  url: "https://www.meti.go.jp/ml_index_release_atom.xml",                            source: "meti" },
+      // ミラサポ plus（中小企業庁系）補助金カテゴリ RSS
+      { type: "rss",  url: "https://mirasapo-plus.go.jp/category/infomation/subsidy/feed/",               source: "chusho" },
+      // 農林水産省 補助事業公募一覧（HTML）
+      { type: "html", url: "https://www.maff.go.jp/j/supply/hozyo/index.html", base: "https://www.maff.go.jp", source: "maff" },
+      // 国土交通省 報道発表資料（HTML）
+      { type: "html", url: "https://www.mlit.go.jp/report/press/index.html",   base: "https://www.mlit.go.jp", source: "mlit" },
+    ];
+
+    report.ministry = { fetched: 0, newGrants: 0, errors: [] };
+
+    for (const src of ministrySources) {
+      try {
+        let items = [];
+        if (src.type === "rss") {
+          items = await fetchRssItems(src.url, SYNC_USER_AGENT);
+          items = items.filter((i) => isSubsidyRelated(i.title));
+        } else {
+          items = await fetchHtmlLinks(src.url, src.base, SYNC_USER_AGENT);
+        }
+
+        report.ministry.fetched += items.length;
+        console.log(`${LOG} ministry[${src.source}] fetched=${items.length}`);
+
+        for (const item of items) {
+          const row = await upsertMinistryGrant(client, { ...item, source: src.source });
+          if (row?.is_new) {
+            report.ministry.newGrants += 1;
+            await enqueueArticleJob(client, row.id);
+          }
+        }
+      } catch (e) {
+        const msg = e instanceof Error ? e.message : String(e);
+        console.warn(`${LOG} ministry[${src.source}] ERROR: ${msg}`);
+        report.ministry.errors.push({ source: src.source, error: msg });
+        // 省庁クローラーの失敗はパイプライン全体を止めない
+      }
+    }
+    console.log(`${LOG} ministry done fetched=${report.ministry.fetched} new=${report.ministry.newGrants}`);
 
     // ----- 1) sync -----
     const allGrants = await fetchAllOpenGrants(SYNC_USER_AGENT);
@@ -329,6 +563,8 @@ export async function handler(event = {}) {
           if (result.status === "published") {
             report.generate.published += 1;
             if (result.slug) publishedSlugs.push(result.slug);
+            // 記事が公開されたら動画ジョブも積む
+            await enqueueVideoJob(client, subsidyId);
           } else {
             report.generate.rejected += 1;
           }
@@ -359,6 +595,58 @@ export async function handler(event = {}) {
     console.log(
       `${LOG} generated published=${report.generate.published} rejected=${report.generate.rejected} failed=${report.generate.failed}`,
     );
+
+    // ----- 2b) drain pending video jobs -----
+    // 記事生成と同じ Lambda 実行内で video も順次処理（上限はDRAIN_LIMITと同じ）
+    const pendingVideoIds = await selectPendingVideoJobs(client, DRAIN_LIMIT);
+    report.video.picked = pendingVideoIds.length;
+    const publishedVideoSlugs = [];
+
+    for (const subsidyId of pendingVideoIds) {
+      try {
+        const result = await callGenerateVideo({
+          vercelUrl: VERCEL_APP_URL,
+          token: ARTICLE_GENERATE_TOKEN,
+          subsidyId,
+        });
+        if (result.httpStatus >= 200 && result.httpStatus < 300 && result.ok) {
+          if (result.status === "published" || result.status === "audio_only") {
+            report.video.published += 1;
+            if (result.slug) publishedVideoSlugs.push(result.slug);
+          } else {
+            report.video.script_only += 1;
+          }
+          report.video.details.push({
+            subsidyId,
+            status: result.status,
+            slug: result.slug ?? null,
+          });
+        } else {
+          report.video.failed += 1;
+          report.video.details.push({
+            subsidyId,
+            status: "http-failed",
+            httpStatus: result.httpStatus,
+            error: result.error ?? "",
+          });
+        }
+      } catch (e) {
+        report.video.failed += 1;
+        report.video.details.push({
+          subsidyId,
+          status: "exception",
+          error: e instanceof Error ? e.message : String(e),
+        });
+      }
+    }
+    console.log(
+      `${LOG} video published=${report.video.published} script_only=${report.video.script_only} failed=${report.video.failed}`,
+    );
+
+    // 動画スラッグも revalidate 対象に追加
+    for (const slug of publishedVideoSlugs) {
+      publishedSlugs.push(slug);
+    }
 
     // ----- 3) revalidate（公開した分だけ即時パージ） -----
     if (publishedSlugs.length > 0) {
