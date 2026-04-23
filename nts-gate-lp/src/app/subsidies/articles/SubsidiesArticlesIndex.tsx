@@ -15,6 +15,8 @@ export type ArticleCard = {
   subsidyName: string;
   /** 最大補助額ラベル（例: "最大 3,000万円"）。無ければサムネ下部は非表示 */
   maxAmountLabel: string | null;
+  /** 対象都道府県（null = 全国） */
+  prefecture: string | null;
   tags: string[];
 };
 
@@ -60,6 +62,10 @@ type TagOption = { label: string; count: number };
 function buildTagOptions(articles: ArticleCard[]): TagOption[] {
   const map = new Map<string, number>();
   for (const a of articles) {
+    // 都道府県タグを追加
+    if (a.prefecture) {
+      map.set(a.prefecture, (map.get(a.prefecture) ?? 0) + 1);
+    }
     for (const t of a.tags) {
       if (t === "お役立ち情報") continue;
       map.set(t, (map.get(t) ?? 0) + 1);
@@ -80,7 +86,10 @@ export default function SubsidiesArticlesIndex({
 
   const filtered: ArticleCard[] = useMemo(() => {
     if (selectedTag === ALL) return articles;
-    return articles.filter((a) => a.tags.includes(selectedTag));
+    // 都道府県タグでのフィルター対応
+    return articles.filter(
+      (a) => a.tags.includes(selectedTag) || a.prefecture === selectedTag,
+    );
   }, [articles, selectedTag]);
 
   return (
@@ -149,16 +158,19 @@ export default function SubsidiesArticlesIndex({
 
                       {/* カード本文 */}
                       <div className="flex flex-1 flex-col p-4 sm:p-5">
-                        {/* 1. タグ（最大 2） */}
-                        {tags.length > 0 && (
-                          <p className="flex flex-wrap gap-x-2 gap-y-1 text-xs text-neutral-700">
-                            {tags.map((t) => (
-                              <span key={t} className="text-neutral-600">
-                                #{t}
-                              </span>
-                            ))}
-                          </p>
-                        )}
+                        {/* 1. 都道府県バッジ + タグ（最大 2） */}
+                        <div className="flex flex-wrap gap-x-2 gap-y-1">
+                          {article.prefecture && (
+                            <span className="text-xs font-medium text-[#1a4c8e]">
+                              📍 {article.prefecture}
+                            </span>
+                          )}
+                          {tags.map((t) => (
+                            <span key={t} className="text-xs text-neutral-600">
+                              #{t}
+                            </span>
+                          ))}
+                        </div>
 
                         {/* 2. タイトル */}
                         <h2

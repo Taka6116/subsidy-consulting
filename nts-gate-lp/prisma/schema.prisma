@@ -31,6 +31,8 @@ model SubsidyGrant {
   subsidyAmount BigInt?   @map("subsidy_amount")
   subsidyRate   Decimal?  @map("subsidy_rate") @db.Decimal(4, 2)
   deadline      DateTime? @db.Date
+  /** 対象地域。"全国" / "東京都" / "愛知県" など。jGrants の target_area_search から抽出 */
+  prefecture    String?
 
   syncRun  SubsidySyncRun?    @relation(fields: [syncRunId], references: [id], onDelete: SetNull)
   contents GeneratedContent[]
@@ -38,6 +40,7 @@ model SubsidyGrant {
 
   @@index([syncedAt])
   @@index([updatedAt])
+  @@index([prefecture])
 }
 
 /// 補助金に紐づく生成コンテンツ（記事 / LP / 台本等）

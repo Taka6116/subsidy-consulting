@@ -21,6 +21,7 @@ type SubsidyCard = {
   deadlineLabel: string | null;
   deadline: string | null;
   targetIndustries: string[];
+  prefecture: string | null;
   status: string;
   source: string;
   updatedAt: string;
@@ -74,7 +75,22 @@ function formatAmountLabel(grant: SubsidyCard): string {
   return `最大 ${candidate.toLocaleString("ja-JP")} 円`;
 }
 
-async function fetchSubsidies(page: number): Promise<SubsidiesResponse> {
+/** 東日本から西日本の順で都道府県を並べる */
+const PREFECTURE_OPTIONS = [
+  "北海道", "青森県", "岩手県", "宮城県", "秋田県", "山形県", "福島県",
+  "茨城県", "栃木県", "群馬県", "埼玉県", "千葉県", "東京都", "神奈川県",
+  "新潟県", "富山県", "石川県", "福井県", "山梨県", "長野県", "岐阜県",
+  "静岡県", "愛知県", "三重県",
+  "滋賀県", "京都府", "大阪府", "兵庫県", "奈良県", "和歌山県",
+  "鳥取県", "島根県", "岡山県", "広島県", "山口県",
+  "徳島県", "香川県", "愛媛県", "高知県",
+  "福岡県", "佐賀県", "長崎県", "熊本県", "大分県", "宮崎県", "鹿児島県", "沖縄県",
+] as const;
+
+async function fetchSubsidies(
+  page: number,
+  prefecture?: string,
+): Promise<SubsidiesResponse> {
   const limit = 20;
   const offset = Math.max(0, page - 1) * limit;
   const h = await headers();
@@ -82,26 +98,41 @@ async function fetchSubsidies(page: number): Promise<SubsidiesResponse> {
   const protocol = h.get("x-forwarded-proto") ?? "http";
   const baseUrl = `${protocol}://${host}`;
 
-  const res = await fetch(`${baseUrl}/api/subsidies?limit=${limit}&offset=${offset}`, {
-    next: { revalidate: 3600 },
-  });
-  if (!res.ok) {
-    return { grants: [], total: 0, limit, offset };
-  }
+  const url = new URL(`${baseUrl}/api/subsidies`);
+  url.searchParams.set("limit", String(limit));
+  url.searchParams.set("offset", String(offset));
+  if (prefecture) url.searchParams.set("prefecture", prefecture);
+
+  const res = await fetch(url.toString(), { next: { revalidate: 300 } });
+  if (!res.ok) return { grants: [], total: 0, limit, offset };
   return (await res.json()) as SubsidiesResponse;
 }
 
 export default async function SubsidiesListPage({
   searchParams,
 }: {
-  searchParams?: Promise<{ page?: string }>;
+  searchParams?: Promise<{ page?: string; prefecture?: string }>;
 }) {
   const params = (await searchParams) ?? {};
   const currentPage = Math.max(1, Number(params.page ?? "1") || 1);
-  const data = await fetchSubsidies(currentPage);
+  const selectedPref = params.prefecture ?? "";
+  const data = await fetchSubsidies(currentPage, selectedPref || undefined);
   const totalPages = Math.max(1, Math.ceil(data.total / Math.max(1, data.limit)));
   const hasPrev = currentPage > 1;
   const hasNext = currentPage < totalPages;
+
+  /** ページネーションリンク生成（都道府県パラメータを引き継ぐ） */
+  function pageHref(page: number) {
+    const q = new URLSearchParams();
+    if (page > 1) q.set("page", String(page));
+    if (selectedPref) q.set("prefecture", selectedPref);
+    return `/subsidies/list${q.toString() ? `?${q}` : ""}`;
+  }
+
+  /** 都道府県フィルターリンク生成（ページは 1 にリセット） */
+  function prefHref(pref: string) {
+    return pref ? `/subsidies/list?prefecture=${encodeURIComponent(pref)}` : "/subsidies/list";
+  }
 
   return (
     <>
@@ -114,19 +145,38 @@ export default async function SubsidiesListPage({
               公募中の補助金一覧
             </h1>
             <p className="mt-4 text-neutral-700">
+              {selectedPref ? `${selectedPref}対象を含む` : ""}
               {data.total}件の補助金が公募中です
             </p>
 
-            <div className="mt-6 flex flex-wrap gap-2">
-              {["すべて", "NTS取扱", "設備投資", "IT・デジタル", "事業承継"].map((label) => (
-                <button
-                  key={label}
-                  type="button"
-                  className="rounded-full border border-[#d6d3cd] bg-white px-4 py-2 text-sm text-[#4a4946] transition hover:bg-[#f7f6f3]"
+            {/* 都道府県フィルター */}
+            <div className="mt-6">
+              <p className="mb-2 text-xs font-medium text-[#6a6760]">都道府県で絞り込む</p>
+              <div className="flex flex-wrap gap-1.5">
+                <Link
+                  href={prefHref("")}
+                  className={`rounded-full border px-3 py-1.5 text-xs transition ${
+                    !selectedPref
+                      ? "border-[#1a4c8e] bg-[#1a4c8e] text-white"
+                      : "border-[#d6d3cd] bg-white text-[#4a4946] hover:bg-[#f7f6f3]"
+                  }`}
                 >
-                  {label}
-                </button>
-              ))}
+                  全国
+                </Link>
+                {PREFECTURE_OPTIONS.map((pref) => (
+                  <Link
+                    key={pref}
+                    href={prefHref(pref)}
+                    className={`rounded-full border px-3 py-1.5 text-xs transition ${
+                      selectedPref === pref
+                        ? "border-[#1a4c8e] bg-[#1a4c8e] text-white"
+                        : "border-[#d6d3cd] bg-white text-[#4a4946] hover:bg-[#f7f6f3]"
+                    }`}
+                  >
+                    {pref}
+                  </Link>
+                ))}
+              </div>
             </div>
 
             <div className="mt-10 grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
@@ -183,6 +233,11 @@ export default async function SubsidiesListPage({
                   </dl>
 
                   <div className="mt-5 flex flex-wrap gap-2">
+                    {grant.prefecture && (
+                      <span className="rounded-full bg-[#e8f0fb] px-2.5 py-1 text-xs font-medium text-[#1a4c8e]">
+                        📍 {grant.prefecture}
+                      </span>
+                    )}
                     {(grant.targetIndustries ?? []).slice(0, 3).map((industry) => (
                       <span
                         key={`${grant.id}-${industry}`}
@@ -208,7 +263,7 @@ export default async function SubsidiesListPage({
               <div className="mt-10 flex items-center justify-center gap-3">
                 {hasPrev && (
                   <Link
-                    href={`/subsidies/list?page=${currentPage - 1}`}
+                    href={pageHref(currentPage - 1)}
                     className="rounded border border-[#d6d3cd] bg-white px-4 py-2 text-sm text-[#4a4946] transition hover:bg-[#f7f6f3]"
                   >
                     前の20件
@@ -219,7 +274,7 @@ export default async function SubsidiesListPage({
                 </span>
                 {hasNext && (
                   <Link
-                    href={`/subsidies/list?page=${currentPage + 1}`}
+                    href={pageHref(currentPage + 1)}
                     className="rounded border border-[#d6d3cd] bg-white px-4 py-2 text-sm text-[#4a4946] transition hover:bg-[#f7f6f3]"
                   >
                     さらに読み込む

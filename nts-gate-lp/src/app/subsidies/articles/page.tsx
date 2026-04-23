@@ -59,6 +59,7 @@ export default async function SubsidiesArticlesPage() {
           name: true,
           maxAmountLabel: true,
           subsidyAmount: true,
+          prefecture: true,
         },
       },
     },
@@ -77,6 +78,7 @@ export default async function SubsidiesArticlesPage() {
         r.grant?.maxAmountLabel,
         r.grant?.subsidyAmount,
       ),
+      prefecture: r.grant?.prefecture ?? null,
       tags: r.tags ?? [],
     }));
 

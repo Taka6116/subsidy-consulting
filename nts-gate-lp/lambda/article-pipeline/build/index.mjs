@@ -132,24 +132,38 @@ function filterOpen(grants) {
   });
 }
 
+/** 2050年より先の期限は jGrants のデータ不備とみなし null に補正 */
+const DEADLINE_SANITY_MAX = new Date("2050-01-01");
+
+/** rawPayload.target_area_search から都道府県を抽出。"全国" は null */
+function resolvePrefecture(grant) {
+  const area = grant?.target_area_search ?? null;
+  if (!area || area.trim() === "全国" || area.trim() === "") return null;
+  return area.trim();
+}
+
 async function upsertGrant(client, grant) {
   const externalId = resolveExternalId(grant);
   const name = resolveName(grant);
   const description = resolveDescription(grant);
   const maxAmountLabel = resolveMaxAmountLabel(grant);
   const deadlineRaw = resolveDeadlineRaw(grant);
-  const deadline = parseDeadline(deadlineRaw);
+  const deadlineRaw2 = parseDeadline(deadlineRaw);
+  // 2050年超えは異常値として null に補正
+  const deadline =
+    deadlineRaw2 && deadlineRaw2 > DEADLINE_SANITY_MAX ? null : deadlineRaw2;
   const targetIndustries = resolveTargetIndustries(grant);
   const targetIndustryNote = grant?.target_area_search ?? null;
+  const prefecture = resolvePrefecture(grant);
 
   const query = `
     INSERT INTO "SubsidyGrant" (
       id, "externalId", name, description,
       "maxAmountLabel", "deadlineLabel",
       deadline, status, source,
-      "targetIndustries", "targetIndustryNote", "rawPayload", "updatedAt", "syncedAt"
+      "targetIndustries", "targetIndustryNote", prefecture, "rawPayload", "updatedAt", "syncedAt"
     )
-    VALUES ($1,$2,$3,$4,$5,$6,$7,'open','jgrants',$8,$9,$10::jsonb,NOW(),NOW())
+    VALUES ($1,$2,$3,$4,$5,$6,$7,'open','jgrants',$8,$9,$10,$11::jsonb,NOW(),NOW())
     ON CONFLICT ("externalId") DO UPDATE SET
       name = EXCLUDED.name,
       description = EXCLUDED.description,
@@ -158,6 +172,7 @@ async function upsertGrant(client, grant) {
       deadline = EXCLUDED.deadline,
       "targetIndustries" = EXCLUDED."targetIndustries",
       "targetIndustryNote" = EXCLUDED."targetIndustryNote",
+      prefecture = EXCLUDED.prefecture,
       "rawPayload" = EXCLUDED."rawPayload",
       source = 'jgrants',
       status = 'open',
@@ -174,6 +189,7 @@ async function upsertGrant(client, grant) {
     deadline,
     targetIndustries,
     targetIndustryNote,
+    prefecture,
     JSON.stringify(grant),
   ];
   const result = await client.query(query, values);

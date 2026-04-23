@@ -31,6 +31,8 @@ export async function GET(req: Request) {
     const offset = parseOffset(searchParams.get("offset"));
     const source = parseSource(searchParams.get("source"));
     const sourceRaw = searchParams.get("source");
+    /** 都道府県フィルター。"全国" を渡すと prefecture が null のものを含む全件。それ以外は完全一致 */
+    const prefecture = searchParams.get("prefecture")?.trim() || null;
 
     if (sourceRaw && !source) {
       return NextResponse.json(
@@ -56,16 +58,18 @@ export async function GET(req: Request) {
       { name: { not: { contains: "支払いはありません" } } },
     ];
 
-    const where = source
-      ? {
-          status: "open" as const,
-          source,
-          AND: exclusionAnd,
-        }
-      : {
-          status: "open" as const,
-          AND: exclusionAnd,
-        };
+    // 都道府県フィルター: 特定県を指定した場合は その県 OR null(全国) を返す
+    const prefectureFilter =
+      prefecture && prefecture !== "全国"
+        ? { OR: [{ prefecture }, { prefecture: null }] }
+        : {};
+
+    const where = {
+      status: "open" as const,
+      ...(source ? { source } : {}),
+      AND: exclusionAnd,
+      ...prefectureFilter,
+    };
 
     const [grants, total] = await Promise.all([
       prisma.subsidyGrant.findMany({
@@ -82,6 +86,7 @@ export async function GET(req: Request) {
           deadlineLabel: true,
           deadline: true,
           targetIndustries: true,
+          prefecture: true,
           status: true,
           source: true,
           updatedAt: true,
