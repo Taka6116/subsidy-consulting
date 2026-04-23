@@ -19,6 +19,7 @@ import {
   type SubsidyForArticle,
 } from "@/lib/ai/bedrockArticleGenerate";
 import { pickHeroImage } from "@/lib/content/imagePool";
+import { checkArticleQuality } from "@/lib/content/qualityGuard";
 import {
   cleanSubsidyName,
   cleanSubsidyDescription,
@@ -32,6 +33,10 @@ export type RunContentJobResult = {
   slug: string;
   title: string;
   subsidyId: string;
+  /** ガードレール判定で自動公開を止めた場合は "rejected"、通常は "published" */
+  status: "published" | "rejected";
+  /** rejected 時の違反理由（空配列なら合格） */
+  violations: string[];
 };
 
 export type RunContentJobParams = {
@@ -87,7 +92,8 @@ export async function runContentJob(
     const existingContent = await prisma.generatedContent.findFirst({
       where: { subsidyId, contentType: "article" },
     });
-    if (existingContent && !params.force) {
+    // rejected の既存記事は再生成対象とする（品質基準改善後に自動リトライ）
+    if (existingContent && !params.force && existingContent.status !== "rejected") {
       console.log(
         `${LOG_PREFIX} existing article found (contentId=${existingContent.id}) — skip regeneration`,
       );
@@ -100,6 +106,8 @@ export async function runContentJob(
         slug: existingContent.slug ?? `article-${existingContent.id.slice(0, 8)}`,
         title: existingContent.title ?? cleanSubsidyName(grant.name ?? ""),
         subsidyId,
+        status: "published",
+        violations: [],
       };
     }
 
@@ -121,6 +129,16 @@ export async function runContentJob(
     const draft = await generateSubsidyArticleDraft(subsidyForArticle);
     if (!draft) {
       throw new Error("Bedrock article generation returned null");
+    }
+
+    // 品質ガードレール
+    const verdict = checkArticleQuality(draft);
+    const effectiveStatus = verdict.ok ? "published" : "rejected";
+    const violations = verdict.ok ? [] : verdict.violations;
+    if (!verdict.ok) {
+      console.warn(
+        `${LOG_PREFIX} quality rejected subsidyId=${subsidyId} violations=${violations.join("|")}`,
+      );
     }
 
     const heroImagePath = pickHeroImage({
@@ -148,8 +166,11 @@ export async function runContentJob(
           metaDescription: draft.metaDescription,
           tags: draft.tags,
           heroImagePath,
-          status: "published",
-          publishedAt: existingContent.publishedAt ?? now,
+          status: effectiveStatus,
+          publishedAt:
+            effectiveStatus === "published"
+              ? (existingContent.publishedAt ?? now)
+              : null,
         },
       });
     } else {
@@ -164,19 +185,20 @@ export async function runContentJob(
           metaDescription: draft.metaDescription,
           tags: draft.tags,
           heroImagePath,
-          status: "published",
-          publishedAt: now,
+          status: effectiveStatus,
+          publishedAt: effectiveStatus === "published" ? now : null,
         },
       });
     }
 
+    // ContentJob は done（rejected でも Bedrock 処理自体は完了している）
     await prisma.contentJob.update({
       where: { subsidyId_jobType: { subsidyId, jobType } },
       data: { status: "done", completedAt: new Date() },
     });
 
     console.log(
-      `${LOG_PREFIX} done subsidyId=${subsidyId} contentId=${saved.id} slug=${uniqueSlug}`,
+      `${LOG_PREFIX} done subsidyId=${subsidyId} contentId=${saved.id} slug=${uniqueSlug} status=${effectiveStatus} violations=${violations.length}`,
     );
 
     return {
@@ -184,6 +206,8 @@ export async function runContentJob(
       slug: uniqueSlug,
       title: draft.title,
       subsidyId,
+      status: effectiveStatus,
+      violations,
     };
   } catch (e) {
     await prisma.contentJob

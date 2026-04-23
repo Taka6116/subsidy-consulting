@@ -43,7 +43,7 @@ export default function Header() {
   const partnerNavHref = isPartnerPage ? "/" : partnerHref;
   const partnerNavLabel = isPartnerPage ? "補助金活用ご希望の方" : "パートナー企業の方へ";
   /** エンドユーザー/提携先ともに同一の白背景ヘッダーを常時適用 */
-  const barClass = "lp-site-header border-b";
+  const barClass = "lp-site-header";
 
   return (
     <header
@@ -99,7 +99,6 @@ export default function Header() {
                 →
               </span>
             </Link>
-            <span className="hidden h-6 w-px shrink-0 bg-[var(--border-subtle)] sm:inline-block lg:mx-1" aria-hidden />
             <HeaderCtaGroup />
           </nav>
         </>

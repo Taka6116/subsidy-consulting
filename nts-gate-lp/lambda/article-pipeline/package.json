@@ -1,0 +1,17 @@
+{
+  "name": "nts-article-pipeline-lambda",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "AWS Lambda: jGrants sync -> drain article jobs via Vercel -> revalidate ISR",
+  "main": "index.mjs",
+  "scripts": {
+    "package": "rm -rf build && mkdir -p build && cp index.mjs package.json build/ && cd build && npm install --omit=dev --no-audit --no-fund && zip -r ../function.zip . && cd .. && rm -rf build"
+  },
+  "dependencies": {
+    "pg": "^8.20.0"
+  },
+  "devDependencies": {
+    "archiver": "^7.0.1"
+  }
+}

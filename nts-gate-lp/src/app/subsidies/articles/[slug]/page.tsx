@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import ReactMarkdown from "react-markdown";
@@ -15,6 +14,8 @@ export const revalidate = 300;
 type PageProps = {
   params: Promise<{ slug: string }>;
 };
+
+type RawPayloadLike = Record<string, unknown> | null;
 
 export async function generateStaticParams(): Promise<Array<{ slug: string }>> {
   const rows = await prisma.generatedContent.findMany({
@@ -46,9 +47,62 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   };
 }
 
-function formatDateJP(date: Date | null): string {
+function formatPublishedJP(date: Date | null): string {
   if (!date) return "";
   return `${date.getFullYear()}年${date.getMonth() + 1}月${date.getDate()}日`;
+}
+
+function toObj(raw: unknown): RawPayloadLike {
+  if (!raw || typeof raw !== "object" || Array.isArray(raw)) return null;
+  return raw as Record<string, unknown>;
+}
+
+function formatJPY(amount: number): string {
+  if (amount >= 100000000) {
+    const oku = amount / 100000000;
+    return oku % 1 === 0 ? `${oku}億円` : `${oku.toFixed(1)}億円`;
+  }
+  if (amount >= 10000) {
+    const man = amount / 10000;
+    return man % 1 === 0 ? `${man.toLocaleString()}万円` : `${man.toFixed(0)}万円`;
+  }
+  return `${amount.toLocaleString()}円`;
+}
+
+// DB の maxAmountLabel が文字化け（??20,000,000?）している可能性があるため、
+// rawPayload.subsidy_max_limit を優先して金額を再構築する。
+function resolveAmountLabel(
+  maxAmountLabel: string | null,
+  rawPayload: RawPayloadLike,
+): string | null {
+  const rawAmount = Number(rawPayload?.subsidy_max_limit ?? 0);
+  if (Number.isFinite(rawAmount) && rawAmount > 0) return formatJPY(rawAmount);
+
+  // ラベルが ASCII と数字のみで構成されていれば使う。それ以外は壊れている可能性が高い
+  if (maxAmountLabel && /^[\x20-\x7E\u3000\u3040-\u30ff\u3400-\u9fff,0-9円万億最大\s]+$/u.test(maxAmountLabel.trim())) {
+    const asNum = Number(maxAmountLabel.replace(/[^\d]/g, ""));
+    if (Number.isFinite(asNum) && asNum > 0) return formatJPY(asNum);
+    return maxAmountLabel.trim();
+  }
+  return null;
+}
+
+function resolveDeadlineLabel(
+  deadlineLabel: string | null,
+  deadline: Date | null,
+): string | null {
+  const date = deadline
+    ? deadline
+    : deadlineLabel
+      ? new Date(deadlineLabel)
+      : null;
+  if (date && !Number.isNaN(date.getTime())) {
+    return `${date.getFullYear()}年${date.getMonth() + 1}月${date.getDate()}日`;
+  }
+  if (deadlineLabel && !/^\s*(?:要確認|—|null)\s*$/i.test(deadlineLabel)) {
+    return deadlineLabel;
+  }
+  return null;
 }
 
 export default async function SubsidyArticlePage({ params }: PageProps) {
@@ -63,6 +117,8 @@ export default async function SubsidyArticlePage({ params }: PageProps) {
           name: true,
           maxAmountLabel: true,
           deadlineLabel: true,
+          deadline: true,
+          rawPayload: true,
         },
       },
     },
@@ -72,12 +128,17 @@ export default async function SubsidyArticlePage({ params }: PageProps) {
     notFound();
   }
 
-  const heroImage = article.heroImagePath ?? "/images/PANA2232.jpg";
+  const grantAmount = article.grant
+    ? resolveAmountLabel(article.grant.maxAmountLabel, toObj(article.grant.rawPayload))
+    : null;
+  const grantDeadline = article.grant
+    ? resolveDeadlineLabel(article.grant.deadlineLabel, article.grant.deadline)
+    : null;
 
   return (
     <>
       <Header />
-      <main className="relative z-[2] min-h-[100svh] bg-[#f9f7f2] font-body">
+      <main className="relative z-[2] min-h-[100svh] bg-[#f9f7f2] pt-16 font-body sm:pt-20">
         <article className="mx-auto max-w-3xl px-5 py-10 sm:px-6 lg:py-14">
           {/* パンくず */}
           <nav className="mb-6 text-xs text-neutral-500 sm:text-sm" aria-label="breadcrumb">
@@ -92,81 +153,105 @@ export default async function SubsidyArticlePage({ params }: PageProps) {
             </Link>
           </nav>
 
-          {/* ヘッダー */}
-          <header>
-            <p className="text-xs sm:text-sm">
-              <span className="font-medium text-primary-600">
-                {formatDateJP(article.publishedAt)}
-              </span>
-              <span className="mx-2 text-neutral-300" aria-hidden>
-                |
-              </span>
-              <span className="text-neutral-600">お役立ち情報</span>
-            </p>
-            <h1 className="font-heading mt-3 text-2xl font-bold leading-snug text-neutral-900 sm:text-3xl lg:text-4xl">
-              {article.title ?? "解説記事"}
-            </h1>
-            {article.tags.length > 0 && (
-              <div className="mt-4 flex flex-wrap gap-2">
-                {article.tags.map((tag) => (
-                  <span
-                    key={tag}
-                    className="rounded-full bg-white px-3 py-1 text-xs text-neutral-700 shadow-sm sm:text-sm"
-                  >
-                    #{tag}
-                  </span>
-                ))}
-              </div>
-            )}
+          {/* グラデーションバナー型ヘッダー（写真は使わない） */}
+          <header className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary-100 via-white to-accent-100/60 p-6 shadow-sm ring-1 ring-primary-200/40 sm:p-8 lg:p-10">
+            {/* 装飾用ソフトブロブ */}
+            <div
+              aria-hidden
+              className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full bg-primary-200/40 blur-3xl"
+            />
+            <div
+              aria-hidden
+              className="pointer-events-none absolute -bottom-12 -left-10 h-36 w-36 rounded-full bg-accent-100/60 blur-3xl"
+            />
+
+            <div className="relative">
+              <p className="text-xs font-medium sm:text-sm">
+                <span className="text-accent-600">
+                  {formatPublishedJP(article.publishedAt)}
+                </span>
+                <span className="mx-2 text-neutral-300" aria-hidden>
+                  |
+                </span>
+                <span className="text-neutral-600">お役立ち情報</span>
+              </p>
+
+              <h1 className="font-heading mt-3 text-2xl font-bold leading-snug text-primary-900 sm:text-3xl lg:text-4xl">
+                {article.title ?? "解説記事"}
+              </h1>
+
+              {article.tags.length > 0 && (
+                <div className="mt-5 flex flex-wrap gap-2">
+                  {article.tags.map((tag) => (
+                    <span
+                      key={tag}
+                      className="rounded-full bg-white/90 px-3 py-1 text-xs font-medium text-primary-700 ring-1 ring-primary-200/60 sm:text-sm"
+                    >
+                      #{tag}
+                    </span>
+                  ))}
+                </div>
+              )}
+
+              {/* ミニメタ（補助上限・公募期限） */}
+              {(grantAmount || grantDeadline) && (
+                <dl className="mt-6 grid grid-cols-1 gap-3 text-sm sm:grid-cols-2">
+                  {grantAmount && (
+                    <div className="rounded-lg bg-white/80 px-4 py-3 ring-1 ring-primary-200/40 backdrop-blur-sm">
+                      <dt className="text-xs text-neutral-500">補助上限</dt>
+                      <dd className="mt-0.5 font-semibold text-primary-900">
+                        最大 {grantAmount}
+                      </dd>
+                    </div>
+                  )}
+                  {grantDeadline && (
+                    <div className="rounded-lg bg-white/80 px-4 py-3 ring-1 ring-primary-200/40 backdrop-blur-sm">
+                      <dt className="text-xs text-neutral-500">公募期限</dt>
+                      <dd className="mt-0.5 font-semibold text-primary-900">
+                        {grantDeadline}
+                      </dd>
+                    </div>
+                  )}
+                </dl>
+              )}
+            </div>
           </header>
 
-          {/* ヒーロー画像 */}
-          <div className="relative mt-8 aspect-[16/9] w-full overflow-hidden rounded-xl bg-neutral-100 shadow-sm">
-            <Image
-              src={heroImage}
-              alt=""
-              fill
-              priority
-              className="object-cover"
-              sizes="(max-width:768px) 100vw, 768px"
-            />
-          </div>
-
           {/* 本文 Markdown */}
-          <div className="prose prose-neutral mt-10 max-w-none prose-headings:font-heading prose-headings:text-neutral-900 prose-h2:mt-10 prose-h2:border-l-4 prose-h2:border-primary-600 prose-h2:pl-3 prose-h2:text-xl prose-h2:font-bold sm:prose-h2:text-2xl prose-h3:mt-6 prose-h3:text-lg prose-h3:font-semibold prose-p:leading-relaxed prose-p:text-neutral-700 prose-a:text-primary-700 prose-a:font-medium prose-a:no-underline hover:prose-a:underline prose-strong:text-neutral-900 prose-li:text-neutral-700">
+          <div className="prose prose-neutral mt-10 max-w-none prose-headings:font-heading prose-headings:text-neutral-900 prose-h2:mt-10 prose-h2:border-l-4 prose-h2:border-accent-500 prose-h2:pl-3 prose-h2:text-xl prose-h2:font-bold sm:prose-h2:text-2xl prose-h3:mt-6 prose-h3:text-lg prose-h3:font-semibold prose-p:leading-relaxed prose-p:text-neutral-700 prose-a:text-primary-700 prose-a:font-medium prose-a:no-underline hover:prose-a:underline prose-strong:text-neutral-900 prose-li:text-neutral-700">
             <ReactMarkdown remarkPlugins={[remarkGfm]}>{article.body}</ReactMarkdown>
           </div>
 
           {/* 関連補助金 CTA */}
           {article.grant && (
             <section className="mt-12 rounded-xl border border-neutral-200 bg-white p-6 shadow-sm">
-              <p className="text-xs font-semibold uppercase tracking-wider text-primary-600">
+              <p className="text-xs font-semibold uppercase tracking-wider text-accent-600">
                 関連する補助金
               </p>
               <h2 className="font-heading mt-2 text-lg font-bold text-neutral-900 sm:text-xl">
                 {article.grant.name ?? "補助金詳細"}
               </h2>
               <dl className="mt-4 grid grid-cols-1 gap-3 text-sm sm:grid-cols-2">
-                {article.grant.maxAmountLabel && (
+                {grantAmount && (
                   <div className="rounded-lg bg-neutral-50 px-4 py-3">
                     <dt className="text-xs text-neutral-500">補助上限</dt>
                     <dd className="mt-1 font-semibold text-neutral-900">
-                      {article.grant.maxAmountLabel}
+                      最大 {grantAmount}
                     </dd>
                   </div>
                 )}
-                {article.grant.deadlineLabel && (
+                {grantDeadline && (
                   <div className="rounded-lg bg-neutral-50 px-4 py-3">
                     <dt className="text-xs text-neutral-500">公募期限</dt>
                     <dd className="mt-1 font-semibold text-neutral-900">
-                      {article.grant.deadlineLabel}
+                      {grantDeadline}
                     </dd>
                   </div>
                 )}
               </dl>
               <Link
                 href={`/subsidies/list/${article.grant.id}`}
-                className="mt-6 inline-flex items-center justify-center rounded-lg bg-primary-700 px-5 py-3 text-sm font-semibold text-white transition hover:bg-primary-600"
+                className="mt-6 inline-flex items-center justify-center rounded-lg bg-primary-700 px-5 py-3 text-sm font-semibold text-white transition hover:bg-primary-500"
               >
                 この補助金の詳細を見る
               </Link>
@@ -174,8 +259,8 @@ export default async function SubsidyArticlePage({ params }: PageProps) {
           )}
 
           {/* NTS 無料相談 CTA */}
-          <section className="mt-10 rounded-xl bg-gradient-to-br from-primary-700 to-primary-900 p-8 text-white shadow-sm">
-            <h2 className="font-heading text-xl font-bold sm:text-2xl">
+          <section className="mt-10 overflow-hidden rounded-xl bg-gradient-to-br from-primary-700 to-primary-900 p-8 text-white shadow-sm">
+            <h2 className="font-heading text-xl font-bold text-white drop-shadow-sm sm:text-2xl">
               補助金活用の戦略設計は、NTS にご相談ください
             </h2>
             <p className="mt-3 text-sm leading-relaxed text-white/90 sm:text-base">
@@ -184,7 +269,7 @@ export default async function SubsidyArticlePage({ params }: PageProps) {
             </p>
             <Link
               href="/#contact"
-              className="mt-6 inline-flex items-center justify-center rounded-lg bg-white px-6 py-3 text-sm font-semibold text-primary-800 transition hover:bg-neutral-100"
+              className="mt-6 inline-flex items-center justify-center rounded-lg bg-white px-6 py-3 text-sm font-semibold text-primary-900 shadow-sm transition hover:bg-primary-50"
             >
               無料相談を予約する
             </Link>

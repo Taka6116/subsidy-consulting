@@ -5,7 +5,7 @@ export default function LoadingArticle() {
   return (
     <>
       <Header />
-      <main className="relative z-[2] min-h-[100svh] bg-[#f9f7f2] font-body">
+      <main className="relative z-[2] min-h-[100svh] bg-[#f9f7f2] pt-16 font-body sm:pt-20">
         <div className="mx-auto max-w-3xl animate-pulse px-5 py-10 sm:px-6 lg:py-14">
           <div className="h-4 w-40 rounded bg-neutral-200" />
           <div className="mt-6 h-4 w-32 rounded bg-neutral-200" />

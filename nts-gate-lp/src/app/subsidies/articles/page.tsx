@@ -19,6 +19,31 @@ function formatPublishedAt(date: Date | null): string {
   return `${date.getFullYear()}.${date.getMonth() + 1}.${date.getDate()}`;
 }
 
+/**
+ * 最大補助額ラベルを整形する。
+ * - maxAmountLabel が設定されていれば、それに "最大" を補って返す。
+ * - 無ければ subsidyAmount（円）から 万円 / 億円 で自動算出する。
+ */
+function formatMaxAmount(
+  label: string | null | undefined,
+  amountYen: bigint | null | undefined,
+): string | null {
+  const pick = (s: string | null | undefined) => (s ? s.trim() : "");
+  const raw = pick(label);
+  if (raw) {
+    return raw.startsWith("最大") ? raw : `最大 ${raw}`;
+  }
+  if (amountYen == null) return null;
+  const yen = Number(amountYen);
+  if (!Number.isFinite(yen) || yen <= 0) return null;
+  const man = yen / 10000;
+  if (man >= 10000) {
+    const oku = man / 10000;
+    return `最大 ${oku.toFixed(oku >= 10 ? 0 : 1)}億円`;
+  }
+  return `最大 ${Math.round(man).toLocaleString("ja-JP")}万円`;
+}
+
 export default async function SubsidiesArticlesPage() {
   const rows = await prisma.generatedContent.findMany({
     where: {
@@ -28,6 +53,15 @@ export default async function SubsidiesArticlesPage() {
     },
     orderBy: { publishedAt: "desc" },
     take: 60,
+    include: {
+      grant: {
+        select: {
+          name: true,
+          maxAmountLabel: true,
+          subsidyAmount: true,
+        },
+      },
+    },
   });
 
   const articles: ArticleCard[] = rows
@@ -38,15 +72,18 @@ export default async function SubsidiesArticlesPage() {
       title: r.title as string,
       excerpt: r.excerpt ?? "",
       publishedAt: formatPublishedAt(r.publishedAt),
-      categoryLabel: "お役立ち情報",
-      imageSrc: r.heroImagePath ?? "/images/PANA2232.jpg",
+      subsidyName: r.grant?.name ?? "",
+      maxAmountLabel: formatMaxAmount(
+        r.grant?.maxAmountLabel,
+        r.grant?.subsidyAmount,
+      ),
       tags: r.tags ?? [],
     }));
 
   return (
     <>
       <Header />
-      <main className="relative z-[2] min-h-[100svh] bg-[#f9f7f2] font-body">
+      <main className="relative z-[2] min-h-[100svh] bg-[#f9f7f2] pt-16 font-body sm:pt-20">
         <SubsidiesArticlesIndex articles={articles} />
       </main>
       <LpFooter />

@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { useMemo, useState } from "react";
 
@@ -12,10 +11,49 @@ export type ArticleCard = {
   title: string;
   excerpt: string;
   publishedAt: string;
-  categoryLabel: string;
-  imageSrc: string;
+  /** 記事が紐づく補助金名（サムネイル中央に先頭 20 文字を表示） */
+  subsidyName: string;
+  /** 最大補助額ラベル（例: "最大 3,000万円"）。無ければサムネ下部は非表示 */
+  maxAmountLabel: string | null;
   tags: string[];
 };
+
+const CATEGORY_KEYS = ["補助金基礎", "設備投資", "事業計画", "申請準備"] as const;
+type CategoryKey = (typeof CATEGORY_KEYS)[number];
+
+/**
+ * カテゴリ別スタイル。タグに含まれる最初のカテゴリキーを採用し、
+ * 無ければデフォルトのグレーにフォールバックする。
+ */
+const CATEGORY_STYLES: Record<CategoryKey | "default", { bg: string; label: string }> = {
+  補助金基礎: { bg: "#1B3A5C", label: "補助金基礎" },
+  設備投資: { bg: "#185FA5", label: "設備投資" },
+  事業計画: { bg: "#0F6E56", label: "事業計画" },
+  申請準備: { bg: "#BA7517", label: "申請準備" },
+  default: { bg: "#444441", label: "お役立ち情報" },
+};
+
+function resolveCategory(tags: string[]): CategoryKey | null {
+  for (const t of tags) {
+    if ((CATEGORY_KEYS as readonly string[]).includes(t)) {
+      return t as CategoryKey;
+    }
+  }
+  return null;
+}
+
+/** カードに表示するタグ：カテゴリ兼用タグと "お役立ち情報" を除外し最大 2 件 */
+function visibleTags(tags: string[]): string[] {
+  return tags
+    .filter((t) => t !== "お役立ち情報" && !(CATEGORY_KEYS as readonly string[]).includes(t))
+    .slice(0, 2);
+}
+
+function truncateSubsidyName(name: string, max = 20): string {
+  if (!name) return "";
+  const chars = [...name];
+  return chars.length > max ? `${chars.slice(0, max).join("")}…` : name;
+}
 
 type TagOption = { label: string; count: number };
 
@@ -23,6 +61,7 @@ function buildTagOptions(articles: ArticleCard[]): TagOption[] {
   const map = new Map<string, number>();
   for (const a of articles) {
     for (const t of a.tags) {
+      if (t === "お役立ち情報") continue;
       map.set(t, (map.get(t) ?? 0) + 1);
     }
   }
@@ -64,49 +103,89 @@ export default function SubsidiesArticlesIndex({
           ) : (
             <>
               <div className="mt-10 grid grid-cols-1 gap-8 md:grid-cols-2 xl:grid-cols-3">
-                {filtered.map((article) => (
-                  <Link
-                    key={article.id}
-                    href={`/subsidies/articles/${article.slug}`}
-                    className="group flex flex-col overflow-hidden rounded-lg border border-neutral-200/90 bg-white shadow-sm transition hover:shadow-md"
-                  >
-                    <div className="relative aspect-[16/10] w-full shrink-0 bg-neutral-100">
-                      <Image
-                        src={article.imageSrc}
-                        alt=""
-                        fill
-                        className="object-cover transition-transform duration-300 group-hover:scale-[1.02]"
-                        sizes="(max-width:768px) 100vw, (max-width:1280px) 50vw, 33vw"
-                      />
-                    </div>
-                    <div className="flex flex-1 flex-col p-4 sm:p-5">
-                      <p className="text-xs sm:text-sm">
-                        <span className="font-medium text-primary-600">
-                          {article.publishedAt}
-                        </span>
-                        <span className="mx-2 text-neutral-300" aria-hidden>
-                          |
-                        </span>
-                        <span className="text-neutral-600">
-                          {article.categoryLabel}
-                        </span>
-                      </p>
-                      <h2 className="mt-2 line-clamp-2 text-base font-bold leading-snug text-neutral-900 group-hover:text-primary-700 sm:text-lg">
-                        {article.title}
-                      </h2>
-                      <p className="mt-2 line-clamp-3 flex-1 text-sm leading-relaxed text-neutral-600">
-                        {article.excerpt}
-                      </p>
-                      {article.tags.length > 0 && (
-                        <p className="mt-3 flex flex-wrap gap-x-2 text-xs text-neutral-700 sm:text-sm">
-                          {article.tags.slice(0, 2).map((t) => (
-                            <span key={t}>#{t}</span>
-                          ))}
+                {filtered.map((article) => {
+                  const categoryKey = resolveCategory(article.tags);
+                  const style = categoryKey
+                    ? CATEGORY_STYLES[categoryKey]
+                    : CATEGORY_STYLES.default;
+                  const tags = visibleTags(article.tags);
+                  const shortName = truncateSubsidyName(article.subsidyName);
+                  return (
+                    <Link
+                      key={article.id}
+                      href={`/subsidies/articles/${article.slug}`}
+                      className="group flex flex-col overflow-hidden rounded-lg border border-neutral-200/90 bg-white shadow-sm transition hover:shadow-md"
+                    >
+                      {/* サムネイル: カテゴリ別ソリッドカラー + 補助金名 + 最大額 */}
+                      <div
+                        className="relative aspect-[16/9] w-full shrink-0 overflow-hidden"
+                        style={{ backgroundColor: style.bg }}
+                      >
+                        <div className="relative flex h-full flex-col justify-between p-4 text-white sm:p-5">
+                          <p
+                            className="font-medium uppercase tracking-wide opacity-80"
+                            style={{ fontSize: "0.7rem" }}
+                          >
+                            {style.label}
+                          </p>
+                          <p
+                            className="font-semibold leading-snug"
+                            style={{ fontSize: "1rem", fontWeight: 600 }}
+                          >
+                            {shortName}
+                          </p>
+                          {article.maxAmountLabel ? (
+                            <p
+                              className="opacity-90"
+                              style={{ fontSize: "0.85rem" }}
+                            >
+                              {article.maxAmountLabel}
+                            </p>
+                          ) : (
+                            <span aria-hidden className="block h-[0.85rem]" />
+                          )}
+                        </div>
+                      </div>
+
+                      {/* カード本文 */}
+                      <div className="flex flex-1 flex-col p-4 sm:p-5">
+                        {/* 1. タグ（最大 2） */}
+                        {tags.length > 0 && (
+                          <p className="flex flex-wrap gap-x-2 gap-y-1 text-xs text-neutral-700">
+                            {tags.map((t) => (
+                              <span key={t} className="text-neutral-600">
+                                #{t}
+                              </span>
+                            ))}
+                          </p>
+                        )}
+
+                        {/* 2. タイトル */}
+                        <h2
+                          className="mt-2 line-clamp-2 leading-snug text-neutral-900 group-hover:text-primary-700"
+                          style={{ fontSize: "1.125rem", fontWeight: 700 }}
+                        >
+                          {article.title}
+                        </h2>
+
+                        {/* 3. 本文抜粋 */}
+                        <p className="mt-2 line-clamp-2 flex-1 text-sm leading-relaxed text-neutral-600">
+                          {article.excerpt}
                         </p>
-                      )}
-                    </div>
-                  </Link>
-                ))}
+
+                        {/* 4. 日付（最下部） */}
+                        {article.publishedAt && (
+                          <p
+                            className="mt-3 text-neutral-500"
+                            style={{ fontSize: "0.75rem" }}
+                          >
+                            {article.publishedAt}
+                          </p>
+                        )}
+                      </div>
+                    </Link>
+                  );
+                })}
               </div>
 
               {filtered.length === 0 && (

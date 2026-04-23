@@ -400,9 +400,8 @@ export default async function SubsidyDetailPage({ params }: DetailPageProps) {
                 まず補助金診断を受ける
               </Link>
               <div className="mt-5 border-t border-[#eceff1] pt-4 text-sm text-[#4f4b44]">
-                <p>✓ 完全無料</p>
-                <p className="mt-1">✓ 最短翌日対応</p>
-                <p className="mt-1">✓ 申請まで一貫サポート</p>
+                <p>✓ 相談申し込み無料</p>
+                <p className="mt-1">✓ 申請後も伴走サポート</p>
               </div>
             </div>
           </aside>
