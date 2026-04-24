@@ -6,9 +6,11 @@
  * バックエンド・ルーティング・DB は一切変更なし
  */
 
+import { useState, useCallback, useEffect } from "react";
 import Link from "next/link";
 import { getPartnerUrl } from "@/lib/partnerUrl";
 import SubsidiesGalaxyBackdrop from "./SubsidiesGalaxyBackdrop";
+import IntroOverlay from "@/components/subsidies/IntroOverlay";
 
 type Counts = {
   grants: number;
@@ -23,6 +25,7 @@ type Props = {
 function StatPanel({ counts }: { counts: Counts }) {
   return (
     <div
+      data-intro-reveal
       className="animate-fade-in-up rounded-2xl border border-white/30 bg-white/60 px-8 py-6 shadow-xl backdrop-blur-md"
       style={{ animationDelay: "200ms" }}
     >
@@ -114,149 +117,197 @@ const CATEGORY_CARDS = [
 export default function SubsidiesGalaxyClient({ counts }: Props) {
   const partnerHref = getPartnerUrl();
 
+  // Phase 5: セッション単位での初回のみ表示
+  const [introComplete, setIntroComplete] = useState(() => {
+    if (typeof window === "undefined") return false;
+    return sessionStorage.getItem("nts_intro_shown") === "1";
+  });
+
+  const handleIntroComplete = useCallback(() => {
+    sessionStorage.setItem("nts_intro_shown", "1");
+    setIntroComplete(true);
+  }, []);
+
+  // Phase 4: イントロ完了後に本体要素を stagger フェードイン
+  useEffect(() => {
+    if (!introComplete) return;
+
+    const run = async () => {
+      const { gsap } = await import("gsap");
+      const targets = document.querySelectorAll("[data-intro-reveal]");
+      gsap.fromTo(
+        targets,
+        { opacity: 0, y: 24 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.7,
+          ease: "power3.out",
+          stagger: 0.08,
+        }
+      );
+    };
+
+    run();
+  }, [introComplete]);
+
   return (
-    <section
-      className="relative flex min-h-[100svh] w-full flex-col overflow-hidden bg-[#f8f7f4] font-body"
-      aria-label="補助金インテリジェンスプラットフォーム"
-    >
-      <SubsidiesGalaxyBackdrop />
-
-      {/* ── HERO ── */}
-      <div className="relative z-10 w-full px-6 pb-0 pt-28 sm:pt-32">
-        <div className="mx-auto max-w-container">
-          <div className="lg:grid lg:grid-cols-[1fr_auto] lg:items-center lg:gap-16">
-            {/* 左: メインコピー */}
-            <div>
-              <p
-                className="animate-fade-in mb-3 text-[10px] font-semibold tracking-[0.3em] text-amber-600"
-                style={{ animationDelay: "0ms" }}
-              >
-                SUBSIDY INTELLIGENCE PLATFORM
-              </p>
-              <h1
-                className="animate-fade-in-up font-heading text-[clamp(40px,6vw,80px)] font-normal leading-[1.1] text-[#1a2544]"
-                style={{ animationDelay: "60ms" }}
-              >
-                補助金を、<br />
-                最速で届ける。
-              </h1>
-              <p
-                className="animate-fade-in-up mt-5 max-w-[480px] text-base leading-relaxed text-neutral-600"
-                style={{ animationDelay: "130ms" }}
-              >
-                公募開始から最速でお届け。
-                <br />
-                申請期限・補助上限・対象業種を、ひとつの画面で見れる場所。
-              </p>
-
-              {/* 速報バッジ */}
-              <div
-                className="animate-fade-in-up mt-6 flex flex-wrap gap-3"
-                style={{ animationDelay: "200ms" }}
-              >
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-50 px-3 py-1 text-xs font-medium text-amber-700 ring-1 ring-amber-200">
-                  各省庁公式情報
-                </span>
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-primary-50 px-3 py-1 text-xs font-medium text-primary-700 ring-1 ring-primary-200">
-                  最速随時追加
-                </span>
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-rose-50 px-3 py-1 text-xs font-medium text-rose-700 ring-1 ring-rose-200">
-                  無料メール通知
-                </span>
-              </div>
-            </div>
-
-            {/* 右: StatPanel */}
-            <div className="mt-10 lg:mt-0">
-              <StatPanel counts={counts} />
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* ── 区切り線 ── */}
-      <div className="relative z-10 mx-auto mt-14 w-full max-w-container px-6">
-        <div className="h-px w-full bg-gradient-to-r from-transparent via-neutral-300 to-transparent" />
-        <p className="mt-3 text-center text-[10px] tracking-[0.25em] text-neutral-400">
-          EXPLORE CATEGORIES
-        </p>
-      </div>
-
-      {/* ── 3カテゴリカード ── */}
-      <div className="relative z-10 mx-auto w-full max-w-container px-6 pb-16 pt-8">
-        <div className="grid gap-5 sm:grid-cols-3">
-          {CATEGORY_CARDS.map((card) => (
-            <Link
-              key={card.href}
-              href={card.href}
-              className="animate-fade-in-up group relative flex flex-col rounded-2xl border border-white/50 bg-white/70 p-6 shadow-md backdrop-blur-sm transition-all duration-150 ease-out hover:-translate-y-1 hover:shadow-xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
-              style={{ animationDelay: card.delay }}
-            >
-              <div className="mb-4">
-                <span
-                  className={`rounded-full px-2.5 py-0.5 text-[10px] font-medium ring-1 ${card.badgeColor}`}
-                >
-                  {card.badge}
-                </span>
-              </div>
-              <p className="mb-0.5 text-[9px] font-semibold tracking-[0.25em] text-neutral-400">
-                {card.subLabel}
-              </p>
-              <h2 className="font-heading text-xl font-medium text-[#1a2544]">
-                {card.label}
-              </h2>
-              <p className="mt-3 flex-1 text-sm leading-relaxed text-neutral-600">
-                {card.description}
-              </p>
-              <div className="mt-5 flex items-center gap-1 text-xs font-semibold text-amber-600 transition-gap duration-150 group-hover:gap-2">
-                詳しく見る
-                <span aria-hidden="true" className="transition-transform duration-150 group-hover:translate-x-0.5">→</span>
-              </div>
-            </Link>
-          ))}
-        </div>
-      </div>
-
-      {/* ── CTA バー ── */}
-      <div
-        className="animate-fade-in-up relative z-10 w-full border-t border-white/40 bg-[#1a2544]/90 backdrop-blur-sm"
-        style={{ animationDelay: "350ms" }}
+    <>
+      {!introComplete && (
+        <IntroOverlay onComplete={handleIntroComplete} />
+      )}
+      <section
+        className="relative flex min-h-[100svh] w-full flex-col overflow-hidden bg-[#f8f7f4] font-body"
+        aria-label="補助金インテリジェンスプラットフォーム"
       >
-        <div className="mx-auto flex max-w-container flex-col items-center gap-4 px-6 py-10 sm:flex-row sm:justify-between">
-          <div>
-            <p className="text-[10px] tracking-[0.2em] text-white/50">
-              FREE CONSULTATION
-            </p>
-            <p className="mt-1 text-base font-medium text-white">
-              あなたのビジネスに最適な補助金を、専門家が無料でご提案します。
-            </p>
-          </div>
-          <div className="flex shrink-0 flex-col gap-3 sm:flex-row">
-            <Link
-              href="/consult"
-              className="inline-flex items-center justify-center rounded-full bg-amber-500 px-7 py-3 text-sm font-semibold text-white shadow-md transition-all hover:bg-amber-400 hover:shadow-lg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-400"
-            >
-              無料相談を予約する →
-            </Link>
-            <Link
-              href={partnerHref}
-              className="inline-flex items-center justify-center rounded-full border border-white/40 px-7 py-3 text-sm font-medium text-white/80 transition-all hover:border-white/70 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
-            >
-              提携先ページへ
-            </Link>
+        <SubsidiesGalaxyBackdrop />
+
+        {/* ── HERO ── */}
+        <div className="relative z-10 w-full px-6 pb-0 pt-28 sm:pt-32">
+          <div className="mx-auto max-w-container">
+            <div className="lg:grid lg:grid-cols-[1fr_auto] lg:items-center lg:gap-16">
+              {/* 左: メインコピー */}
+              <div>
+                <p
+                  data-intro-reveal
+                  className="animate-fade-in mb-3 text-[10px] font-semibold tracking-[0.3em] text-amber-600"
+                  style={{ animationDelay: "0ms" }}
+                >
+                  SUBSIDY INTELLIGENCE PLATFORM
+                </p>
+                <h1
+                  data-intro-reveal
+                  className="animate-fade-in-up font-heading text-[clamp(40px,6vw,80px)] font-normal leading-[1.1] text-[#1a2544]"
+                  style={{ animationDelay: "60ms" }}
+                >
+                  補助金を、<br />
+                  最速で届ける。
+                </h1>
+                <p
+                  data-intro-reveal
+                  className="animate-fade-in-up mt-5 max-w-[480px] text-base leading-relaxed text-neutral-600"
+                  style={{ animationDelay: "130ms" }}
+                >
+                  公募開始から最速でお届け。
+                  <br />
+                  申請期限・補助上限・対象業種を、ひとつの画面で見れる場所。
+                </p>
+
+                {/* 速報バッジ */}
+                <div
+                  data-intro-reveal
+                  className="animate-fade-in-up mt-6 flex flex-wrap gap-3"
+                  style={{ animationDelay: "200ms" }}
+                >
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-50 px-3 py-1 text-xs font-medium text-amber-700 ring-1 ring-amber-200">
+                    各省庁公式情報
+                  </span>
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-primary-50 px-3 py-1 text-xs font-medium text-primary-700 ring-1 ring-primary-200">
+                    最速随時追加
+                  </span>
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-rose-50 px-3 py-1 text-xs font-medium text-rose-700 ring-1 ring-rose-200">
+                    無料メール通知
+                  </span>
+                </div>
+              </div>
+
+              {/* 右: StatPanel */}
+              <div className="mt-10 lg:mt-0">
+                <StatPanel counts={counts} />
+              </div>
+            </div>
           </div>
         </div>
-      </div>
 
-      {/* ── トップへ戻る ── */}
-      <div className="relative z-10 w-full bg-[#f8f7f4] py-6 text-center">
-        <Link
-          href="/"
-          className="text-sm text-neutral-400 underline-offset-4 transition hover:text-[#1a2544] hover:underline"
+        {/* ── 区切り線 ── */}
+        <div
+          data-intro-reveal
+          className="relative z-10 mx-auto mt-14 w-full max-w-container px-6"
         >
-          ← トップへ戻る
-        </Link>
-      </div>
-    </section>
+          <div className="h-px w-full bg-gradient-to-r from-transparent via-neutral-300 to-transparent" />
+          <p className="mt-3 text-center text-[10px] tracking-[0.25em] text-neutral-400">
+            EXPLORE CATEGORIES
+          </p>
+        </div>
+
+        {/* ── 3カテゴリカード ── */}
+        <div className="relative z-10 mx-auto w-full max-w-container px-6 pb-16 pt-8">
+          <div className="grid gap-5 sm:grid-cols-3">
+            {CATEGORY_CARDS.map((card) => (
+              <Link
+                key={card.href}
+                href={card.href}
+                data-intro-reveal
+                className="animate-fade-in-up group relative flex flex-col rounded-2xl border border-white/50 bg-white/70 p-6 shadow-md backdrop-blur-sm transition-all duration-150 ease-out hover:-translate-y-1 hover:shadow-xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
+                style={{ animationDelay: card.delay }}
+              >
+                <div className="mb-4">
+                  <span
+                    className={`rounded-full px-2.5 py-0.5 text-[10px] font-medium ring-1 ${card.badgeColor}`}
+                  >
+                    {card.badge}
+                  </span>
+                </div>
+                <p className="mb-0.5 text-[9px] font-semibold tracking-[0.25em] text-neutral-400">
+                  {card.subLabel}
+                </p>
+                <h2 className="font-heading text-xl font-medium text-[#1a2544]">
+                  {card.label}
+                </h2>
+                <p className="mt-3 flex-1 text-sm leading-relaxed text-neutral-600">
+                  {card.description}
+                </p>
+                <div className="mt-5 flex items-center gap-1 text-xs font-semibold text-amber-600 transition-gap duration-150 group-hover:gap-2">
+                  詳しく見る
+                  <span aria-hidden="true" className="transition-transform duration-150 group-hover:translate-x-0.5">→</span>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+
+        {/* ── CTA バー ── */}
+        <div
+          data-intro-reveal
+          className="animate-fade-in-up relative z-10 w-full border-t border-white/40 bg-[#1a2544]/90 backdrop-blur-sm"
+          style={{ animationDelay: "350ms" }}
+        >
+          <div className="mx-auto flex max-w-container flex-col items-center gap-4 px-6 py-10 sm:flex-row sm:justify-between">
+            <div>
+              <p className="text-[10px] tracking-[0.2em] text-white/50">
+                FREE CONSULTATION
+              </p>
+              <p className="mt-1 text-base font-medium text-white">
+                あなたのビジネスに最適な補助金を、専門家が無料でご提案します。
+              </p>
+            </div>
+            <div className="flex shrink-0 flex-col gap-3 sm:flex-row">
+              <Link
+                href="/consult"
+                className="inline-flex items-center justify-center rounded-full bg-amber-500 px-7 py-3 text-sm font-semibold text-white shadow-md transition-all hover:bg-amber-400 hover:shadow-lg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-400"
+              >
+                無料相談を予約する →
+              </Link>
+              <Link
+                href={partnerHref}
+                className="inline-flex items-center justify-center rounded-full border border-white/40 px-7 py-3 text-sm font-medium text-white/80 transition-all hover:border-white/70 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+              >
+                提携先ページへ
+              </Link>
+            </div>
+          </div>
+        </div>
+
+        {/* ── トップへ戻る ── */}
+        <div className="relative z-10 w-full bg-[#f8f7f4] py-6 text-center">
+          <Link
+            href="/"
+            className="text-sm text-neutral-400 underline-offset-4 transition hover:text-[#1a2544] hover:underline"
+          >
+            ← トップへ戻る
+          </Link>
+        </div>
+      </section>
+    </>
   );
 }
