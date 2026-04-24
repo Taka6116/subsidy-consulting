@@ -22,12 +22,15 @@ type Props = {
   counts: Counts;
 };
 
+// data-intro-reveal 要素はイントロ前に非表示にするインラインスタイル
+const hiddenStyle = { opacity: 0 } as const;
+
 function StatPanel({ counts }: { counts: Counts }) {
   return (
     <div
       data-intro-reveal
-      className="animate-fade-in-up rounded-2xl border border-white/30 bg-white/60 px-8 py-6 shadow-xl backdrop-blur-md"
-      style={{ animationDelay: "200ms" }}
+      style={hiddenStyle}
+      className="rounded-2xl border border-white/30 bg-white/60 px-8 py-6 shadow-xl backdrop-blur-md"
     >
       <p className="mb-4 text-[10px] font-medium tracking-[0.25em] text-neutral-400">
         LIVE STATS
@@ -92,7 +95,6 @@ const CATEGORY_CARDS = [
     description: "省庁・jGrants から自動収集した最新補助金を即検索。締切・上限額・対象業種を一目で確認。",
     badge: "毎日更新",
     badgeColor: "bg-amber-50 text-amber-700 ring-amber-200",
-    delay: "0ms",
   },
   {
     href: "/subsidies/articles",
@@ -101,7 +103,6 @@ const CATEGORY_CARDS = [
     description: "補助金ごとの詳しい解説・申請ポイントをわかりやすくまとめた専門記事。",
     badge: "AI生成・随時追加",
     badgeColor: "bg-primary-50 text-primary-700 ring-primary-200",
-    delay: "100ms",
   },
   {
     href: "/subsidies/videos",
@@ -110,7 +111,6 @@ const CATEGORY_CARDS = [
     description: "音声ナレーション付きの動画で補助金の概要を手軽に理解。通勤・移動中にも。",
     badge: "音声対応",
     badgeColor: "bg-emerald-50 text-emerald-700 ring-emerald-200",
-    delay: "200ms",
   },
 ] as const;
 
@@ -124,7 +124,7 @@ export default function SubsidiesGalaxyClient({ counts }: Props) {
     setIntroComplete(true);
   }, []);
 
-  // Phase 4: イントロ完了後に本体要素を stagger フェードイン
+  // イントロ完了後に data-intro-reveal 要素を stagger フェードイン（GSAPに一元管理）
   useEffect(() => {
     if (!introComplete) return;
 
@@ -133,13 +133,14 @@ export default function SubsidiesGalaxyClient({ counts }: Props) {
       const targets = document.querySelectorAll("[data-intro-reveal]");
       gsap.fromTo(
         targets,
-        { opacity: 0, y: 24 },
+        { opacity: 0, y: 28 },
         {
           opacity: 1,
           y: 0,
-          duration: 0.7,
+          duration: 0.75,
           ease: "power3.out",
-          stagger: 0.08,
+          stagger: 0.12,
+          clearProps: "transform",
         }
       );
     };
@@ -166,23 +167,23 @@ export default function SubsidiesGalaxyClient({ counts }: Props) {
               <div>
                 <p
                   data-intro-reveal
-                  className="animate-fade-in mb-3 text-[10px] font-semibold tracking-[0.3em] text-amber-600"
-                  style={{ animationDelay: "0ms" }}
+                  style={hiddenStyle}
+                  className="mb-3 text-[10px] font-semibold tracking-[0.3em] text-amber-600"
                 >
                   SUBSIDY INTELLIGENCE PLATFORM
                 </p>
                 <h1
                   data-intro-reveal
-                  className="animate-fade-in-up font-heading text-[clamp(40px,6vw,80px)] font-normal leading-[1.1] text-[#1a2544]"
-                  style={{ animationDelay: "60ms" }}
+                  style={hiddenStyle}
+                  className="font-heading text-[clamp(40px,6vw,80px)] font-normal leading-[1.1] text-[#1a2544]"
                 >
                   補助金を、<br />
                   最速で届ける。
                 </h1>
                 <p
                   data-intro-reveal
-                  className="animate-fade-in-up mt-5 max-w-[480px] text-base leading-relaxed text-neutral-600"
-                  style={{ animationDelay: "130ms" }}
+                  style={hiddenStyle}
+                  className="mt-5 max-w-[480px] text-base leading-relaxed text-neutral-600"
                 >
                   公募開始から最速でお届け。
                   <br />
@@ -192,8 +193,8 @@ export default function SubsidiesGalaxyClient({ counts }: Props) {
                 {/* 速報バッジ */}
                 <div
                   data-intro-reveal
-                  className="animate-fade-in-up mt-6 flex flex-wrap gap-3"
-                  style={{ animationDelay: "200ms" }}
+                  style={hiddenStyle}
+                  className="mt-6 flex flex-wrap gap-3"
                 >
                   <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-50 px-3 py-1 text-xs font-medium text-amber-700 ring-1 ring-amber-200">
                     各省庁公式情報
@@ -218,6 +219,7 @@ export default function SubsidiesGalaxyClient({ counts }: Props) {
         {/* ── 区切り線 ── */}
         <div
           data-intro-reveal
+          style={hiddenStyle}
           className="relative z-10 mx-auto mt-14 w-full max-w-container px-6"
         >
           <div className="h-px w-full bg-gradient-to-r from-transparent via-neutral-300 to-transparent" />
@@ -230,35 +232,34 @@ export default function SubsidiesGalaxyClient({ counts }: Props) {
         <div className="relative z-10 mx-auto w-full max-w-container px-6 pb-16 pt-8">
           <div className="grid gap-5 sm:grid-cols-3">
             {CATEGORY_CARDS.map((card) => (
-            <Link
-              key={card.href}
-              href={card.href}
-              data-intro-reveal
-              className="animate-fade-in-up group relative flex flex-col rounded-2xl border border-white/50 bg-white/70 p-6 shadow-md backdrop-blur-sm transition-all duration-150 ease-out hover:-translate-y-1 hover:shadow-xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
-              style={{ animationDelay: card.delay }}
-            >
-              <div className="mb-4">
-                <span
-                  data-intro-reveal
-                  className={`rounded-full px-2.5 py-0.5 text-[10px] font-medium ring-1 ${card.badgeColor}`}
-                >
-                  {card.badge}
-                </span>
-              </div>
-              <p data-intro-reveal className="mb-0.5 text-[9px] font-semibold tracking-[0.25em] text-neutral-400">
-                {card.subLabel}
-              </p>
-              <h2 data-intro-reveal className="font-heading text-xl font-medium text-[#1a2544]">
-                {card.label}
-              </h2>
-              <p data-intro-reveal className="mt-3 flex-1 text-sm leading-relaxed text-neutral-600">
-                {card.description}
-              </p>
-              <div data-intro-reveal className="mt-5 flex items-center gap-1 text-xs font-semibold text-amber-600 transition-gap duration-150 group-hover:gap-2">
-                詳しく見る
-                <span aria-hidden="true" className="transition-transform duration-150 group-hover:translate-x-0.5">→</span>
-              </div>
-            </Link>
+              <Link
+                key={card.href}
+                href={card.href}
+                data-intro-reveal
+                style={hiddenStyle}
+                className="group relative flex flex-col rounded-2xl border border-white/50 bg-white/70 p-6 shadow-md backdrop-blur-sm transition-all duration-150 ease-out hover:-translate-y-1 hover:shadow-xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
+              >
+                <div className="mb-4">
+                  <span
+                    className={`rounded-full px-2.5 py-0.5 text-[10px] font-medium ring-1 ${card.badgeColor}`}
+                  >
+                    {card.badge}
+                  </span>
+                </div>
+                <p className="mb-0.5 text-[9px] font-semibold tracking-[0.25em] text-neutral-400">
+                  {card.subLabel}
+                </p>
+                <h2 className="font-heading text-xl font-medium text-[#1a2544]">
+                  {card.label}
+                </h2>
+                <p className="mt-3 flex-1 text-sm leading-relaxed text-neutral-600">
+                  {card.description}
+                </p>
+                <div className="mt-5 flex items-center gap-1 text-xs font-semibold text-amber-600 transition-gap duration-150 group-hover:gap-2">
+                  詳しく見る
+                  <span aria-hidden="true" className="transition-transform duration-150 group-hover:translate-x-0.5">→</span>
+                </div>
+              </Link>
             ))}
           </div>
         </div>
@@ -266,8 +267,8 @@ export default function SubsidiesGalaxyClient({ counts }: Props) {
         {/* ── CTA バー ── */}
         <div
           data-intro-reveal
-          className="animate-fade-in-up relative z-10 w-full border-t border-white/40 bg-[#1a2544]/90 backdrop-blur-sm"
-          style={{ animationDelay: "350ms" }}
+          style={hiddenStyle}
+          className="relative z-10 w-full border-t border-white/40 bg-[#1a2544]/90 backdrop-blur-sm"
         >
           <div className="mx-auto flex max-w-container flex-col items-center gap-4 px-6 py-10 sm:flex-row sm:justify-between">
             <div>
