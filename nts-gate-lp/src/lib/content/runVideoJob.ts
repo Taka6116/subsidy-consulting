@@ -114,6 +114,31 @@ async function uploadMp4ToS3(localPath: string, s3Key: string): Promise<string> 
     : `https://${bucket}.s3.${region}.amazonaws.com/${s3Key}`;
 }
 
+/**
+ * ローカルの PNG ファイルを S3 にアップロードして公開 URL を返す。
+ */
+async function uploadPngToS3(localPath: string, s3Key: string): Promise<string> {
+  const bucket = process.env.VIDEO_S3_BUCKET!;
+  const region = process.env.VIDEO_S3_REGION ?? process.env.AWS_REGION ?? "ap-northeast-1";
+  const baseUrl = process.env.VIDEO_S3_BASE_URL;
+  const s3 = new S3Client({ region });
+
+  const fileBuffer = await fs.readFile(localPath);
+  await s3.send(
+    new PutObjectCommand({
+      Bucket: bucket,
+      Key: s3Key,
+      Body: fileBuffer,
+      ContentType: "image/png",
+      CacheControl: "public, max-age=604800",
+    })
+  );
+
+  return baseUrl
+    ? `${baseUrl}/${s3Key}`
+    : `https://${bucket}.s3.${region}.amazonaws.com/${s3Key}`;
+}
+
 export async function runVideoJob(
   params: RunVideoJobParams,
 ): Promise<RunVideoJobResult> {
@@ -214,6 +239,7 @@ export async function runVideoJob(
 
     // ── Step 3: スライドPNG 生成 ──────────────────────────────
     let videoPublicUrl: string | null = null;
+    let thumbnailPublicUrl: string | null = null;
 
     if (audioResult && process.env.VIDEO_S3_BUCKET) {
       await fs.mkdir(workDir, { recursive: true });
@@ -251,6 +277,11 @@ export async function runVideoJob(
         durationSec: slide.isTitle ? 4 : (script.sections[i - 1]?.duration_sec ?? 20),
       }));
 
+      // ── Step 3.5: スライド1枚目をサムネイルとして S3 にアップロード ──
+      const thumbS3Key = `videos/${subsidyId}/thumbnail.png`;
+      thumbnailPublicUrl = await uploadPngToS3(pngPaths[0], thumbS3Key);
+      console.log(`${LOG_PREFIX} thumbnail uploaded: ${thumbS3Key}`);
+
       // ── Step 4: MP3 を S3 からローカルにダウンロード ──────────
       const localMp3 = path.join(workDir, "audio.mp3");
       await downloadS3ToFile(audioResult.s3Key, localMp3);
@@ -283,6 +314,7 @@ export async function runVideoJob(
           tags: script.tags,
           audioPath: audioResult?.publicUrl ?? existingVideo.audioPath ?? null,
           videoPath: videoPublicUrl ?? existingVideo.videoPath ?? null,
+          thumbnailPath: thumbnailPublicUrl ?? existingVideo.thumbnailPath ?? null,
           duration: durationSec,
           status: "published",
           publishedAt: existingVideo.publishedAt ?? now,
@@ -300,6 +332,7 @@ export async function runVideoJob(
           tags: script.tags,
           audioPath: audioResult?.publicUrl ?? null,
           videoPath: videoPublicUrl,
+          thumbnailPath: thumbnailPublicUrl,
           duration: durationSec,
           status: "published",
           publishedAt: now,

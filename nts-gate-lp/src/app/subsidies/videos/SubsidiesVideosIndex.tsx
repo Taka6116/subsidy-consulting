@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useMemo, useState } from "react";
 
 const ALL = "__all__";
@@ -20,6 +21,7 @@ export type VideoCard = {
   duration: number | null;
   audioPath: string | null;
   videoPath: string | null;
+  thumbnailPath: string | null;
 };
 
 function visibleTags(tags: string[]): string[] {
@@ -224,13 +226,13 @@ function VideoCardItem({ video }: { video: VideoCard }) {
     >
       {/* サムネイル / プレースホルダー */}
       <div className="relative aspect-video overflow-hidden bg-gradient-to-br from-primary-700 to-primary-900">
-        {video.videoPath ? (
-          <video
-            src={video.videoPath}
-            className="h-full w-full object-cover"
-            preload="none"
-            muted
-            playsInline
+        {video.thumbnailPath ? (
+          <Image
+            src={video.thumbnailPath}
+            alt={video.title}
+            fill
+            className="object-cover transition-transform duration-300 group-hover:scale-105"
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
           />
         ) : (
           <div className="flex h-full w-full flex-col items-center justify-center text-white/80">

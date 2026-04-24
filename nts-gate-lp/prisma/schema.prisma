@@ -57,6 +57,7 @@ model GeneratedContent {
   heroImagePath   String?   @map("hero_image_path")
   audioPath       String?   @map("audio_path")
   videoPath       String?   @map("video_path")
+  thumbnailPath   String?   @map("thumbnail_path")
   duration        Int?
   status          String    @default("draft")
   publishedAt     DateTime? @map("published_at")

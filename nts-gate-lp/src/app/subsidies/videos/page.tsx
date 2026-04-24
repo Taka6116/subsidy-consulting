@@ -109,6 +109,7 @@ export default async function SubsidiesVideosPage() {
       duration: r.duration ?? null,
       audioPath: r.audioPath ?? null,
       videoPath: r.videoPath ?? null,
+      thumbnailPath: r.thumbnailPath ?? null,
     }));
 
   return (
