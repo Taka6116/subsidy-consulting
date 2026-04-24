@@ -54,7 +54,7 @@ const AXES: readonly Axis[] = [
     axis: "姿勢",
     other: { label: "書類を作ることが目的", value: "bad" },
     platform: { label: "申請件数を増やすことが目的", value: "bad" },
-    nts: { label: "採択の先の"活用"まで責任を持つ", value: "good" },
+    nts: { label: "採択の先の「活用」まで責任を持つ", value: "good" },
   },
 ] as const;
 
