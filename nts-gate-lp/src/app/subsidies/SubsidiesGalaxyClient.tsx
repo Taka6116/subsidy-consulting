@@ -1,69 +1,260 @@
 "use client";
 
 /*
- * メモ: 一時期 FV を public/images/subsidy-footer.jpg + オーバーレイ + 白文字にしていた。
- * 現在は Galaxy（SubsidiesGalaxyBackdrop と同型）に戻している。
+ * /subsidies ハブページ — 「情報の司令塔」リデザイン
+ * Editorial Minimalism × Data Intelligence
+ * バックエンド・ルーティング・DB は一切変更なし
  */
 
 import Link from "next/link";
 import { getPartnerUrl } from "@/lib/partnerUrl";
 import SubsidiesGalaxyBackdrop from "./SubsidiesGalaxyBackdrop";
 
-export default function SubsidiesGalaxyClient() {
+type Counts = {
+  grants: number;
+  articles: number;
+  videos: number;
+};
+
+type Props = {
+  counts: Counts;
+};
+
+function StatPanel({ counts }: { counts: Counts }) {
+  return (
+    <div
+      className="animate-fade-in-up rounded-2xl border border-white/30 bg-white/60 px-8 py-6 shadow-xl backdrop-blur-md"
+      style={{ animationDelay: "200ms" }}
+    >
+      <p className="mb-4 text-[10px] font-medium tracking-[0.25em] text-neutral-400">
+        LIVE STATS
+      </p>
+      <ul className="space-y-4">
+        <StatRow
+          label="掲載補助金"
+          value={counts.grants}
+          unit="件"
+          color="text-amber-600"
+        />
+        <StatRow
+          label="解説記事"
+          value={counts.articles}
+          unit="本"
+          color="text-primary-700"
+        />
+        <StatRow
+          label="解説動画"
+          value={counts.videos}
+          unit="本"
+          color="text-primary-700"
+        />
+      </ul>
+      <div className="mt-5 border-t border-neutral-100 pt-4">
+        <p className="flex items-center gap-1.5 text-[11px] text-neutral-400">
+          <span className="inline-block h-1.5 w-1.5 animate-pulse rounded-full bg-green-400" />
+          リアルタイム自動更新中
+        </p>
+      </div>
+    </div>
+  );
+}
+
+function StatRow({
+  label,
+  value,
+  unit,
+  color,
+}: {
+  label: string;
+  value: number;
+  unit: string;
+  color: string;
+}) {
+  return (
+    <li className="flex items-center justify-between gap-6">
+      <span className="text-sm text-neutral-600">{label}</span>
+      <span className={`text-2xl font-bold tabular-nums ${color}`}>
+        {value.toLocaleString()}
+        <span className="ml-0.5 text-sm font-normal text-neutral-400">{unit}</span>
+      </span>
+    </li>
+  );
+}
+
+const CATEGORY_CARDS = [
+  {
+    href: "/subsidies/list",
+    label: "補助金一覧",
+    subLabel: "GRANT DATABASE",
+    description: "省庁・jGrants から自動収集した最新補助金を即検索。締切・上限額・対象業種を一目で確認。",
+    badge: "毎日更新",
+    badgeColor: "bg-amber-50 text-amber-700 ring-amber-200",
+    delay: "0ms",
+  },
+  {
+    href: "/subsidies/articles",
+    label: "解説記事",
+    subLabel: "EXPERT ARTICLES",
+    description: "補助金ごとの詳しい解説・申請ポイントをわかりやすくまとめた専門記事。",
+    badge: "AI生成・随時追加",
+    badgeColor: "bg-primary-50 text-primary-700 ring-primary-200",
+    delay: "100ms",
+  },
+  {
+    href: "/subsidies/videos",
+    label: "解説動画",
+    subLabel: "VIDEO GUIDE",
+    description: "音声ナレーション付きの動画で補助金の概要を手軽に理解。通勤・移動中にも。",
+    badge: "音声対応",
+    badgeColor: "bg-emerald-50 text-emerald-700 ring-emerald-200",
+    delay: "200ms",
+  },
+] as const;
+
+export default function SubsidiesGalaxyClient({ counts }: Props) {
   const partnerHref = getPartnerUrl();
 
   return (
     <section
       className="relative flex min-h-[100svh] w-full flex-col overflow-hidden bg-[#f8f7f4] font-body"
-      aria-label="補助金情報プラットフォーム"
+      aria-label="補助金インテリジェンスプラットフォーム"
     >
       <SubsidiesGalaxyBackdrop />
 
-      <div className="relative z-10 flex min-h-[100svh] flex-col items-center justify-center px-6 py-24 text-center">
-        <p className="mb-4 text-xs tracking-[0.2em] text-neutral-500">
-          SUBSIDY INTELLIGENCE PLATFORM
-        </p>
-        <h1 className="font-heading max-w-4xl text-[clamp(32px,5vw,72px)] font-normal leading-[1.15] text-[#2a2926]">
-          補助金を、最速で。
-        </h1>
-        <p className="mt-6 max-w-[480px] text-base font-light leading-relaxed text-neutral-600">
-          最新の補助金情報・解説記事・動画を一箇所に。
-          <br />
-          あなたのビジネスに最適な支援策をすぐに見つける。
-        </p>
+      {/* ── HERO ── */}
+      <div className="relative z-10 w-full px-6 pb-0 pt-28 sm:pt-32">
+        <div className="mx-auto max-w-container">
+          <div className="lg:grid lg:grid-cols-[1fr_auto] lg:items-center lg:gap-16">
+            {/* 左: メインコピー */}
+            <div>
+              <p
+                className="animate-fade-in mb-3 text-[10px] font-semibold tracking-[0.3em] text-amber-600"
+                style={{ animationDelay: "0ms" }}
+              >
+                SUBSIDY INTELLIGENCE PLATFORM
+              </p>
+              <h1
+                className="animate-fade-in-up font-heading text-[clamp(40px,6vw,80px)] font-normal leading-[1.1] text-[#1a2544]"
+                style={{ animationDelay: "60ms" }}
+              >
+                補助金を、<br />
+                最速で。
+              </h1>
+              <p
+                className="animate-fade-in-up mt-5 max-w-[480px] text-base leading-relaxed text-neutral-600"
+                style={{ animationDelay: "130ms" }}
+              >
+                公募開始から<strong className="text-[#1a2544]">最短15分</strong>で掲載。
+                <br />
+                申請期限・補助上限・対象業種を即確認。
+              </p>
 
-        <div className="mt-10 flex w-full max-w-lg flex-col items-stretch gap-3 sm:flex-row sm:flex-wrap sm:justify-center sm:gap-4">
-          <Link
-            href="/check"
-            className="inline-flex items-center justify-center border border-[#2a2926] px-6 py-3.5 text-[13px] tracking-[0.08em] text-[#2a2926] transition-colors hover:bg-[#2a2926] hover:text-[#f8f7f4] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#2a2926]"
-          >
-            無料で補助金申請する
-            <span className="ml-1" aria-hidden="true">
-              →
-            </span>
-          </Link>
-          <Link
-            href={partnerHref}
-            className="inline-flex items-center justify-center border border-[#2a2926] px-6 py-3.5 text-[13px] tracking-[0.08em] text-[#2a2926] transition-colors hover:bg-[#2a2926] hover:text-[#f8f7f4] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#2a2926]"
-          >
-            提携先ページへ
-            <span className="ml-1" aria-hidden="true">
-              →
-            </span>
-          </Link>
+              {/* 速報バッジ */}
+              <div
+                className="animate-fade-in-up mt-6 flex flex-wrap gap-3"
+                style={{ animationDelay: "200ms" }}
+              >
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-50 px-3 py-1 text-xs font-medium text-amber-700 ring-1 ring-amber-200">
+                  最速15分更新
+                </span>
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-primary-50 px-3 py-1 text-xs font-medium text-primary-700 ring-1 ring-primary-200">
+                  省庁・jGrants 自動収集
+                </span>
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-rose-50 px-3 py-1 text-xs font-medium text-rose-700 ring-1 ring-rose-200">
+                  申請期限切れ見逃しゼロへ
+                </span>
+              </div>
+            </div>
+
+            {/* 右: StatPanel */}
+            <div className="mt-10 lg:mt-0">
+              <StatPanel counts={counts} />
+            </div>
+          </div>
         </div>
+      </div>
 
-        <Link
-          href="/check"
-          className="mt-8 inline-block border border-[#2a2926] px-9 py-3.5 text-[13px] tracking-[0.12em] text-[#2a2926] transition-colors hover:bg-[#2a2926] hover:text-[#f8f7f4] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#2a2926]"
-        >
-          補助金を探す →
-        </Link>
+      {/* ── 区切り線 ── */}
+      <div className="relative z-10 mx-auto mt-14 w-full max-w-container px-6">
+        <div className="h-px w-full bg-gradient-to-r from-transparent via-neutral-300 to-transparent" />
+        <p className="mt-3 text-center text-[10px] tracking-[0.25em] text-neutral-400">
+          EXPLORE CATEGORIES
+        </p>
+      </div>
+
+      {/* ── 3カテゴリカード ── */}
+      <div className="relative z-10 mx-auto w-full max-w-container px-6 pb-16 pt-8">
+        <div className="grid gap-5 sm:grid-cols-3">
+          {CATEGORY_CARDS.map((card) => (
+            <Link
+              key={card.href}
+              href={card.href}
+              className="animate-fade-in-up group relative flex flex-col rounded-2xl border border-white/50 bg-white/70 p-6 shadow-md backdrop-blur-sm transition-all duration-150 ease-out hover:-translate-y-1 hover:shadow-xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
+              style={{ animationDelay: card.delay }}
+            >
+              <div className="mb-4">
+                <span
+                  className={`rounded-full px-2.5 py-0.5 text-[10px] font-medium ring-1 ${card.badgeColor}`}
+                >
+                  {card.badge}
+                </span>
+              </div>
+              <p className="mb-0.5 text-[9px] font-semibold tracking-[0.25em] text-neutral-400">
+                {card.subLabel}
+              </p>
+              <h2 className="font-heading text-xl font-medium text-[#1a2544]">
+                {card.label}
+              </h2>
+              <p className="mt-3 flex-1 text-sm leading-relaxed text-neutral-600">
+                {card.description}
+              </p>
+              <div className="mt-5 flex items-center gap-1 text-xs font-semibold text-amber-600 transition-gap duration-150 group-hover:gap-2">
+                詳しく見る
+                <span aria-hidden="true" className="transition-transform duration-150 group-hover:translate-x-0.5">→</span>
+              </div>
+            </Link>
+          ))}
+        </div>
+      </div>
+
+      {/* ── CTA バー ── */}
+      <div
+        className="animate-fade-in-up relative z-10 w-full border-t border-white/40 bg-[#1a2544]/90 backdrop-blur-sm"
+        style={{ animationDelay: "350ms" }}
+      >
+        <div className="mx-auto flex max-w-container flex-col items-center gap-4 px-6 py-10 sm:flex-row sm:justify-between">
+          <div>
+            <p className="text-[10px] tracking-[0.2em] text-white/50">
+              FREE CONSULTATION
+            </p>
+            <p className="mt-1 text-base font-medium text-white">
+              あなたのビジネスに最適な補助金を、専門家が無料でご提案します。
+            </p>
+          </div>
+          <div className="flex shrink-0 flex-col gap-3 sm:flex-row">
+            <Link
+              href="/consult"
+              className="inline-flex items-center justify-center rounded-full bg-amber-500 px-7 py-3 text-sm font-semibold text-white shadow-md transition-all hover:bg-amber-400 hover:shadow-lg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-400"
+            >
+              無料相談を予約する →
+            </Link>
+            <Link
+              href={partnerHref}
+              className="inline-flex items-center justify-center rounded-full border border-white/40 px-7 py-3 text-sm font-medium text-white/80 transition-all hover:border-white/70 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+            >
+              提携先ページへ
+            </Link>
+          </div>
+        </div>
+      </div>
+
+      {/* ── トップへ戻る ── */}
+      <div className="relative z-10 w-full bg-[#f8f7f4] py-6 text-center">
         <Link
           href="/"
-          className="mt-6 text-sm text-neutral-500 underline-offset-4 transition hover:text-[#2a2926] hover:underline"
+          className="text-sm text-neutral-400 underline-offset-4 transition hover:text-[#1a2544] hover:underline"
         >
-          トップへ戻る
+          ← トップへ戻る
         </Link>
       </div>
     </section>

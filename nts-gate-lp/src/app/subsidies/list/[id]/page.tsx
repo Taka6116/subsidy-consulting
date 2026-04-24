@@ -258,7 +258,7 @@ export default async function SubsidyDetailPage({ params }: DetailPageProps) {
 
                 <section className="grid grid-cols-1 gap-4 md:grid-cols-3">
                   <div className="rounded-xl border border-neutral-200 bg-white p-5 shadow-sm">
-                    <p className="text-xs text-[#6d6961]">補助される可能性</p>
+                    <p className="text-xs text-[#6d6961]">上限補助額</p>
                     <p className="mt-1 text-xs text-[#6d6961]">最大</p>
                     <p className="mt-2 whitespace-nowrap text-3xl font-bold text-[#0d2640]">
                       {amountValue ? formatJPY(amountValue) : amountLabel.replace(" ", "")}
