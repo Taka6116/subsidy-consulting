@@ -111,7 +111,7 @@ export function checkArticleQuality(draft: GeneratedArticleDraft): QualityVerdic
     violations.push(`too-few-h2:${h2Count}`);
   }
 
-  // 5. 外部 URL の混入チェック（CTA の相対パス /#contact のみ許可）
+  // 5. 外部 URL の混入チェック（CTA の相対パス /consult のみ許可）
   const externalLinks = draft.body.match(/\bhttps?:\/\/[^\s)]+/g) ?? [];
   for (const url of externalLinks) {
     violations.push(`external-link:${url}`);
@@ -140,9 +140,9 @@ export function checkArticleQuality(draft: GeneratedArticleDraft): QualityVerdic
     violations.push(`missing-sections:${missingSections.join(",")}`);
   }
 
-  // 8. 活用例セクションの【架空の事例】ラベル必須（景表法対応）
-  if (draft.body.includes("活用") && !draft.body.includes("架空")) {
-    violations.push("missing-fictitious-label");
+  // 8. 活用例セクションの【活用例】ラベル必須（景表法対応）
+  if (draft.body.includes("活用できる企業") && !draft.body.includes("【活用例】")) {
+    violations.push("missing-activity-label");
   }
 
   // 9. 数値断定の検出（「2 倍」「500 万円削減」等の成果断定は禁止）
@@ -153,8 +153,8 @@ export function checkArticleQuality(draft: GeneratedArticleDraft): QualityVerdic
     violations.push(`numeric-claim:${numericClaims.slice(0, 3).join(",")}`);
   }
 
-  // 10. CTA リンクの存在チェック（## 5 に /#contact が含まれているか）
-  if (!draft.body.includes("/#contact")) {
+  // 10. CTA リンクの存在チェック（## 5 に /consult が含まれているか）
+  if (!draft.body.includes("/consult")) {
     violations.push("missing-cta-link");
   }
 

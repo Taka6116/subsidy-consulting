@@ -264,7 +264,7 @@ export default async function SubsidyArticlePage({ params }: PageProps) {
               着手金 15 万円と段階的な成功報酬で、最後まで責任を共有します。
             </p>
             <Link
-              href="/#contact"
+              href="/consult"
               className="mt-6 inline-flex items-center justify-center rounded-lg bg-white px-6 py-3 text-sm font-semibold text-primary-900 shadow-sm transition hover:bg-primary-50"
             >
               無料相談を予約する
