@@ -1,16 +1,25 @@
 /**
- * 補助金 1 件 → 動画台本生成 → Polly 音声合成 → DB 保存 の Worker 関数。
+ * 補助金 1 件 → 動画台本生成 → Polly 音声合成 → スライド生成 → FFmpeg MP4合成 → S3 保存 の Worker。
  * トリガー（CLI / API / Lambda）から共通で呼び出せるコア。
  *
  * 処理:
  *  1. SubsidyGrant + 関連記事を取得
  *  2. ContentJob(video) を running に upsert
- *  3. Bedrock で動画台本生成 → DB 保存 (contentType=video_script)
- *  4. AWS Polly で音声合成 → S3 保存
- *  5. GeneratedContent(contentType=video) を upsert して published に設定
- *  6. ContentJob を done に更新
- *  7. 例外時は ContentJob を failed に書き戻して throw
+ *  3. Bedrock で動画台本生成（slide_lines 付き）→ DB 保存 (contentType=video_script)
+ *  4. AWS Polly で音声合成 → S3 に MP3 保存
+ *  5. sharp + SVG でスライドPNGを生成（tmpdir）
+ *  6. FFmpeg でスライド + 音声を MP4 に合成
+ *  7. S3 に MP4 をアップロード → videoPath を設定
+ *  8. GeneratedContent(contentType=video) を upsert して published に設定
+ *  9. ContentJob を done に更新
+ *  10. 例外時は ContentJob を failed に書き戻して throw
  */
+
+import os from "node:os";
+import path from "node:path";
+import fs from "node:fs/promises";
+import { existsSync } from "node:fs";
+import { randomUUID } from "node:crypto";
 
 import { prisma } from "@/lib/db/prisma";
 import {
@@ -18,11 +27,13 @@ import {
   type SubsidyForVideoScript,
 } from "@/lib/ai/bedrockVideoScriptGenerate";
 import { synthesizeAndUpload } from "@/lib/aws/pollyTts";
+import { renderSlidesToDir, type SlideInput } from "@/lib/video/generateSlides";
+import { composeVideo, type SlideTimingInput } from "@/lib/video/composeVideo";
 import {
   cleanSubsidyName,
   cleanSubsidyDescription,
 } from "@/lib/subsidyCheckResultHelpers";
-import { randomUUID } from "node:crypto";
+import { S3Client, PutObjectCommand, GetObjectCommand } from "@aws-sdk/client-s3";
 
 const LOG_PREFIX = "[runVideoJob]";
 
@@ -38,7 +49,6 @@ export type RunVideoJobResult = {
 
 export type RunVideoJobParams = {
   subsidyId: string;
-  /** 既存の動画があっても強制再生成する */
   force?: boolean;
 };
 
@@ -61,6 +71,49 @@ async function ensureUniqueSlug(
   return `${baseSlug}-${randomUUID().slice(0, 8)}`.slice(0, 60);
 }
 
+/**
+ * S3 から MP3 をダウンロードしてローカルの tmpPath に保存する。
+ */
+async function downloadS3ToFile(s3Key: string, localPath: string): Promise<void> {
+  const bucket = process.env.VIDEO_S3_BUCKET!;
+  const region = process.env.VIDEO_S3_REGION ?? process.env.AWS_REGION ?? "ap-northeast-1";
+  const s3 = new S3Client({ region });
+
+  const res = await s3.send(new GetObjectCommand({ Bucket: bucket, Key: s3Key }));
+  if (!res.Body) throw new Error(`S3 GetObject returned no body: ${s3Key}`);
+
+  const chunks: Uint8Array[] = [];
+  for await (const chunk of res.Body as AsyncIterable<Uint8Array>) {
+    chunks.push(chunk);
+  }
+  await fs.writeFile(localPath, Buffer.concat(chunks));
+}
+
+/**
+ * ローカルの MP4 ファイルを S3 にアップロードして公開 URL を返す。
+ */
+async function uploadMp4ToS3(localPath: string, s3Key: string): Promise<string> {
+  const bucket = process.env.VIDEO_S3_BUCKET!;
+  const region = process.env.VIDEO_S3_REGION ?? process.env.AWS_REGION ?? "ap-northeast-1";
+  const baseUrl = process.env.VIDEO_S3_BASE_URL;
+  const s3 = new S3Client({ region });
+
+  const fileBuffer = await fs.readFile(localPath);
+  await s3.send(
+    new PutObjectCommand({
+      Bucket: bucket,
+      Key: s3Key,
+      Body: fileBuffer,
+      ContentType: "video/mp4",
+      CacheControl: "public, max-age=86400",
+    })
+  );
+
+  return baseUrl
+    ? `${baseUrl}/${s3Key}`
+    : `https://${bucket}.s3.${region}.amazonaws.com/${s3Key}`;
+}
+
 export async function runVideoJob(
   params: RunVideoJobParams,
 ): Promise<RunVideoJobResult> {
@@ -69,35 +122,29 @@ export async function runVideoJob(
 
   console.log(`${LOG_PREFIX} start subsidyId=${subsidyId}`);
 
-  const grant = await prisma.subsidyGrant.findUnique({
-    where: { id: subsidyId },
-  });
-  if (!grant) {
-    throw new Error(`SubsidyGrant not found: ${subsidyId}`);
-  }
+  const grant = await prisma.subsidyGrant.findUnique({ where: { id: subsidyId } });
+  if (!grant) throw new Error(`SubsidyGrant not found: ${subsidyId}`);
 
-  // 関連記事の excerpt を取得（台本生成の参考情報として使用）
   const relatedArticle = await prisma.generatedContent.findFirst({
     where: { subsidyId, contentType: "article", status: "published" },
     select: { excerpt: true },
   });
 
-  // ContentJob を running にセット
   await prisma.contentJob.upsert({
     where: { subsidyId_jobType: { subsidyId, jobType } },
     create: { subsidyId, jobType, status: "running" },
     update: { status: "running", completedAt: null, triggeredAt: new Date() },
   });
 
+  // 作業用 tmpdir（処理後にクリーンアップ）
+  const workDir = path.join(os.tmpdir(), `video-${subsidyId}-${Date.now()}`);
+
   try {
-    // 既存動画コンテンツのチェック
     const existingVideo = await prisma.generatedContent.findFirst({
       where: { subsidyId, contentType: "video" },
     });
     if (existingVideo && !params.force) {
-      console.log(
-        `${LOG_PREFIX} existing video found (contentId=${existingVideo.id}) — skip`,
-      );
+      console.log(`${LOG_PREFIX} existing video found — skip`);
       await prisma.contentJob.update({
         where: { subsidyId_jobType: { subsidyId, jobType } },
         data: { status: "done", completedAt: new Date() },
@@ -113,7 +160,7 @@ export async function runVideoJob(
       };
     }
 
-    // Bedrock への入力データ構築
+    // ── Step 1: 台本生成 ──────────────────────────────────────
     const subsidyForScript: SubsidyForVideoScript = {
       id: grant.id,
       name: cleanSubsidyName(grant.name ?? ""),
@@ -130,13 +177,10 @@ export async function runVideoJob(
       articleExcerpt: relatedArticle?.excerpt ?? null,
     };
 
-    // 台本生成
     const script = await generateVideoScript(subsidyForScript);
-    if (!script) {
-      throw new Error("Video script generation returned null");
-    }
+    if (!script) throw new Error("Video script generation returned null");
 
-    // 台本を video_script として DB 保存（監査・再利用用）
+    // 台本DB保存
     await prisma.generatedContent.upsert({
       where: { slug: `${script.slug}-script` },
       create: {
@@ -157,13 +201,10 @@ export async function runVideoJob(
       },
     });
 
-    // Polly 音声合成
+    // ── Step 2: Polly 音声合成 ────────────────────────────────
     let audioResult = null;
     if (process.env.VIDEO_S3_BUCKET) {
-      audioResult = await synthesizeAndUpload(
-        script.narration_text,
-        subsidyId,
-      );
+      audioResult = await synthesizeAndUpload(script.narration_text, subsidyId);
       if (!audioResult) {
         console.warn(`${LOG_PREFIX} Polly synthesis failed — saving as script_only`);
       }
@@ -171,14 +212,64 @@ export async function runVideoJob(
       console.warn(`${LOG_PREFIX} VIDEO_S3_BUCKET not set — skipping Polly`);
     }
 
-    const uniqueSlug = await ensureUniqueSlug(
-      script.slug,
-      existingVideo?.id ?? null,
-    );
+    // ── Step 3: スライドPNG 生成 ──────────────────────────────
+    let videoPublicUrl: string | null = null;
 
+    if (audioResult && process.env.VIDEO_S3_BUCKET) {
+      await fs.mkdir(workDir, { recursive: true });
+
+      // タイトルスライド（index=0）
+      const titleSlide: SlideInput = {
+        index: 0,
+        heading: script.title,
+        lines: [
+          cleanSubsidyName(grant.name ?? "").slice(0, 30),
+          grant.prefecture ? `対象地域: ${grant.prefecture}` : "全国対象",
+        ],
+        highlight: grant.maxAmountLabel
+          ? `最大 ${grant.maxAmountLabel}`
+          : undefined,
+        isTitle: true,
+      };
+
+      // セクションスライド（index=1〜）
+      const sectionSlides: SlideInput[] = script.sections.map((sec, i) => ({
+        index: i + 1,
+        heading: sec.heading,
+        lines: sec.slide_lines ?? [sec.text.slice(0, 80)],
+        highlight: sec.highlight ?? undefined,
+      }));
+
+      const allSlides = [titleSlide, ...sectionSlides];
+      const slidesDir = path.join(workDir, "slides");
+      const pngPaths = await renderSlidesToDir(allSlides, slidesDir);
+
+      // スライドと対応する表示時間
+      // タイトルスライドは 4 秒固定、セクションは duration_sec そのまま
+      const timings: SlideTimingInput[] = allSlides.map((slide, i) => ({
+        pngPath: pngPaths[i],
+        durationSec: slide.isTitle ? 4 : (script.sections[i - 1]?.duration_sec ?? 20),
+      }));
+
+      // ── Step 4: MP3 を S3 からローカルにダウンロード ──────────
+      const localMp3 = path.join(workDir, "audio.mp3");
+      await downloadS3ToFile(audioResult.s3Key, localMp3);
+
+      // ── Step 5: FFmpeg で MP4 合成 ────────────────────────────
+      const videoDir = path.join(workDir, "output");
+      const composed = await composeVideo(timings, localMp3, videoDir, "output.mp4");
+
+      // ── Step 6: MP4 を S3 にアップロード ─────────────────────
+      const mp4S3Key = `videos/${subsidyId}/video.mp4`;
+      videoPublicUrl = await uploadMp4ToS3(composed.outputPath, mp4S3Key);
+      console.log(`${LOG_PREFIX} video uploaded: ${mp4S3Key}`);
+    }
+
+    // ── Step 7: DB 保存 ───────────────────────────────────────
+    const uniqueSlug = await ensureUniqueSlug(script.slug, existingVideo?.id ?? null);
     const now = new Date();
-    const effectiveStatus = "published";
-    const durationSec = audioResult?.durationSec ?? script.total_duration_sec ?? null;
+    const durationSec =
+      audioResult?.durationSec ?? script.total_duration_sec ?? null;
 
     let saved;
     if (existingVideo) {
@@ -191,9 +282,9 @@ export async function runVideoJob(
           body: script.narration_text,
           tags: script.tags,
           audioPath: audioResult?.publicUrl ?? existingVideo.audioPath ?? null,
-          videoPath: null,
+          videoPath: videoPublicUrl ?? existingVideo.videoPath ?? null,
           duration: durationSec,
-          status: effectiveStatus,
+          status: "published",
           publishedAt: existingVideo.publishedAt ?? now,
         },
       });
@@ -208,9 +299,9 @@ export async function runVideoJob(
           body: script.narration_text,
           tags: script.tags,
           audioPath: audioResult?.publicUrl ?? null,
-          videoPath: null,
+          videoPath: videoPublicUrl,
           duration: durationSec,
-          status: effectiveStatus,
+          status: "published",
           publishedAt: now,
         },
       });
@@ -221,9 +312,14 @@ export async function runVideoJob(
       data: { status: "done", completedAt: new Date() },
     });
 
-    const resultStatus = audioResult ? "published" : "script_only";
+    const resultStatus = videoPublicUrl
+      ? "published"
+      : audioResult
+        ? "audio_only"
+        : "script_only";
+
     console.log(
-      `${LOG_PREFIX} done subsidyId=${subsidyId} contentId=${saved.id} slug=${uniqueSlug} status=${resultStatus}`,
+      `${LOG_PREFIX} done subsidyId=${subsidyId} contentId=${saved.id} status=${resultStatus}`,
     );
 
     return {
@@ -233,7 +329,7 @@ export async function runVideoJob(
       subsidyId,
       status: resultStatus,
       audioPath: audioResult?.publicUrl ?? null,
-      videoPath: null,
+      videoPath: videoPublicUrl,
     };
   } catch (e) {
     await prisma.contentJob
@@ -244,5 +340,10 @@ export async function runVideoJob(
       .catch(() => {});
     console.error(`${LOG_PREFIX} failed subsidyId=${subsidyId}`, e);
     throw e;
+  } finally {
+    // tmpdir クリーンアップ
+    if (existsSync(workDir)) {
+      await fs.rm(workDir, { recursive: true, force: true }).catch(() => {});
+    }
   }
 }

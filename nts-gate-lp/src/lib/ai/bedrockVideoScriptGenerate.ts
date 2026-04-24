@@ -28,6 +28,10 @@ export type VideoScriptSection = {
   heading: string;
   text: string;
   duration_sec: number;
+  /** スライドに表示する短い箇条書きテキスト（最大4行、各20文字以内） */
+  slide_lines: string[];
+  /** スライドで大きく強調する数値・キーワード（任意）例: "最大500万円" */
+  highlight?: string;
 };
 
 export type GeneratedVideoScript = {
@@ -79,32 +83,44 @@ const SYSTEM_PROMPT = `あなたは日本の中小企業向け補助金制度を
     {
       "heading": "イントロ",
       "text": "補助金名と概要を 2 文で紹介。視聴者に『自分ごと』として届ける書き出し。80〜120 字。",
-      "duration_sec": 15
+      "duration_sec": 15,
+      "slide_lines": ["補助金名を1行で", "対象：〇〇業種", "概要を1行で"],
+      "highlight": "補助金名（短縮形）"
     },
     {
       "heading": "こんな課題を持つ経営者に",
       "text": "対象となる経営者の課題を 2 点、語りかける。100〜140 字。",
-      "duration_sec": 20
+      "duration_sec": 20,
+      "slide_lines": ["・課題1（15字以内）", "・課題2（15字以内）"],
+      "highlight": null
     },
     {
       "heading": "この補助金でできること",
       "text": "補助金の内容・補助額・補助率を平易な言葉で説明。不明な場合は『公募要領で要確認』と述べる。120〜160 字。",
-      "duration_sec": 30
+      "duration_sec": 30,
+      "slide_lines": ["補助額・補助率を箇条書きで", "対象経費を1行で", "申請期限を1行で"],
+      "highlight": "最大〇〇万円 など金額（不明なら省略）"
     },
     {
       "heading": "活用例",
       "text": "仮想の活用シーンを 1 件紹介。必ず冒頭に『例えば、』を付ける。100〜140 字。",
-      "duration_sec": 25
+      "duration_sec": 25,
+      "slide_lines": ["例えば…", "・具体的な活用シーン1行", "・得られる効果1行"],
+      "highlight": null
     },
     {
       "heading": "申請のポイント",
       "text": "申請前に確認すべき注意点を 2 点。締め切り・要件チェックなど。100〜130 字。",
-      "duration_sec": 20
+      "duration_sec": 20,
+      "slide_lines": ["・ポイント1（15字以内）", "・ポイント2（15字以内）", "公募要領で最終確認を"],
+      "highlight": null
     },
     {
       "heading": "NTS へのご相談",
       "text": "補助金活用の戦略設計について NTS に相談できることを案内。申請代行ではなく戦略設計・伴走支援として伝える。60〜90 字。",
-      "duration_sec": 10
+      "duration_sec": 10,
+      "slide_lines": ["NTS の無料相談はこちら", "採択後1年間の伴走支援", "/consult からご予約"],
+      "highlight": "無料相談受付中"
     }
   ],
   "total_duration_sec": 120,
