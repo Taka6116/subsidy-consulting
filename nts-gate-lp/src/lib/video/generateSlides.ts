@@ -128,7 +128,6 @@ function buildTitleSlide(slide: SlideInput): string {
 // 通常スライド（2カラムレイアウト: highlight あり）
 // ──────────────────────────────────────────────────────────────────
 function buildTwoColumnSlide(slide: SlideInput, isDark: boolean): string {
-  const bg = isDark ? "#1a2544" : "#f8f7f4";
   const textColor = isDark ? "#f8f7f4" : "#1a2544";
   const subColor = isDark ? "rgba(248,247,244,0.60)" : "rgba(26,37,68,0.55)";
   const accentColor = "#d97706";
@@ -228,9 +227,7 @@ function buildTwoColumnSlide(slide: SlideInput, isDark: boolean): string {
 // 通常スライド（シングルカラムレイアウト: highlight なし）
 // ──────────────────────────────────────────────────────────────────
 function buildSingleColumnSlide(slide: SlideInput, isDark: boolean): string {
-  const bg = isDark ? "#1a2544" : "#f8f7f4";
   const textColor = isDark ? "#f8f7f4" : "#1a2544";
-  const subColor = isDark ? "rgba(248,247,244,0.55)" : "rgba(26,37,68,0.50)";
   const accentColor = "#d97706";
   const badgeNum = String(slide.index + 1).padStart(2, "0");
   const heading = escapeSvg(slide.heading);
