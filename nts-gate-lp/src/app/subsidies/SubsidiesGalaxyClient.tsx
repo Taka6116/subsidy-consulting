@@ -117,14 +117,10 @@ const CATEGORY_CARDS = [
 export default function SubsidiesGalaxyClient({ counts }: Props) {
   const partnerHref = getPartnerUrl();
 
-  // Phase 5: セッション単位での初回のみ表示
-  const [introComplete, setIntroComplete] = useState(() => {
-    if (typeof window === "undefined") return false;
-    return sessionStorage.getItem("nts_intro_shown") === "1";
-  });
+  // 毎回イントロを表示する
+  const [introComplete, setIntroComplete] = useState(false);
 
   const handleIntroComplete = useCallback(() => {
-    sessionStorage.setItem("nts_intro_shown", "1");
     setIntroComplete(true);
   }, []);
 
@@ -234,34 +230,35 @@ export default function SubsidiesGalaxyClient({ counts }: Props) {
         <div className="relative z-10 mx-auto w-full max-w-container px-6 pb-16 pt-8">
           <div className="grid gap-5 sm:grid-cols-3">
             {CATEGORY_CARDS.map((card) => (
-              <Link
-                key={card.href}
-                href={card.href}
-                data-intro-reveal
-                className="animate-fade-in-up group relative flex flex-col rounded-2xl border border-white/50 bg-white/70 p-6 shadow-md backdrop-blur-sm transition-all duration-150 ease-out hover:-translate-y-1 hover:shadow-xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
-                style={{ animationDelay: card.delay }}
-              >
-                <div className="mb-4">
-                  <span
-                    className={`rounded-full px-2.5 py-0.5 text-[10px] font-medium ring-1 ${card.badgeColor}`}
-                  >
-                    {card.badge}
-                  </span>
-                </div>
-                <p className="mb-0.5 text-[9px] font-semibold tracking-[0.25em] text-neutral-400">
-                  {card.subLabel}
-                </p>
-                <h2 className="font-heading text-xl font-medium text-[#1a2544]">
-                  {card.label}
-                </h2>
-                <p className="mt-3 flex-1 text-sm leading-relaxed text-neutral-600">
-                  {card.description}
-                </p>
-                <div className="mt-5 flex items-center gap-1 text-xs font-semibold text-amber-600 transition-gap duration-150 group-hover:gap-2">
-                  詳しく見る
-                  <span aria-hidden="true" className="transition-transform duration-150 group-hover:translate-x-0.5">→</span>
-                </div>
-              </Link>
+            <Link
+              key={card.href}
+              href={card.href}
+              data-intro-reveal
+              className="animate-fade-in-up group relative flex flex-col rounded-2xl border border-white/50 bg-white/70 p-6 shadow-md backdrop-blur-sm transition-all duration-150 ease-out hover:-translate-y-1 hover:shadow-xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
+              style={{ animationDelay: card.delay }}
+            >
+              <div className="mb-4">
+                <span
+                  data-intro-reveal
+                  className={`rounded-full px-2.5 py-0.5 text-[10px] font-medium ring-1 ${card.badgeColor}`}
+                >
+                  {card.badge}
+                </span>
+              </div>
+              <p data-intro-reveal className="mb-0.5 text-[9px] font-semibold tracking-[0.25em] text-neutral-400">
+                {card.subLabel}
+              </p>
+              <h2 data-intro-reveal className="font-heading text-xl font-medium text-[#1a2544]">
+                {card.label}
+              </h2>
+              <p data-intro-reveal className="mt-3 flex-1 text-sm leading-relaxed text-neutral-600">
+                {card.description}
+              </p>
+              <div data-intro-reveal className="mt-5 flex items-center gap-1 text-xs font-semibold text-amber-600 transition-gap duration-150 group-hover:gap-2">
+                詳しく見る
+                <span aria-hidden="true" className="transition-transform duration-150 group-hover:translate-x-0.5">→</span>
+              </div>
+            </Link>
             ))}
           </div>
         </div>
