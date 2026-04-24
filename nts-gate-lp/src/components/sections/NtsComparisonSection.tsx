@@ -168,7 +168,7 @@ export default function NtsComparisonSection() {
             </div>
 
             {/* ── 比較行 ── */}
-            {AXES.map((row, i) => (
+            {AXES.map((row) => (
               <div
                 key={row.axis}
                 className="grid grid-cols-[minmax(130px,180px)_1fr_1fr_1.15fr] border-t border-[var(--border-subtle)]"
