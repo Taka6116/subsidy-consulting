@@ -74,6 +74,9 @@ export default function Header() {
             className="flex w-full flex-wrap items-center justify-start gap-x-3 gap-y-2 sm:ml-4 sm:w-auto sm:flex-1 sm:justify-end sm:gap-x-4 lg:ml-8 lg:gap-x-6"
             aria-label="補助金プラットフォーム"
           >
+            <Link href="/" className={`${navLinkClass(heroStyle)} shrink-0`}>
+              トップへ
+            </Link>
             <Link href="/subsidies/list" className={`${navLinkClass(heroStyle)} shrink-0`}>
               補助金一覧
             </Link>
