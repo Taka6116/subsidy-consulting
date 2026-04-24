@@ -44,15 +44,15 @@ const PITFALLS: readonly Pitfall[] = [
     num: "03",
     line1: "書類ができても、",
     line2: "事務局対応が残り",
-    line3: "社長の時間が削られます。",
+    line3: "経営者の時間が削られます。",
     image: imgPit03,
-    alt: "事務局対応で社長の時間が削られるイメージ",
+    alt: "事務局対応で経営者の時間が削られるイメージ",
   },
 ] as const;
 
 const NTS_CHIPS = [
   "審査側視点で設計",
-  "事務局対応を代行",
+  "各種対応サポート",
   "採択後1年間伴走",
 ] as const;
 
@@ -213,7 +213,7 @@ export default function NtsAiGapSection() {
                 NTS DOES
               </span>
               <h3 className="mt-5 font-heading text-[1.6rem] font-bold leading-[1.25] text-[var(--text-primary)] md:text-[2rem] lg:text-[2.2rem]">
-                社長の時間を使わず、
+                経営者の時間を使わず、
                 <br />
                 <span className="text-[var(--accent-teal)]">採択まで</span>
                 届ける。
@@ -227,7 +227,7 @@ export default function NtsAiGapSection() {
                 <strong className="font-bold text-[var(--text-primary)]">
                   AIでは出来ないサポート
                 </strong>
-                で、社長の時間を守ります。
+                で、経営者の時間を守ります。
               </p>
               <ul className="mt-6 flex flex-wrap gap-2">
                 {NTS_CHIPS.map((chip) => (
@@ -253,7 +253,7 @@ export default function NtsAiGapSection() {
               <div className="relative aspect-[4/3] w-full overflow-hidden rounded-[24px] border border-white/60 bg-white/70 p-3 shadow-[0_10px_30px_rgba(26,76,142,0.08)] backdrop-blur-[2px] md:p-5">
                 <Image
                   src={imgNtsGap}
-                  alt="社長の時間を守り、採択まで伴走するNTSのイメージ"
+                  alt="経営者の時間を守り、採択まで伴走するNTSのイメージ"
                   fill
                   sizes="(max-width: 768px) 80vw, 460px"
                   className="object-contain"

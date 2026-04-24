@@ -138,15 +138,15 @@ export default function SubsidiesGalaxyClient({ counts }: Props) {
                 style={{ animationDelay: "60ms" }}
               >
                 補助金を、<br />
-                最速で。
+                最速で届ける。
               </h1>
               <p
                 className="animate-fade-in-up mt-5 max-w-[480px] text-base leading-relaxed text-neutral-600"
                 style={{ animationDelay: "130ms" }}
               >
-                公募開始から<strong className="text-[#1a2544]">最短15分</strong>で掲載。
+                公募開始から最速でお届け。
                 <br />
-                申請期限・補助上限・対象業種を即確認。
+                申請期限・補助上限・対象業種を、ひとつの画面で見れる場所。
               </p>
 
               {/* 速報バッジ */}
@@ -155,13 +155,13 @@ export default function SubsidiesGalaxyClient({ counts }: Props) {
                 style={{ animationDelay: "200ms" }}
               >
                 <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-50 px-3 py-1 text-xs font-medium text-amber-700 ring-1 ring-amber-200">
-                  最速15分更新
+                  各省庁公式情報
                 </span>
                 <span className="inline-flex items-center gap-1.5 rounded-full bg-primary-50 px-3 py-1 text-xs font-medium text-primary-700 ring-1 ring-primary-200">
-                  省庁・jGrants 自動収集
+                  最速随時追加
                 </span>
                 <span className="inline-flex items-center gap-1.5 rounded-full bg-rose-50 px-3 py-1 text-xs font-medium text-rose-700 ring-1 ring-rose-200">
-                  申請期限切れ見逃しゼロへ
+                  無料メール通知
                 </span>
               </div>
             </div>
