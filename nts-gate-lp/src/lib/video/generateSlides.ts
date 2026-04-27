@@ -15,6 +15,7 @@
 import sharp from "sharp";
 import path from "node:path";
 import fs from "node:fs/promises";
+import { svgFontFaceStyle, VIDEO_FONT_FAMILY } from "@/lib/video/fonts";
 
 export type SlideInput = {
   index: number;
@@ -26,7 +27,8 @@ export type SlideInput = {
 
 const W = 1280;
 const H = 720;
-const FONT = "Noto Sans JP, Hiragino Kaku Gothic ProN, sans-serif";
+const FONT = `${VIDEO_FONT_FAMILY}, Noto Sans JP, Hiragino Kaku Gothic ProN, sans-serif`;
+const FONT_FACE_STYLE = svgFontFaceStyle();
 
 function escapeSvg(str: string): string {
   return str
@@ -61,6 +63,7 @@ function buildTitleSlide(slide: SlideInput): string {
 
   return `<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
+  ${FONT_FACE_STYLE}
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0%" stop-color="#1a2544"/>
@@ -158,6 +161,7 @@ function buildTwoColumnSlide(slide: SlideInput, isDark: boolean): string {
 
   return `<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
+  ${FONT_FACE_STYLE}
   <defs>
     <linearGradient id="bg${slide.index}" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0%" stop-color="${isDark ? "#1d2847" : "#faf9f6"}"/>
@@ -262,6 +266,7 @@ function buildSingleColumnSlide(slide: SlideInput, isDark: boolean): string {
 
   return `<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
+  ${FONT_FACE_STYLE}
   <defs>
     <linearGradient id="bg${slide.index}" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0%" stop-color="${isDark ? "#1d2847" : "#faf9f6"}"/>
@@ -321,6 +326,7 @@ function buildCtaSlide(slide: SlideInput): string {
 
   return `<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
+  ${FONT_FACE_STYLE}
   <defs>
     <linearGradient id="cta-bg" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0%" stop-color="#1a2544"/>

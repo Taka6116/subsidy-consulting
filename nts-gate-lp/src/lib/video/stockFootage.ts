@@ -12,6 +12,14 @@ export type StockClip = {
   credit?: string;
 };
 
+export type StockFootageResult = {
+  clips: StockClip[];
+  attemptedQueries: number;
+  matchedQueries: number;
+  pexelsConfigured: boolean;
+  pixabayConfigured: boolean;
+};
+
 type PexelsVideoFile = {
   link?: string;
   quality?: string;
@@ -133,30 +141,44 @@ export async function downloadStockFootageForScript(
   script: GeneratedVideoScript,
   outputDir: string,
   maxClips = 4,
-): Promise<StockClip[]> {
-  if (!process.env.PEXELS_API_KEY?.trim() && !process.env.PIXABAY_API_KEY?.trim()) {
+): Promise<StockFootageResult> {
+  const pexelsConfigured = !!process.env.PEXELS_API_KEY?.trim();
+  const pixabayConfigured = !!process.env.PIXABAY_API_KEY?.trim();
+  const result: StockFootageResult = {
+    clips: [],
+    attemptedQueries: 0,
+    matchedQueries: 0,
+    pexelsConfigured,
+    pixabayConfigured,
+  };
+
+  if (!pexelsConfigured && !pixabayConfigured) {
     console.warn(`${LOG_PREFIX} no stock API key configured`);
-    return [];
+    return result;
   }
 
   await fs.mkdir(outputDir, { recursive: true });
-  const clips: StockClip[] = [];
   const usedQueries = new Set<string>();
 
-  for (let i = 0; i < script.sections.length && clips.length < maxClips; i++) {
+  for (let i = 0; i < script.sections.length && result.clips.length < maxClips; i++) {
     const queries = uniqueQueries(script, i).filter((query) => !usedQueries.has(query));
     for (const query of queries) {
       usedQueries.add(query);
+      result.attemptedQueries += 1;
       const found = await findStockVideo(query);
       if (!found) continue;
 
-      const filePath = path.join(outputDir, `stock-${String(i).padStart(2, "0")}-${clips.length}.mp4`);
+      const filePath = path.join(outputDir, `stock-${String(i).padStart(2, "0")}-${result.clips.length}.mp4`);
       await downloadFile(found.url, filePath);
-      clips.push({ sectionIndex: i, query, source: found.source, filePath, credit: found.credit });
+      result.clips.push({ sectionIndex: i, query, source: found.source, filePath, credit: found.credit });
+      result.matchedQueries += 1;
       console.log(`${LOG_PREFIX} downloaded ${found.source} clip section=${i} query="${query}"`);
       break;
     }
   }
 
-  return clips;
+  console.log(
+    `${LOG_PREFIX} result clips=${result.clips.length} attempted=${result.attemptedQueries} pexels=${pexelsConfigured} pixabay=${pixabayConfigured}`,
+  );
+  return result;
 }

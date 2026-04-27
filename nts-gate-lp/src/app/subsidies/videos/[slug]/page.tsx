@@ -7,6 +7,7 @@ import LpFooter from "@/components/gate-lp/LpFooter";
 import { prisma } from "@/lib/db/prisma";
 
 export const revalidate = 300;
+export const dynamicParams = true;
 
 type PageProps = {
   params: Promise<{ slug: string }>;
@@ -15,18 +16,7 @@ type PageProps = {
 type RawPayloadLike = Record<string, unknown> | null;
 
 export async function generateStaticParams(): Promise<Array<{ slug: string }>> {
-  const rows = await prisma.generatedContent.findMany({
-    where: {
-      contentType: "video",
-      status: "published",
-      slug: { not: undefined },
-    },
-    select: { slug: true },
-    take: 200,
-  });
-  return rows
-    .filter((r): r is { slug: string } => typeof r.slug === "string")
-    .map((r) => ({ slug: r.slug }));
+  return [];
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {

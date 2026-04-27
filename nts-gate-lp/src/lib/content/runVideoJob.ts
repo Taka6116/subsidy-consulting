@@ -297,27 +297,32 @@ export async function runVideoJob(
         try {
           const stockDir = path.join(workDir, "stock");
           const subtitlePath = path.join(workDir, "subtitles.ass");
-          const stockClips = await downloadStockFootageForScript(script, stockDir);
+          const stockResult = await downloadStockFootageForScript(script, stockDir);
+          console.log(
+            `${LOG_PREFIX} stock footage clips=${stockResult.clips.length} attempted=${stockResult.attemptedQueries} pexels=${stockResult.pexelsConfigured} pixabay=${stockResult.pixabayConfigured}`,
+          );
           await writeAssSubtitles(script.sections, subtitlePath, { initialOffsetSec: 4 });
           composed = await composeEnhancedVideo({
             slides: timings,
             sections: script.sections,
-            stockClips,
+            stockClips: stockResult.clips,
+            title: script.title,
             audioPath: localMp3,
             subtitlePath,
             outputDir: videoDir,
             outputName: "output.mp4",
           });
         } catch (e) {
-          console.warn(`${LOG_PREFIX} enhanced video compose failed — falling back to slide video`, e);
-          composed = await composeVideo(timings, localMp3, videoDir, "output.mp4");
+          console.error(`${LOG_PREFIX} enhanced video compose failed`, e);
+          throw e;
         }
       } else {
         composed = await composeVideo(timings, localMp3, videoDir, "output.mp4");
       }
 
       // ── Step 6: MP4 を S3 にアップロード ─────────────────────
-      const mp4S3Key = `videos/${subsidyId}/video.mp4`;
+      const version = Date.now();
+      const mp4S3Key = `videos/${subsidyId}/video-${version}.mp4`;
       videoPublicUrl = await uploadMp4ToS3(composed.outputPath, mp4S3Key);
       console.log(`${LOG_PREFIX} video uploaded: ${mp4S3Key}`);
     }
