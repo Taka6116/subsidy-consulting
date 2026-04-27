@@ -16,6 +16,7 @@ type Counts = {
   grants: number;
   articles: number;
   videos: number;
+  lps: number;
 };
 
 type Props = {
@@ -53,6 +54,12 @@ function StatPanel({ counts }: { counts: Counts }) {
           value={counts.videos}
           unit="本"
           color="text-primary-700"
+        />
+        <StatRow
+          label="活用ガイド"
+          value={counts.lps}
+          unit="件"
+          color="text-emerald-700"
         />
       </ul>
       <div className="mt-5 border-t border-neutral-100 pt-4">
@@ -103,6 +110,14 @@ const CATEGORY_CARDS = [
     description: "補助金ごとの詳しい解説・申請ポイントをわかりやすくまとめた専門記事。",
     badge: "AI生成・随時追加",
     badgeColor: "bg-primary-50 text-primary-700 ring-primary-200",
+  },
+  {
+    href: "/subsidies/lp",
+    label: "活用ガイド",
+    subLabel: "ACTION GUIDE",
+    description: "制度ごとの対象課題・活用例・申請の流れをLP形式で整理。相談前の判断材料として確認できます。",
+    badge: "LP形式",
+    badgeColor: "bg-teal-50 text-teal-700 ring-teal-200",
   },
   {
     href: "/subsidies/videos",
@@ -228,9 +243,9 @@ export default function SubsidiesGalaxyClient({ counts }: Props) {
           </p>
         </div>
 
-        {/* ── 3カテゴリカード ── */}
+        {/* ── カテゴリカード ── */}
         <div className="relative z-10 mx-auto w-full max-w-container px-6 pb-16 pt-8">
-          <div className="grid gap-5 sm:grid-cols-3">
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {CATEGORY_CARDS.map((card) => (
               <Link
                 key={card.href}

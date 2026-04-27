@@ -354,6 +354,26 @@ export default async function SubsidyDetailPage({ params }: DetailPageProps) {
                   </p>
                 </section>
 
+                {/* LP リンクバナー */}
+                <section className="rounded-xl border border-[#d1ece8] bg-[#eaf4f2] p-5 shadow-sm">
+                  <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                    <div>
+                      <p className="text-sm font-semibold text-[#0d5c52]">
+                        📄 この補助金の活用ガイドを見る
+                      </p>
+                      <p className="mt-1 text-xs text-[#2e6b62]">
+                        経営課題・活用事例・よくある質問をまとめた専用ページです。
+                      </p>
+                    </div>
+                    <Link
+                      href={`/subsidies/lp/${grant.id}`}
+                      className="inline-flex shrink-0 items-center justify-center rounded-full bg-[#1a7b6f] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#16665c]"
+                    >
+                      活用ガイドを見る →
+                    </Link>
+                  </div>
+                </section>
+
                 <section className="rounded-xl border border-neutral-200 bg-white p-6 shadow-sm">
                   <h2 className="text-xl font-semibold text-[#2f2e2b]">この補助金に関連する記事</h2>
                   {relatedArticles.length === 0 ? (

@@ -83,6 +83,9 @@ export default function Header() {
             <Link href="/subsidies/articles" className={`${navLinkClass(heroStyle)} shrink-0`}>
               解説記事
             </Link>
+            <Link href="/subsidies/lp" className={`${navLinkClass(heroStyle)} shrink-0`}>
+              活用ガイド
+            </Link>
             <Link href="/subsidies/videos" className={`${navLinkClass(heroStyle)} shrink-0`}>
               動画
             </Link>

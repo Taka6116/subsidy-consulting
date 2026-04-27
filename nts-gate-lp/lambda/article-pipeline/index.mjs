@@ -349,6 +349,18 @@ async function enqueueArticleJob(client, subsidyId) {
   );
 }
 
+/** LP コピー生成ジョブをキューイングする（contentType="lp"） */
+async function enqueueLpJob(client, subsidyId) {
+  await client.query(
+    `
+    INSERT INTO content_jobs (id, subsidy_id, job_type, status, triggered_at)
+    VALUES ($1, $2, 'lp', 'pending', NOW())
+    ON CONFLICT (subsidy_id, job_type) DO NOTHING
+    `,
+    [randomUUID(), subsidyId],
+  );
+}
+
 /** 記事が published になった補助金に対して video ジョブをキューイングする */
 async function enqueueVideoJob(client, subsidyId) {
   await client.query(
@@ -367,6 +379,20 @@ async function selectPendingJobs(client, limit) {
     SELECT subsidy_id
     FROM content_jobs
     WHERE job_type = 'article' AND status = 'pending'
+    ORDER BY triggered_at ASC
+    LIMIT $1
+    `,
+    [limit],
+  );
+  return res.rows.map((r) => r.subsidy_id);
+}
+
+async function selectPendingLpJobs(client, limit) {
+  const res = await client.query(
+    `
+    SELECT subsidy_id
+    FROM content_jobs
+    WHERE job_type = 'lp' AND status = 'pending'
     ORDER BY triggered_at ASC
     LIMIT $1
     `,
@@ -394,6 +420,25 @@ async function selectPendingVideoJobs(client, limit) {
 // -----------------------------------------------------------------------------
 async function callGenerate({ vercelUrl, token, subsidyId }) {
   const res = await fetch(`${vercelUrl}/api/articles/generate`, {
+    method: "POST",
+    headers: {
+      "content-type": "application/json",
+      "x-internal-token": token,
+    },
+    body: JSON.stringify({ subsidyId }),
+  });
+  const text = await res.text();
+  let json;
+  try {
+    json = JSON.parse(text);
+  } catch {
+    json = { ok: false, error: text.slice(0, 200) };
+  }
+  return { httpStatus: res.status, ...json };
+}
+
+async function callGenerateLp({ vercelUrl, token, subsidyId }) {
+  const res = await fetch(`${vercelUrl}/api/lp/generate`, {
     method: "POST",
     headers: {
       "content-type": "application/json",
@@ -478,6 +523,7 @@ export async function handler(event = {}) {
     ministry: { fetched: 0, newGrants: 0, errors: [] },
     sync: { fetched: 0, newGrants: 0, updatedGrants: 0 },
     generate: { picked: 0, published: 0, rejected: 0, failed: 0, details: [] },
+    lp: { picked: 0, published: 0, failed: 0, details: [] },
     video: { picked: 0, published: 0, script_only: 0, failed: 0, details: [] },
     revalidate: null,
     elapsedMs: 0,
@@ -563,7 +609,8 @@ export async function handler(event = {}) {
           if (result.status === "published") {
             report.generate.published += 1;
             if (result.slug) publishedSlugs.push(result.slug);
-            // 記事が公開されたら動画ジョブも積む
+            // 記事が公開されたら LP コピー生成ジョブと動画ジョブも積む
+            await enqueueLpJob(client, subsidyId);
             await enqueueVideoJob(client, subsidyId);
           } else {
             report.generate.rejected += 1;
@@ -596,7 +643,34 @@ export async function handler(event = {}) {
       `${LOG} generated published=${report.generate.published} rejected=${report.generate.rejected} failed=${report.generate.failed}`,
     );
 
-    // ----- 2b) drain pending video jobs -----
+    // ----- 2b) drain pending LP jobs -----
+    // 記事生成の次の実行サイクル（15分後）に LP コピーを生成する。
+    // 同一実行内でも pending があれば処理する（再実行・バックフィル対応）。
+    const pendingLpIds = await selectPendingLpJobs(client, DRAIN_LIMIT);
+    report.lp.picked = pendingLpIds.length;
+
+    for (const subsidyId of pendingLpIds) {
+      try {
+        const result = await callGenerateLp({
+          vercelUrl: VERCEL_APP_URL,
+          token: ARTICLE_GENERATE_TOKEN,
+          subsidyId,
+        });
+        if (result.httpStatus >= 200 && result.httpStatus < 300 && result.ok) {
+          report.lp.published += 1;
+          report.lp.details.push({ subsidyId, status: result.status, url: result.url ?? null });
+        } else {
+          report.lp.failed += 1;
+          report.lp.details.push({ subsidyId, status: "http-failed", httpStatus: result.httpStatus, error: result.error ?? "" });
+        }
+      } catch (e) {
+        report.lp.failed += 1;
+        report.lp.details.push({ subsidyId, status: "exception", error: e instanceof Error ? e.message : String(e) });
+      }
+    }
+    console.log(`${LOG} lp published=${report.lp.published} failed=${report.lp.failed}`);
+
+    // ----- 2c) drain pending video jobs -----
     // 記事生成と同じ Lambda 実行内で video も順次処理（上限はDRAIN_LIMITと同じ）
     const pendingVideoIds = await selectPendingVideoJobs(client, DRAIN_LIMIT);
     report.video.picked = pendingVideoIds.length;

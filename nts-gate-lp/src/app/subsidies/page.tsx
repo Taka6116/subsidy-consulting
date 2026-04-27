@@ -13,13 +13,16 @@ export const metadata: Metadata = {
 export const revalidate = 300;
 
 export default async function SubsidiesPage() {
-  const [grantCount, articleCount, videoCount] = await Promise.all([
+  const [grantCount, articleCount, videoCount, lpCount] = await Promise.all([
     prisma.subsidyGrant.count({ where: { status: "open" } }),
     prisma.generatedContent.count({
       where: { contentType: "article", status: "published" },
     }),
     prisma.generatedContent.count({
       where: { contentType: "video", status: "published" },
+    }),
+    prisma.generatedContent.count({
+      where: { contentType: "lp", status: "published" },
     }),
   ]);
 
@@ -28,7 +31,12 @@ export default async function SubsidiesPage() {
       <Header />
       <main className="relative z-[2] font-body">
         <SubsidiesGalaxyClient
-          counts={{ grants: grantCount, articles: articleCount, videos: videoCount }}
+          counts={{
+            grants: grantCount,
+            articles: articleCount,
+            videos: videoCount,
+            lps: lpCount,
+          }}
         />
       </main>
       <LpFooter />
