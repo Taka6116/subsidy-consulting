@@ -32,6 +32,8 @@ export type VideoScriptSection = {
   slide_lines: string[];
   /** スライドで大きく強調する数値・キーワード（任意）例: "最大500万円" */
   highlight?: string;
+  /** Pexels/Pixabay でB-roll素材を探すための英語キーワード。例: ["factory", "business meeting"] */
+  visual_keywords?: string[];
 };
 
 export type GeneratedVideoScript = {
@@ -41,6 +43,8 @@ export type GeneratedVideoScript = {
   narration_text: string;
   sections: VideoScriptSection[];
   total_duration_sec: number;
+  /** 動画全体で使いやすい英語の素材検索キーワード */
+  stock_keywords?: string[];
   tags: string[];
 };
 
@@ -88,6 +92,13 @@ slide_lines はスライド上に大きく表示されるテキスト行です�
 - 金額不明 → 対象業種・対象地域・採択件数・期限など最も重要な情報1つ
 - 文字数は **12 文字以内**
 
+## visual_keywords / stock_keywords のルール
+- Pexels / Pixabay の動画素材検索に使う **英語キーワード** を返す
+- 1 セクションあたり 2〜4 件
+- 人物・オフィス・工場・会議・配送・IT・省エネ設備など、汎用素材で当たりやすい語を選ぶ
+- 日本語は使わない
+- 抽象語だけにしない（例: "business growth" だけでなく "office meeting", "factory machinery"）
+
 ---
 
 # タスク
@@ -109,7 +120,8 @@ slide_lines はスライド上に大きく表示されるテキスト行です�
         "（この補助金が解決する課題を1行で）",
         "（補助規模のざっくり感を1行で。不明なら省略）"
       ],
-      "highlight": "（補助金名の短縮形・最大8文字）"
+      "highlight": "（補助金名の短縮形・最大8文字）",
+      "visual_keywords": ["small business", "office meeting", "business owner"]
     },
     {
       "heading": "こんな課題を持つ経営者に",
@@ -120,7 +132,8 @@ slide_lines はスライド上に大きく表示されるテキスト行です�
         "・（具体的な経営課題2・20字以内）",
         "・（具体的な経営課題3・20字以内）"
       ],
-      "highlight": "（最も刺さる課題キーワード・8字以内）"
+      "highlight": "（最も刺さる課題キーワード・8字以内）",
+      "visual_keywords": ["business meeting", "worried owner", "office work"]
     },
     {
       "heading": "この補助金でできること",
@@ -132,7 +145,8 @@ slide_lines はスライド上に大きく表示されるテキスト行です�
         "対象経費：（主な経費を具体的に）",
         "申請期限：（日付または「〇〇年度公募」）"
       ],
-      "highlight": "（補助上限金額「最大〇〇万円」。不明なら対象業種）"
+      "highlight": "（補助上限金額「最大〇〇万円」。不明なら対象業種）",
+      "visual_keywords": ["factory machinery", "office equipment", "digital transformation"]
     },
     {
       "heading": "活用例",
@@ -144,7 +158,8 @@ slide_lines はスライド上に大きく表示されるテキスト行です�
         "・（行動・投資内容を1行で）",
         "・（得られる効果・メリットを1行で）"
       ],
-      "highlight": "（活用で得られる最大の便益・8字以内）"
+      "highlight": "（活用で得られる最大の便益・8字以内）",
+      "visual_keywords": ["manufacturing", "warehouse", "service business"]
     },
     {
       "heading": "申請のポイント",
@@ -156,7 +171,8 @@ slide_lines はスライド上に大きく表示されるテキスト行です�
         "・（スケジュールや期限に関する注意・20字以内）",
         "→ 詳細は公募要領で最終確認を"
       ],
-      "highlight": "（最重要チェック事項キーワード・8字以内）"
+      "highlight": "（最重要チェック事項キーワード・8字以内）",
+      "visual_keywords": ["document review", "business planning", "calendar deadline"]
     },
     {
       "heading": "NTS へのご相談",
@@ -167,10 +183,12 @@ slide_lines はスライド上に大きく表示されるテキスト行です�
         "戦略設計から実績報告まで",
         "まずは無料相談から"
       ],
-      "highlight": "無料相談受付中"
+      "highlight": "無料相談受付中",
+      "visual_keywords": ["consulting", "handshake", "business advisor"]
     }
   ],
   "total_duration_sec": 120,
+  "stock_keywords": ["small business", "office meeting", "factory", "business consulting"],
   "tags": ["2〜4 件。補助金基礎 / 申請準備 / 設備投資 / DX / IT導入 / 事業計画 / 事業承継 / 建設 / 運送 / 人材 / 省エネ 等から選ぶ"]
 }
 
@@ -229,10 +247,29 @@ articleExcerpt: ${subsidy.articleExcerpt ?? "（情報なし）"}`;
     parsed.slug = parsed.slug.replace(/[^a-z0-9-]/g, "-").slice(0, 60);
     parsed.total_duration_sec =
       parsed.sections?.reduce((sum, s) => sum + (s.duration_sec ?? 0), 0) ?? 120;
+    const stockKeywords = sanitizeKeywords(parsed.stock_keywords, [
+      "small business",
+      "office meeting",
+      "business consulting",
+    ]);
+    parsed.stock_keywords = stockKeywords;
+    parsed.sections = (parsed.sections ?? []).map((section) => ({
+      ...section,
+      visual_keywords: sanitizeKeywords(section.visual_keywords, stockKeywords),
+    }));
 
     return parsed;
   } catch (err) {
     console.error(LOG_PREFIX, "Bedrock invocation failed", err);
     return null;
   }
+}
+
+function sanitizeKeywords(value: unknown, fallback: string[]): string[] {
+  if (!Array.isArray(value)) return fallback;
+  const cleaned = value
+    .filter((x): x is string => typeof x === "string")
+    .map((x) => x.trim().toLowerCase())
+    .filter((x) => x.length >= 3 && /^[a-z0-9\s-]+$/.test(x));
+  return cleaned.length ? Array.from(new Set(cleaned)).slice(0, 5) : fallback;
 }

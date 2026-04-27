@@ -15,6 +15,8 @@ import ffmpeg from "fluent-ffmpeg";
 import path from "node:path";
 import fs from "node:fs/promises";
 import { existsSync } from "node:fs";
+import type { VideoScriptSection } from "@/lib/ai/bedrockVideoScriptGenerate";
+import type { StockClip } from "@/lib/video/stockFootage";
 
 const LOG_PREFIX = "[composeVideo]";
 
@@ -26,6 +28,16 @@ export type SlideTimingInput = {
 export type ComposeVideoResult = {
   outputPath: string;
   durationSec: number;
+};
+
+export type ComposeEnhancedVideoInput = {
+  slides: SlideTimingInput[];
+  sections: VideoScriptSection[];
+  stockClips: StockClip[];
+  audioPath: string;
+  subtitlePath?: string;
+  outputDir: string;
+  outputName?: string;
 };
 
 /**
@@ -125,6 +137,162 @@ export async function composeVideo(
       })
       .on("error", (err) => {
         console.error(LOG_PREFIX, "ffmpeg error:", err.message);
+        reject(err);
+      })
+      .run();
+  });
+
+  return { outputPath, durationSec: totalDuration };
+}
+
+function toFfmpegConcatPath(filePath: string): string {
+  return filePath.replace(/\\/g, "/").replace(/'/g, "'\\''");
+}
+
+function escapeSubtitleFilterPath(filePath: string): string {
+  return filePath.replace(/\\/g, "/").replace(/:/g, "\\:").replace(/'/g, "\\'");
+}
+
+async function runFfmpegSegment(
+  label: string,
+  build: (cmd: ffmpeg.FfmpegCommand) => ffmpeg.FfmpegCommand,
+): Promise<void> {
+  await new Promise<void>((resolve, reject) => {
+    build(ffmpeg())
+      .on("start", (cmd) => console.log(LOG_PREFIX, `${label} cmd:`, cmd))
+      .on("end", () => {
+        console.log(LOG_PREFIX, `${label} done`);
+        resolve();
+      })
+      .on("error", (err) => {
+        console.error(LOG_PREFIX, `${label} error:`, err.message);
+        reject(err);
+      })
+      .run();
+  });
+}
+
+async function createSlideSegment(
+  slide: SlideTimingInput,
+  durationSec: number,
+  outputPath: string,
+): Promise<void> {
+  const duration = Math.max(1, durationSec);
+  await runFfmpegSegment("slide segment", (cmd) =>
+    cmd
+      .input(slide.pngPath)
+      .inputOptions(["-loop 1", `-t ${duration}`])
+      .outputOptions([
+        "-an",
+        "-c:v libx264",
+        "-preset veryfast",
+        "-crf 24",
+        "-pix_fmt yuv420p",
+        "-r 30",
+        "-vf",
+        "scale=1280:720:flags=lanczos,zoompan=z='min(zoom+0.0012,1.06)':x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':d=1:s=1280x720:fps=30,format=yuv420p",
+      ])
+      .output(outputPath),
+  );
+}
+
+async function createStockSegment(
+  clip: StockClip,
+  durationSec: number,
+  outputPath: string,
+): Promise<void> {
+  const duration = Math.max(1, durationSec);
+  await runFfmpegSegment("stock segment", (cmd) =>
+    cmd
+      .input(clip.filePath)
+      .inputOptions(["-stream_loop -1", `-t ${duration}`])
+      .outputOptions([
+        "-an",
+        "-c:v libx264",
+        "-preset veryfast",
+        "-crf 24",
+        "-pix_fmt yuv420p",
+        "-r 30",
+        "-vf",
+        "scale=1280:720:force_original_aspect_ratio=increase,crop=1280:720,format=yuv420p",
+      ])
+      .output(outputPath),
+  );
+}
+
+async function writeSegmentsConcatFile(segmentPaths: string[], concatFilePath: string): Promise<void> {
+  const lines = ["ffconcat version 1.0", ...segmentPaths.map((segment) => `file '${toFfmpegConcatPath(segment)}'`)];
+  await fs.writeFile(concatFilePath, lines.join("\n"), "utf-8");
+}
+
+export async function composeEnhancedVideo(input: ComposeEnhancedVideoInput): Promise<ComposeVideoResult> {
+  const ffmpegPath = resolveFfmpegPath();
+  if (ffmpegPath) {
+    ffmpeg.setFfmpegPath(ffmpegPath);
+  }
+
+  const outputName = input.outputName ?? "output.mp4";
+  await fs.mkdir(input.outputDir, { recursive: true });
+  const segmentDir = path.join(input.outputDir, "segments");
+  await fs.mkdir(segmentDir, { recursive: true });
+
+  const clipsBySection = new Map(input.stockClips.map((clip) => [clip.sectionIndex, clip]));
+  const segmentPaths: string[] = [];
+  let segmentIndex = 0;
+
+  for (let i = 0; i < input.slides.length; i++) {
+    const slide = input.slides[i];
+    const sectionIndex = i - 1;
+    const clip = sectionIndex >= 0 ? clipsBySection.get(sectionIndex) : undefined;
+    const stockDuration = clip && slide.durationSec >= 12 ? Math.min(5, Math.max(3, Math.floor(slide.durationSec * 0.25))) : 0;
+    const slideDuration = Math.max(2, slide.durationSec - stockDuration);
+
+    const slideSegment = path.join(segmentDir, `segment-${String(segmentIndex++).padStart(3, "0")}-slide.mp4`);
+    await createSlideSegment(slide, slideDuration, slideSegment);
+    segmentPaths.push(slideSegment);
+
+    if (clip && stockDuration > 0) {
+      const stockSegment = path.join(segmentDir, `segment-${String(segmentIndex++).padStart(3, "0")}-stock.mp4`);
+      await createStockSegment(clip, stockDuration, stockSegment);
+      segmentPaths.push(stockSegment);
+    }
+  }
+
+  const concatFilePath = path.join(input.outputDir, "enhanced-concat.txt");
+  await writeSegmentsConcatFile(segmentPaths, concatFilePath);
+
+  const outputPath = path.join(input.outputDir, outputName);
+  const totalDuration = input.slides.reduce((sum, s) => sum + s.durationSec, 0);
+  const vf = input.subtitlePath
+    ? `subtitles='${escapeSubtitleFilterPath(input.subtitlePath)}',format=yuv420p`
+    : "format=yuv420p";
+
+  await new Promise<void>((resolve, reject) => {
+    ffmpeg()
+      .input(concatFilePath)
+      .inputOptions(["-f concat", "-safe 0"])
+      .input(input.audioPath)
+      .outputOptions([
+        "-c:v libx264",
+        "-preset fast",
+        "-crf 23",
+        "-c:a aac",
+        "-b:a 128k",
+        "-pix_fmt yuv420p",
+        "-shortest",
+        "-movflags +faststart",
+        "-vf",
+        vf,
+      ])
+      .output(outputPath)
+      .on("start", (cmd) => console.log(LOG_PREFIX, "enhanced ffmpeg cmd:", cmd))
+      .on("progress", (p) => console.log(LOG_PREFIX, `enhanced progress: ${JSON.stringify(p)}`))
+      .on("end", () => {
+        console.log(LOG_PREFIX, "enhanced ffmpeg done:", outputPath);
+        resolve();
+      })
+      .on("error", (err) => {
+        console.error(LOG_PREFIX, "enhanced ffmpeg error:", err.message);
         reject(err);
       })
       .run();

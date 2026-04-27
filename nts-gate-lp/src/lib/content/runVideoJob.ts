@@ -28,7 +28,9 @@ import {
 } from "@/lib/ai/bedrockVideoScriptGenerate";
 import { synthesizeAndUpload } from "@/lib/aws/pollyTts";
 import { renderSlidesToDir, type SlideInput } from "@/lib/video/generateSlides";
-import { composeVideo, type SlideTimingInput } from "@/lib/video/composeVideo";
+import { composeEnhancedVideo, composeVideo, type SlideTimingInput } from "@/lib/video/composeVideo";
+import { downloadStockFootageForScript } from "@/lib/video/stockFootage";
+import { writeAssSubtitles } from "@/lib/video/subtitles";
 import {
   cleanSubsidyName,
   cleanSubsidyDescription,
@@ -50,6 +52,7 @@ export type RunVideoJobResult = {
 export type RunVideoJobParams = {
   subsidyId: string;
   force?: boolean;
+  videoProvider?: "enhanced" | "slides";
 };
 
 async function ensureUniqueSlug(
@@ -144,6 +147,7 @@ export async function runVideoJob(
 ): Promise<RunVideoJobResult> {
   const jobType = "video";
   const { subsidyId } = params;
+  const requestedVideoProvider = params.videoProvider ?? "enhanced";
 
   console.log(`${LOG_PREFIX} start subsidyId=${subsidyId}`);
 
@@ -288,7 +292,29 @@ export async function runVideoJob(
 
       // ── Step 5: FFmpeg で MP4 合成 ────────────────────────────
       const videoDir = path.join(workDir, "output");
-      const composed = await composeVideo(timings, localMp3, videoDir, "output.mp4");
+      let composed;
+      if (requestedVideoProvider === "enhanced") {
+        try {
+          const stockDir = path.join(workDir, "stock");
+          const subtitlePath = path.join(workDir, "subtitles.ass");
+          const stockClips = await downloadStockFootageForScript(script, stockDir);
+          await writeAssSubtitles(script.sections, subtitlePath, { initialOffsetSec: 4 });
+          composed = await composeEnhancedVideo({
+            slides: timings,
+            sections: script.sections,
+            stockClips,
+            audioPath: localMp3,
+            subtitlePath,
+            outputDir: videoDir,
+            outputName: "output.mp4",
+          });
+        } catch (e) {
+          console.warn(`${LOG_PREFIX} enhanced video compose failed — falling back to slide video`, e);
+          composed = await composeVideo(timings, localMp3, videoDir, "output.mp4");
+        }
+      } else {
+        composed = await composeVideo(timings, localMp3, videoDir, "output.mp4");
+      }
 
       // ── Step 6: MP4 を S3 にアップロード ─────────────────────
       const mp4S3Key = `videos/${subsidyId}/video.mp4`;
