@@ -347,7 +347,7 @@ function newsTextLayers(opts: {
       { text: "補助金解説 NEWS", x: 91, y: 69, fontSize: 21, weight: "bold" },
       { text: "今日の補助金ポイント", x: 104, y: 218, fontSize: 34, color: "#fbbf24", weight: "bold" },
       { text: "対象・金額・申請前の注意点を短時間で解説します", x: 104, y: 402, fontSize: 30, color: "#cbd5e1" },
-      { text: "NTS 日本提携支援  |  補助金活用の戦略設計と伴走支援", x: 92, y: 620, fontSize: 23, weight: "bold" },
+      { text: "NTS 日本提携支援 / 補助金活用の戦略設計と伴走支援", x: 92, y: 620, fontSize: 23, weight: "bold" },
     ];
     addWrapped(layers, { text: opts.title, x: 104, y: 292, fontSize: 40, weight: "bold", maxChars: 21 }, 50);
     return layers;
@@ -359,7 +359,7 @@ function newsTextLayers(opts: {
     { text: opts.highlight ?? "重要ポイント", x: 128, y: 231, fontSize: 31, weight: "bold", maxChars: 10 },
     { text: "CHECK", x: 882, y: 142, fontSize: 22, color: "#fbbf24", weight: "bold" },
     { text: "詳細は公募要領で確認", x: 882, y: 178, fontSize: 25, weight: "bold" },
-    { text: "NTS 日本提携支援  |  補助金活用の無料相談受付中", x: 92, y: 620, fontSize: 23, weight: "bold" },
+    { text: "NTS 日本提携支援 / 補助金活用の無料相談受付中", x: 92, y: 620, fontSize: 23, weight: "bold" },
   ];
   addWrapped(layers, { text: opts.heading, x: 94, y: 142, fontSize: 36, weight: "bold", maxChars: 18 }, 43);
   const displayLines = opts.lines.flatMap((line) => wrapNewsText(line, 20)).slice(0, 5);
@@ -382,7 +382,7 @@ async function createNewsSegment(input: {
   const fontPath = resolveVideoFontPath();
   const bgFilter = isStock
     ? "scale=1280:720:force_original_aspect_ratio=increase,crop=1280:720,eq=brightness=-0.18:saturation=1.12[bg]"
-    : "scale=1280:720:flags=lanczos,zoompan=z='min(zoom+0.0009,1.045)':x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':d=1:s=1280x720:fps=30[bg]";
+    : "scale=1280:720:flags=lanczos,format=rgba[bg]";
   const textFilters = input.textLayers.map((layer) => drawTextFilter(layer, fontPath)).join(",");
   const filter = `[0:v]${bgFilter};[1:v]format=rgba[card];[bg][card]overlay=0:0:format=auto${textFilters ? `,${textFilters}` : ""},format=yuv420p`;
 
