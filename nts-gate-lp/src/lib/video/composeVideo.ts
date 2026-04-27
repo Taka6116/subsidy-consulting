@@ -17,7 +17,7 @@ import path from "node:path";
 import fs from "node:fs/promises";
 import { existsSync } from "node:fs";
 import { createRequire } from "node:module";
-import sharp from "sharp";
+import { Resvg } from "@resvg/resvg-js";
 import type { VideoScriptSection } from "@/lib/ai/bedrockVideoScriptGenerate";
 import type { StockClip } from "@/lib/video/stockFootage";
 import {
@@ -185,10 +185,6 @@ function toFfmpegConcatPath(filePath: string): string {
   return filePath.replace(/\\/g, "/").replace(/'/g, "'\\''");
 }
 
-function escapeFilterPath(filePath: string): string {
-  return filePath.replace(/\\/g, "/").replace(/:/g, "\\:").replace(/'/g, "\\'");
-}
-
 async function runFfmpegSegment(
   label: string,
   build: (cmd: ffmpeg.FfmpegCommand) => ffmpeg.FfmpegCommand,
@@ -215,6 +211,16 @@ async function writeSegmentsConcatFile(segmentPaths: string[], concatFilePath: s
 
 const VIDEO_W = 1280;
 const VIDEO_H = 720;
+const RESVG_FONT_FAMILY = "Noto Sans CJK JP";
+
+function escapeSvgText(str: string): string {
+  return str
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
 
 function wrapNewsText(text: string, maxChars: number): string[] {
   const lines: string[] = [];
@@ -230,18 +236,17 @@ function wrapNewsText(text: string, maxChars: number): string[] {
   return lines.filter(Boolean);
 }
 
-type NewsTextLayer = {
-  text: string;
-  x: number;
-  y: number;
-  fontSize: number;
-  color?: string;
-  weight?: "normal" | "bold";
-  maxChars?: number;
-};
-
 async function renderSvgPng(svg: string, outputPath: string): Promise<string> {
-  await sharp(Buffer.from(svg)).png({ compressionLevel: 6 }).toFile(outputPath);
+  const fontPath = resolveVideoFontPath();
+  const resvg = new Resvg(svg, {
+    fitTo: { mode: "width", value: VIDEO_W },
+    font: {
+      fontFiles: fontPath ? [fontPath] : [],
+      loadSystemFonts: false,
+      defaultFontFamily: RESVG_FONT_FAMILY,
+    },
+  });
+  await fs.writeFile(outputPath, resvg.render().asPng());
   return outputPath;
 }
 
@@ -280,111 +285,68 @@ function newsOverlaySvg(opts: {
   index: number;
   isTitle?: boolean;
 }): string {
+  const font = RESVG_FONT_FAMILY;
+  const titleLines = wrapNewsText(opts.title, 21).slice(0, 2);
+  const titleHtml = titleLines
+    .map((line, i) => `<text x="104" y="${322 + i * 50}" font-size="40" font-weight="800" fill="#ffffff" font-family="${font}">${escapeSvgText(line)}</text>`)
+    .join("\n");
+  const headingHtml = wrapNewsText(opts.heading, 18)
+    .slice(0, 2)
+    .map((line, i) => `<text x="94" y="${170 + i * 43}" font-size="36" font-weight="800" fill="#ffffff" font-family="${font}">${escapeSvgText(line)}</text>`)
+    .join("\n");
+  const bulletHtml = opts.lines
+    .flatMap((line) => wrapNewsText(line, 20))
+    .slice(0, 5)
+    .map((line, i) => `<text x="96" y="${310 + i * 48}" font-size="30" font-weight="700" fill="#f8fafc" font-family="${font}">${escapeSvgText(line)}</text>`)
+    .join("\n");
+
   if (opts.isTitle) {
     return `<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="${VIDEO_W}" height="${VIDEO_H}" viewBox="0 0 ${VIDEO_W} ${VIDEO_H}">
   <rect x="64" y="56" width="248" height="48" rx="24" fill="#d97706"/>
+  <text x="91" y="87" font-size="21" font-weight="800" fill="#ffffff" font-family="${font}">補助金解説 NEWS</text>
   <rect x="64" y="160" width="900" height="326" rx="28" fill="#020817" opacity="0.70"/>
   <rect x="64" y="160" width="8" height="326" rx="4" fill="#d97706"/>
+  <text x="104" y="250" font-size="34" font-weight="800" fill="#fbbf24" font-family="${font}">今日の補助金ポイント</text>
+  ${titleHtml}
+  <text x="104" y="430" font-size="30" font-weight="600" fill="#cbd5e1" font-family="${font}">対象・金額・申請前の注意点を短時間で解説します</text>
   <rect x="64" y="610" width="1152" height="46" rx="23" fill="#0f172a" opacity="0.82"/>
+  <text x="92" y="641" font-size="23" font-weight="700" fill="#ffffff" font-family="${font}">NTS 日本提携支援 / 補助金活用の戦略設計と伴走支援</text>
 </svg>`;
   }
 
   return `<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="${VIDEO_W}" height="${VIDEO_H}" viewBox="0 0 ${VIDEO_W} ${VIDEO_H}">
   <rect x="54" y="42" width="178" height="42" rx="21" fill="#d97706"/>
+  <text x="88" y="70" font-size="20" font-weight="800" fill="#ffffff" font-family="${font}">POINT ${String(opts.index).padStart(2, "0")}</text>
+  <text x="256" y="72" font-size="24" font-weight="700" fill="#e2e8f0" opacity="0.86" font-family="${font}">補助金解説ニュース</text>
   <rect x="54" y="116" width="720" height="408" rx="26" fill="#020817" opacity="0.70"/>
   <rect x="54" y="116" width="8" height="408" rx="4" fill="#d97706"/>
+  ${headingHtml}
   <rect x="94" y="214" width="310" height="60" rx="30" fill="#d97706" opacity="0.95"/>
+  <text x="128" y="254" font-size="31" font-weight="800" fill="#ffffff" font-family="${font}">${escapeSvgText(opts.highlight ?? "重要ポイント")}</text>
+  ${bulletHtml}
   <rect x="852" y="118" width="318" height="112" rx="24" fill="#ffffff" opacity="0.10"/>
+  <text x="882" y="164" font-size="22" font-weight="700" fill="#fbbf24" font-family="${font}">CHECK</text>
+  <text x="882" y="202" font-size="25" font-weight="800" fill="#ffffff" font-family="${font}">詳細は公募要領で確認</text>
   <rect x="64" y="610" width="1152" height="46" rx="23" fill="#0f172a" opacity="0.82"/>
+  <text x="92" y="641" font-size="23" font-weight="700" fill="#ffffff" font-family="${font}">NTS 日本提携支援 / 補助金活用の無料相談受付中</text>
 </svg>`;
-}
-
-function drawTextEscape(text: string): string {
-  return text
-    .replace(/\\/g, "\\\\")
-    .replace(/:/g, "\\:")
-    .replace(/'/g, "\\'")
-    .replace(/,/g, "\\,")
-    .replace(/\[/g, "\\[")
-    .replace(/\]/g, "\\]")
-    .replace(/\r?\n/g, " ");
-}
-
-function drawTextFilter(layer: NewsTextLayer, fontPath: string | null): string {
-  const fontArg = fontPath ? `fontfile='${escapeFilterPath(fontPath)}':` : "";
-  const border = layer.fontSize >= 40 ? 3 : 2;
-  const fontColor = (layer.color ?? "white").replace(/^#/, "0x");
-  return [
-    `drawtext=${fontArg}text='${drawTextEscape(layer.text)}'`,
-    `x=${layer.x}`,
-    `y=${layer.y}`,
-    `fontsize=${layer.fontSize}`,
-    `fontcolor=${fontColor}`,
-    `borderw=${border}`,
-    "bordercolor=black@0.34",
-  ].join(":");
-}
-
-function newsTextLayers(opts: {
-  title: string;
-  heading: string;
-  highlight?: string;
-  lines: string[];
-  index: number;
-  isTitle?: boolean;
-}): NewsTextLayer[] {
-  const addWrapped = (layers: NewsTextLayer[], layer: NewsTextLayer, lineHeight: number) => {
-    const lines = layer.maxChars ? wrapNewsText(layer.text, layer.maxChars) : [layer.text];
-    lines.slice(0, 2).forEach((text, i) => {
-      layers.push({ ...layer, text, y: layer.y + i * lineHeight });
-    });
-  };
-
-  if (opts.isTitle) {
-    const layers: NewsTextLayer[] = [
-      { text: "補助金解説 NEWS", x: 91, y: 69, fontSize: 21, weight: "bold" },
-      { text: "今日の補助金ポイント", x: 104, y: 218, fontSize: 34, color: "#fbbf24", weight: "bold" },
-      { text: "対象・金額・申請前の注意点を短時間で解説します", x: 104, y: 402, fontSize: 30, color: "#cbd5e1" },
-      { text: "NTS 日本提携支援 / 補助金活用の戦略設計と伴走支援", x: 92, y: 620, fontSize: 23, weight: "bold" },
-    ];
-    addWrapped(layers, { text: opts.title, x: 104, y: 292, fontSize: 40, weight: "bold", maxChars: 21 }, 50);
-    return layers;
-  }
-
-  const layers: NewsTextLayer[] = [
-    { text: `POINT ${String(opts.index).padStart(2, "0")}`, x: 88, y: 56, fontSize: 20, weight: "bold" },
-    { text: "補助金解説ニュース", x: 256, y: 49, fontSize: 24, color: "#e2e8f0", weight: "bold" },
-    { text: opts.highlight ?? "重要ポイント", x: 128, y: 231, fontSize: 31, weight: "bold", maxChars: 10 },
-    { text: "CHECK", x: 882, y: 142, fontSize: 22, color: "#fbbf24", weight: "bold" },
-    { text: "詳細は公募要領で確認", x: 882, y: 178, fontSize: 25, weight: "bold" },
-    { text: "NTS 日本提携支援 / 補助金活用の無料相談受付中", x: 92, y: 620, fontSize: 23, weight: "bold" },
-  ];
-  addWrapped(layers, { text: opts.heading, x: 94, y: 142, fontSize: 36, weight: "bold", maxChars: 18 }, 43);
-  const displayLines = opts.lines.flatMap((line) => wrapNewsText(line, 20)).slice(0, 5);
-  displayLines.forEach((line, i) => {
-    layers.push({ text: line, x: 96, y: 280 + i * 48, fontSize: 30, weight: "bold", maxChars: 22 });
-  });
-  return layers;
 }
 
 async function createNewsSegment(input: {
   clip?: StockClip;
   backgroundPath: string;
   overlayPath: string;
-  textLayers: NewsTextLayer[];
   durationSec: number;
   outputPath: string;
 }): Promise<void> {
   const duration = Math.max(1, input.durationSec);
   const isStock = !!input.clip;
-  const fontPath = resolveVideoFontPath();
   const bgFilter = isStock
     ? "scale=1280:720:force_original_aspect_ratio=increase,crop=1280:720,eq=brightness=-0.18:saturation=1.12[bg]"
     : "scale=1280:720:flags=lanczos,format=rgba[bg]";
-  const textFilters = input.textLayers.map((layer) => drawTextFilter(layer, fontPath)).join(",");
-  const filter = `[0:v]${bgFilter};[1:v]format=rgba[card];[bg][card]overlay=0:0:format=auto${textFilters ? `,${textFilters}` : ""},format=yuv420p`;
+  const filter = `[0:v]${bgFilter};[1:v]format=rgba[card];[bg][card]overlay=0:0:format=auto,format=yuv420p`;
 
   await runFfmpegSegment(isStock ? "news stock segment" : "news motion segment", (cmd) => {
     const base = cmd.input(isStock && input.clip ? input.clip.filePath : input.backgroundPath);
@@ -443,13 +405,6 @@ export async function composeEnhancedVideo(input: ComposeEnhancedVideoInput): Pr
   await createNewsSegment({
     backgroundPath: titleBg,
     overlayPath: titleOverlay,
-    textLayers: newsTextLayers({
-      title: input.title ?? "補助金解説動画",
-      heading: "補助金解説動画",
-      lines: [],
-      index: 0,
-      isTitle: true,
-    }),
     durationSec: titleDuration,
     outputPath: titleSegment,
   });
@@ -475,13 +430,6 @@ export async function composeEnhancedVideo(input: ComposeEnhancedVideoInput): Pr
       clip,
       backgroundPath: bgPath,
       overlayPath,
-      textLayers: newsTextLayers({
-        title: input.title ?? "補助金解説動画",
-        heading: section.heading,
-        highlight: section.highlight,
-        lines: section.slide_lines ?? [section.text],
-        index: i + 1,
-      }),
       durationSec: duration,
       outputPath: segmentPath,
     });

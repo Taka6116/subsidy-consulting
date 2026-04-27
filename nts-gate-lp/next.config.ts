@@ -3,10 +3,11 @@ import path from "path";
 
 // 親ディレクトリなどに別の package-lock があると、Next が誤ったワークスペースルートを推論するのを防ぐ
 const nextConfig: NextConfig = {
+  serverExternalPackages: ["@resvg/resvg-js"],
   outputFileTracingRoot: path.join(__dirname),
   outputFileTracingIncludes: {
-    "/*": ["./node_modules/ffmpeg-static/**/*", "./public/fonts/**/*"],
-    "/api/videos/generate": ["./node_modules/ffmpeg-static/**/*", "./public/fonts/**/*"],
+    "/*": ["./node_modules/ffmpeg-static/**/*", "./node_modules/@resvg/**/*", "./public/fonts/**/*"],
+    "/api/videos/generate": ["./node_modules/ffmpeg-static/**/*", "./node_modules/@resvg/**/*", "./public/fonts/**/*"],
   },
   images: {
     remotePatterns: [
