@@ -344,23 +344,6 @@ function newsOverlaySvg(opts: {
 </svg>`;
 }
 
-function newsTransitionSvg(index: number): string {
-  const accent = index % 2 === 0 ? "#d97706" : "#2563eb";
-  return `<?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="${VIDEO_W}" height="${VIDEO_H}" viewBox="0 0 ${VIDEO_W} ${VIDEO_H}">
-  <defs>
-    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#081226"/>
-      <stop offset="100%" stop-color="#17264a"/>
-    </linearGradient>
-  </defs>
-  <rect width="${VIDEO_W}" height="${VIDEO_H}" fill="url(#bg)"/>
-  <rect x="-160" y="0" width="520" height="${VIDEO_H}" fill="${accent}" opacity="0.88" transform="skewX(-14)"/>
-  <rect x="330" y="0" width="42" height="${VIDEO_H}" fill="#ffffff" opacity="0.16" transform="skewX(-14)"/>
-  <text x="470" y="330" font-size="42" font-weight="800" fill="#ffffff" font-family="${RESVG_FONT_FAMILY}">NEXT POINT</text>
-  <text x="470" y="386" font-size="25" font-weight="700" fill="#cbd5e1" font-family="${RESVG_FONT_FAMILY}">重要ポイントを切り替えます</text>
-</svg>`;
-}
 
 async function createNewsSegment(input: {
   clip?: StockClip;
@@ -397,25 +380,6 @@ async function createNewsSegment(input: {
   });
 }
 
-async function createStillSegment(imagePath: string, durationSec: number, outputPath: string): Promise<void> {
-  const duration = Math.max(0.25, durationSec);
-  await runFfmpegSegment("transition segment", (cmd) =>
-    cmd
-      .input(imagePath)
-      .inputOptions(["-loop 1", `-t ${duration}`])
-      .outputOptions([
-        "-an",
-        "-c:v libx264",
-        "-preset veryfast",
-        "-crf 23",
-        "-pix_fmt yuv420p",
-        "-r 30",
-        "-vf",
-        "scale=1280:720:flags=lanczos,format=yuv420p",
-      ])
-      .output(outputPath),
-  );
-}
 
 export async function composeEnhancedVideo(input: ComposeEnhancedVideoInput): Promise<ComposeVideoResult> {
   const ffmpegPath = resolveFfmpegPath();
@@ -486,15 +450,6 @@ export async function composeEnhancedVideo(input: ComposeEnhancedVideoInput): Pr
       durationSec: duration,
       outputPath: segmentPath,
     });
-    if (i > 0) {
-      const transitionPng = await renderSvgPng(
-        newsTransitionSvg(i),
-        path.join(segmentDir, `transition-${String(i).padStart(2, "0")}.png`),
-      );
-      const transitionSegment = path.join(segmentDir, `segment-${String(segmentIndex++).padStart(3, "0")}-transition.mp4`);
-      await createStillSegment(transitionPng, 0.35, transitionSegment);
-      segmentPaths.push(transitionSegment);
-    }
     segmentPaths.push(segmentPath);
   }
 
@@ -502,11 +457,9 @@ export async function composeEnhancedVideo(input: ComposeEnhancedVideoInput): Pr
   await writeSegmentsConcatFile(segmentPaths, concatFilePath);
 
   const outputPath = path.join(input.outputDir, outputName);
-  const transitionDuration = Math.max(0, input.sections.length - 1) * 0.35;
   const totalDuration =
     titleDuration +
-    input.sections.reduce((sum, s) => sum + Math.max(4, s.duration_sec ?? 12), 0) +
-    transitionDuration;
+    input.sections.reduce((sum, s) => sum + Math.max(4, s.duration_sec ?? 12), 0);
   // Section-level captions are burned into each segment with drawtext and fontfile.
   // This avoids serverless fontconfig differences in the ASS subtitles filter.
   const vf = "format=yuv420p";
