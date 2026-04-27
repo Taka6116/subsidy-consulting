@@ -22,9 +22,6 @@ import type { VideoScriptSection } from "@/lib/ai/bedrockVideoScriptGenerate";
 import type { StockClip } from "@/lib/video/stockFootage";
 import {
   resolveVideoFontPath,
-  resolveVideoFontsDir,
-  svgFontFaceStyle,
-  VIDEO_FONT_FAMILY,
 } from "@/lib/video/fonts";
 
 const LOG_PREFIX = "[composeVideo]";
@@ -188,20 +185,8 @@ function toFfmpegConcatPath(filePath: string): string {
   return filePath.replace(/\\/g, "/").replace(/'/g, "'\\''");
 }
 
-function escapeSubtitleFilterPath(filePath: string): string {
-  return filePath.replace(/\\/g, "/").replace(/:/g, "\\:").replace(/'/g, "\\'");
-}
-
 function escapeFilterPath(filePath: string): string {
   return filePath.replace(/\\/g, "/").replace(/:/g, "\\:").replace(/'/g, "\\'");
-}
-
-function buildSubtitleFilter(subtitlePath?: string): string {
-  if (!subtitlePath) return "format=yuv420p";
-
-  const fontsDir = resolveVideoFontsDir();
-  const fontsArg = fontsDir ? `:fontsdir='${escapeFilterPath(fontsDir)}'` : "";
-  return `subtitles='${escapeSubtitleFilterPath(subtitlePath)}'${fontsArg},format=yuv420p`;
 }
 
 async function runFfmpegSegment(
@@ -231,15 +216,6 @@ async function writeSegmentsConcatFile(segmentPaths: string[], concatFilePath: s
 const VIDEO_W = 1280;
 const VIDEO_H = 720;
 
-function escapeSvgText(str: string): string {
-  return str
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#39;");
-}
-
 function wrapNewsText(text: string, maxChars: number): string[] {
   const lines: string[] = [];
   let current = "";
@@ -253,6 +229,16 @@ function wrapNewsText(text: string, maxChars: number): string[] {
   if (current) lines.push(current);
   return lines.filter(Boolean);
 }
+
+type NewsTextLayer = {
+  text: string;
+  x: number;
+  y: number;
+  fontSize: number;
+  color?: string;
+  weight?: "normal" | "bold";
+  maxChars?: number;
+};
 
 async function renderSvgPng(svg: string, outputPath: string): Promise<string> {
   await sharp(Buffer.from(svg)).png({ compressionLevel: 6 }).toFile(outputPath);
@@ -294,71 +280,112 @@ function newsOverlaySvg(opts: {
   index: number;
   isTitle?: boolean;
 }): string {
-  const fontFace = svgFontFaceStyle();
-  const title = escapeSvgText(opts.title);
-  const heading = escapeSvgText(opts.heading);
-  const highlight = escapeSvgText(opts.highlight ?? "重要ポイント");
-  const label = opts.isTitle ? "補助金解説 NEWS" : `POINT ${String(opts.index).padStart(2, "0")}`;
-  const displayLines = opts.lines.flatMap((line) => wrapNewsText(line, 20)).slice(0, 5);
-  const bulletHtml = displayLines
-    .map((line, i) => {
-      const y = 306 + i * 48;
-      return `<text x="96" y="${y}" font-size="30" font-weight="600" fill="#f8fafc" opacity="0.94" font-family="${VIDEO_FONT_FAMILY}, sans-serif">${escapeSvgText(line)}</text>`;
-    })
-    .join("\n");
-
   if (opts.isTitle) {
     return `<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="${VIDEO_W}" height="${VIDEO_H}" viewBox="0 0 ${VIDEO_W} ${VIDEO_H}">
-  ${fontFace}
   <rect x="64" y="56" width="248" height="48" rx="24" fill="#d97706"/>
-  <text x="188" y="88" text-anchor="middle" font-size="21" font-weight="800" fill="#ffffff" font-family="${VIDEO_FONT_FAMILY}, sans-serif">${label}</text>
   <rect x="64" y="160" width="900" height="326" rx="28" fill="#020817" opacity="0.70"/>
   <rect x="64" y="160" width="8" height="326" rx="4" fill="#d97706"/>
-  <text x="104" y="250" font-size="34" font-weight="700" fill="#fbbf24" font-family="${VIDEO_FONT_FAMILY}, sans-serif">今日の補助金ポイント</text>
-  <text x="104" y="336" font-size="58" font-weight="900" fill="#ffffff" font-family="${VIDEO_FONT_FAMILY}, sans-serif">${title}</text>
-  <text x="104" y="420" font-size="30" font-weight="600" fill="#cbd5e1" font-family="${VIDEO_FONT_FAMILY}, sans-serif">対象・金額・申請前の注意点を短時間で解説します</text>
   <rect x="64" y="610" width="1152" height="46" rx="23" fill="#0f172a" opacity="0.82"/>
-  <text x="92" y="641" font-size="23" font-weight="700" fill="#ffffff" font-family="${VIDEO_FONT_FAMILY}, sans-serif">NTS 日本提携支援  |  補助金活用の戦略設計と伴走支援</text>
 </svg>`;
   }
 
   return `<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="${VIDEO_W}" height="${VIDEO_H}" viewBox="0 0 ${VIDEO_W} ${VIDEO_H}">
-  ${fontFace}
   <rect x="54" y="42" width="178" height="42" rx="21" fill="#d97706"/>
-  <text x="143" y="70" text-anchor="middle" font-size="20" font-weight="800" fill="#ffffff" font-family="${VIDEO_FONT_FAMILY}, sans-serif">${label}</text>
-  <text x="256" y="72" font-size="24" font-weight="700" fill="#e2e8f0" opacity="0.86" font-family="${VIDEO_FONT_FAMILY}, sans-serif">補助金解説ニュース</text>
-
   <rect x="54" y="116" width="720" height="408" rx="26" fill="#020817" opacity="0.70"/>
   <rect x="54" y="116" width="8" height="408" rx="4" fill="#d97706"/>
-  <text x="94" y="184" font-size="42" font-weight="900" fill="#ffffff" font-family="${VIDEO_FONT_FAMILY}, sans-serif">${heading}</text>
   <rect x="94" y="214" width="310" height="60" rx="30" fill="#d97706" opacity="0.95"/>
-  <text x="249" y="254" text-anchor="middle" font-size="31" font-weight="900" fill="#ffffff" font-family="${VIDEO_FONT_FAMILY}, sans-serif">${highlight}</text>
-  ${bulletHtml}
-
   <rect x="852" y="118" width="318" height="112" rx="24" fill="#ffffff" opacity="0.10"/>
-  <text x="882" y="164" font-size="22" font-weight="700" fill="#fbbf24" font-family="${VIDEO_FONT_FAMILY}, sans-serif">CHECK</text>
-  <text x="882" y="202" font-size="25" font-weight="800" fill="#ffffff" font-family="${VIDEO_FONT_FAMILY}, sans-serif">詳細は公募要領で確認</text>
-
   <rect x="64" y="610" width="1152" height="46" rx="23" fill="#0f172a" opacity="0.82"/>
-  <text x="92" y="641" font-size="23" font-weight="700" fill="#ffffff" font-family="${VIDEO_FONT_FAMILY}, sans-serif">NTS 日本提携支援  |  補助金活用の無料相談受付中</text>
 </svg>`;
+}
+
+function drawTextEscape(text: string): string {
+  return text
+    .replace(/\\/g, "\\\\")
+    .replace(/:/g, "\\:")
+    .replace(/'/g, "\\'")
+    .replace(/,/g, "\\,")
+    .replace(/\[/g, "\\[")
+    .replace(/\]/g, "\\]")
+    .replace(/\r?\n/g, " ");
+}
+
+function drawTextFilter(layer: NewsTextLayer, fontPath: string | null): string {
+  const fontArg = fontPath ? `fontfile='${escapeFilterPath(fontPath)}':` : "";
+  const border = layer.fontSize >= 40 ? 3 : 2;
+  return [
+    "drawtext=",
+    fontArg,
+    `text='${drawTextEscape(layer.text)}'`,
+    `x=${layer.x}`,
+    `y=${layer.y}`,
+    `fontsize=${layer.fontSize}`,
+    `fontcolor=${layer.color ?? "white"}`,
+    `borderw=${border}`,
+    "bordercolor=black@0.34",
+  ].join(":");
+}
+
+function newsTextLayers(opts: {
+  title: string;
+  heading: string;
+  highlight?: string;
+  lines: string[];
+  index: number;
+  isTitle?: boolean;
+}): NewsTextLayer[] {
+  const addWrapped = (layers: NewsTextLayer[], layer: NewsTextLayer, lineHeight: number) => {
+    const lines = layer.maxChars ? wrapNewsText(layer.text, layer.maxChars) : [layer.text];
+    lines.slice(0, 2).forEach((text, i) => {
+      layers.push({ ...layer, text, y: layer.y + i * lineHeight });
+    });
+  };
+
+  if (opts.isTitle) {
+    const layers: NewsTextLayer[] = [
+      { text: "補助金解説 NEWS", x: 91, y: 69, fontSize: 21, weight: "bold" },
+      { text: "今日の補助金ポイント", x: 104, y: 218, fontSize: 34, color: "#fbbf24", weight: "bold" },
+      { text: "対象・金額・申請前の注意点を短時間で解説します", x: 104, y: 402, fontSize: 30, color: "#cbd5e1" },
+      { text: "NTS 日本提携支援  |  補助金活用の戦略設計と伴走支援", x: 92, y: 620, fontSize: 23, weight: "bold" },
+    ];
+    addWrapped(layers, { text: opts.title, x: 104, y: 292, fontSize: 40, weight: "bold", maxChars: 21 }, 50);
+    return layers;
+  }
+
+  const layers: NewsTextLayer[] = [
+    { text: `POINT ${String(opts.index).padStart(2, "0")}`, x: 88, y: 56, fontSize: 20, weight: "bold" },
+    { text: "補助金解説ニュース", x: 256, y: 49, fontSize: 24, color: "#e2e8f0", weight: "bold" },
+    { text: opts.highlight ?? "重要ポイント", x: 128, y: 231, fontSize: 31, weight: "bold", maxChars: 10 },
+    { text: "CHECK", x: 882, y: 142, fontSize: 22, color: "#fbbf24", weight: "bold" },
+    { text: "詳細は公募要領で確認", x: 882, y: 178, fontSize: 25, weight: "bold" },
+    { text: "NTS 日本提携支援  |  補助金活用の無料相談受付中", x: 92, y: 620, fontSize: 23, weight: "bold" },
+  ];
+  addWrapped(layers, { text: opts.heading, x: 94, y: 142, fontSize: 36, weight: "bold", maxChars: 18 }, 43);
+  const displayLines = opts.lines.flatMap((line) => wrapNewsText(line, 20)).slice(0, 5);
+  displayLines.forEach((line, i) => {
+    layers.push({ text: line, x: 96, y: 280 + i * 48, fontSize: 30, weight: "bold", maxChars: 22 });
+  });
+  return layers;
 }
 
 async function createNewsSegment(input: {
   clip?: StockClip;
   backgroundPath: string;
   overlayPath: string;
+  textLayers: NewsTextLayer[];
   durationSec: number;
   outputPath: string;
 }): Promise<void> {
   const duration = Math.max(1, input.durationSec);
   const isStock = !!input.clip;
+  const fontPath = resolveVideoFontPath();
   const bgFilter = isStock
     ? "scale=1280:720:force_original_aspect_ratio=increase,crop=1280:720,eq=brightness=-0.18:saturation=1.12[bg]"
     : "scale=1280:720:flags=lanczos,zoompan=z='min(zoom+0.0009,1.045)':x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':d=1:s=1280x720:fps=30[bg]";
-  const filter = `[0:v]${bgFilter};[1:v]format=rgba[card];[bg][card]overlay=0:0:format=auto,format=yuv420p`;
+  const textFilters = input.textLayers.map((layer) => drawTextFilter(layer, fontPath)).join(",");
+  const filter = `[0:v]${bgFilter};[1:v]format=rgba[card];[bg][card]overlay=0:0:format=auto${textFilters ? `,${textFilters}` : ""},format=yuv420p`;
 
   await runFfmpegSegment(isStock ? "news stock segment" : "news motion segment", (cmd) => {
     const base = cmd.input(isStock && input.clip ? input.clip.filePath : input.backgroundPath);
@@ -417,6 +444,13 @@ export async function composeEnhancedVideo(input: ComposeEnhancedVideoInput): Pr
   await createNewsSegment({
     backgroundPath: titleBg,
     overlayPath: titleOverlay,
+    textLayers: newsTextLayers({
+      title: input.title ?? "補助金解説動画",
+      heading: "補助金解説動画",
+      lines: [],
+      index: 0,
+      isTitle: true,
+    }),
     durationSec: titleDuration,
     outputPath: titleSegment,
   });
@@ -442,6 +476,13 @@ export async function composeEnhancedVideo(input: ComposeEnhancedVideoInput): Pr
       clip,
       backgroundPath: bgPath,
       overlayPath,
+      textLayers: newsTextLayers({
+        title: input.title ?? "補助金解説動画",
+        heading: section.heading,
+        highlight: section.highlight,
+        lines: section.slide_lines ?? [section.text],
+        index: i + 1,
+      }),
       durationSec: duration,
       outputPath: segmentPath,
     });
@@ -453,7 +494,9 @@ export async function composeEnhancedVideo(input: ComposeEnhancedVideoInput): Pr
 
   const outputPath = path.join(input.outputDir, outputName);
   const totalDuration = titleDuration + input.sections.reduce((sum, s) => sum + Math.max(4, s.duration_sec ?? 12), 0);
-  const vf = buildSubtitleFilter(input.subtitlePath);
+  // Section-level captions are burned into each segment with drawtext and fontfile.
+  // This avoids serverless fontconfig differences in the ASS subtitles filter.
+  const vf = "format=yuv420p";
 
   await new Promise<void>((resolve, reject) => {
     ffmpeg()
