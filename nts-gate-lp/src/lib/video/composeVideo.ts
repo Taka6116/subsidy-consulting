@@ -16,10 +16,12 @@ import ffmpegStatic from "ffmpeg-static";
 import path from "node:path";
 import fs from "node:fs/promises";
 import { existsSync } from "node:fs";
+import { createRequire } from "node:module";
 import type { VideoScriptSection } from "@/lib/ai/bedrockVideoScriptGenerate";
 import type { StockClip } from "@/lib/video/stockFootage";
 
 const LOG_PREFIX = "[composeVideo]";
+const requireFromHere = createRequire(import.meta.url);
 
 export type SlideTimingInput = {
   pngPath: string;      // スライドPNGのファイルパス
@@ -62,9 +64,22 @@ function resolveFfmpegPath(): string | undefined {
   const staticCandidates = [
     path.join(cwd, "node_modules", "ffmpeg-static", "ffmpeg"),
     path.join(cwd, "node_modules", "ffmpeg-static", "ffmpeg.exe"),
+    path.join(cwd, "..", "node_modules", "ffmpeg-static", "ffmpeg"),
+    path.join(cwd, "..", "node_modules", "ffmpeg-static", "ffmpeg.exe"),
     path.join(cwd, ".next", "server", "node_modules", "ffmpeg-static", "ffmpeg"),
     path.join(cwd, ".next", "server", "node_modules", "ffmpeg-static", "ffmpeg.exe"),
+    "/var/task/node_modules/ffmpeg-static/ffmpeg",
+    "/var/task/node_modules/ffmpeg-static/ffmpeg.exe",
+    "/var/task/nts-gate-lp/node_modules/ffmpeg-static/ffmpeg",
+    "/var/task/nts-gate-lp/node_modules/ffmpeg-static/ffmpeg.exe",
   ];
+  try {
+    const pkgPath = requireFromHere.resolve("ffmpeg-static/package.json");
+    const pkgDir = path.dirname(pkgPath);
+    staticCandidates.unshift(path.join(pkgDir, "ffmpeg"), path.join(pkgDir, "ffmpeg.exe"));
+  } catch {
+    // package may be bundled without package.json in some serverless traces
+  }
   for (const candidate of staticCandidates) {
     if (existsSync(candidate)) return candidate;
   }
