@@ -281,10 +281,8 @@ export async function runVideoJob(
         durationSec: slide.isTitle ? 4 : (script.sections[i - 1]?.duration_sec ?? 20),
       }));
 
-      // ── Step 3.5: スライド1枚目をサムネイルとして S3 にアップロード ──
-      const thumbS3Key = `videos/${subsidyId}/thumbnail.png`;
-      thumbnailPublicUrl = await uploadPngToS3(pngPaths[0], thumbS3Key);
-      console.log(`${LOG_PREFIX} thumbnail uploaded: ${thumbS3Key}`);
+      // 通常版のフォールバック用。強化版ではニュース風タイトルフレームに差し替える。
+      const fallbackThumbnailPath = pngPaths[0];
 
       // ── Step 4: MP3 を S3 からローカルにダウンロード ──────────
       const localMp3 = path.join(workDir, "audio.mp3");
@@ -325,6 +323,14 @@ export async function runVideoJob(
       const mp4S3Key = `videos/${subsidyId}/video-${version}.mp4`;
       videoPublicUrl = await uploadMp4ToS3(composed.outputPath, mp4S3Key);
       console.log(`${LOG_PREFIX} video uploaded: ${mp4S3Key}`);
+
+      const thumbnailLocalPath = composed.thumbnailPath ?? fallbackThumbnailPath;
+      const thumbS3Key =
+        requestedVideoProvider === "enhanced"
+          ? `videos/${subsidyId}/thumbnail-${version}.png`
+          : `videos/${subsidyId}/thumbnail.png`;
+      thumbnailPublicUrl = await uploadPngToS3(thumbnailLocalPath, thumbS3Key);
+      console.log(`${LOG_PREFIX} thumbnail uploaded: ${thumbS3Key}`);
     }
 
     // ── Step 7: DB 保存 ───────────────────────────────────────
