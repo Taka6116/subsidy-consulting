@@ -5,6 +5,7 @@ import path from "path";
 const nextConfig: NextConfig = {
   outputFileTracingRoot: path.join(__dirname),
   outputFileTracingIncludes: {
+    "/*": ["./node_modules/ffmpeg-static/**/*"],
     "/api/videos/generate": ["./node_modules/ffmpeg-static/**/*"],
   },
   images: {

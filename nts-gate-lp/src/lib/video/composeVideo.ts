@@ -58,6 +58,17 @@ function resolveFfmpegPath(): string | undefined {
     return ffmpegStatic;
   }
 
+  const cwd = process.cwd();
+  const staticCandidates = [
+    path.join(cwd, "node_modules", "ffmpeg-static", "ffmpeg"),
+    path.join(cwd, "node_modules", "ffmpeg-static", "ffmpeg.exe"),
+    path.join(cwd, ".next", "server", "node_modules", "ffmpeg-static", "ffmpeg"),
+    path.join(cwd, ".next", "server", "node_modules", "ffmpeg-static", "ffmpeg.exe"),
+  ];
+  for (const candidate of staticCandidates) {
+    if (existsSync(candidate)) return candidate;
+  }
+
   return undefined; // システムPATHに委ねる
 }
 
