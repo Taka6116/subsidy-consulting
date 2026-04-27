@@ -315,14 +315,13 @@ function drawTextEscape(text: string): string {
 function drawTextFilter(layer: NewsTextLayer, fontPath: string | null): string {
   const fontArg = fontPath ? `fontfile='${escapeFilterPath(fontPath)}':` : "";
   const border = layer.fontSize >= 40 ? 3 : 2;
+  const fontColor = (layer.color ?? "white").replace(/^#/, "0x");
   return [
-    "drawtext=",
-    fontArg,
-    `text='${drawTextEscape(layer.text)}'`,
+    `drawtext=${fontArg}text='${drawTextEscape(layer.text)}'`,
     `x=${layer.x}`,
     `y=${layer.y}`,
     `fontsize=${layer.fontSize}`,
-    `fontcolor=${layer.color ?? "white"}`,
+    `fontcolor=${fontColor}`,
     `borderw=${border}`,
     "bordercolor=black@0.34",
   ].join(":");
