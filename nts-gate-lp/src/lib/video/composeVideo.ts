@@ -12,7 +12,7 @@
  */
 
 import ffmpeg from "fluent-ffmpeg";
-import ffmpegInstaller from "@ffmpeg-installer/ffmpeg";
+import ffmpegStatic from "ffmpeg-static";
 import path from "node:path";
 import fs from "node:fs/promises";
 import { existsSync } from "node:fs";
@@ -54,8 +54,8 @@ function resolveFfmpegPath(): string | undefined {
   const lambdaPath = "/opt/bin/ffmpeg";
   if (existsSync(lambdaPath)) return lambdaPath;
 
-  if (ffmpegInstaller.path && existsSync(ffmpegInstaller.path)) {
-    return ffmpegInstaller.path;
+  if (ffmpegStatic && existsSync(ffmpegStatic)) {
+    return ffmpegStatic;
   }
 
   return undefined; // システムPATHに委ねる
