@@ -7,7 +7,7 @@ async function main() {
   const { prisma } = await import("../src/lib/db/prisma");
   const rows = await prisma.generatedContent.findMany({
     where: { contentType: "video", status: "published" },
-    select: { slug: true, videoPath: true, audioPath: true, duration: true },
+    select: { slug: true, videoPath: true, audioPath: true, thumbnailPath: true, duration: true },
     orderBy: { publishedAt: "desc" },
     take: 10,
   });
