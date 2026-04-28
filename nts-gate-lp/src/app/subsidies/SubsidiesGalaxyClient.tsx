@@ -100,7 +100,7 @@ const CATEGORY_CARDS = [
     label: "補助金一覧",
     subLabel: "GRANT DATABASE",
     description: "省庁・jGrants から自動収集した最新補助金を即検索。締切・上限額・対象業種を一目で確認。",
-    badge: "毎日更新",
+    badge: "最速更新",
     badgeColor: "bg-amber-50 text-amber-700 ring-amber-200",
   },
   {
@@ -108,7 +108,7 @@ const CATEGORY_CARDS = [
     label: "解説記事",
     subLabel: "EXPERT ARTICLES",
     description: "補助金ごとの詳しい解説・申請ポイントをわかりやすくまとめた専門記事。",
-    badge: "AI生成・随時追加",
+    badge: "最速更新・補助金記事",
     badgeColor: "bg-primary-50 text-primary-700 ring-primary-200",
   },
   {
@@ -116,7 +116,7 @@ const CATEGORY_CARDS = [
     label: "活用ガイド",
     subLabel: "ACTION GUIDE",
     description: "制度ごとの対象課題・活用例・申請の流れをLP形式で整理。相談前の判断材料として確認できます。",
-    badge: "LP形式",
+    badge: "webページ",
     badgeColor: "bg-teal-50 text-teal-700 ring-teal-200",
   },
   {
@@ -124,7 +124,7 @@ const CATEGORY_CARDS = [
     label: "解説動画",
     subLabel: "VIDEO GUIDE",
     description: "音声ナレーション付きの動画で補助金の概要を手軽に理解。通勤・移動中にも。",
-    badge: "音声対応",
+    badge: "補助金解説動画",
     badgeColor: "bg-emerald-50 text-emerald-700 ring-emerald-200",
   },
 ] as const;
@@ -192,8 +192,8 @@ export default function SubsidiesGalaxyClient({ counts }: Props) {
                   style={hiddenStyle}
                   className="font-heading text-[clamp(40px,6vw,80px)] font-normal leading-[1.1] text-[#1a2544]"
                 >
-                  補助金を、<br />
-                  最速で届ける。
+                  補助金情報が<br />
+                  最速で一番わかりやすい場所
                 </h1>
                 <p
                   data-intro-reveal

@@ -1,12 +1,12 @@
 /**
- * 補助金 1 件 → 動画台本生成 → Polly 音声合成 → スライド生成 → FFmpeg MP4合成 → S3 保存 の Worker。
+ * 補助金 1 件 → 動画台本生成 → TTS 音声合成 → スライド生成 → FFmpeg MP4合成 → S3 保存 の Worker。
  * トリガー（CLI / API / Lambda）から共通で呼び出せるコア。
  *
  * 処理:
  *  1. SubsidyGrant + 関連記事を取得
  *  2. ContentJob(video) を running に upsert
  *  3. Bedrock で動画台本生成（slide_lines 付き）→ DB 保存 (contentType=video_script)
- *  4. AWS Polly で音声合成 → S3 に MP3 保存
+ *  4. ElevenLabs または AWS Polly で音声合成 → S3 に MP3 保存
  *  5. sharp + SVG でスライドPNGを生成（tmpdir）
  *  6. FFmpeg でスライド + 音声を MP4 に合成
  *  7. S3 に MP4 をアップロード → videoPath を設定
@@ -27,6 +27,7 @@ import {
   type SubsidyForVideoScript,
 } from "@/lib/ai/bedrockVideoScriptGenerate";
 import { synthesizeAndUpload } from "@/lib/aws/pollyTts";
+import { synthesizeElevenLabsAndUpload } from "@/lib/aws/elevenLabsTts";
 import { renderSlidesToDir, type SlideInput } from "@/lib/video/generateSlides";
 import { composeEnhancedVideo, composeVideo, type SlideTimingInput } from "@/lib/video/composeVideo";
 import { downloadStockFootageForScript } from "@/lib/video/stockFootage";
@@ -38,6 +39,7 @@ import {
 import { S3Client, PutObjectCommand, GetObjectCommand } from "@aws-sdk/client-s3";
 
 const LOG_PREFIX = "[runVideoJob]";
+type TtsProvider = "elevenlabs" | "polly";
 
 export type RunVideoJobResult = {
   contentId: string;
@@ -54,6 +56,24 @@ export type RunVideoJobParams = {
   force?: boolean;
   videoProvider?: "enhanced" | "slides";
 };
+
+async function synthesizeNarration(text: string, subsidyId: string) {
+  const requestedProvider = (process.env.VIDEO_TTS_PROVIDER?.trim().toLowerCase() ||
+    "polly") as TtsProvider;
+
+  if (requestedProvider === "elevenlabs") {
+    const elevenLabsResult = await synthesizeElevenLabsAndUpload(text, subsidyId);
+    if (elevenLabsResult) {
+      console.log(`${LOG_PREFIX} TTS provider=elevenlabs`);
+      return elevenLabsResult;
+    }
+    console.warn(`${LOG_PREFIX} ElevenLabs synthesis failed — falling back to Polly`);
+  }
+
+  const pollyResult = await synthesizeAndUpload(text, subsidyId);
+  if (pollyResult) console.log(`${LOG_PREFIX} TTS provider=polly`);
+  return pollyResult;
+}
 
 async function ensureUniqueSlug(
   baseSlug: string,
@@ -230,15 +250,15 @@ export async function runVideoJob(
       },
     });
 
-    // ── Step 2: Polly 音声合成 ────────────────────────────────
+    // ── Step 2: TTS 音声合成 ─────────────────────────────────
     let audioResult = null;
     if (process.env.VIDEO_S3_BUCKET) {
-      audioResult = await synthesizeAndUpload(script.narration_text, subsidyId);
+      audioResult = await synthesizeNarration(script.narration_text, subsidyId);
       if (!audioResult) {
-        console.warn(`${LOG_PREFIX} Polly synthesis failed — saving as script_only`);
+        console.warn(`${LOG_PREFIX} TTS synthesis failed — saving as script_only`);
       }
     } else {
-      console.warn(`${LOG_PREFIX} VIDEO_S3_BUCKET not set — skipping Polly`);
+      console.warn(`${LOG_PREFIX} VIDEO_S3_BUCKET not set — skipping TTS`);
     }
 
     // ── Step 3: スライドPNG 生成 ──────────────────────────────

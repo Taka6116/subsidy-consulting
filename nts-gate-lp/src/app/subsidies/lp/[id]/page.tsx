@@ -18,7 +18,6 @@ import SubsidyLpStats from "@/components/subsidy-lp/SubsidyLpStats";
 import SubsidyLpPainSection from "@/components/subsidy-lp/SubsidyLpPainSection";
 import SubsidyLpUseCases from "@/components/subsidy-lp/SubsidyLpUseCases";
 import SubsidyLpHowSection from "@/components/subsidy-lp/SubsidyLpHowSection";
-import SubsidyLpCtaSidebar from "@/components/subsidy-lp/SubsidyLpCtaSidebar";
 import SubsidyLpCtaBottom from "@/components/subsidy-lp/SubsidyLpCtaBottom";
 import SubsidyLpFaq from "@/components/subsidy-lp/SubsidyLpFaq";
 import { buildSubsidyLpData } from "@/lib/subsidy-lp/buildSubsidyLpData";
@@ -77,7 +76,7 @@ export default async function SubsidyLpPage({ params }: Props) {
       <main className="relative min-h-screen bg-[#eef4f9] font-body">
         <SubsidyLpHero data={data} />
 
-        <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:grid lg:grid-cols-[1fr_340px] lg:gap-10 lg:py-16">
+        <div className="mx-auto max-w-5xl px-4 py-12 sm:px-6 lg:py-16">
           <div className="space-y-12">
             <SubsidyLpStats data={data} />
             <SubsidyLpPainSection data={data} />
@@ -87,10 +86,6 @@ export default async function SubsidyLpPage({ params }: Props) {
             <FinalCtaSection grantName={data.name} />
             <ArticleLinkSection grantId={id} grantName={data.name} />
           </div>
-
-          <aside className="hidden lg:block">
-            <SubsidyLpCtaSidebar data={data} />
-          </aside>
         </div>
 
         {/* モバイル スティッキー CTA */}

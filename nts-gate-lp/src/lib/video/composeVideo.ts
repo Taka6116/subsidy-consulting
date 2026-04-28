@@ -261,29 +261,28 @@ async function compositePng(basePath: string, overlayPath: string, outputPath: s
 }
 
 function newsBackgroundSvg(index: number): string {
-  const hue = index % 2 === 0 ? "#0f1a35" : "#17264a";
-  const accent = index % 3 === 0 ? "#d97706" : "#2563eb";
+  const accent = index % 3 === 0 ? "#5b7cfa" : index % 3 === 1 ? "#22a7d8" : "#6c8ff5";
   return `<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="${VIDEO_W}" height="${VIDEO_H}" viewBox="0 0 ${VIDEO_W} ${VIDEO_H}">
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="${hue}"/>
-      <stop offset="100%" stop-color="#081226"/>
+      <stop offset="0%" stop-color="#eef6ff"/>
+      <stop offset="52%" stop-color="#f8fbff"/>
+      <stop offset="100%" stop-color="#dfeaff"/>
     </linearGradient>
-    <radialGradient id="glow" cx="72%" cy="18%" r="70%">
-      <stop offset="0%" stop-color="${accent}" stop-opacity="0.28"/>
+    <radialGradient id="glow" cx="78%" cy="14%" r="72%">
+      <stop offset="0%" stop-color="${accent}" stop-opacity="0.30"/>
       <stop offset="100%" stop-color="${accent}" stop-opacity="0"/>
     </radialGradient>
   </defs>
   <rect width="${VIDEO_W}" height="${VIDEO_H}" fill="url(#bg)"/>
   <rect width="${VIDEO_W}" height="${VIDEO_H}" fill="url(#glow)"/>
-  <g opacity="0.10" stroke="#ffffff" stroke-width="1">
-    ${Array.from({ length: 18 }, (_, i) => `<line x1="${i * 90 - 220}" y1="0" x2="${i * 90 + 180}" y2="${VIDEO_H}"/>`).join("")}
-    ${Array.from({ length: 9 }, (_, i) => `<line x1="0" y1="${i * 90}" x2="${VIDEO_W}" y2="${i * 90 - 160}"/>`).join("")}
+  <g opacity="0.30" stroke="#bdd2f6" stroke-width="1">
+    ${Array.from({ length: 14 }, (_, i) => `<line x1="${i * 120 - 180}" y1="0" x2="${i * 120 + 160}" y2="${VIDEO_H}"/>`).join("")}
   </g>
-  <circle cx="1040" cy="120" r="260" fill="#ffffff" opacity="0.04"/>
-  <circle cx="1140" cy="80" r="150" fill="${accent}" opacity="0.10"/>
-  <rect x="0" y="596" width="${VIDEO_W}" height="124" fill="#020817" opacity="0.38"/>
+  <circle cx="1080" cy="118" r="210" fill="#ffffff" opacity="0.72"/>
+  <circle cx="1140" cy="86" r="122" fill="${accent}" opacity="0.13"/>
+  <rect x="0" y="612" width="${VIDEO_W}" height="108" fill="#6c8ff5" opacity="0.10"/>
 </svg>`;
 }
 
@@ -296,51 +295,92 @@ function newsOverlaySvg(opts: {
   isTitle?: boolean;
 }): string {
   const font = RESVG_FONT_FAMILY;
-  const titleLines = wrapNewsText(opts.title, 21).slice(0, 2);
+  const titleLines = wrapNewsText(opts.title, 18).slice(0, 2);
   const titleHtml = titleLines
-    .map((line, i) => `<text x="104" y="${322 + i * 50}" font-size="40" font-weight="800" fill="#ffffff" font-family="${font}">${escapeSvgText(line)}</text>`)
+    .map((line, i) => `<text x="82" y="${240 + i * 56}" font-size="46" font-weight="800" fill="#16233d" font-family="${font}">${escapeSvgText(line)}</text>`)
     .join("\n");
-  const headingHtml = wrapNewsText(opts.heading, 18)
+  const headingHtml = wrapNewsText(opts.heading, 16)
     .slice(0, 2)
-    .map((line, i) => `<text x="94" y="${170 + i * 43}" font-size="36" font-weight="800" fill="#ffffff" font-family="${font}">${escapeSvgText(line)}</text>`)
+    .map((line, i) => `<text x="74" y="${142 + i * 42}" font-size="34" font-weight="800" fill="#16233d" font-family="${font}">${escapeSvgText(line)}</text>`)
     .join("\n");
-  const bulletHtml = opts.lines
+  const displayLines = opts.lines
     .flatMap((line) => wrapNewsText(line, 20))
-    .slice(0, 5)
-    .map((line, i) => `<text x="96" y="${310 + i * 48}" font-size="30" font-weight="700" fill="#f8fafc" font-family="${font}">${escapeSvgText(line)}</text>`)
+    .map((line) => line.replace(/^・/, "").trim())
+    .filter(Boolean)
+    .slice(0, 4);
+  const bulletHtml = displayLines
+    .map((line, i) => {
+      const x = i % 2 === 0 ? 72 : 675;
+      const y = i < 2 ? 350 : 492;
+      return `
+  <rect x="${x}" y="${y - 60}" width="532" height="112" rx="28" fill="#ffffff" filter="url(#shadow)"/>
+  <circle cx="${x + 42}" cy="${y - 4}" r="21" fill="#e9f2ff"/>
+  <text x="${x + 42}" y="${y + 4}" text-anchor="middle" font-size="17" font-weight="800" fill="#5b7cfa" font-family="${font}">${String(i + 1).padStart(2, "0")}</text>
+  <text x="${x + 82}" y="${y + 4}" font-size="25" font-weight="800" fill="#16233d" font-family="${font}">${escapeSvgText(line)}</text>`;
+    })
     .join("\n");
+  const accent = opts.index % 3 === 0 ? "#5b7cfa" : opts.index % 3 === 1 ? "#22a7d8" : "#6c8ff5";
+  const highlightText = escapeSvgText(opts.highlight ?? "重要ポイント");
 
   if (opts.isTitle) {
     return `<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="${VIDEO_W}" height="${VIDEO_H}" viewBox="0 0 ${VIDEO_W} ${VIDEO_H}">
-  <rect x="64" y="56" width="248" height="48" rx="24" fill="#d97706"/>
-  <text x="91" y="87" font-size="21" font-weight="800" fill="#ffffff" font-family="${font}">補助金解説 NEWS</text>
-  <rect x="64" y="160" width="900" height="326" rx="28" fill="#020817" opacity="0.70"/>
-  <rect x="64" y="160" width="8" height="326" rx="4" fill="#d97706"/>
-  <text x="104" y="250" font-size="34" font-weight="800" fill="#fbbf24" font-family="${font}">今日の補助金ポイント</text>
+  <defs>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="18" stdDeviation="18" flood-color="#496184" flood-opacity="0.16"/>
+    </filter>
+    <linearGradient id="hero" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f8fbff"/>
+      <stop offset="100%" stop-color="#dfeaff"/>
+    </linearGradient>
+  </defs>
+  <rect width="${VIDEO_W}" height="${VIDEO_H}" fill="url(#hero)"/>
+  <circle cx="1070" cy="95" r="250" fill="#6c8ff5" opacity="0.14"/>
+  <circle cx="1020" cy="90" r="118" fill="#ffffff" opacity="0.72"/>
+  <rect x="62" y="62" width="1110" height="554" rx="34" fill="#ffffff" filter="url(#shadow)"/>
+  <rect x="62" y="62" width="1110" height="112" rx="34" fill="#eaf2ff"/>
+  <text x="82" y="118" font-size="21" font-weight="800" fill="#5b7cfa" font-family="${font}">SUBSIDY GUIDE MOVIE</text>
+  <text x="82" y="192" font-size="30" font-weight="800" fill="#22a7d8" font-family="${font}">今日の補助金ポイント</text>
   ${titleHtml}
-  <text x="104" y="430" font-size="30" font-weight="600" fill="#cbd5e1" font-family="${font}">対象・金額・申請前の注意点を短時間で解説します</text>
-  <rect x="64" y="610" width="1152" height="46" rx="23" fill="#0f172a" opacity="0.82"/>
-  <text x="92" y="641" font-size="23" font-weight="700" fill="#ffffff" font-family="${font}">NTS 日本提携支援 / 補助金活用の戦略設計と伴走支援</text>
+  <rect x="82" y="392" width="300" height="84" rx="24" fill="#5b7cfa"/>
+  <text x="116" y="444" font-size="28" font-weight="800" fill="#ffffff" font-family="${font}">数字を大きく整理</text>
+  <rect x="410" y="392" width="300" height="84" rx="24" fill="#eef6ff"/>
+  <text x="444" y="444" font-size="28" font-weight="800" fill="#16233d" font-family="${font}">対象を短く確認</text>
+  <rect x="738" y="392" width="300" height="84" rx="24" fill="#fff4df"/>
+  <text x="772" y="444" font-size="28" font-weight="800" fill="#9a5a00" font-family="${font}">申請前に判断</text>
+  <text x="82" y="562" font-size="23" font-weight="700" fill="#56677f" font-family="${font}">対象・金額・期限・活用例を、1分でわかりやすく解説します</text>
+  <text x="1162" y="662" text-anchor="end" font-size="19" font-weight="800" fill="#7890b2" font-family="${font}">NTS 日本提携支援</text>
 </svg>`;
   }
 
   return `<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="${VIDEO_W}" height="${VIDEO_H}" viewBox="0 0 ${VIDEO_W} ${VIDEO_H}">
-  <rect x="54" y="42" width="178" height="42" rx="21" fill="#d97706"/>
-  <text x="88" y="70" font-size="20" font-weight="800" fill="#ffffff" font-family="${font}">POINT ${String(opts.index).padStart(2, "0")}</text>
-  <text x="256" y="72" font-size="24" font-weight="700" fill="#e2e8f0" opacity="0.86" font-family="${font}">補助金解説ニュース</text>
-  <rect x="54" y="116" width="720" height="408" rx="26" fill="#020817" opacity="0.70"/>
-  <rect x="54" y="116" width="8" height="408" rx="4" fill="#d97706"/>
+  <defs>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="16" stdDeviation="16" flood-color="#496184" flood-opacity="0.14"/>
+    </filter>
+    <linearGradient id="page" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f8fbff"/>
+      <stop offset="58%" stop-color="#eef6ff"/>
+      <stop offset="100%" stop-color="#dde9ff"/>
+    </linearGradient>
+  </defs>
+  <rect width="${VIDEO_W}" height="${VIDEO_H}" fill="url(#page)"/>
+  <circle cx="1118" cy="110" r="230" fill="${accent}" opacity="0.12"/>
+  <rect x="46" y="44" width="1188" height="604" rx="34" fill="#ffffff" filter="url(#shadow)"/>
+  <rect x="46" y="44" width="1188" height="108" rx="34" fill="#edf5ff"/>
+  <rect x="46" y="126" width="1188" height="26" fill="#edf5ff"/>
+  <rect x="74" y="74" width="154" height="44" rx="22" fill="${accent}"/>
+  <text x="151" y="103" text-anchor="middle" font-size="19" font-weight="800" fill="#ffffff" font-family="${font}">SLIDE ${String(opts.index).padStart(2, "0")}</text>
   ${headingHtml}
-  <rect x="94" y="214" width="310" height="60" rx="30" fill="#d97706" opacity="0.95"/>
-  <text x="128" y="254" font-size="31" font-weight="800" fill="#ffffff" font-family="${font}">${escapeSvgText(opts.highlight ?? "重要ポイント")}</text>
+  <rect x="72" y="188" width="532" height="82" rx="28" fill="${accent}"/>
+  <text x="106" y="241" font-size="40" font-weight="900" fill="#ffffff" font-family="${font}">${highlightText}</text>
+  <rect x="676" y="188" width="532" height="82" rx="28" fill="#f5f8ff"/>
+  <text x="710" y="241" font-size="28" font-weight="800" fill="#56677f" font-family="${font}">詳細は公募要領で最終確認</text>
   ${bulletHtml}
-  <rect x="852" y="118" width="318" height="112" rx="24" fill="#ffffff" opacity="0.10"/>
-  <text x="882" y="164" font-size="22" font-weight="700" fill="#fbbf24" font-family="${font}">CHECK</text>
-  <text x="882" y="202" font-size="25" font-weight="800" fill="#ffffff" font-family="${font}">詳細は公募要領で確認</text>
-  <rect x="64" y="610" width="1152" height="46" rx="23" fill="#0f172a" opacity="0.82"/>
-  <text x="92" y="641" font-size="23" font-weight="700" fill="#ffffff" font-family="${font}">NTS 日本提携支援 / 補助金活用の無料相談受付中</text>
+  <rect x="74" y="612" width="400" height="4" rx="2" fill="${accent}"/>
+  <text x="74" y="665" font-size="20" font-weight="800" fill="#7890b2" font-family="${font}">NTS 日本提携支援 / 補助金活用ガイド</text>
+  <text x="1206" y="665" text-anchor="end" font-size="20" font-weight="800" fill="#7890b2" font-family="${font}">無料相談受付中</text>
 </svg>`;
 }
 
