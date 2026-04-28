@@ -56,20 +56,43 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function SubsidyLpPage({ params }: Props) {
   const { id } = await params;
 
-  const grant = await prisma.subsidyGrant.findUnique({
-    where: { id },
-    include: {
-      contents: {
-        where: { contentType: "lp", status: "published" },
-        orderBy: { createdAt: "desc" },
-        take: 1,
+  // #region agent log
+  fetch('http://127.0.0.1:7351/ingest/efe37463-f1a9-4637-b820-39586edc1951',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'376052'},body:JSON.stringify({sessionId:'376052',location:'page.tsx:57',message:'SubsidyLpPage start',data:{id},timestamp:Date.now(),hypothesisId:'D'})}).catch(()=>{});
+  // #endregion
+
+  let grant;
+  try {
+    grant = await prisma.subsidyGrant.findUnique({
+      where: { id },
+      include: {
+        contents: {
+          where: { contentType: "lp", status: "published" },
+          orderBy: { createdAt: "desc" },
+          take: 1,
+        },
       },
-    },
-  });
+    });
+  } catch (dbErr) {
+    // #region agent log
+    fetch('http://127.0.0.1:7351/ingest/efe37463-f1a9-4637-b820-39586edc1951',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'376052'},body:JSON.stringify({sessionId:'376052',location:'page.tsx:db-catch',message:'DB error',data:{err: String(dbErr)},timestamp:Date.now(),hypothesisId:'A'})}).catch(()=>{});
+    // #endregion
+    throw dbErr;
+  }
 
   if (!grant) notFound();
 
-  const data = buildSubsidyLpData(grant, grant.contents[0] ?? null);
+  let data;
+  try {
+    data = buildSubsidyLpData(grant, grant.contents[0] ?? null);
+    // #region agent log
+    fetch('http://127.0.0.1:7351/ingest/efe37463-f1a9-4637-b820-39586edc1951',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'376052'},body:JSON.stringify({sessionId:'376052',location:'page.tsx:buildData',message:'buildSubsidyLpData success',data:{updatedAtLabel: data.updatedAtLabel, name: data.name},timestamp:Date.now(),hypothesisId:'C'})}).catch(()=>{});
+    // #endregion
+  } catch (buildErr) {
+    // #region agent log
+    fetch('http://127.0.0.1:7351/ingest/efe37463-f1a9-4637-b820-39586edc1951',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'376052'},body:JSON.stringify({sessionId:'376052',location:'page.tsx:build-catch',message:'buildSubsidyLpData error',data:{err: String(buildErr)},timestamp:Date.now(),hypothesisId:'C'})}).catch(()=>{});
+    // #endregion
+    throw buildErr;
+  }
 
   return (
     <>
