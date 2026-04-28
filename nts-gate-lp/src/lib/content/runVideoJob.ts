@@ -26,6 +26,7 @@ import {
   generateVideoScript,
   type SubsidyForVideoScript,
 } from "@/lib/ai/bedrockVideoScriptGenerate";
+import { validateVideoData } from "@/lib/video/validateVideoData";
 import { synthesizeAndUpload } from "@/lib/aws/pollyTts";
 import { synthesizeElevenLabsAndUpload } from "@/lib/aws/elevenLabsTts";
 import { renderSlidesToDir, type SlideInput } from "@/lib/video/generateSlides";
@@ -226,8 +227,33 @@ export async function runVideoJob(
       articleExcerpt: relatedArticle?.excerpt ?? null,
     };
 
-    const script = await generateVideoScript(subsidyForScript);
+    // ── Step 1a: 台本生成（バリデーション失敗時は最大3回リトライ） ──
+    let script = await generateVideoScript(subsidyForScript);
     if (!script) throw new Error("Video script generation returned null");
+
+    let retryCount = 0;
+    const MAX_RETRIES = 3;
+    let validation = validateVideoData(script.sections);
+    while (!validation.isValid && retryCount < MAX_RETRIES) {
+      retryCount++;
+      console.warn(
+        `${LOG_PREFIX} validation failed (attempt ${retryCount}/${MAX_RETRIES}), errors:`,
+        validation.errors,
+      );
+      const retried = await generateVideoScript(subsidyForScript, validation.errors);
+      if (!retried) {
+        console.warn(`${LOG_PREFIX} retry ${retryCount} returned null — using previous result`);
+        break;
+      }
+      script = retried;
+      validation = validateVideoData(script.sections);
+    }
+    if (!validation.isValid) {
+      console.warn(
+        `${LOG_PREFIX} validation still failing after ${retryCount} retries — proceeding with warnings:`,
+        validation.warnings,
+      );
+    }
 
     // 台本DB保存
     await prisma.generatedContent.upsert({
@@ -288,6 +314,8 @@ export async function runVideoJob(
         heading: sec.heading,
         lines: sec.slide_lines ?? [sec.text.slice(0, 80)],
         highlight: sec.highlight ?? undefined,
+        type: sec.type,
+        layout: sec.layout,
       }));
 
       const allSlides = [titleSlide, ...sectionSlides];

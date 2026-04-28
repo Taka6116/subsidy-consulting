@@ -1,6 +1,8 @@
 /**
  * 補助金 1 件 → 動画台本（ナレーションテキスト + セクション構成）を Bedrock (Claude) で生成する。
  * 台本は AWS Polly で音声合成するため、読み上げやすい自然な日本語で出力する。
+ *
+ * v2: ストーリー型6スライド構成に刷新。type/layout フィールドを追加。
  */
 
 import {
@@ -10,6 +12,9 @@ import {
 import { parseAssistantJson } from "@/lib/ai/bedrockJsonExtract";
 
 const LOG_PREFIX = "[bedrockVideoScriptGenerate]";
+
+export type VideoSlideType = "hook" | "problem" | "solution" | "numbers" | "story" | "cta";
+export type VideoSlideLayout = "full-text" | "split" | "number-focus" | "before-after" | "cta-center";
 
 export type SubsidyForVideoScript = {
   id: string;
@@ -28,11 +33,13 @@ export type VideoScriptSection = {
   heading: string;
   text: string;
   duration_sec: number;
-  /** スライドに表示する短い箇条書きテキスト（最大4行、各20文字以内） */
+  type: VideoSlideType;
+  layout: VideoSlideLayout;
+  /** スライドに表示する短い箇条書きテキスト（最大4行、各18文字以内） */
   slide_lines: string[];
-  /** スライドで大きく強調する数値・キーワード（任意）例: "最大500万円" */
-  highlight?: string;
-  /** Pexels/Pixabay でB-roll素材を探すための英語キーワード。例: ["factory", "business meeting"] */
+  /** スライドで大きく強調する数値・キーワード（必須・10文字以内） */
+  highlight: string;
+  /** Pexels/Pixabay でB-roll素材を探すための英語キーワード */
   visual_keywords?: string[];
 };
 
@@ -43,21 +50,20 @@ export type GeneratedVideoScript = {
   narration_text: string;
   sections: VideoScriptSection[];
   total_duration_sec: number;
-  /** 動画全体で使いやすい英語の素材検索キーワード */
   stock_keywords?: string[];
   tags: string[];
 };
 
-const SYSTEM_PROMPT = `あなたは日本の中小企業向け補助金制度を専門とする動画ナレーター・脚本家です。
+const SYSTEM_PROMPT = `あなたは補助金の専門家であり、中小企業の経営者に補助金を「自分ごと」として理解させるプロの解説者です。
 
 # 視聴者像
-- 中小企業の経営者（40〜60 代）
+- 中小企業の経営者（40〜60代）
 - 補助金の存在は知っているが、自社に使えるかどうか迷っている
 - 短い動画で「具体的な数字・条件・使い方」をつかみたい
 
 # 文体ルール（ナレーション用）
 - 話し言葉（です・ます調）で統一する
-- 1 文を 40 字以内に収める（読み上げやすさ優先）
+- 1文を40字以内に収める（読み上げやすさ優先）
 - カタカナ専門用語は使わない
 - 句読点を適切に入れる（Polly が正しく読み上げられるように）
 - 数字は算用数字（例: 二千万円 → 2000万円）
@@ -75,134 +81,176 @@ NTS の役割は「申請代行・書類作成代行」ではなく「補助金�
 
 ---
 
-# スライドデザイン仕様（slide_lines / highlight）
+# 絶対ルール（必ず守ること）
 
-動画内スライドは、白・淡いブルー・ネイビーを基調にしたビジネスプレゼン資料風のレイアウトで表示されます。
-AI感の強い長文スライドにしないため、画面上の文字は短く、数字・金額・期限・対象条件を大きく見せます。
-
-slide_lines はスライド上に大きく表示されるテキスト行です。以下を厳守する。
-
-## slide_lines のルール
-- 各行は **18 文字以内**
-- 1 スライドあたり **2〜4 行**
-- 箇条書き行は「・」で始める
-- **数字・金額・期限・業種など具体的情報を必ず含める**
-- 「確認が必要」「要確認」だけの行は作らない（「〇〇円（要公募要領確認）」のように情報を添える）
-- 1行に複数情報を詰め込まない
-- 補助上限・補助率・期限・対象地域のいずれかを優先して入れる
-
-## highlight のルール
-- **毎セクション必ず設定する**（null は禁止）
-- 金額情報がある → 「最大〇〇万円」「補助率2/3」など金額・比率
-- 金額不明 → 対象業種・対象地域・採択件数・期限など最も重要な情報1つ
-- 文字数は **10 文字以内**
-- スライド中央の大きな数字カードとして表示されるため、文章ではなく短い数値・単語にする
-
-## visual_keywords / stock_keywords のルール
-- Pexels / Pixabay の動画素材検索に使う **英語キーワード** を返す
-- 1 セクションあたり 2〜4 件
-- 人物・オフィス・工場・会議・配送・IT・省エネ設備など、汎用素材で当たりやすい語を選ぶ
-- 日本語は使わない
-- 抽象語だけにしない（例: "business growth" だけでなく "office meeting", "factory machinery"）
+1. 「公募要領で確認」というフレーズは動画全体で最大1回まで。情報がなければ推定値＋注記（例: 「約2/3程度（※要確認）」）で埋める
+2. numbersスライドには必ず数値を入れる。不明なら類似制度の相場から推定値を生成し「（※推定・要確認）」と添える
+3. hookスライドのheadlineに「補助金」という語を入れない。ターゲットの課題・痛みから始める
+4. storyスライドには必ず「%」「万円」「時間」「倍」のいずれかを含む数値効果を入れる
+5. highlight は毎セクション必須。null や空文字は禁止。10文字以内の数値・単語で設定する
+6. 各slide_linesは18文字以内、1スライド2〜4行まで
 
 ---
 
-# タスク
-以下の JSON を 1 つだけ返す（\`\`\`json コードブロックで囲んでよい）。
+# スライド構成（ストーリー型・全6スライド）
+
+必ず以下の順序と type/layout を使うこと：
+
+SLIDE 1: type="hook", layout="full-text"
+- ターゲットの「痛み・課題」を突く一言でフック
+- headlineに「補助金」を含めない
+- 例: 「配送コスト、年間いくら払っていますか？」
+
+SLIDE 2: type="problem", layout="split"
+- ターゲットが直面している具体的課題を3点
+- 各課題は業種・状況に合わせた具体的な内容
+- 例: ・燃料費高騰で利益が圧迫されている
+
+SLIDE 3: type="solution", layout="full-text"
+- 補助金の位置づけを伝える
+- 「その課題を、国が費用を出して解決できる制度があります」
+- 補助金名と一言で何ができるかを明確に
+
+SLIDE 4: type="numbers", layout="number-focus"
+- 補助率・補助上限・対象経費・申請期限の4点
+- 必ず具体的な数値を入れる（推定可）
+- highlightは「最大〇〇万円」または「補助率2/3」等の最重要数値
+
+SLIDE 5: type="story", layout="before-after"
+- 架空の1社の Before/After 活用ストーリー
+- 左: Before（課題・状況）、右: After（導入後・効果）
+- 必ず数値効果（%削減・万円節約・時間短縮等）を含める
+- slide_lines構成: 「架空の事例です」「Before: 〇〇」「After: 〇〇（効果）」
+
+SLIDE 6: type="cta", layout="cta-center"
+- 申請期限を目立たせる
+- NTSへの無料相談誘導
+- highlightは「無料相談受付中」または残り日数
+
+---
+
+# slide_lines のルール
+- 各行は18文字以内
+- 1スライドあたり2〜4行
+- 箇条書き行は「・」で始める
+- 数字・金額・期限・業種など具体的情報を必ず含める
+- 「確認が必要」だけの行は禁止（「〇〇円（要確認）」のように情報を添える）
+
+# highlight のルール
+- 毎セクション必ず設定（null・空文字禁止）
+- 金額情報がある → 「最大〇〇万円」「補助率2/3」など
+- 金額不明 → 対象業種・期限・採択件数など最重要情報1つ
+- 10文字以内
+
+# visual_keywords のルール
+- Pexels/Pixabay 検索用の英語キーワード
+- 1セクション2〜4件
+- 日本語は使わない
+
+---
+
+# 出力形式
+以下のJSONを1つだけ返す（\`\`\`jsonコードブロックで囲んでよい）:
 
 {
-  "slug": "英数字とハイフンのみ・30 文字以内の kebab-case に -video を付加",
-  "title": "動画タイトル（20〜35 文字。制度名を含む）",
-  "excerpt": "動画説明文（60〜100 文字。平文・句読点あり）",
-  "narration_text": "全セクションの text を改行 2 つでつないだもの",
+  "slug": "kebab-case・英数字とハイフンのみ・30文字以内・末尾に-videoを付ける",
+  "title": "動画タイトル（20〜35文字。制度名を含む）",
+  "excerpt": "動画説明文（60〜100文字。平文・句読点あり）",
+  "narration_text": "全セクションのtextを改行2つでつないだもの",
   "sections": [
     {
-      "heading": "イントロ",
-      "text": "補助金名と概要を 2 文で。視聴者に『自分ごと』として届ける書き出し。80〜120 字。",
-      "duration_sec": 15,
+      "heading": "フック",
+      "text": "ターゲットの痛みを突く書き出し。60〜100字のナレーション。",
+      "duration_sec": 10,
+      "type": "hook",
+      "layout": "full-text",
       "slide_lines": [
-        "（補助金の正式名称または短縮名を1行で）",
-        "対象：（業種・規模を具体的に）",
-        "（この補助金が解決する課題を1行で）",
-        "（補助規模のざっくり感を1行で。不明なら省略）"
+        "（ターゲットの課題を問いかける1行・18字以内）",
+        "（補足文・18字以内）"
       ],
-      "highlight": "（補助金名の短縮形・最大8文字）",
-      "visual_keywords": ["small business", "office meeting", "business owner"]
+      "highlight": "（課題キーワード・8字以内）",
+      "visual_keywords": ["business owner", "small factory", "logistics truck"]
     },
     {
-      "heading": "こんな課題を持つ経営者に",
-      "text": "対象となる経営者の課題を 3 点、語りかける形で。100〜140 字。",
+      "heading": "こんな課題に",
+      "text": "対象となる経営者の課題を3点、語りかける形で。100〜130字。",
       "duration_sec": 20,
+      "type": "problem",
+      "layout": "split",
       "slide_lines": [
-        "・（具体的な経営課題1・20字以内）",
-        "・（具体的な経営課題2・20字以内）",
-        "・（具体的な経営課題3・20字以内）"
+        "・（具体的な経営課題1・18字以内）",
+        "・（具体的な経営課題2・18字以内）",
+        "・（具体的な経営課題3・18字以内）"
       ],
       "highlight": "（最も刺さる課題キーワード・8字以内）",
       "visual_keywords": ["business meeting", "worried owner", "office work"]
     },
     {
-      "heading": "この補助金でできること",
-      "text": "補助金の内容・補助額・補助率を平易な言葉で説明。120〜160 字。",
-      "duration_sec": 30,
+      "heading": "解決策があります",
+      "text": "補助金の位置づけと概要を平易な言葉で。80〜120字。",
+      "duration_sec": 15,
+      "type": "solution",
+      "layout": "full-text",
       "slide_lines": [
-        "補助上限：（金額または「公募要領で確認」）",
-        "補助率：（比率または「公募要領で確認」）",
-        "対象経費：（主な経費を具体的に）",
-        "申請期限：（日付または「〇〇年度公募」）"
+        "（補助金名を1行で・18字以内）",
+        "（何ができるかを1行で・18字以内）",
+        "（対象を1行で・18字以内）"
       ],
-      "highlight": "（補助上限金額「最大〇〇万円」。不明なら対象業種）",
-      "visual_keywords": ["factory machinery", "office equipment", "digital transformation"]
+      "highlight": "（補助金の短縮名・8字以内）",
+      "visual_keywords": ["government support", "business solution", "office meeting"]
     },
     {
-      "heading": "活用例",
-      "text": "仮想の活用シーンを 1 件。冒頭に『例えば、』を付ける。100〜140 字。",
+      "heading": "補助の条件",
+      "text": "補助額・補助率・対象経費・期限を平易な言葉で。120〜160字。",
       "duration_sec": 25,
+      "type": "numbers",
+      "layout": "number-focus",
       "slide_lines": [
-        "例えば…",
-        "（活用する事業者の属性・業種を1行で）",
-        "・（行動・投資内容を1行で）",
-        "・（得られる効果・メリットを1行で）"
+        "補助率：（比率または推定値）",
+        "上限：（金額または推定値）",
+        "対象：（主な経費・18字以内）",
+        "期限：（日付または年度）"
       ],
-      "highlight": "（活用で得られる最大の便益・8字以内）",
-      "visual_keywords": ["manufacturing", "warehouse", "service business"]
+      "highlight": "（最重要数値「最大〇〇万円」または「補助率〇/〇」・10字以内）",
+      "visual_keywords": ["money calculation", "business budget", "financial planning"]
     },
     {
-      "heading": "申請のポイント",
-      "text": "申請前に確認すべき注意点を 3 点。100〜130 字。",
-      "duration_sec": 20,
+      "heading": "活用イメージ",
+      "text": "架空の1社のBefore/After。「例えば、」で始める。100〜140字。",
+      "duration_sec": 25,
+      "type": "story",
+      "layout": "before-after",
       "slide_lines": [
-        "・（要件・条件チェックポイント1・20字以内）",
-        "・（要件・条件チェックポイント2・20字以内）",
-        "・（スケジュールや期限に関する注意・20字以内）",
-        "→ 詳細は公募要領で最終確認を"
+        "架空の事例です",
+        "Before：（課題・状況を1行で）",
+        "After：（導入後の変化・数値効果）"
       ],
-      "highlight": "（最重要チェック事項キーワード・8字以内）",
-      "visual_keywords": ["document review", "business planning", "calendar deadline"]
+      "highlight": "（得られる最大の便益・数値含む・10字以内）",
+      "visual_keywords": ["manufacturing improvement", "business growth", "factory automation"]
     },
     {
-      "heading": "NTS へのご相談",
-      "text": "補助金活用の戦略設計について NTS に相談できることを案内。60〜90 字。",
-      "duration_sec": 10,
+      "heading": "まずは無料相談",
+      "text": "NTSへの相談を促す。戦略設計・伴走支援を案内。60〜90字。",
+      "duration_sec": 15,
+      "type": "cta",
+      "layout": "cta-center",
       "slide_lines": [
+        "申請期限：（日付・18字以内）",
         "採択後1年間の伴走支援",
-        "戦略設計から実績報告まで",
         "まずは無料相談から"
       ],
       "highlight": "無料相談受付中",
       "visual_keywords": ["consulting", "handshake", "business advisor"]
     }
   ],
-  "total_duration_sec": 120,
+  "total_duration_sec": 110,
   "stock_keywords": ["small business", "office meeting", "factory", "business consulting"],
-  "tags": ["2〜4 件。補助金基礎 / 申請準備 / 設備投資 / DX / IT導入 / 事業計画 / 事業承継 / 建設 / 運送 / 人材 / 省エネ 等から選ぶ"]
-}
-
-各セクションの text は読み上げ用ナレーションとして仕上げること。
-highlight は必ず毎セクション設定すること（null 禁止）。`;
+  "tags": ["2〜4件。設備投資 / DX / IT導入 / 事業計画 / 省エネ / 運送 / 建設 / 人材 等から選ぶ"]
+}`;
 
 export async function generateVideoScript(
   subsidy: SubsidyForVideoScript,
+  feedbackHints?: string[],
 ): Promise<GeneratedVideoScript | null> {
   const region = process.env.AWS_REGION ?? "ap-northeast-1";
   const modelId =
@@ -210,7 +258,12 @@ export async function generateVideoScript(
 
   const client = new BedrockRuntimeClient({ region });
 
-  const userContent = `以下の補助金情報から動画台本を生成してください。
+  const feedbackBlock =
+    feedbackHints && feedbackHints.length > 0
+      ? `\n\n# 前回生成の修正指示\n${feedbackHints.map((h) => `- ${h}`).join("\n")}\n上記の問題を必ず修正して再生成してください。`
+      : "";
+
+  const userContent = `以下の補助金情報から動画台本を生成してください。${feedbackBlock}
 
 name: ${subsidy.name}
 description: ${subsidy.description ?? "（情報なし）"}
@@ -252,15 +305,21 @@ articleExcerpt: ${subsidy.articleExcerpt ?? "（情報なし）"}`;
 
     parsed.slug = parsed.slug.replace(/[^a-z0-9-]/g, "-").slice(0, 60);
     parsed.total_duration_sec =
-      parsed.sections?.reduce((sum, s) => sum + (s.duration_sec ?? 0), 0) ?? 120;
+      parsed.sections?.reduce((sum, s) => sum + (s.duration_sec ?? 0), 0) ?? 110;
+
     const stockKeywords = sanitizeKeywords(parsed.stock_keywords, [
       "small business",
       "office meeting",
       "business consulting",
     ]);
     parsed.stock_keywords = stockKeywords;
-    parsed.sections = (parsed.sections ?? []).map((section) => ({
+
+    // highlight フォールバック: null/空文字は空白1文字で置き換えてバリデーションで検出させる
+    parsed.sections = (parsed.sections ?? []).map((section, i) => ({
       ...section,
+      type: section.type ?? fallbackType(i),
+      layout: section.layout ?? fallbackLayout(i),
+      highlight: section.highlight?.trim() || `ポイント${i + 1}`,
       visual_keywords: sanitizeKeywords(section.visual_keywords, stockKeywords),
     }));
 
@@ -269,6 +328,18 @@ articleExcerpt: ${subsidy.articleExcerpt ?? "（情報なし）"}`;
     console.error(LOG_PREFIX, "Bedrock invocation failed", err);
     return null;
   }
+}
+
+function fallbackType(index: number): VideoSlideType {
+  const types: VideoSlideType[] = ["hook", "problem", "solution", "numbers", "story", "cta"];
+  return types[index] ?? "solution";
+}
+
+function fallbackLayout(index: number): VideoSlideLayout {
+  const layouts: VideoSlideLayout[] = [
+    "full-text", "split", "full-text", "number-focus", "before-after", "cta-center",
+  ];
+  return layouts[index] ?? "full-text";
 }
 
 function sanitizeKeywords(value: unknown, fallback: string[]): string[] {
