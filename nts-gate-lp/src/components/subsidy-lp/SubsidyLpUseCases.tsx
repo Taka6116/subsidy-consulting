@@ -5,8 +5,6 @@ import type { SubsidyLpData } from "@/lib/subsidy-lp/buildSubsidyLpData";
 
 type Props = { data: SubsidyLpData };
 
-const INDUSTRY_LABELS = ["製造業・50名規模", "小売・飲食業", "サービス業・IT"];
-
 const CASE_IMAGES = [
   "/icon-assets/isometric_10.webp",
   "/icon-assets/isometric_20.webp",
@@ -83,7 +81,7 @@ export default function SubsidyLpUseCases({ data }: Props) {
                   className="text-[10px] font-extrabold uppercase tracking-wider"
                   style={{ color: "var(--text-muted)" }}
                 >
-                  Case {String(i + 1).padStart(2, "0")} — {INDUSTRY_LABELS[i % INDUSTRY_LABELS.length]}
+                  Case {String(i + 1).padStart(2, "0")} — {uc.persona ?? "活用イメージ"}
                 </p>
                 <p
                   className="mt-2 text-sm font-black leading-snug"

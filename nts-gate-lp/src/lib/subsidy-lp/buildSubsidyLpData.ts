@@ -38,7 +38,7 @@ export type SubsidyLpData = {
   /** 課題リスト（3〜5件） */
   pains: string[];
   /** 活用ユースケース（2〜3件） */
-  useCases: Array<{ label: string; body: string }>;
+  useCases: Array<{ label: string; body: string; persona?: string }>;
   /** FAQ（3〜5件） */
   faqs: Array<{ q: string; a: string }>;
 
@@ -137,9 +137,75 @@ type LpAiPayload = {
   heroCopy?: string;
   subCopy?: string;
   pains?: string[];
-  useCases?: Array<{ label?: string; body?: string }>;
+  useCases?: Array<{ label?: string; body?: string; persona?: string }>;
   faqs?: Array<{ q?: string; a?: string }>;
 };
+
+const PREFECTURES = [
+  "北海道",
+  "青森県",
+  "岩手県",
+  "宮城県",
+  "秋田県",
+  "山形県",
+  "福島県",
+  "茨城県",
+  "栃木県",
+  "群馬県",
+  "埼玉県",
+  "千葉県",
+  "東京都",
+  "神奈川県",
+  "新潟県",
+  "山梨県",
+  "長野県",
+  "富山県",
+  "石川県",
+  "福井県",
+  "岐阜県",
+  "静岡県",
+  "愛知県",
+  "三重県",
+  "滋賀県",
+  "京都府",
+  "大阪府",
+  "兵庫県",
+  "奈良県",
+  "和歌山県",
+  "鳥取県",
+  "島根県",
+  "岡山県",
+  "広島県",
+  "山口県",
+  "徳島県",
+  "香川県",
+  "愛媛県",
+  "高知県",
+  "福岡県",
+  "佐賀県",
+  "長崎県",
+  "熊本県",
+  "大分県",
+  "宮崎県",
+  "鹿児島県",
+  "沖縄県",
+];
+
+function normalizeTargetArea(value: string | null | undefined): string {
+  const raw = value?.trim();
+  if (!raw) return "全国";
+
+  const prefectureHits = PREFECTURES.filter((p) => raw.includes(p)).length;
+  if (raw.includes("全国") || prefectureHits >= 40) {
+    return "全国";
+  }
+
+  if (raw.length > 80) {
+    return "複数地域（詳細は公募要領で確認）";
+  }
+
+  return raw;
+}
 
 function parseLpAiPayload(content: GeneratedContent | null): LpAiPayload | null {
   if (!content?.body) return null;
@@ -161,6 +227,14 @@ function parseLpAiPayload(content: GeneratedContent | null): LpAiPayload | null 
 
 function fallbackPains(nameText: string): string[] {
   const t = nameText;
+  if (t.includes("建設機械") || t.includes("重機") || t.includes("電動化")) {
+    return [
+      "燃料費の高騰で現場コストが増えている",
+      "排ガス・騒音への環境対応が求められている",
+      "電動建設機械の初期投資が重い",
+      "老朽化した機械の更新時期が近づいている",
+    ];
+  }
   if (t.includes("省力化") || t.includes("人手不足")) {
     return [
       "人手不足で現場が回らない",
@@ -196,16 +270,38 @@ function fallbackPains(nameText: string): string[] {
 function fallbackUseCases(
   nameText: string,
   industries: string[],
-): Array<{ label: string; body: string }> {
+): Array<{ label: string; body: string; persona?: string }> {
+  if (nameText.includes("建設機械") || nameText.includes("重機") || nameText.includes("電動化")) {
+    return [
+      {
+        persona: "土木工事業",
+        label: "【活用例】電動ショベル導入",
+        body: "架空の活用イメージです。土木工事会社が、燃料費や騒音への対応を見据えて電動ショベルの導入を検討するケースです。初期投資の負担を抑えながら、環境対応を進める計画づくりに活用できます。",
+      },
+      {
+        persona: "解体工事業",
+        label: "【活用例】電動重機への切替",
+        body: "架空の活用イメージです。住宅密集地での作業が多い解体工事業者が、排ガスや騒音に配慮した電動重機へ切り替えるケースです。発注者や近隣への説明もしやすくなります。",
+      },
+      {
+        persona: "建機レンタル会社",
+        label: "【活用例】電動機械の貸出体制",
+        body: "架空の活用イメージです。建機レンタル会社が、環境対応ニーズに合わせて電動建設機械のラインナップを整えるケースです。顧客の脱炭素対応を支える投資として整理できます。",
+      },
+    ];
+  }
+
   const base = industries[0] ?? "中小企業";
   return [
     {
+      persona: base,
       label: `【活用例】${base}の設備更新`,
-      body: `老朽化した設備の更新に活用。自己負担を抑えた投資で生産効率の改善が期待できます（※実際の採択事例ではありません）。`,
+        body: `架空の活用イメージです。老朽化した設備の更新に活用し、自己負担を抑えながら生産効率の改善を目指すケースです。`,
     },
     {
+      persona: "業務効率化",
       label: "【活用例】業務効率化の推進",
-      body: `受発注・在庫管理をシステム化し、手作業の削減と人手不足対策につなげた事例のイメージです（※実際の採択事例ではありません）。`,
+        body: `架空の活用イメージです。受発注・在庫管理をシステム化し、手作業の削減と人手不足対策につなげるケースです。`,
     },
   ];
 }
@@ -243,11 +339,12 @@ export function buildSubsidyLpData(
   const name = grant.name ?? str(raw, "title") ?? "補助金制度";
   const institutionName =
     str(raw, "institution_name") ?? "所管省庁・機関";
-  const targetArea =
+  const targetArea = normalizeTargetArea(
     grant.prefecture ??
     str(raw, "target_area_search") ??
     grant.targetIndustryNote ??
-    "全国";
+    "全国",
+  );
   const acceptanceStart = formatDateJP(str(raw, "acceptance_start_datetime"));
   const deadlineStr =
     grant.deadlineLabel ??
@@ -276,7 +373,11 @@ export function buildSubsidyLpData(
     Array.isArray(ai?.useCases) && ai.useCases.length >= 1
       ? ai.useCases
           .filter((u) => u.label && u.body)
-          .map((u) => ({ label: u.label!, body: u.body! }))
+          .map((u) => ({
+            label: u.label!,
+            body: u.body!,
+            persona: u.persona?.trim() || undefined,
+          }))
           .slice(0, 3)
       : fallbackUseCases(name, grant.targetIndustries ?? []);
 
