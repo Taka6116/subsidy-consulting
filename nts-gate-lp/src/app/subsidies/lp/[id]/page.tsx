@@ -15,6 +15,7 @@ import Header from "@/components/shared/Header";
 import LpFooter from "@/components/gate-lp/LpFooter";
 import SubsidyLpHero from "@/components/subsidy-lp/SubsidyLpHero";
 import SubsidyLpStats from "@/components/subsidy-lp/SubsidyLpStats";
+import SubsidyLpChecker from "@/components/subsidy-lp/SubsidyLpChecker";
 import SubsidyLpPainSection from "@/components/subsidy-lp/SubsidyLpPainSection";
 import SubsidyLpUseCases from "@/components/subsidy-lp/SubsidyLpUseCases";
 import SubsidyLpHowSection from "@/components/subsidy-lp/SubsidyLpHowSection";
@@ -78,12 +79,23 @@ export default async function SubsidyLpPage({ params }: Props) {
 
         <div className="mx-auto max-w-5xl px-4 py-12 sm:px-6 lg:py-16">
           <div className="space-y-12">
+            {/* § 数字で見る制度規模 */}
             <SubsidyLpStats data={data} />
+            {/* § 30秒対象診断 */}
+            <div id="checker">
+              <SubsidyLpChecker />
+            </div>
+            {/* § こんな課題がある企業に */}
             <SubsidyLpPainSection data={data} />
+            {/* § 活用イメージ（ペルソナ） */}
             <SubsidyLpUseCases data={data} />
+            {/* § 申請タイムライン */}
             <SubsidyLpHowSection />
+            {/* § よくある不安 + FAQ */}
             <SubsidyLpFaq data={data} />
+            {/* § 最終CTA */}
             <FinalCtaSection grantName={data.name} remainingDays={data.remainingDays} />
+            {/* § 関連記事 */}
             <ArticleLinkSection grantId={id} grantName={data.name} />
           </div>
         </div>
