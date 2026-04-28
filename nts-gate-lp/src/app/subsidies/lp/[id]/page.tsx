@@ -57,7 +57,7 @@ export default async function SubsidyLpPage({ params }: Props) {
   const { id } = await params;
 
   // #region agent log
-  fetch('http://127.0.0.1:7351/ingest/efe37463-f1a9-4637-b820-39586edc1951',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'376052'},body:JSON.stringify({sessionId:'376052',location:'page.tsx:57',message:'SubsidyLpPage start',data:{id},timestamp:Date.now(),hypothesisId:'D'})}).catch(()=>{});
+  console.error('[DEBUG-LP] SubsidyLpPage start id=', id);
   // #endregion
 
   let grant;
@@ -74,7 +74,7 @@ export default async function SubsidyLpPage({ params }: Props) {
     });
   } catch (dbErr) {
     // #region agent log
-    fetch('http://127.0.0.1:7351/ingest/efe37463-f1a9-4637-b820-39586edc1951',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'376052'},body:JSON.stringify({sessionId:'376052',location:'page.tsx:db-catch',message:'DB error',data:{err: String(dbErr)},timestamp:Date.now(),hypothesisId:'A'})}).catch(()=>{});
+    console.error('[DEBUG-LP] DB error:', dbErr);
     // #endregion
     throw dbErr;
   }
@@ -85,11 +85,11 @@ export default async function SubsidyLpPage({ params }: Props) {
   try {
     data = buildSubsidyLpData(grant, grant.contents[0] ?? null);
     // #region agent log
-    fetch('http://127.0.0.1:7351/ingest/efe37463-f1a9-4637-b820-39586edc1951',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'376052'},body:JSON.stringify({sessionId:'376052',location:'page.tsx:buildData',message:'buildSubsidyLpData success',data:{updatedAtLabel: data.updatedAtLabel, name: data.name},timestamp:Date.now(),hypothesisId:'C'})}).catch(()=>{});
+    console.error('[DEBUG-LP] buildSubsidyLpData OK:', data.updatedAtLabel, data.name);
     // #endregion
   } catch (buildErr) {
     // #region agent log
-    fetch('http://127.0.0.1:7351/ingest/efe37463-f1a9-4637-b820-39586edc1951',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'376052'},body:JSON.stringify({sessionId:'376052',location:'page.tsx:build-catch',message:'buildSubsidyLpData error',data:{err: String(buildErr)},timestamp:Date.now(),hypothesisId:'C'})}).catch(()=>{});
+    console.error('[DEBUG-LP] buildSubsidyLpData error:', buildErr);
     // #endregion
     throw buildErr;
   }
