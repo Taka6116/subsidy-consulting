@@ -11,7 +11,8 @@ export default function SubsidyLpPainSection({ data }: Props) {
   const cardPains = data.pains.slice(0, 3);
 
   return (
-    <section className="rounded-[28px] border border-slate-800 bg-slate-900 px-6 py-16 shadow-[0_24px_60px_rgba(15,23,42,0.22)] sm:px-8 md:py-24">
+    <section className="bg-slate-900 py-16 md:py-24">
+      <div className="mx-auto max-w-5xl px-4 sm:px-6">
       <div className="text-center">
         <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">
           Problem
@@ -28,7 +29,7 @@ export default function SubsidyLpPainSection({ data }: Props) {
         {cardPains.map((pain, i) => (
           <li
             key={i}
-            className="group overflow-hidden rounded-[24px] border border-slate-700 bg-slate-800/80 shadow-[0_12px_30px_rgba(0,0,0,0.18)] transition hover:-translate-y-1 hover:border-slate-500 hover:shadow-[0_20px_42px_rgba(0,0,0,0.24)]"
+            className="group overflow-hidden rounded-[24px] border border-slate-700 bg-slate-800/80 shadow-[0_10px_24px_rgba(0,0,0,0.14)] transition hover:-translate-y-1 hover:border-slate-500 hover:shadow-[0_16px_32px_rgba(0,0,0,0.2)]"
           >
             <div className="relative flex h-44 items-end justify-center overflow-hidden bg-slate-800 px-4 pt-4">
               <img
@@ -71,6 +72,7 @@ export default function SubsidyLpPainSection({ data }: Props) {
         >
           <path d="M12 5v14M5 12l7 7 7-7" />
         </svg>
+      </div>
       </div>
     </section>
   );

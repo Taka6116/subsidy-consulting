@@ -66,9 +66,8 @@ export default function SubsidyLpUseCases({ data }: Props) {
   const { ref, visible } = useInView();
 
   return (
-    <section
-      className="rounded-[28px] border border-slate-100 bg-white px-6 py-16 shadow-[0_18px_45px_rgba(23,32,51,0.08)] sm:px-10 md:py-24"
-    >
+    <section className="bg-white py-16 md:py-24">
+      <div className="mx-auto max-w-5xl px-4 sm:px-6">
       {/* ヘッダー */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
         <div>
@@ -93,11 +92,10 @@ export default function SubsidyLpUseCases({ data }: Props) {
         {data.useCases.map((uc, i) => (
           <div
             key={i}
-            className="relative flex flex-col overflow-hidden rounded-2xl transition"
+            className="relative flex flex-col overflow-hidden rounded-2xl shadow-sm transition"
             style={{
               background: "#FFFFFF",
               border: "1px solid #E5E7EB",
-              boxShadow: "var(--nts-shadow-offset)",
               opacity: visible ? 1 : 0,
               transform: visible ? "translateY(0)" : "translateY(20px)",
               transitionDuration: "var(--nts-dur-slow)",
@@ -156,6 +154,7 @@ export default function SubsidyLpUseCases({ data }: Props) {
             </div>
           </div>
         ))}
+      </div>
       </div>
     </section>
   );

@@ -72,9 +72,8 @@ export default function SubsidyLpChecker() {
   const cfg = result ? RESULT_CONFIG[result] : null;
 
   return (
-    <section
-      className="relative overflow-hidden rounded-[28px] border border-slate-100 bg-white px-6 py-20 shadow-[0_18px_45px_rgba(23,32,51,0.08)] sm:px-10 md:py-28"
-    >
+    <section className="bg-white py-16 md:py-24">
+      <div className="relative mx-auto max-w-3xl overflow-hidden rounded-[28px] border border-slate-100 bg-white px-6 py-10 shadow-[0_18px_45px_rgba(23,32,51,0.08)] sm:px-10 sm:py-12">
       {/* 装飾グロー */}
       <div
         aria-hidden
@@ -203,6 +202,7 @@ export default function SubsidyLpChecker() {
             ↑ チェックを入れると診断結果が表示されます
           </p>
         )}
+      </div>
       </div>
     </section>
   );

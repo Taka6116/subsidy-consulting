@@ -74,31 +74,27 @@ export default async function SubsidyLpPage({ params }: Props) {
   return (
     <>
       <Header />
-      <main className="relative min-h-screen bg-[#eef4f9] font-body">
+      <main className="relative min-h-screen bg-white font-body">
         <SubsidyLpHero data={data} />
 
-        <div className="mx-auto max-w-5xl px-4 py-10 sm:px-6 lg:py-14">
-          <div className="space-y-8 md:space-y-12">
-            {/* § 数字で見る制度規模 */}
-            <SubsidyLpStats data={data} />
-            {/* § 30秒対象診断 */}
-            <div id="checker">
-              <SubsidyLpChecker />
-            </div>
-            {/* § こんな課題がある企業に */}
-            <SubsidyLpPainSection data={data} />
-            {/* § 活用イメージ（ペルソナ） */}
-            <SubsidyLpUseCases data={data} />
-            {/* § 申請タイムライン */}
-            <SubsidyLpHowSection />
-            {/* § よくある不安 + FAQ */}
-            <SubsidyLpFaq data={data} />
-            {/* § 最終CTA */}
-            <FinalCtaSection grantName={data.name} remainingDays={data.remainingDays} />
-            {/* § 関連記事 */}
-            <ArticleLinkSection grantId={id} grantName={data.name} />
-          </div>
+        {/* § 数字で見る制度規模 */}
+        <SubsidyLpStats data={data} />
+        {/* § 30秒対象診断 */}
+        <div id="checker">
+          <SubsidyLpChecker />
         </div>
+        {/* § こんな課題がある企業に */}
+        <SubsidyLpPainSection data={data} />
+        {/* § 活用イメージ（ペルソナ） */}
+        <SubsidyLpUseCases data={data} />
+        {/* § 申請タイムライン */}
+        <SubsidyLpHowSection />
+        {/* § よくある不安 + FAQ */}
+        <SubsidyLpFaq data={data} />
+        {/* § 最終CTA */}
+        <FinalCtaSection grantName={data.name} remainingDays={data.remainingDays} />
+        {/* § 関連記事 */}
+        <ArticleLinkSection grantId={id} grantName={data.name} />
 
         {/* モバイル スティッキー CTA */}
         <SubsidyLpCtaBottom data={data} />
@@ -121,10 +117,9 @@ function FinalCtaSection({
 
   return (
     <section
-      className="relative overflow-hidden rounded-[32px] text-white"
+      className="relative overflow-hidden text-white"
       style={{
         background: "var(--nts-bg-base)",
-        boxShadow: "var(--nts-shadow-lg)",
       }}
     >
       {/* 装飾グロー */}
@@ -139,7 +134,7 @@ function FinalCtaSection({
         style={{ background: "rgba(251,146,60,0.12)" }}
       />
 
-      <div className="relative lg:grid lg:grid-cols-[1fr_300px]">
+      <div className="relative mx-auto max-w-6xl px-4 sm:px-6 lg:grid lg:grid-cols-[1fr_300px]">
         {/* テキスト側 */}
         <div className="px-8 py-20 sm:px-12 md:py-28">
           {/* 残日数バッジ */}
@@ -233,28 +228,30 @@ async function ArticleLinkSection({
   if (articles.length === 0) return null;
 
   return (
-    <section className="rounded-[28px] border border-[#dce6ef] bg-white p-6 shadow-[0_18px_45px_rgba(23,32,51,0.08)] sm:p-8">
-      <p className="text-xs font-extrabold uppercase tracking-[0.24em] text-[#1e9bdb]">
-        関連解説記事
-      </p>
-      <h2 className="mt-2 text-xl font-black text-[#172033]">
-        {grantName} をもっと詳しく
-      </h2>
-      <ul className="mt-4 space-y-2">
-        {articles.map((a) => (
-          <li key={a.slug}>
-            <Link
-              href={`/subsidies/articles/${a.slug}`}
-              className="flex items-center justify-between rounded-2xl border border-[#dce6ef] bg-[#f8fbfe] px-4 py-3 text-sm transition hover:border-[#b9d8ee] hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1e9bdb]"
-            >
-              <span className="font-bold text-[#172033]">
-                {a.title ?? "解説記事"}
-              </span>
-              <span className="ml-3 shrink-0 text-xs text-neutral-400">→</span>
-            </Link>
-          </li>
-        ))}
-      </ul>
+    <section className="bg-slate-50 py-12 md:py-16">
+      <div className="mx-auto max-w-5xl px-4 sm:px-6">
+        <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-gray-400">
+          関連解説記事
+        </p>
+        <h2 className="text-xl font-black text-[#172033]">
+          {grantName} をもっと詳しく
+        </h2>
+        <ul className="mt-4 space-y-2">
+          {articles.map((a) => (
+            <li key={a.slug}>
+              <Link
+                href={`/subsidies/articles/${a.slug}`}
+                className="flex items-center justify-between rounded-2xl border border-[#dce6ef] bg-white px-4 py-3 text-sm transition hover:border-[#b9d8ee] hover:bg-[#f8fbfe] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1e9bdb]"
+              >
+                <span className="font-bold text-[#172033]">
+                  {a.title ?? "解説記事"}
+                </span>
+                <span className="ml-3 shrink-0 text-xs text-neutral-400">→</span>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </div>
     </section>
   );
 }

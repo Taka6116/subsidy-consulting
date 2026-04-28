@@ -131,10 +131,9 @@ export default function SubsidyLpFaq({ data }: Props) {
   const { ref, visible } = useInView();
 
   return (
-    <section
-      className="overflow-hidden rounded-[28px] border border-slate-100 bg-white py-12 shadow-[0_18px_45px_rgba(23,32,51,0.08)] md:py-16"
-    >
-      <div className="px-6 sm:px-10">
+    <section className="bg-white pt-12 md:pt-16">
+      <div className="mx-auto max-w-5xl px-4 sm:px-6">
+      <div>
         <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-gray-400">
           よくある不安
         </p>
@@ -151,15 +150,14 @@ export default function SubsidyLpFaq({ data }: Props) {
       </div>
 
       {/* 不安→回答→CTAカード3枚 */}
-      <div ref={ref} className="mt-8 grid gap-4 px-6 sm:px-10 lg:grid-cols-3">
+      <div ref={ref} className="mt-8 grid gap-4 lg:grid-cols-3">
         {CONCERNS.map((c, i) => (
           <div
             key={i}
-            className="flex flex-col rounded-2xl overflow-hidden transition"
+            className="flex flex-col overflow-hidden rounded-2xl shadow-sm transition"
             style={{
               background: "#FFFFFF",
               border: "1px solid #E5E7EB",
-              boxShadow: "var(--nts-shadow-offset)",
               opacity: visible ? 1 : 0,
               transform: visible ? "translateY(0)" : "translateY(20px)",
               transitionDuration: "var(--nts-dur-slow)",
@@ -230,10 +228,12 @@ export default function SubsidyLpFaq({ data }: Props) {
           </div>
         ))}
       </div>
+      </div>
 
       {/* 詳細FAQ アコーディオン */}
       {data.faqs.length > 0 && (
-        <div className="mt-8 bg-slate-50 px-6 pb-8 pt-8 sm:px-10 sm:pb-10">
+        <div className="mt-12 bg-slate-50 py-12 md:py-16">
+          <div className="mx-auto max-w-5xl px-4 sm:px-6">
           <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-gray-400">
             FAQ
           </p>
@@ -248,6 +248,7 @@ export default function SubsidyLpFaq({ data }: Props) {
             {data.faqs.map((faq, i) => (
               <FaqAccordion key={i} q={faq.q} a={faq.a} />
             ))}
+          </div>
           </div>
         </div>
       )}

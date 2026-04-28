@@ -99,9 +99,8 @@ function KpiCard({ label, value, sub, tone = "default", delay = 0, inView }: Kpi
 
   return (
     <div
-      className="relative overflow-hidden rounded-[16px] bg-white p-6"
+      className="relative overflow-hidden rounded-[16px] border border-slate-200 bg-white p-6 shadow-sm"
       style={{
-        boxShadow: "var(--nts-shadow-offset), var(--nts-shadow-sm)",
         opacity: inView ? 1 : 0,
         transform: inView ? "translateY(0)" : "translateY(8px)",
         transition: `opacity var(--nts-dur-slow) var(--nts-ease-out) ${delay}ms, transform var(--nts-dur-slow) var(--nts-ease-out) ${delay}ms`,
@@ -150,8 +149,9 @@ export default function SubsidyLpStats({ data }: Props) {
     <section
       id="lp-overview"
       aria-label="補助金概要"
-      className="scroll-mt-24 rounded-[28px] border border-slate-100 bg-slate-50 px-6 py-12 shadow-[0_18px_45px_rgba(23,32,51,0.06)] sm:px-10 md:py-16"
+      className="scroll-mt-24 bg-slate-50 py-12 md:py-16"
     >
+      <div className="mx-auto max-w-5xl px-4 sm:px-6">
       {/* セクション見出し */}
       <div className="mb-6">
         <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-gray-400">
@@ -240,6 +240,7 @@ export default function SubsidyLpStats({ data }: Props) {
             ))}
           </tbody>
         </table>
+      </div>
       </div>
     </section>
   );

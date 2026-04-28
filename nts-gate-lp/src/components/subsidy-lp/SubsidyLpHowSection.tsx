@@ -63,10 +63,9 @@ export default function SubsidyLpHowSection() {
   const handshakeImage = subsidyLpAsset("handshake.png");
 
   return (
-    <section
-      className="overflow-hidden rounded-[28px] border border-slate-100 bg-slate-50 shadow-[0_18px_45px_rgba(23,32,51,0.06)]"
-    >
-      <div className="px-6 pt-8 sm:px-10 sm:pt-10">
+    <section className="bg-slate-50 pt-12 md:pt-16">
+      <div className="mx-auto max-w-6xl px-4 sm:px-6">
+      <div>
         <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-gray-400">
           Process
         </p>
@@ -85,7 +84,7 @@ export default function SubsidyLpHowSection() {
       </div>
 
       {/* タイムライン本体 */}
-      <div ref={ref} className="mt-8 px-6 pb-8 sm:px-10 sm:pb-10">
+      <div ref={ref} className="mt-8 pb-12 md:pb-16">
         {/* PC: 横タイムライン */}
         <div className="hidden lg:block">
           {/* 接続線（スクロール連動で伸びる） */}
@@ -135,11 +134,10 @@ export default function SubsidyLpHowSection() {
             {STEPS.map((step, i) => (
               <div
                 key={step.num}
-                className="rounded-2xl p-4 transition"
+                className="rounded-2xl p-4 shadow-sm transition"
                 style={{
                   background: step.accent ? "rgba(14,165,164,0.08)" : "#FFFFFF",
                   border: `1px solid ${step.accent ? "rgba(14,165,164,0.35)" : "var(--nts-border-light)"}`,
-                  boxShadow: "var(--nts-shadow-offset)",
                   opacity: visible ? 1 : 0,
                   transform: visible ? "translateY(0)" : "translateY(16px)",
                   transitionDuration: "var(--nts-dur-slow)",
@@ -223,11 +221,10 @@ export default function SubsidyLpHowSection() {
                   {step.num}
                 </div>
                 <div
-                  className="rounded-2xl p-4"
+                  className="rounded-2xl p-4 shadow-sm"
                   style={{
                     background: step.accent ? "rgba(14,165,164,0.08)" : "#FFFFFF",
                     border: `1px solid ${step.accent ? "rgba(14,165,164,0.35)" : "var(--nts-border-light)"}`,
-                    boxShadow: "var(--nts-shadow-offset)",
                   }}
                 >
                   <div className="flex items-center justify-between gap-2">
@@ -266,14 +263,16 @@ export default function SubsidyLpHowSection() {
       </div>
 
       {/* 下部バナー（伴走支援の訴求） */}
+      </div>
+
       <div
-        className="grid overflow-hidden md:grid-cols-[1fr_200px]"
+        className="bg-slate-900"
         style={{
-          background: "var(--nts-bg-base)",
           borderTop: "1px solid var(--nts-border-dark)",
         }}
       >
-        <div className="px-8 py-7">
+        <div className="mx-auto grid max-w-6xl px-4 sm:px-6 md:grid-cols-[1fr_220px]">
+        <div className="py-8 md:py-10">
           <p
             className="text-base font-black"
             style={{ color: "var(--nts-text-primary-dark)" }}
@@ -306,6 +305,7 @@ export default function SubsidyLpHowSection() {
             aria-hidden="true"
             className="h-44 w-auto object-contain drop-shadow-[0_14px_24px_rgba(0,0,0,0.22)]"
           />
+        </div>
         </div>
       </div>
     </section>
