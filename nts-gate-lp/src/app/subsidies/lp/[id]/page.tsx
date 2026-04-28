@@ -208,16 +208,10 @@ function FinalCtaSection({
           <div className="mt-8 flex flex-col items-start gap-3 sm:flex-row sm:items-center">
             <Link
               href="/consult"
-              className="inline-flex min-h-[64px] items-center justify-center rounded-full px-10 text-base font-extrabold text-[#0F172A] transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--nts-accent-orange)] motion-safe:duration-200"
+              className="group inline-flex min-h-[64px] items-center justify-center rounded-full px-10 text-base font-extrabold text-[#0F172A] transition hover:brightness-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--nts-accent-orange)] motion-safe:duration-200"
               style={{
                 background: "var(--nts-accent-orange)",
                 boxShadow: "var(--nts-glow-orange)",
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.background = "var(--nts-accent-orange-strong)";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.background = "var(--nts-accent-orange)";
               }}
             >
               無料相談を予約する
