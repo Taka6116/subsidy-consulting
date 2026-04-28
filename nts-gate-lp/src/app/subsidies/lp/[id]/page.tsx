@@ -109,10 +109,10 @@ function FinalCtaSection({ grantName }: { grantName: string }) {
         <p className="text-xs font-extrabold uppercase tracking-[0.24em] text-[#8fd3ff]">
           Free Consultation
         </p>
-        <h2 className="mt-3 text-2xl font-black leading-tight tracking-[-0.02em] sm:text-3xl">
+        <h2 className="mt-3 text-2xl font-black leading-tight tracking-[-0.02em] text-white sm:text-3xl">
           {grantName}が自社に使えるか、無料で確認できます。
         </h2>
-        <p className="mt-4 text-sm font-medium leading-7 text-white/72">
+        <p className="mt-4 text-sm font-medium leading-7 text-white">
           補助金は制度名だけでは判断しにくいものです。対象要件、投資内容、申請までの準備を一緒に整理します。
         </p>
         <Link

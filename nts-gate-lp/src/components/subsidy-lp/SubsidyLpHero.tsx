@@ -65,7 +65,7 @@ export default function SubsidyLpHero({ data }: Props) {
           <h1 className="mt-3 max-w-3xl font-heading text-[clamp(34px,5vw,60px)] font-extrabold leading-[1.08] tracking-[-0.03em] text-white">
             {data.heroCopy}
           </h1>
-          <p className="mt-5 max-w-2xl text-base font-medium leading-8 text-white/78 sm:text-lg">
+          <p className="mt-5 max-w-2xl text-base font-medium leading-8 text-white sm:text-lg">
             {data.subCopy}
           </p>
 
