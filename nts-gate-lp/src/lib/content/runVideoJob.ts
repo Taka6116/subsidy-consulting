@@ -382,7 +382,10 @@ export async function runVideoJob(
     }
 
     // ── Step 7: DB 保存 ───────────────────────────────────────
-    const uniqueSlug = await ensureUniqueSlug(script.slug, existingVideo?.id ?? null);
+    // 既存レコードがある場合はスラッグを変えない（URLが変わると404になるため）
+    const uniqueSlug = existingVideo?.slug
+      ? existingVideo.slug
+      : await ensureUniqueSlug(script.slug, null);
     const now = new Date();
     const durationSec =
       audioResult?.durationSec ?? script.total_duration_sec ?? null;
@@ -392,7 +395,7 @@ export async function runVideoJob(
       saved = await prisma.generatedContent.update({
         where: { id: existingVideo.id },
         data: {
-          slug: uniqueSlug,
+          // slug は意図的に更新しない（URLの継続性を保持）
           title: script.title,
           excerpt: script.excerpt,
           body: script.narration_text,
