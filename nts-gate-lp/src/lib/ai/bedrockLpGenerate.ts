@@ -34,7 +34,7 @@ export type GeneratedLpCopy = {
   subCopy: string;
   /** 経営課題リスト（3〜5件） */
   pains: string[];
-  /** 活用ユースケース（2〜3件） */
+  /** 活用ユースケース（必ず3件） */
   useCases: Array<{ persona?: string; label: string; body: string }>;
   /** FAQ（3〜5件） */
   faqs: Array<{ q: string; a: string }>;
@@ -61,9 +61,10 @@ const SYSTEM_PROMPT = `あなたは日本の中小企業向け補助金活用 LP
 # 禁止事項
 - 数値の断定（「売上2倍」「年間500万円削減」等）
 - 採択保証・申請代行の印象を与える表現
-- 入力にない情報の創作（useCases の架空事例は除く）
+- 入力にない制度条件・成果数値・採択実績の創作
 - コードフェンス・JSON以外の文字列の出力
 - 制度名と無関係な業種の活用例（例: 建設機械制度に小売・飲食業）を出さない
+- 「架空」「想定事例」「実際の採択事例ではありません」という表現を一切使わない
 
 ---
 
@@ -107,11 +108,16 @@ targetIndustries が空でも、一般的な中小企業に逃げず、制度名
     {
       "persona": "制度に合う業種・状況（例: 土木工事業、解体工事業、建機レンタル会社）",
       "label": "【活用例】＋業種や状況（15〜25文字）",
-      "body": "どんな経営者が・何に使ったか・期待できる変化（80〜130文字。架空事例と明示。成果の数値断定禁止）"
+      "body": "どんな経営者が・何に使えるか・期待できる変化（80〜130文字。成果の数値断定禁止。「架空」表現禁止）"
     },
     {
       "persona": "制度に合う別の業種・状況",
       "label": "【活用例】＋別の業種や状況",
+      "body": "同上"
+    },
+    {
+      "persona": "制度に合う3つ目の業種・状況",
+      "label": "【活用例】＋3つ目の業種や状況",
       "body": "同上"
     }
   ],
@@ -127,6 +133,8 @@ targetIndustries が空でも、一般的な中小企業に逃げず、制度名
 - maxAmountLabel / subsidyRate / deadlineLabel が null → subCopy で「公募要領で要確認」と一言触れる
 - targetIndustries が空 → 制度名から自然な対象業種を推定して useCases を構成する
 - 入力に「null」「undefined」「[object Object]」が含まれる場合は「公募要領で要確認」に置き換える
+- useCases は必ず3件返す。2件以下は禁止
+- useCases の body に「架空」「想定」「実際の採択事例ではありません」を含めない
 
 JSON オブジェクトを 1 つだけ返す。`;
 
@@ -157,6 +165,15 @@ function pickStrArr(v: unknown, maxItems: number, maxLen: number): string[] {
     .slice(0, maxItems);
 }
 
+function sanitizeLpCopyText(value: string): string {
+  return value
+    .replace(/※?\s*架空(?:の)?(?:活用)?(?:事例|イメージ)?(?:です)?[。．、,\s]*/g, "")
+    .replace(/※?\s*想定(?:の)?(?:事例|イメージ)?(?:です)?[。．、,\s]*/g, "")
+    .replace(/※?\s*実際の採択事例ではありません[。．、,\s]*/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
 function parseLpCopy(parsed: unknown): GeneratedLpCopy | null {
   if (!parsed || typeof parsed !== "object") return null;
   const o = parsed as Record<string, unknown>;
@@ -172,9 +189,9 @@ function parseLpCopy(parsed: unknown): GeneratedLpCopy | null {
     .map((u) => {
       const uu = u as Record<string, unknown>;
       return {
-        persona: pickStr(uu.persona, 40),
-        label: pickStr(uu.label, 60),
-        body: pickStr(uu.body, 260),
+        persona: sanitizeLpCopyText(pickStr(uu.persona, 40)),
+        label: sanitizeLpCopyText(pickStr(uu.label, 60)),
+        body: sanitizeLpCopyText(pickStr(uu.body, 260)),
       };
     })
     .filter((u) => u.label && u.body)
@@ -196,7 +213,7 @@ function parseLpCopy(parsed: unknown): GeneratedLpCopy | null {
     heroCopy,
     subCopy,
     pains,
-    useCases: useCases.length > 0 ? useCases : [{ persona: "設備投資を検討する企業", label: "【活用例】設備投資", body: "架空の活用イメージです。詳細は公募要領をご確認ください。" }],
+    useCases: useCases.length > 0 ? useCases : [{ persona: "設備投資を検討する企業", label: "【活用例】設備投資", body: "詳細は公募要領をご確認ください。" }],
     faqs: faqs.length > 0 ? faqs : [],
   };
 }

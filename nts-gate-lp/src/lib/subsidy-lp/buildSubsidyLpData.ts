@@ -207,6 +207,15 @@ function normalizeTargetArea(value: string | null | undefined): string {
   return raw;
 }
 
+function sanitizeUseCaseText(value: string): string {
+  return value
+    .replace(/※?\s*架空(?:の)?(?:活用)?(?:事例|イメージ)?(?:です)?[。．、,\s]*/g, "")
+    .replace(/※?\s*実際の採択事例ではありません[。．、,\s]*/g, "")
+    .replace(/※\s*想定事例です[。．、,\s]*/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
 function parseLpAiPayload(content: GeneratedContent | null): LpAiPayload | null {
   if (!content?.body) return null;
   try {
@@ -276,17 +285,17 @@ function fallbackUseCases(
       {
         persona: "土木工事業",
         label: "【活用例】電動ショベル導入",
-        body: "架空の活用イメージです。土木工事会社が、燃料費や騒音への対応を見据えて電動ショベルの導入を検討するケースです。初期投資の負担を抑えながら、環境対応を進める計画づくりに活用できます。",
+        body: "土木工事会社が、燃料費や騒音への対応を見据えて電動ショベルの導入を検討するケースです。初期投資の負担を抑えながら、環境対応を進める計画づくりに活用できます。",
       },
       {
         persona: "解体工事業",
         label: "【活用例】電動重機への切替",
-        body: "架空の活用イメージです。住宅密集地での作業が多い解体工事業者が、排ガスや騒音に配慮した電動重機へ切り替えるケースです。発注者や近隣への説明もしやすくなります。",
+        body: "住宅密集地での作業が多い解体工事業者が、排ガスや騒音に配慮した電動重機へ切り替えるケースです。発注者や近隣への説明もしやすくなります。",
       },
       {
         persona: "建機レンタル会社",
         label: "【活用例】電動機械の貸出体制",
-        body: "架空の活用イメージです。建機レンタル会社が、環境対応ニーズに合わせて電動建設機械のラインナップを整えるケースです。顧客の脱炭素対応を支える投資として整理できます。",
+        body: "建機レンタル会社が、環境対応ニーズに合わせて電動建設機械のラインナップを整えるケースです。顧客の脱炭素対応を支える投資として整理できます。",
       },
     ];
   }
@@ -296,14 +305,57 @@ function fallbackUseCases(
     {
       persona: base,
       label: `【活用例】${base}の設備更新`,
-        body: `架空の活用イメージです。老朽化した設備の更新に活用し、自己負担を抑えながら生産効率の改善を目指すケースです。`,
+      body: `老朽化した設備の更新に活用し、自己負担を抑えながら生産効率の改善を目指すケースです。`,
     },
     {
       persona: "業務効率化",
       label: "【活用例】業務効率化の推進",
-        body: `架空の活用イメージです。受発注・在庫管理をシステム化し、手作業の削減と人手不足対策につなげるケースです。`,
+      body: `受発注・在庫管理をシステム化し、手作業の削減と人手不足対策につなげるケースです。`,
+    },
+    {
+      persona: "投資計画の見直し",
+      label: "【活用例】投資計画の整理",
+      body: "補助対象経費や導入時期を整理し、自己負担と投資効果のバランスを見ながら無理のない事業計画に落とし込むケースです。",
     },
   ];
+}
+
+function resolveUseCases(
+  aiUseCases: LpAiPayload["useCases"],
+  name: string,
+  industries: string[],
+): Array<{ label: string; body: string; persona?: string }> {
+  const fallback = fallbackUseCases(name, industries);
+  const normalized =
+    Array.isArray(aiUseCases)
+      ? aiUseCases
+          .filter((u) => u.label && u.body)
+          .map((u) => ({
+            label: sanitizeUseCaseText(u.label!),
+            body: sanitizeUseCaseText(u.body!),
+            persona: u.persona?.trim() || undefined,
+          }))
+          .filter((u) => u.label && u.body)
+      : [];
+
+  const merged = [...normalized, ...fallback].map((u) => ({
+    ...u,
+    label: sanitizeUseCaseText(u.label),
+    body: sanitizeUseCaseText(u.body),
+  }));
+
+  const seen = new Set<string>();
+  const seenPersonas = new Set<string>();
+  return merged
+    .filter((u) => {
+      const key = `${u.persona ?? ""}:${u.label}`;
+      if (seen.has(key)) return false;
+      if (u.persona && seenPersonas.has(u.persona)) return false;
+      seen.add(key);
+      if (u.persona) seenPersonas.add(u.persona);
+      return true;
+    })
+    .slice(0, 3);
 }
 
 function fallbackFaqs(): Array<{ q: string; a: string }> {
@@ -369,17 +421,7 @@ export function buildSubsidyLpData(
       ? ai.pains.slice(0, 5)
       : fallbackPains(name);
 
-  const useCases =
-    Array.isArray(ai?.useCases) && ai.useCases.length >= 1
-      ? ai.useCases
-          .filter((u) => u.label && u.body)
-          .map((u) => ({
-            label: u.label!,
-            body: u.body!,
-            persona: u.persona?.trim() || undefined,
-          }))
-          .slice(0, 3)
-      : fallbackUseCases(name, grant.targetIndustries ?? []);
+  const useCases = resolveUseCases(ai?.useCases, name, grant.targetIndustries ?? []);
 
   const faqs =
     Array.isArray(ai?.faqs) && ai.faqs.length >= 2
