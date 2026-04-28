@@ -63,7 +63,7 @@ export default function SubsidyLpHowSection() {
   const handshakeImage = subsidyLpAsset("handshake.png");
 
   return (
-    <section className="bg-slate-50 pt-12 md:pt-16">
+    <section className="bg-[var(--bg-section-alt)] pt-12 md:pt-16">
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
       <div>
         <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-gray-400">
@@ -71,13 +71,13 @@ export default function SubsidyLpHowSection() {
         </p>
         <h2
           className="text-2xl font-black tracking-[-0.02em] sm:text-3xl"
-          style={{ color: "var(--nts-text-primary-light)" }}
+          style={{ color: "var(--text-primary)" }}
         >
           申請検討から採択後までの流れ
         </h2>
         <p
           className="mt-2 text-sm font-medium"
-          style={{ color: "var(--nts-text-tertiary-light)" }}
+          style={{ color: "var(--text-secondary)" }}
         >
           複雑に見える申請プロセスを5ステップで整理しました
         </p>
@@ -147,19 +147,19 @@ export default function SubsidyLpHowSection() {
               >
                 <p
                   className="text-[10px] font-extrabold uppercase"
-                  style={{ color: step.accent ? "var(--nts-accent-teal)" : "var(--nts-text-tertiary-light)" }}
+                  style={{ color: step.accent ? "var(--nts-accent-teal)" : "var(--text-muted)" }}
                 >
                   {step.duration}
                 </p>
                 <p
                   className="mt-1.5 text-sm font-black leading-snug"
-                  style={{ color: "var(--nts-text-primary-light)" }}
+                  style={{ color: "var(--text-primary)" }}
                 >
                   {step.title}
                 </p>
                 <p
                   className="mt-2 text-xs font-medium leading-relaxed"
-                  style={{ color: "var(--nts-text-tertiary-light)" }}
+                  style={{ color: "var(--text-secondary)" }}
                 >
                   {step.body}
                 </p>
@@ -230,7 +230,7 @@ export default function SubsidyLpHowSection() {
                   <div className="flex items-center justify-between gap-2">
                     <p
                       className="text-sm font-black"
-                      style={{ color: "var(--nts-text-primary-light)" }}
+                      style={{ color: "var(--text-primary)" }}
                     >
                       {step.title}
                     </p>
@@ -245,13 +245,13 @@ export default function SubsidyLpHowSection() {
                   </div>
                   <p
                     className="mt-0.5 text-[10px] font-extrabold uppercase"
-                    style={{ color: step.accent ? "var(--nts-accent-teal)" : "var(--nts-text-tertiary-light)" }}
+                    style={{ color: step.accent ? "var(--nts-accent-teal)" : "var(--text-muted)" }}
                   >
                     {step.duration}
                   </p>
                   <p
                     className="mt-2 text-xs font-medium leading-relaxed"
-                    style={{ color: "var(--nts-text-tertiary-light)" }}
+                    style={{ color: "var(--text-secondary)" }}
                   >
                     {step.body}
                   </p>

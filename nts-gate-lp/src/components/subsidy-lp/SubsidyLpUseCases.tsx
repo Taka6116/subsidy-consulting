@@ -66,7 +66,7 @@ export default function SubsidyLpUseCases({ data }: Props) {
   const { ref, visible } = useInView();
 
   return (
-    <section className="bg-white py-16 md:py-24">
+    <section className="bg-[var(--bg-base)] py-16 md:py-24">
       <div className="mx-auto max-w-5xl px-4 sm:px-6">
       {/* ヘッダー */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
@@ -75,7 +75,8 @@ export default function SubsidyLpUseCases({ data }: Props) {
             Use Cases
           </p>
           <h2
-            className="text-2xl font-black tracking-[-0.02em] text-slate-900 sm:text-3xl"
+            className="text-2xl font-black tracking-[-0.02em] sm:text-3xl"
+            style={{ color: "var(--text-primary)" }}
           >
             活用イメージ
           </h2>
@@ -120,7 +121,8 @@ export default function SubsidyLpUseCases({ data }: Props) {
                   Case {String(i + 1).padStart(2, "0")}
                 </p>
                 <p
-                  className="text-xs font-bold text-slate-500"
+                  className="text-xs font-bold"
+                  style={{ color: "var(--text-secondary)" }}
                 >
                   {INDUSTRY_LABELS[i % INDUSTRY_LABELS.length]}
                 </p>
@@ -130,12 +132,14 @@ export default function SubsidyLpUseCases({ data }: Props) {
             {/* カード本体 */}
             <div className="flex flex-1 flex-col px-5 py-4">
               <p
-                className="text-sm font-black leading-snug text-slate-900"
+                className="text-sm font-black leading-snug"
+                style={{ color: "var(--text-primary)" }}
               >
                 {uc.label}
               </p>
               <p
-                className="mt-3 flex-1 text-sm font-medium leading-7 text-slate-600"
+                className="mt-3 flex-1 text-sm font-medium leading-7"
+                style={{ color: "var(--text-secondary)" }}
               >
                 {uc.body}
               </p>
@@ -146,7 +150,8 @@ export default function SubsidyLpUseCases({ data }: Props) {
                 style={{ background: "#F8FAFC", borderLeft: "3px solid var(--nts-accent-teal)" }}
               >
                 <p
-                  className="text-xs font-bold italic leading-relaxed text-slate-500"
+                  className="text-xs font-bold italic leading-relaxed"
+                  style={{ color: "var(--text-muted)" }}
                 >
                   「申請の流れを一緒に整理してもらえたので、安心して動けました」
                 </p>

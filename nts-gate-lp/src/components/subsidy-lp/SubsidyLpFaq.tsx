@@ -90,8 +90,8 @@ function FaqAccordion({ q, a }: { q: string; a: string }) {
     <div className="border-b border-slate-200 last:border-0">
       <button
         className="flex w-full items-start justify-between gap-4 py-5 text-left transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
-        style={{
-          color: "var(--nts-text-primary-light)",
+          style={{
+          color: "var(--text-primary)",
           outlineColor: "var(--nts-accent-cyan)",
           transitionDuration: "var(--nts-dur-fast)",
         }}
@@ -117,7 +117,7 @@ function FaqAccordion({ q, a }: { q: string; a: string }) {
       {open && (
         <div
           className="pb-5 pl-5 pr-2 text-sm font-medium leading-7"
-          style={{ color: "var(--nts-text-secondary-light)" }}
+          style={{ color: "var(--text-secondary)" }}
         >
           <span className="mr-2 font-black" style={{ color: "var(--nts-accent-orange)" }}>A.</span>
           {a}
@@ -131,19 +131,21 @@ export default function SubsidyLpFaq({ data }: Props) {
   const { ref, visible } = useInView();
 
   return (
-    <section className="bg-white pt-12 md:pt-16">
+    <section className="bg-[var(--bg-base)] pt-12 md:pt-16">
       <div className="mx-auto max-w-5xl px-4 sm:px-6">
       <div>
         <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-gray-400">
           よくある不安
         </p>
         <h2
-          className="text-2xl font-black tracking-[-0.02em] text-slate-900 sm:text-3xl"
+          className="text-2xl font-black tracking-[-0.02em] sm:text-3xl"
+          style={{ color: "var(--text-primary)" }}
         >
           申請前によくある3つの不安
         </h2>
         <p
-          className="mt-2 text-sm font-medium text-slate-500"
+          className="mt-2 text-sm font-medium"
+          style={{ color: "var(--text-secondary)" }}
         >
           それぞれに、具体的な解決策があります
         </p>
@@ -175,7 +177,8 @@ export default function SubsidyLpFaq({ data }: Props) {
                   <ConcernIcon icon={c.icon} />
                 </span>
                 <p
-                  className="text-sm font-black text-slate-900"
+                  className="text-sm font-black"
+                  style={{ color: "var(--text-primary)" }}
                 >
                   {c.worry}
                 </p>
@@ -195,7 +198,8 @@ export default function SubsidyLpFaq({ data }: Props) {
                 </span>
               </div>
               <p
-                className="flex-1 text-sm font-medium leading-7 text-slate-600"
+                className="flex-1 text-sm font-medium leading-7"
+                style={{ color: "var(--text-secondary)" }}
               >
                 {c.answer}
               </p>
@@ -215,7 +219,7 @@ export default function SubsidyLpFaq({ data }: Props) {
                       }
                     : {
                         background: "#F8FAFC",
-                        color: "var(--nts-text-primary-light)",
+                        color: "var(--text-primary)",
                         border: "1px solid #E2E8F0",
                         transitionDuration: "var(--nts-dur-fast)",
                         outlineColor: "var(--nts-accent-cyan)",
@@ -232,13 +236,14 @@ export default function SubsidyLpFaq({ data }: Props) {
 
       {/* 詳細FAQ アコーディオン */}
       {data.faqs.length > 0 && (
-        <div className="mt-12 bg-slate-50 py-12 md:py-16">
+        <div className="mt-12 bg-[var(--bg-section-alt)] py-12 md:py-16">
           <div className="mx-auto max-w-5xl px-4 sm:px-6">
           <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-gray-400">
             FAQ
           </p>
           <h3
-            className="mb-5 text-lg font-black text-slate-900"
+            className="mb-5 text-lg font-black"
+          style={{ color: "var(--text-primary)" }}
           >
             よくある質問
           </h3>

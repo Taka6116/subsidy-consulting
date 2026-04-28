@@ -149,7 +149,7 @@ export default function SubsidyLpStats({ data }: Props) {
     <section
       id="lp-overview"
       aria-label="補助金概要"
-      className="scroll-mt-24 bg-slate-50 py-12 md:py-16"
+      className="scroll-mt-24 bg-[var(--bg-section-alt)] py-12 md:py-16"
     >
       <div className="mx-auto max-w-5xl px-4 sm:px-6">
       {/* セクション見出し */}
@@ -159,7 +159,7 @@ export default function SubsidyLpStats({ data }: Props) {
         </p>
         <h2
           className="text-2xl font-black tracking-[-0.02em] sm:text-3xl"
-          style={{ color: "var(--nts-text-primary-light)" }}
+          style={{ color: "var(--text-primary)" }}
         >
           数字で見る制度規模
         </h2>

@@ -94,12 +94,14 @@ export default function SubsidyLpChecker() {
           30 sec check
         </p>
         <h2
-          className="text-xl font-black leading-snug tracking-[-0.02em] text-slate-900 sm:text-2xl"
+          className="text-xl font-black leading-snug tracking-[-0.02em] sm:text-2xl"
+          style={{ color: "var(--text-primary)" }}
         >
           あなたの会社は、この補助金の対象ですか？
         </h2>
         <p
-          className="mt-2 text-sm font-medium text-slate-500"
+          className="mt-2 text-sm font-medium"
+          style={{ color: "var(--text-secondary)" }}
         >
           該当する項目にチェックを入れてください（複数可）
         </p>

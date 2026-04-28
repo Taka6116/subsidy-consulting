@@ -16,6 +16,7 @@ import LpFooter from "@/components/gate-lp/LpFooter";
 import SubsidyLpHero from "@/components/subsidy-lp/SubsidyLpHero";
 import SubsidyLpStats from "@/components/subsidy-lp/SubsidyLpStats";
 import SubsidyLpChecker from "@/components/subsidy-lp/SubsidyLpChecker";
+import SubsidyLpMatchCta from "@/components/subsidy-lp/SubsidyLpMatchCta";
 import SubsidyLpPainSection from "@/components/subsidy-lp/SubsidyLpPainSection";
 import SubsidyLpUseCases from "@/components/subsidy-lp/SubsidyLpUseCases";
 import SubsidyLpHowSection from "@/components/subsidy-lp/SubsidyLpHowSection";
@@ -74,7 +75,7 @@ export default async function SubsidyLpPage({ params }: Props) {
   return (
     <>
       <Header />
-      <main className="relative min-h-screen bg-white font-body">
+      <main className="relative min-h-screen bg-[var(--bg-base)] font-body">
         <SubsidyLpHero data={data} />
 
         {/* § 数字で見る制度規模 */}
@@ -83,6 +84,8 @@ export default async function SubsidyLpPage({ params }: Props) {
         <div id="checker">
           <SubsidyLpChecker />
         </div>
+        {/* § 補助金照会 */}
+        <SubsidyLpMatchCta />
         {/* § こんな課題がある企業に */}
         <SubsidyLpPainSection data={data} />
         {/* § 活用イメージ（ペルソナ） */}
