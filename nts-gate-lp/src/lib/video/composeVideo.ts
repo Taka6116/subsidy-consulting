@@ -260,6 +260,128 @@ async function compositePng(basePath: string, overlayPath: string, outputPath: s
   return outputPath;
 }
 
+type SegmentMotionProfile = {
+  bgScale: string;
+  bgX: string;
+  bgY: string;
+  bgBrightness: number;
+  bgSaturation: number;
+  overlayZoom: number;
+  overlayX: string;
+  overlayY: string;
+};
+
+function segmentMotionProfile(opts: {
+  type?: VideoSlideType;
+  layout?: VideoSlideLayout;
+  isTitle?: boolean;
+}): SegmentMotionProfile {
+  if (opts.isTitle) {
+    return {
+      bgScale: "1480:833",
+      bgX: "100+28*sin(t*0.26)",
+      bgY: "56+18*cos(t*0.22)",
+      bgBrightness: 0,
+      bgSaturation: 1,
+      overlayZoom: 0.014,
+      overlayX: "+4*sin(t*0.35)",
+      overlayY: "-4*cos(t*0.28)",
+    };
+  }
+
+  if (opts.layout === "number-focus" || opts.type === "numbers") {
+    return {
+      bgScale: "1520:855",
+      bgX: "120+42*sin(t*0.34)",
+      bgY: "68+26*cos(t*0.27)",
+      bgBrightness: -0.04,
+      bgSaturation: 1.05,
+      overlayZoom: 0.026,
+      overlayX: "+6*sin(t*0.42)",
+      overlayY: "-3*cos(t*0.33)",
+    };
+  }
+
+  if (opts.layout === "before-after" || opts.type === "story") {
+    return {
+      bgScale: "1540:866",
+      bgX: "130+58*sin(t*0.30)",
+      bgY: "72+30*cos(t*0.24)",
+      bgBrightness: -0.03,
+      bgSaturation: 1.08,
+      overlayZoom: 0.018,
+      overlayX: "+10*sin(t*0.38)",
+      overlayY: "+4*cos(t*0.31)",
+    };
+  }
+
+  if (opts.type === "problem") {
+    return {
+      bgScale: "1500:844",
+      bgX: "110+46*sin(t*0.32)",
+      bgY: "62+24*cos(t*0.25)",
+      bgBrightness: -0.02,
+      bgSaturation: 1.04,
+      overlayZoom: 0.018,
+      overlayX: "-18*exp(-2*t)+6*sin(t*0.38)",
+      overlayY: "+3*cos(t*0.26)",
+    };
+  }
+
+  if (opts.type === "cta") {
+    return {
+      bgScale: "1500:844",
+      bgX: "110+30*sin(t*0.26)",
+      bgY: "62+20*cos(t*0.22)",
+      bgBrightness: -0.02,
+      bgSaturation: 1.02,
+      overlayZoom: 0.024,
+      overlayX: "+3*sin(t*0.32)",
+      overlayY: "-6*cos(t*0.24)",
+    };
+  }
+
+  return {
+    bgScale: "1500:844",
+    bgX: "110+36*sin(t*0.30)",
+    bgY: "62+22*cos(t*0.24)",
+    bgBrightness: 0,
+    bgSaturation: 1,
+    overlayZoom: 0.016,
+    overlayX: "+6*sin(t*0.36)",
+    overlayY: "-4*cos(t*0.30)",
+  };
+}
+
+function buildSegmentMotionFilter(opts: {
+  isStock: boolean;
+  durationSec: number;
+  type?: VideoSlideType;
+  layout?: VideoSlideLayout;
+  isTitle?: boolean;
+}): string {
+  const duration = Math.max(1, opts.durationSec);
+  const fadeIn = Math.min(0.25, duration / 4);
+  const fadeOut = Math.min(0.3, duration / 4);
+  const fadeOutStart = Math.max(0, duration - fadeOut);
+  const profile = segmentMotionProfile(opts);
+
+  const bgFilter = opts.isStock
+    ? `scale=${profile.bgScale}:force_original_aspect_ratio=increase,crop=1280:720:x='${profile.bgX}':y='${profile.bgY}',eq=brightness=${profile.bgBrightness - 0.12}:saturation=${profile.bgSaturation + 0.08}[bg]`
+    : `scale=${profile.bgScale}:flags=lanczos,crop=1280:720:x='${profile.bgX}':y='${profile.bgY}',format=rgba[bg]`;
+
+  const overlayScale =
+    `scale=w='trunc(1280*(1+${profile.overlayZoom}*t/${duration})/2)*2':` +
+    `h='trunc(720*(1+${profile.overlayZoom}*t/${duration})/2)*2':eval=frame`;
+
+  return [
+    `[0:v]${bgFilter}`,
+    `[1:v]format=rgba,${overlayScale}[card]`,
+    `[bg][card]overlay=x='(W-w)/2${profile.overlayX}':y='(H-h)/2${profile.overlayY}':eval=frame:format=auto[mix]`,
+    `[mix]fade=t=in:st=0:d=${fadeIn.toFixed(2)},fade=t=out:st=${fadeOutStart.toFixed(2)}:d=${fadeOut.toFixed(2)},format=yuv420p`,
+  ].join(";");
+}
+
 function newsBackgroundSvg(index: number): string {
   const accent = index % 3 === 0 ? "#5b7cfa" : index % 3 === 1 ? "#22a7d8" : "#6c8ff5";
   return `<?xml version="1.0" encoding="UTF-8"?>
@@ -516,13 +638,19 @@ async function createNewsSegment(input: {
   overlayPath: string;
   durationSec: number;
   outputPath: string;
+  type?: VideoSlideType;
+  layout?: VideoSlideLayout;
+  isTitle?: boolean;
 }): Promise<void> {
   const duration = Math.max(1, input.durationSec);
   const isStock = !!input.clip;
-  const bgFilter = isStock
-    ? `scale=1400:788:force_original_aspect_ratio=increase,crop=1280:720:x='60+40*sin(t*0.32)':y='34+26*cos(t*0.24)',eq=brightness=-0.18:saturation=1.12[bg]`
-    : `scale=1360:765:flags=lanczos,crop=1280:720:x='40+40*sin(t*0.32)':y='22+22*cos(t*0.24)',format=rgba[bg]`;
-  const filter = `[0:v]${bgFilter};[1:v]format=rgba[card];[bg][card]overlay=0:0:format=auto,format=yuv420p`;
+  const filter = buildSegmentMotionFilter({
+    isStock,
+    durationSec: duration,
+    type: input.type,
+    layout: input.layout,
+    isTitle: input.isTitle,
+  });
 
   await runFfmpegSegment(isStock ? "news stock segment" : "news motion segment", (cmd) => {
     const base = cmd.input(isStock && input.clip ? input.clip.filePath : input.backgroundPath);
@@ -589,6 +717,7 @@ export async function composeEnhancedVideo(input: ComposeEnhancedVideoInput): Pr
     overlayPath: titleOverlay,
     durationSec: titleDuration,
     outputPath: titleSegment,
+    isTitle: true,
   });
   segmentPaths.push(titleSegment);
 
@@ -616,6 +745,8 @@ export async function composeEnhancedVideo(input: ComposeEnhancedVideoInput): Pr
       overlayPath,
       durationSec: duration,
       outputPath: segmentPath,
+      type: section.type,
+      layout: section.layout,
     });
     segmentPaths.push(segmentPath);
   }
