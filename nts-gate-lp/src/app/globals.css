@@ -881,3 +881,83 @@ hr,
   box-shadow: 0 8px 32px rgba(26, 76, 142, 0.13);
   transform: translateY(-2px);
 }
+
+/* ===================================================================
+ * nts-lp — デザイントークン (03_デザイントークン定義.md 準拠)
+ * 命名衝突回避のため nts- プレフィックスを付与
+ * =================================================================== */
+:root {
+  /* Color — Background */
+  --nts-bg-base:         #0B1729;
+  --nts-bg-elevated:     #13223D;
+  --nts-bg-card:         rgba(255,255,255,0.04);
+  --nts-bg-card-hover:   rgba(255,255,255,0.07);
+  --nts-bg-light:        #F7F9FC;
+  --nts-bg-light-soft:   #EEF2F7;
+
+  /* Color — Text on dark */
+  --nts-text-primary-dark:    #FFFFFF;
+  --nts-text-secondary-dark:  rgba(255,255,255,0.78);
+  --nts-text-tertiary-dark:   rgba(255,255,255,0.55);
+  --nts-text-muted-dark:      rgba(255,255,255,0.4);
+
+  /* Color — Text on light */
+  --nts-text-primary-light:   #0F172A;
+  --nts-text-secondary-light: #334155;
+  --nts-text-tertiary-light:  #64748B;
+
+  /* Color — Accent */
+  --nts-accent-teal:          #0EA5A4;
+  --nts-accent-teal-strong:   #0D9488;
+  --nts-accent-orange:        #FB923C;
+  --nts-accent-orange-strong: #F97316;
+  --nts-accent-cyan:          #7DD3FC;
+  --nts-accent-indigo:        #4F46E5;
+
+  /* Color — Status */
+  --nts-success:  #10B981;
+  --nts-warning:  #F59E0B;
+  --nts-danger:   #EF4444;
+  --nts-info:     #3B82F6;
+
+  /* Color — Border */
+  --nts-border-dark:        rgba(255,255,255,0.08);
+  --nts-border-dark-strong: rgba(255,255,255,0.18);
+  --nts-border-light:       #E2E8F0;
+
+  /* Shadow */
+  --nts-shadow-offset: 5px 5px 0 0 rgba(0,0,0,0.05);
+  --nts-shadow-sm:     0 2px 8px rgba(0,0,0,0.08);
+  --nts-shadow-md:     0 4px 16px rgba(0,0,0,0.18);
+  --nts-shadow-lg:     0 12px 32px rgba(0,0,0,0.32);
+  --nts-glow-teal:     0 0 24px rgba(14,165,164,0.35);
+  --nts-glow-orange:   0 0 24px rgba(251,146,60,0.35);
+
+  /* Motion */
+  --nts-dur-instant: 120ms;
+  --nts-dur-fast:    200ms;
+  --nts-dur-normal:  320ms;
+  --nts-dur-slow:    600ms;
+  --nts-dur-count:   1400ms;
+  --nts-ease-out:    cubic-bezier(0.22, 1, 0.36, 1);
+  --nts-ease-inout:  cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+/* prefers-reduced-motion: すべてのアニメーション・トランジションを即時に */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --nts-dur-instant: 0ms;
+    --nts-dur-fast:    0ms;
+    --nts-dur-normal:  0ms;
+    --nts-dur-slow:    0ms;
+    --nts-dur-count:   0ms;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

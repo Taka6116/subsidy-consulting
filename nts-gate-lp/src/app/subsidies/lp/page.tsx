@@ -5,9 +5,9 @@ import LpFooter from "@/components/gate-lp/LpFooter";
 import { prisma } from "@/lib/db/prisma";
 
 export const metadata: Metadata = {
-  title: "補助金活用ガイド | 日本提携支援",
+  title: "補助金別アクションガイド | 日本提携支援",
   description:
-    "補助金ごとの対象課題・活用イメージ・申請の流れをLP形式でわかりやすく整理した活用ガイド集です。",
+    "制度ごとに、対象企業のイメージ・申請の流れ・相談前に確認すべきポイントを1ページで整理。あなたの会社が使える補助金を最短で見つけられます。",
 };
 
 export const revalidate = 300;
@@ -104,25 +104,26 @@ export default async function SubsidiesLpIndexPage() {
             className="pointer-events-none absolute -left-24 top-0 -z-10 h-full w-[36%] skew-x-[-13deg] bg-[#1e9bdb]/20"
           />
           <div className="mx-auto max-w-7xl px-6 py-16 lg:py-20">
-            <p className="text-xs font-semibold uppercase tracking-[0.28em] text-teal-200">
+            <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[#7DD3FC]">
               Action Guide Library
             </p>
             <div className="mt-4 max-w-3xl">
-              <h1 className="font-heading text-[clamp(34px,5vw,58px)] font-black leading-tight tracking-[-0.03em]">
-                補助金活用ガイド
+              <h1 className="font-heading text-[clamp(34px,5vw,58px)] font-black leading-tight tracking-[-0.03em] text-white">
+                補助金別アクションガイド
               </h1>
-              <p className="mt-5 text-base font-medium leading-8 text-slate-200 sm:text-lg">
-                補助金ごとに、使える企業のイメージ・申請の流れ・相談前に見るべきポイントをLP形式で整理しています。
+              <p className="mt-5 text-base font-medium leading-8 text-white/80 sm:text-lg">
+                制度ごとに、対象企業のイメージ・申請の流れ・相談前に確認すべきポイントを1ページで整理。<br className="hidden sm:inline" />
+                あなたの会社が使える補助金を最短で見つけられます。
               </p>
             </div>
             <div className="mt-8 flex flex-wrap gap-3">
               <span className="rounded-full bg-white/10 px-3 py-1 text-xs font-bold text-white ring-1 ring-white/20">
                 公開中 {rows.length}件
               </span>
-              <span className="rounded-full bg-teal-400/15 px-3 py-1 text-xs font-bold text-teal-100 ring-1 ring-teal-300/30">
-                相談導線つきLP
+              <span className="rounded-full bg-white/8 px-3 py-1 text-xs font-bold text-white ring-1 ring-white/15">
+                相談導線つき
               </span>
-              <span className="rounded-full bg-amber-400/15 px-3 py-1 text-xs font-bold text-amber-100 ring-1 ring-amber-300/30">
+              <span className="rounded-full bg-white/8 px-3 py-1 text-xs font-bold text-white ring-1 ring-white/15">
                 自動生成・随時追加
               </span>
             </div>
@@ -131,13 +132,13 @@ export default async function SubsidiesLpIndexPage() {
 
         <section className="mx-auto max-w-7xl px-6 py-12 lg:py-16">
           {rows.length === 0 ? (
-            <div className="rounded-[28px] border border-[#dce6ef] bg-white p-8 text-center shadow-[0_18px_45px_rgba(23,32,51,0.08)]">
-              <p className="text-sm text-neutral-600">
+            <div className="rounded-[16px] border border-white/10 bg-[rgba(15,24,42,0.6)] p-8 text-center shadow-[0_4px_16px_rgba(0,0,0,0.25)]">
+              <p className="text-sm text-white/70">
                 現在公開中の活用ガイドはありません。補助金データの取り込み後、順次追加されます。
               </p>
             </div>
           ) : (
-            <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
               {rows.map((row) => {
                 const grant = row.grant;
                 const heroCopy =
@@ -151,68 +152,68 @@ export default async function SubsidiesLpIndexPage() {
                   grant.deadlineLabel,
                   grant.deadline,
                 );
+                const publishedAt = formatPublishedAt(row.publishedAt);
 
                 return (
                   <Link
                     key={row.id}
                     href={`/subsidies/lp/${grant.id}`}
-                    className="group flex min-h-[280px] flex-col overflow-hidden rounded-[28px] border border-[#dce6ef] bg-white shadow-[0_18px_45px_rgba(23,32,51,0.08)] transition hover:-translate-y-1 hover:border-[#b9d8ee] hover:shadow-[0_24px_60px_rgba(23,32,51,0.13)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#1e9bdb]"
+                    aria-label={`${grant.name ?? "補助金活用ガイド"} のガイドを見る`}
+                    className={[
+                      "group flex min-h-[300px] flex-col overflow-hidden",
+                      "rounded-[16px] border border-white/[0.08]",
+                      "bg-[rgba(15,24,42,0.6)]",
+                      "shadow-[0_4px_16px_rgba(0,0,0,0.25)]",
+                      "motion-safe:transition motion-safe:duration-[240ms] motion-safe:ease-out",
+                      "hover:-translate-y-0.5 hover:border-white/[0.18] hover:shadow-[0_8px_24px_rgba(0,0,0,0.35)]",
+                      "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#7DD3FC]",
+                    ].join(" ")}
                   >
-                    <div className="relative overflow-hidden bg-[#0d2138] px-5 py-6 text-white">
-                      <div className="absolute -right-10 -top-12 h-32 w-32 rounded-full bg-[#1e9bdb]/25" aria-hidden />
-                      <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-teal-200">
+                    {/* カードヘッダー */}
+                    <div className="relative overflow-hidden px-6 pt-6 pb-4">
+                      <div className="absolute -right-8 -top-10 h-28 w-28 rounded-full bg-[#7DD3FC]/10" aria-hidden />
+                      <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-[rgba(125,211,252,0.9)]">
                         Action Guide
                       </p>
-                      <h2 className="relative mt-3 line-clamp-2 text-xl font-black leading-snug">
+                      <h2 className="relative mt-2 line-clamp-2 text-lg font-bold leading-[1.4] text-white sm:text-[20px]">
                         {grant.name ?? row.title ?? "補助金活用ガイド"}
                       </h2>
                     </div>
 
-                    <div className="flex flex-1 flex-col px-5 py-5">
-                      <p className="line-clamp-3 text-sm font-medium leading-7 text-[#556875]">
+                    {/* カードボディ */}
+                    <div className="flex flex-1 flex-col px-6 pb-6">
+                      <p className="line-clamp-3 text-sm font-normal leading-[1.7] text-white/70">
                         {heroCopy}
                       </p>
 
-                      <dl className="mt-4 grid grid-cols-2 gap-2 text-xs">
-                        <div className="rounded-2xl bg-[#f1f6fb] p-3">
-                          <dt className="font-bold text-[#687987]">補助上限</dt>
-                          <dd className="mt-1 font-black text-[#172033]">
+                      {/* KPIミニカード */}
+                      <dl className="mt-4 grid grid-cols-2 gap-2">
+                        <div className="rounded-[10px] bg-white/[0.04] p-3">
+                          <dt className="text-[11px] font-medium uppercase text-white/50">補助上限</dt>
+                          <dd className="mt-1 text-sm font-semibold text-white">
                             {amountLabel ?? "要確認"}
                           </dd>
                         </div>
-                        <div className="rounded-2xl bg-[#f1f6fb] p-3">
-                          <dt className="font-bold text-[#687987]">公募期限</dt>
-                          <dd className="mt-1 font-black text-[#172033]">
+                        <div className="rounded-[10px] bg-white/[0.04] p-3">
+                          <dt className="text-[11px] font-medium uppercase text-white/50">公募期限</dt>
+                          <dd className="mt-1 text-sm font-semibold text-white">
                             {deadlineLabel ?? "要確認"}
                           </dd>
                         </div>
                       </dl>
 
-                      <div className="mt-4 flex items-center justify-between gap-3">
-                        <div className="flex flex-wrap gap-1.5">
-                          {grant.prefecture ? (
-                            <span className="rounded-full bg-teal-50 px-2.5 py-1 text-xs font-bold text-teal-700 ring-1 ring-teal-100">
-                              {grant.prefecture.length > 10 ? "全国" : grant.prefecture}
-                            </span>
-                          ) : null}
-                          {grant.targetIndustries.slice(0, 2).map((industry) => (
-                            <span
-                              key={`${row.id}-${industry}`}
-                              className="rounded-full bg-neutral-100 px-2.5 py-1 text-xs font-medium text-neutral-600"
-                            >
-                              {industry}
-                            </span>
-                          ))}
-                        </div>
-                        {formatPublishedAt(row.publishedAt) ? (
-                          <span className="shrink-0 text-xs text-neutral-400">
-                            {formatPublishedAt(row.publishedAt)}
-                          </span>
-                        ) : null}
-                      </div>
-
-                      <div className="mt-5 text-sm font-black text-[#1e5f8c] transition group-hover:translate-x-0.5">
-                        ガイドを見る →
+                      {/* フッター行 */}
+                      <div className="mt-auto pt-5 flex items-end justify-between gap-3">
+                        <span className="text-sm font-semibold text-[#7DD3FC] underline-offset-4 group-hover:underline">
+                          ガイドを見る{" "}
+                          <span
+                            className="inline-block motion-safe:transition motion-safe:duration-200 group-hover:translate-x-1"
+                            aria-hidden
+                          >→</span>
+                        </span>
+                        {publishedAt && (
+                          <span className="shrink-0 text-[11px] text-white/40">{publishedAt}</span>
+                        )}
                       </div>
                     </div>
                   </Link>

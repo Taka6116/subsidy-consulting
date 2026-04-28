@@ -83,7 +83,7 @@ export default async function SubsidyLpPage({ params }: Props) {
             <SubsidyLpUseCases data={data} />
             <SubsidyLpHowSection />
             <SubsidyLpFaq data={data} />
-            <FinalCtaSection grantName={data.name} />
+            <FinalCtaSection grantName={data.name} remainingDays={data.remainingDays} />
             <ArticleLinkSection grantId={id} grantName={data.name} />
           </div>
         </div>
@@ -96,39 +96,117 @@ export default async function SubsidyLpPage({ params }: Props) {
   );
 }
 
-function FinalCtaSection({ grantName }: { grantName: string }) {
+function FinalCtaSection({
+  grantName,
+  remainingDays,
+}: {
+  grantName: string;
+  remainingDays: number | null;
+}) {
   const teamImage = subsidyLpAsset("team.png");
 
+  const urgentDays = remainingDays !== null && remainingDays >= 0 && remainingDays <= 30;
+
   return (
-    <section className="relative grid overflow-hidden rounded-[32px] bg-[#071525] text-white shadow-[0_24px_60px_rgba(23,32,51,0.18)] lg:grid-cols-[1fr_320px]">
+    <section
+      className="relative overflow-hidden rounded-[32px] text-white"
+      style={{
+        background: "var(--nts-bg-base)",
+        boxShadow: "var(--nts-shadow-lg)",
+      }}
+    >
+      {/* 装飾グロー */}
       <div
         aria-hidden
-        className="absolute -right-20 -top-24 h-64 w-64 rounded-full bg-[#1e9bdb]/25 blur-2xl"
+        className="pointer-events-none absolute -right-24 -top-28 h-72 w-72 rounded-full blur-3xl"
+        style={{ background: "rgba(14,165,164,0.18)" }}
       />
-      <div className="relative px-6 py-10 sm:px-10">
-        <p className="text-xs font-extrabold uppercase tracking-[0.24em] text-[#8fd3ff]">
-          Free Consultation
-        </p>
-        <h2 className="mt-3 text-2xl font-black leading-tight tracking-[-0.02em] text-white sm:text-3xl">
-          {grantName}が自社に使えるか、無料で確認できます。
-        </h2>
-        <p className="mt-4 text-sm font-medium leading-7 text-white">
-          補助金は制度名だけでは判断しにくいものです。対象要件、投資内容、申請までの準備を一緒に整理します。
-        </p>
-        <Link
-          href="/consult"
-          className="mt-7 inline-flex items-center justify-center rounded-full bg-[#fd9f1b] px-8 py-3.5 text-sm font-extrabold text-[#172033] shadow-[0_10px_30px_rgba(253,159,27,0.3)] transition hover:-translate-y-0.5 hover:bg-[#ffb64c] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#fd9f1b] active:translate-y-0"
-        >
-          無料相談する
-        </Link>
-      </div>
-      <div className="relative hidden items-end justify-center bg-white/5 px-5 pt-8 lg:flex">
-        <img
-          src={teamImage}
-          alt=""
-          aria-hidden="true"
-          className="h-72 w-auto object-contain drop-shadow-[0_20px_34px_rgba(0,0,0,0.22)]"
-        />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute -bottom-16 -left-16 h-48 w-48 rounded-full blur-3xl"
+        style={{ background: "rgba(251,146,60,0.12)" }}
+      />
+
+      <div className="relative lg:grid lg:grid-cols-[1fr_300px]">
+        {/* テキスト側 */}
+        <div className="px-8 py-12 sm:px-12">
+          {/* 残日数バッジ */}
+          {remainingDays !== null && remainingDays >= 0 && (
+            <div className="mb-5">
+              <span
+                className={[
+                  "inline-flex items-center rounded-full px-4 py-1.5 text-sm font-extrabold",
+                  urgentDays
+                    ? "ring-1 ring-[rgba(251,146,60,0.35)]"
+                    : "ring-1 ring-white/15",
+                ].join(" ")}
+                style={
+                  urgentDays
+                    ? { background: "rgba(251,146,60,0.15)", color: "var(--nts-accent-orange)" }
+                    : { background: "rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.85)" }
+                }
+              >
+                締切まで残り {remainingDays} 日
+              </span>
+            </div>
+          )}
+
+          <p
+            className="text-xs font-extrabold uppercase tracking-[0.24em]"
+            style={{ color: "var(--nts-accent-cyan)" }}
+          >
+            Free Consultation
+          </p>
+          <h2
+            className="mt-3 text-2xl font-black leading-tight tracking-[-0.02em] text-white sm:text-3xl"
+          >
+            自社で使えるか、まずは確認から。
+          </h2>
+          <p
+            className="mt-4 max-w-xl text-sm font-medium leading-7"
+            style={{ color: "var(--nts-text-secondary-dark)" }}
+          >
+            {grantName}の対象範囲・補助率・必要書類は、無料相談で個別に整理できます。制度名だけでは判断しにくい要件を、専門家が一緒に確認します。
+          </p>
+
+          {/* メイン巨大ボタン */}
+          <div className="mt-8 flex flex-col items-start gap-3 sm:flex-row sm:items-center">
+            <Link
+              href="/consult"
+              className="inline-flex min-h-[64px] items-center justify-center rounded-full px-10 text-base font-extrabold text-[#0F172A] transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--nts-accent-orange)] motion-safe:duration-200"
+              style={{
+                background: "var(--nts-accent-orange)",
+                boxShadow: "var(--nts-glow-orange)",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = "var(--nts-accent-orange-strong)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = "var(--nts-accent-orange)";
+              }}
+            >
+              無料相談を予約する
+              <span aria-hidden className="ml-2 motion-safe:transition motion-safe:duration-200 group-hover:translate-x-1">→</span>
+            </Link>
+            <Link
+              href="/subsidies/list"
+              className="text-sm font-bold underline underline-offset-4 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--nts-accent-cyan)] motion-safe:duration-200 hover:opacity-80"
+              style={{ color: "var(--nts-accent-cyan)" }}
+            >
+              対象補助金を確認する
+            </Link>
+          </div>
+        </div>
+
+        {/* イメージ側 */}
+        <div className="relative hidden items-end justify-center px-5 pt-8 lg:flex" style={{ background: "rgba(255,255,255,0.04)" }}>
+          <img
+            src={teamImage}
+            alt=""
+            aria-hidden="true"
+            className="h-72 w-auto object-contain drop-shadow-[0_20px_34px_rgba(0,0,0,0.22)]"
+          />
+        </div>
       </div>
     </section>
   );
