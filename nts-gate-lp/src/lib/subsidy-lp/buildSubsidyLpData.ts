@@ -42,7 +42,8 @@ export type SubsidyLpData = {
   /** FAQ（3〜5件） */
   faqs: Array<{ q: string; a: string }>;
 
-  updatedAt: Date;
+  /** 更新日の表示文字列（例: "2025年3月1日"） */
+  updatedAtLabel: string;
 };
 
 // ─────────────────────────────────────────────
@@ -303,6 +304,6 @@ export function buildSubsidyLpData(
     pains,
     useCases,
     faqs,
-    updatedAt: grant.updatedAt,
+    updatedAtLabel: formatDateJP(grant.updatedAt),
   };
 }

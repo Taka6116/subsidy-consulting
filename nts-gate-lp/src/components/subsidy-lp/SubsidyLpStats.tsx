@@ -217,10 +217,7 @@ export default function SubsidyLpStats({ data }: Props) {
             {[
               ["公募開始", data.acceptanceStart],
               ["所管省庁・機関", data.institutionName],
-              [
-                "更新日",
-                `${data.updatedAt.getFullYear()}年${data.updatedAt.getMonth() + 1}月${data.updatedAt.getDate()}日`,
-              ],
+              ["更新日", data.updatedAtLabel],
             ].map(([k, v]) => (
               <tr key={k}>
                 <th
