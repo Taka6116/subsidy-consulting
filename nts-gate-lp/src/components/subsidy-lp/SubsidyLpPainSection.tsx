@@ -88,7 +88,7 @@ export default function SubsidyLpPainSection({ data }: Props) {
           className="text-lg font-medium"
           style={{ color: "var(--text-secondary)" }}
         >
-          同じ課題を持つ企業が、この補助金をどう使ったか。
+          同じ課題を持つ企業が、この補助金をどう使えるか。
         </p>
         <svg
           className="mx-auto mt-4"
