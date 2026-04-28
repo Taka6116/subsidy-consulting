@@ -5,9 +5,9 @@ type Props = { data: SubsidyLpData };
 
 export default function SubsidyLpPainSection({ data }: Props) {
   const advisorImage = subsidyLpAsset("advisor.png");
-  const handshakeImage = subsidyLpAsset("handshake.png");
+  const issue02Image = "/icon-assets/isometric_24.webp";
   const teamImage = subsidyLpAsset("team.png");
-  const images = [advisorImage, handshakeImage, teamImage];
+  const images = [advisorImage, issue02Image, teamImage];
   const cardPains = data.pains.slice(0, 3);
 
   return (
