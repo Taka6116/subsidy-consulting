@@ -22,7 +22,6 @@ function getResult(count: number): Result {
 
 const RESULT_CONFIG = {
   high: {
-    icon: "✅",
     label: "対象の可能性が高い",
     body: "3項目すべてに該当しています。この補助金を活用できる可能性が高いです。無料相談で要件・補助額・申請手順を個別に整理しましょう。",
     cta: { label: "無料相談を予約する →", href: "/consult" },
@@ -34,7 +33,6 @@ const RESULT_CONFIG = {
     badgeStyle: { background: "rgba(16,185,129,0.18)", color: "#34D399" },
   },
   mid: {
-    icon: "⚠️",
     label: "詳細確認を推奨します",
     body: "一部の要件に該当しています。申請できるかどうかは公募要領の詳細確認が必要です。専門家に質問して、申請可否を早めに判断しましょう。",
     cta: { label: "専門家に質問する →", href: "/consult" },
@@ -45,14 +43,13 @@ const RESULT_CONFIG = {
     badgeStyle: { background: "rgba(245,158,11,0.18)", color: "#FCD34D" },
   },
   low: {
-    icon: "ℹ️",
     label: "別の補助金が向いているかも",
     body: "現時点では別の補助金制度の方がマッチする可能性があります。補助金一覧から条件に合う制度を探してみましょう。",
     cta: { label: "他の補助金を見る →", href: "/subsidies/list" },
     ctaStyle: {
-      background: "rgba(255,255,255,0.12)",
-      color: "#FFFFFF",
-      border: "1px solid rgba(255,255,255,0.2)",
+      background: "#F8FAFC",
+      color: "#0F172A",
+      border: "1px solid #E2E8F0",
     },
     badgeStyle: { background: "rgba(99,102,241,0.18)", color: "#A5B4FC" },
   },
@@ -76,8 +73,7 @@ export default function SubsidyLpChecker() {
 
   return (
     <section
-      className="relative overflow-hidden rounded-[28px] px-6 py-10 sm:px-10 sm:py-12"
-      style={{ background: "var(--nts-bg-base)", boxShadow: "var(--nts-shadow-lg)" }}
+      className="relative overflow-hidden rounded-[28px] border border-slate-100 bg-white px-6 py-20 shadow-[0_18px_45px_rgba(23,32,51,0.08)] sm:px-10 md:py-28"
     >
       {/* 装飾グロー */}
       <div
@@ -94,20 +90,17 @@ export default function SubsidyLpChecker() {
       <div className="relative">
         {/* ヘッダー */}
         <p
-          className="text-xs font-extrabold uppercase tracking-[0.26em]"
-          style={{ color: "var(--nts-accent-cyan)" }}
+          className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-gray-400"
         >
           30 sec check
         </p>
         <h2
-          className="mt-2 text-xl font-black leading-snug tracking-[-0.02em] sm:text-2xl"
-          style={{ color: "var(--nts-text-primary-dark)" }}
+          className="text-xl font-black leading-snug tracking-[-0.02em] text-slate-900 sm:text-2xl"
         >
           あなたの会社は、この補助金の対象ですか？
         </h2>
         <p
-          className="mt-2 text-sm font-medium"
-          style={{ color: "var(--nts-text-tertiary-dark)" }}
+          className="mt-2 text-sm font-medium text-slate-500"
         >
           該当する項目にチェックを入れてください（複数可）
         </p>
@@ -124,16 +117,16 @@ export default function SubsidyLpChecker() {
                 style={{
                   background: isChecked
                     ? "rgba(14,165,164,0.12)"
-                    : "rgba(255,255,255,0.04)",
-                  border: `1px solid ${isChecked ? "rgba(14,165,164,0.4)" : "rgba(255,255,255,0.08)"}`,
+                    : "#F8FAFC",
+                  border: `1px solid ${isChecked ? "rgba(14,165,164,0.4)" : "#E2E8F0"}`,
                   transitionDuration: "var(--nts-dur-fast)",
                 }}
               >
                 <span
                   className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-md transition"
                   style={{
-                    background: isChecked ? "var(--nts-accent-teal)" : "rgba(255,255,255,0.08)",
-                    border: isChecked ? "none" : "1.5px solid rgba(255,255,255,0.25)",
+                    background: isChecked ? "var(--nts-accent-teal)" : "#FFFFFF",
+                    border: isChecked ? "none" : "1.5px solid #CBD5E1",
                     transitionDuration: "var(--nts-dur-fast)",
                   }}
                   aria-hidden
@@ -153,7 +146,7 @@ export default function SubsidyLpChecker() {
                 />
                 <span
                   className="text-sm font-bold leading-relaxed"
-                  style={{ color: isChecked ? "var(--nts-text-primary-dark)" : "var(--nts-text-secondary-dark)" }}
+                  style={{ color: isChecked ? "var(--nts-text-primary-light)" : "var(--nts-text-secondary-light)" }}
                 >
                   {item.label}
                 </span>
@@ -167,8 +160,8 @@ export default function SubsidyLpChecker() {
           <div
             className="mt-6 overflow-hidden rounded-2xl"
             style={{
-              background: "rgba(255,255,255,0.05)",
-              border: "1px solid rgba(255,255,255,0.12)",
+              background: "#F8FAFC",
+              border: "1px solid #E2E8F0",
               animation: "nts-fade-up var(--nts-dur-normal) var(--nts-ease-out) both",
             }}
           >
@@ -178,18 +171,18 @@ export default function SubsidyLpChecker() {
                   className="inline-flex items-center rounded-full px-3 py-1 text-xs font-extrabold"
                   style={cfg.badgeStyle}
                 >
-                  {cfg.icon} {cfg.label}
+                  {cfg.label}
                 </span>
               </div>
               <p
                 className="mt-3 text-sm font-medium leading-7"
-                style={{ color: "var(--nts-text-secondary-dark)" }}
+                style={{ color: "var(--nts-text-secondary-light)" }}
               >
                 {cfg.body}
               </p>
               <Link
                 href={cfg.cta.href}
-                className="mt-4 inline-flex items-center rounded-full px-6 py-3 text-sm font-extrabold transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                className="mt-4 inline-flex items-center rounded-full px-6 py-3 text-sm font-extrabold transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-400"
                 style={{
                   ...cfg.ctaStyle,
                   transitionDuration: "var(--nts-dur-fast)",
@@ -205,7 +198,7 @@ export default function SubsidyLpChecker() {
         {count === 0 && (
           <p
             className="mt-4 text-center text-xs"
-            style={{ color: "var(--nts-text-muted-dark)" }}
+            style={{ color: "var(--nts-text-tertiary-light)" }}
           >
             ↑ チェックを入れると診断結果が表示されます
           </p>

@@ -56,43 +56,20 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function SubsidyLpPage({ params }: Props) {
   const { id } = await params;
 
-  // #region agent log
-  console.error('[DEBUG-LP] SubsidyLpPage start id=', id);
-  // #endregion
-
-  let grant;
-  try {
-    grant = await prisma.subsidyGrant.findUnique({
-      where: { id },
-      include: {
-        contents: {
-          where: { contentType: "lp", status: "published" },
-          orderBy: { createdAt: "desc" },
-          take: 1,
-        },
+  const grant = await prisma.subsidyGrant.findUnique({
+    where: { id },
+    include: {
+      contents: {
+        where: { contentType: "lp", status: "published" },
+        orderBy: { createdAt: "desc" },
+        take: 1,
       },
-    });
-  } catch (dbErr) {
-    // #region agent log
-    console.error('[DEBUG-LP] DB error:', dbErr);
-    // #endregion
-    throw dbErr;
-  }
+    },
+  });
 
   if (!grant) notFound();
 
-  let data;
-  try {
-    data = buildSubsidyLpData(grant, grant.contents[0] ?? null);
-    // #region agent log
-    console.error('[DEBUG-LP] buildSubsidyLpData OK:', data.updatedAtLabel, data.name);
-    // #endregion
-  } catch (buildErr) {
-    // #region agent log
-    console.error('[DEBUG-LP] buildSubsidyLpData error:', buildErr);
-    // #endregion
-    throw buildErr;
-  }
+  const data = buildSubsidyLpData(grant, grant.contents[0] ?? null);
 
   return (
     <>
@@ -100,8 +77,8 @@ export default async function SubsidyLpPage({ params }: Props) {
       <main className="relative min-h-screen bg-[#eef4f9] font-body">
         <SubsidyLpHero data={data} />
 
-        <div className="mx-auto max-w-5xl px-4 py-12 sm:px-6 lg:py-16">
-          <div className="space-y-12">
+        <div className="mx-auto max-w-5xl px-4 py-10 sm:px-6 lg:py-14">
+          <div className="space-y-8 md:space-y-12">
             {/* § 数字で見る制度規模 */}
             <SubsidyLpStats data={data} />
             {/* § 30秒対象診断 */}
@@ -164,7 +141,7 @@ function FinalCtaSection({
 
       <div className="relative lg:grid lg:grid-cols-[1fr_300px]">
         {/* テキスト側 */}
-        <div className="px-8 py-12 sm:px-12">
+        <div className="px-8 py-20 sm:px-12 md:py-28">
           {/* 残日数バッジ */}
           {remainingDays !== null && remainingDays >= 0 && (
             <div className="mb-5">
@@ -186,14 +163,11 @@ function FinalCtaSection({
             </div>
           )}
 
-          <p
-            className="text-xs font-extrabold uppercase tracking-[0.24em]"
-            style={{ color: "var(--nts-accent-cyan)" }}
-          >
+          <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">
             Free Consultation
           </p>
           <h2
-            className="mt-3 text-2xl font-black leading-tight tracking-[-0.02em] text-white sm:text-3xl"
+            className="text-2xl font-black leading-tight tracking-[-0.02em] text-white sm:text-3xl"
           >
             自社で使えるか、まずは確認から。
           </h2>

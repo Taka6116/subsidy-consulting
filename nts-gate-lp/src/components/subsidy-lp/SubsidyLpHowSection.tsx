@@ -64,18 +64,14 @@ export default function SubsidyLpHowSection() {
 
   return (
     <section
-      className="rounded-[28px] overflow-hidden"
-      style={{ background: "var(--nts-bg-light)", boxShadow: "var(--nts-shadow-offset)" }}
+      className="overflow-hidden rounded-[28px] border border-slate-100 bg-slate-50 shadow-[0_18px_45px_rgba(23,32,51,0.06)]"
     >
       <div className="px-6 pt-8 sm:px-10 sm:pt-10">
-        <p
-          className="text-xs font-extrabold uppercase tracking-[0.26em]"
-          style={{ color: "var(--nts-accent-teal)" }}
-        >
+        <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-gray-400">
           Process
         </p>
         <h2
-          className="mt-2 text-2xl font-black tracking-[-0.02em] sm:text-3xl"
+          className="text-2xl font-black tracking-[-0.02em] sm:text-3xl"
           style={{ color: "var(--nts-text-primary-light)" }}
         >
           申請検討から採択後までの流れ

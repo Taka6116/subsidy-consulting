@@ -5,8 +5,46 @@ import type { SubsidyLpData } from "@/lib/subsidy-lp/buildSubsidyLpData";
 
 type Props = { data: SubsidyLpData };
 
-const INDUSTRY_ICONS = ["🏭", "🏪", "💼"];
 const INDUSTRY_LABELS = ["製造業・50名規模", "小売・飲食業", "サービス業・IT"];
+
+function IndustryIcon({ index }: { index: number }) {
+  const props = {
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: 1.5,
+    width: 32,
+    height: 32,
+    "aria-hidden": true,
+  };
+
+  if (index % 3 === 1) {
+    return (
+      <svg {...props}>
+        <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
+        <polyline points="9 22 9 12 15 12 15 22" />
+      </svg>
+    );
+  }
+
+  if (index % 3 === 2) {
+    return (
+      <svg {...props}>
+        <rect x="2" y="7" width="20" height="14" rx="2" />
+        <path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2" />
+        <line x1="12" y1="12" x2="12" y2="16" />
+        <line x1="10" y1="14" x2="14" y2="14" />
+      </svg>
+    );
+  }
+
+  return (
+    <svg {...props}>
+      <path d="M2 20h20M4 20V10l6-4v4l6-4v14" />
+      <rect x="14" y="14" width="4" height="6" />
+    </svg>
+  );
+}
 
 function useInView(threshold = 0.15) {
   const ref = useRef<HTMLDivElement>(null);
@@ -29,35 +67,22 @@ export default function SubsidyLpUseCases({ data }: Props) {
 
   return (
     <section
-      className="rounded-[28px] px-6 py-8 sm:px-10 sm:py-10"
-      style={{
-        background: "var(--nts-bg-base)",
-        boxShadow: "var(--nts-shadow-lg)",
-      }}
+      className="rounded-[28px] border border-slate-100 bg-white px-6 py-16 shadow-[0_18px_45px_rgba(23,32,51,0.08)] sm:px-10 md:py-24"
     >
       {/* ヘッダー */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <p
-            className="text-xs font-extrabold uppercase tracking-[0.26em]"
-            style={{ color: "var(--nts-accent-cyan)" }}
-          >
+          <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-gray-400">
             Use Cases
           </p>
           <h2
-            className="mt-2 text-2xl font-black tracking-[-0.02em] sm:text-3xl"
-            style={{ color: "var(--nts-text-primary-dark)" }}
+            className="text-2xl font-black tracking-[-0.02em] text-slate-900 sm:text-3xl"
           >
             活用イメージ
           </h2>
         </div>
         <p
-          className="max-w-xs rounded-2xl px-3.5 py-2.5 text-xs font-bold leading-6"
-          style={{
-            background: "rgba(245,158,11,0.15)",
-            color: "#FCD34D",
-            border: "1px solid rgba(245,158,11,0.3)",
-          }}
+          className="max-w-xs rounded-2xl border border-amber-200 bg-amber-50 px-3.5 py-2.5 text-xs font-bold leading-6 text-amber-700"
         >
           ※ 以下は想定事例です。実際の採択事例ではありません。
         </p>
@@ -70,8 +95,8 @@ export default function SubsidyLpUseCases({ data }: Props) {
             key={i}
             className="relative flex flex-col overflow-hidden rounded-2xl transition"
             style={{
-              background: "rgba(255,255,255,0.05)",
-              border: "1px solid rgba(255,255,255,0.08)",
+              background: "#FFFFFF",
+              border: "1px solid #E5E7EB",
               boxShadow: "var(--nts-shadow-offset)",
               opacity: visible ? 1 : 0,
               transform: visible ? "translateY(0)" : "translateY(20px)",
@@ -83,24 +108,21 @@ export default function SubsidyLpUseCases({ data }: Props) {
             {/* カードヘッダー */}
             <div
               className="flex items-center gap-3 px-5 py-4"
-              style={{ borderBottom: "1px solid rgba(255,255,255,0.07)" }}
+              style={{ borderBottom: "1px solid #F1F5F9" }}
             >
               <span
-                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-xl"
-                style={{ background: "rgba(14,165,164,0.15)" }}
+                className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-slate-50 text-slate-700 ring-1 ring-slate-100"
               >
-                {INDUSTRY_ICONS[i % INDUSTRY_ICONS.length]}
+                <IndustryIcon index={i} />
               </span>
               <div>
                 <p
-                  className="text-[10px] font-extrabold uppercase tracking-wider"
-                  style={{ color: "var(--nts-accent-cyan)" }}
+                  className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400"
                 >
                   Case {String(i + 1).padStart(2, "0")}
                 </p>
                 <p
-                  className="text-xs font-bold"
-                  style={{ color: "var(--nts-text-tertiary-dark)" }}
+                  className="text-xs font-bold text-slate-500"
                 >
                   {INDUSTRY_LABELS[i % INDUSTRY_LABELS.length]}
                 </p>
@@ -110,14 +132,12 @@ export default function SubsidyLpUseCases({ data }: Props) {
             {/* カード本体 */}
             <div className="flex flex-1 flex-col px-5 py-4">
               <p
-                className="text-sm font-black leading-snug"
-                style={{ color: "var(--nts-text-primary-dark)" }}
+                className="text-sm font-black leading-snug text-slate-900"
               >
                 {uc.label}
               </p>
               <p
-                className="mt-3 flex-1 text-sm font-medium leading-7"
-                style={{ color: "var(--nts-text-secondary-dark)" }}
+                className="mt-3 flex-1 text-sm font-medium leading-7 text-slate-600"
               >
                 {uc.body}
               </p>
@@ -125,11 +145,10 @@ export default function SubsidyLpUseCases({ data }: Props) {
               {/* 引用風フッター */}
               <div
                 className="mt-4 rounded-xl px-4 py-3"
-                style={{ background: "rgba(255,255,255,0.04)", borderLeft: "3px solid var(--nts-accent-teal)" }}
+                style={{ background: "#F8FAFC", borderLeft: "3px solid var(--nts-accent-teal)" }}
               >
                 <p
-                  className="text-xs font-bold italic leading-relaxed"
-                  style={{ color: "var(--nts-text-tertiary-dark)" }}
+                  className="text-xs font-bold italic leading-relaxed text-slate-500"
                 >
                   「申請の流れを一緒に整理してもらえたので、安心して動けました」
                 </p>
