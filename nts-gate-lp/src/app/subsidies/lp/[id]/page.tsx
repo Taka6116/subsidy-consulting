@@ -70,6 +70,24 @@ export default async function SubsidyLpPage({ params }: Props) {
 
   if (!grant) notFound();
 
+  const video = await prisma.generatedContent.findFirst({
+    where: {
+      subsidyId: id,
+      contentType: "video",
+      status: "published",
+      videoPath: { not: null },
+    },
+    orderBy: { publishedAt: "desc" },
+    select: {
+      slug: true,
+      title: true,
+      excerpt: true,
+      videoPath: true,
+      thumbnailPath: true,
+      duration: true,
+    },
+  });
+
   const data = buildSubsidyLpData(grant, grant.contents[0] ?? null);
 
   return (
@@ -80,6 +98,8 @@ export default async function SubsidyLpPage({ params }: Props) {
 
         {/* § 数字で見る制度規模 */}
         <SubsidyLpStats data={data} />
+        {/* § LP連動の解説動画 */}
+        <SubsidyLpVideoSection video={video} />
         {/* § 30秒対象診断 */}
         <div id="checker">
           <SubsidyLpChecker />
@@ -104,6 +124,76 @@ export default async function SubsidyLpPage({ params }: Props) {
       </main>
       <LpFooter />
     </>
+  );
+}
+
+function formatDurationLabel(duration: number | null): string {
+  if (!duration) return "約1分";
+  const minutes = Math.floor(duration / 60);
+  const seconds = duration % 60;
+  if (minutes <= 0) return `${seconds}秒`;
+  return seconds > 0 ? `${minutes}分${seconds}秒` : `${minutes}分`;
+}
+
+function SubsidyLpVideoSection({
+  video,
+}: {
+  video: {
+    slug: string | null;
+    title: string | null;
+    excerpt: string | null;
+    videoPath: string | null;
+    thumbnailPath: string | null;
+    duration: number | null;
+  } | null;
+}) {
+  if (!video?.videoPath) return null;
+
+  return (
+    <section className="bg-[var(--bg-section-alt)] py-16 md:py-24">
+      <div className="mx-auto grid max-w-6xl gap-8 px-4 sm:px-6 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
+        <div>
+          <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-gray-400">
+            Movie Guide
+          </p>
+          <h2 className="text-2xl font-black tracking-[-0.02em] text-[#172033] sm:text-3xl">
+            この補助金のポイントを動画で確認できます。
+          </h2>
+          <p className="mt-4 text-sm font-medium leading-7 text-[#526173]">
+            LPの内容と同じ情報をもとに、制度概要・数字・活用イメージ・申請の流れを音声付きで整理しています。
+          </p>
+          <div className="mt-5 flex flex-wrap items-center gap-3 text-sm font-bold text-[#526173]">
+            <span className="rounded-full bg-white px-4 py-2 shadow-sm ring-1 ring-[#dce6ef]">
+              {formatDurationLabel(video.duration)}
+            </span>
+            <span className="rounded-full bg-white px-4 py-2 shadow-sm ring-1 ring-[#dce6ef]">
+              音声ナレーション付き
+            </span>
+          </div>
+          {video.slug && (
+            <Link
+              href={`/subsidies/videos/${video.slug}`}
+              className="mt-7 inline-flex min-h-12 items-center justify-center rounded-full bg-[#10233f] px-7 text-sm font-extrabold text-white transition hover:brightness-110"
+            >
+              動画ページで詳しく見る
+              <span aria-hidden className="ml-2">→</span>
+            </Link>
+          )}
+        </div>
+        <div className="overflow-hidden rounded-3xl bg-white shadow-sm ring-1 ring-[#dce6ef]">
+          <video
+            src={video.videoPath}
+            poster={video.thumbnailPath ?? undefined}
+            controls
+            playsInline
+            preload="metadata"
+            className="aspect-video w-full bg-[#10233f]"
+          >
+            ご利用のブラウザは動画再生に対応していません。
+          </video>
+        </div>
+      </div>
+    </section>
   );
 }
 

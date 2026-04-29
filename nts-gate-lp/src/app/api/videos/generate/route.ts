@@ -5,7 +5,7 @@
  * 認証: x-internal-token ヘッダで ARTICLE_GENERATE_TOKEN と照合する簡易認証（記事生成と共通トークン）。
  *       環境変数未設定時は 503 を返す（本番誤爆防止）。
  *
- * Body: { "subsidyId": string, "force"?: boolean, "videoProvider"?: "enhanced" | "slides" }
+ * Body: { "subsidyId": string, "force"?: boolean, "videoProvider"?: "enhanced" | "slides" | "hyperframes" }
  */
 import { NextResponse } from "next/server";
 import { runVideoJob } from "@/lib/content/runVideoJob";
@@ -43,7 +43,10 @@ export async function POST(request: Request) {
   const body = (payload ?? {}) as Record<string, unknown>;
   const subsidyId = typeof body.subsidyId === "string" ? body.subsidyId.trim() : "";
   const force = body.force === true;
-  const videoProvider = body.videoProvider === "slides" ? "slides" : "enhanced";
+  const videoProvider =
+    body.videoProvider === "slides" || body.videoProvider === "hyperframes"
+      ? body.videoProvider
+      : "enhanced";
 
   if (!subsidyId) {
     return NextResponse.json(

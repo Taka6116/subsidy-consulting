@@ -49,6 +49,7 @@
     "dotenv": "^16.6.1",
     "eslint": "^9",
     "eslint-config-next": "15.3.9",
+    "hyperframes": "^0.4.34",
     "playwright": "^1.59.1",
     "postcss": "^8.5.8",
     "prisma": "^6.19.0",

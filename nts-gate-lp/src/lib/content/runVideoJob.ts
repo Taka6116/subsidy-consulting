@@ -33,6 +33,12 @@ import { renderSlidesToDir, type SlideInput } from "@/lib/video/generateSlides";
 import { composeEnhancedVideo, composeVideo, type SlideTimingInput } from "@/lib/video/composeVideo";
 import { downloadStockFootageForScript } from "@/lib/video/stockFootage";
 import { writeAssSubtitles } from "@/lib/video/subtitles";
+import { buildHyperframesVideoData } from "@/lib/video-hyperframes/buildVideoData";
+import { validateHyperframesVideoData } from "@/lib/video-hyperframes/validateHyperframesVideoData";
+import {
+  composeHyperframesVideoWithAudio,
+  renderHyperframesVideo,
+} from "@/lib/video-hyperframes/renderHyperframesVideo";
 import {
   cleanSubsidyName,
   cleanSubsidyDescription,
@@ -41,6 +47,7 @@ import { S3Client, PutObjectCommand, GetObjectCommand } from "@aws-sdk/client-s3
 
 const LOG_PREFIX = "[runVideoJob]";
 type TtsProvider = "elevenlabs" | "polly";
+type VideoProvider = "enhanced" | "slides" | "hyperframes";
 
 export type RunVideoJobResult = {
   contentId: string;
@@ -55,8 +62,16 @@ export type RunVideoJobResult = {
 export type RunVideoJobParams = {
   subsidyId: string;
   force?: boolean;
-  videoProvider?: "enhanced" | "slides";
+  videoProvider?: VideoProvider;
 };
+
+function resolveVideoProvider(requested: VideoProvider | undefined): VideoProvider {
+  if (requested) return requested;
+  const env = process.env.VIDEO_RENDERER?.trim().toLowerCase();
+  if (env === "hyperframes") return "hyperframes";
+  if (env === "slides") return "slides";
+  return "enhanced";
+}
 
 async function synthesizeNarration(text: string, subsidyId: string) {
   const requestedProvider = (process.env.VIDEO_TTS_PROVIDER?.trim().toLowerCase() ||
@@ -168,7 +183,7 @@ export async function runVideoJob(
 ): Promise<RunVideoJobResult> {
   const jobType = "video";
   const { subsidyId } = params;
-  const requestedVideoProvider = params.videoProvider ?? "enhanced";
+  const requestedVideoProvider = resolveVideoProvider(params.videoProvider);
 
   console.log(`${LOG_PREFIX} start subsidyId=${subsidyId}`);
 
@@ -207,6 +222,132 @@ export async function runVideoJob(
         status: "published",
         audioPath: existingVideo.audioPath ?? null,
         videoPath: existingVideo.videoPath ?? null,
+      };
+    }
+
+    if (requestedVideoProvider === "hyperframes") {
+      if (!process.env.VIDEO_S3_BUCKET) {
+        throw new Error("VIDEO_S3_BUCKET is required for HyperFrames video generation");
+      }
+
+      const lpContent = await prisma.generatedContent.findFirst({
+        where: { subsidyId, contentType: "lp", status: "published" },
+        orderBy: { createdAt: "desc" },
+      });
+      const videoData = buildHyperframesVideoData(grant, lpContent);
+      const hyperframesValidation = validateHyperframesVideoData(videoData);
+      if (!hyperframesValidation.isValid) {
+        throw new Error(`HyperFrames video data validation failed: ${hyperframesValidation.errors.join("; ")}`);
+      }
+      if (hyperframesValidation.warnings.length > 0) {
+        console.warn(`${LOG_PREFIX} HyperFrames validation warnings:`, hyperframesValidation.warnings);
+      }
+
+      const scriptSlugBase = `video-${subsidyId.replace(/[^a-z0-9]/gi, "").slice(0, 10).toLowerCase() || "subsidy"}`;
+      await prisma.generatedContent.upsert({
+        where: { slug: `${scriptSlugBase}-hyperframes-script` },
+        create: {
+          subsidyId,
+          contentType: "video_script",
+          slug: `${scriptSlugBase}-hyperframes-script`,
+          title: `[台本] ${videoData.title}`,
+          body: videoData.narrationText,
+          excerpt: `${videoData.subsidyName}のLP内容に基づく音声付き説明動画の台本です。`,
+          tags: ["HyperFrames", "LP動画", "音声付き"],
+          status: "draft",
+        },
+        update: {
+          title: `[台本] ${videoData.title}`,
+          body: videoData.narrationText,
+          excerpt: `${videoData.subsidyName}のLP内容に基づく音声付き説明動画の台本です。`,
+          tags: ["HyperFrames", "LP動画", "音声付き"],
+        },
+      });
+
+      const audioResult = await synthesizeNarration(videoData.narrationText, subsidyId);
+      if (!audioResult) {
+        throw new Error("HyperFrames narration TTS synthesis failed");
+      }
+
+      await fs.mkdir(workDir, { recursive: true });
+      const localMp3 = path.join(workDir, "audio.mp3");
+      await downloadS3ToFile(audioResult.s3Key, localMp3);
+
+      const hyperframesDir = path.join(workDir, "hyperframes");
+      const rendered = await renderHyperframesVideo(videoData, hyperframesDir);
+      const composed = await composeHyperframesVideoWithAudio({
+        silentVideoPath: rendered.silentVideoPath,
+        audioPath: localMp3,
+        outputDir: path.join(workDir, "output"),
+        outputName: "output.mp4",
+        durationSec: videoData.totalDurationSec,
+      });
+
+      const version = Date.now();
+      const mp4S3Key = `videos/${subsidyId}/video-hyperframes-${version}.mp4`;
+      const videoPublicUrl = await uploadMp4ToS3(composed.finalVideoPath!, mp4S3Key);
+      console.log(`${LOG_PREFIX} HyperFrames video uploaded: ${mp4S3Key}`);
+
+      const thumbS3Key = `videos/${subsidyId}/thumbnail-hyperframes-${version}.png`;
+      const thumbnailPublicUrl = composed.thumbnailPath
+        ? await uploadPngToS3(composed.thumbnailPath, thumbS3Key)
+        : existingVideo?.thumbnailPath ?? null;
+      if (thumbnailPublicUrl) {
+        console.log(`${LOG_PREFIX} HyperFrames thumbnail uploaded: ${thumbS3Key}`);
+      }
+
+      const uniqueSlug = existingVideo?.slug
+        ? existingVideo.slug
+        : await ensureUniqueSlug(scriptSlugBase, null);
+      const now = new Date();
+      const commonData = {
+        title: videoData.title,
+        excerpt: `${videoData.subsidyName}の概要、数字、課題、活用イメージ、申請の流れを約1分で整理する音声付き動画です。`,
+        body: videoData.narrationText,
+        tags: ["HyperFrames", "LP動画", "音声付き"],
+        audioPath: audioResult.publicUrl,
+        videoPath: videoPublicUrl,
+        thumbnailPath: thumbnailPublicUrl,
+        duration: composed.durationSec,
+        status: "published",
+      };
+
+      const saved = existingVideo
+        ? await prisma.generatedContent.update({
+            where: { id: existingVideo.id },
+            data: {
+              ...commonData,
+              thumbnailPath: thumbnailPublicUrl ?? existingVideo.thumbnailPath ?? null,
+              publishedAt: existingVideo.publishedAt ?? now,
+            },
+          })
+        : await prisma.generatedContent.create({
+            data: {
+              subsidyId,
+              contentType: "video",
+              slug: uniqueSlug,
+              ...commonData,
+              publishedAt: now,
+            },
+          });
+
+      await prisma.contentJob.update({
+        where: { subsidyId_jobType: { subsidyId, jobType } },
+        data: { status: "done", completedAt: new Date() },
+      });
+
+      console.log(
+        `${LOG_PREFIX} done subsidyId=${subsidyId} contentId=${saved.id} status=published provider=hyperframes`,
+      );
+
+      return {
+        contentId: saved.id,
+        slug: uniqueSlug,
+        title: videoData.title,
+        subsidyId,
+        status: "published",
+        audioPath: audioResult.publicUrl,
+        videoPath: videoPublicUrl,
       };
     }
 
