@@ -42,7 +42,7 @@ export default function PartnerAboutSection() {
           {/* 上段：チーム写真バナー（上下をトリミングして顔まわりにフォーカス） */}
           <div className="relative aspect-[16/7] w-full overflow-hidden sm:aspect-[1024/340]">
             <Image
-              src="/images/subsidy-footer.webp"
+              src="/images/subsidy-footer.jpg"
               alt="日本提携支援株式会社 チームメンバー"
               fill
               sizes="(min-width: 1024px) 960px, 100vw"
