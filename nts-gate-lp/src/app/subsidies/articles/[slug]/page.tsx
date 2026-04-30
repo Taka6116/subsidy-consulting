@@ -8,6 +8,14 @@ import Header from "@/components/shared/Header";
 import LpFooter from "@/components/gate-lp/LpFooter";
 import { prisma } from "@/lib/db/prisma";
 
+// ========== [NEW 2026-04-30] 追加コンポーネント ==========
+import { LivePublishedBadge } from "@/components/articles/LivePublishedBadge";
+import { ArticleToc } from "@/components/articles/ArticleToc";
+import { ConsultantComment } from "@/components/articles/ConsultantComment";
+import { ArticleCTA } from "@/components/articles/ArticleCTA";
+import { RelatedArticles } from "@/components/articles/RelatedArticles";
+// ========== /NEW ==========
+
 // 5 分 ISR（新規生成時は再ビルド不要で切り替わる）
 export const revalidate = 300;
 export const dynamicParams = true;
@@ -95,6 +103,40 @@ function resolveDeadlineLabel(
   return null;
 }
 
+// ========== [NEW 2026-04-30] 関連記事取得関数 ==========
+async function getRelatedArticles({
+  currentSlug,
+  tags,
+  limit,
+}: {
+  currentSlug: string;
+  tags: string[];
+  limit: number;
+}) {
+  // 同タグの published 記事を取得し、自身を除外して limit 件返す
+  // TODO: タグ一致のフィルタリングは tags.length > 0 の場合のみ行う
+  const articles = await prisma.generatedContent.findMany({
+    where: {
+      status: "published",
+      slug: { not: currentSlug },
+      ...(tags.length > 0 ? { tags: { hasSome: tags } } : {}),
+    },
+    select: { slug: true, title: true, publishedAt: true, tags: true },
+    orderBy: { publishedAt: "desc" },
+    take: limit,
+  });
+
+  return articles
+    .filter((a) => a.slug != null && a.title != null)
+    .map((a) => ({
+      slug: a.slug!,
+      title: a.title!,
+      publishedAt: (a.publishedAt ?? new Date()).toISOString(),
+      tags: a.tags,
+    }));
+}
+// ========== /NEW ==========
+
 export default async function SubsidyArticlePage({ params }: PageProps) {
   const { slug } = await params;
 
@@ -124,6 +166,14 @@ export default async function SubsidyArticlePage({ params }: PageProps) {
   const grantDeadline = article.grant
     ? resolveDeadlineLabel(article.grant.deadlineLabel, article.grant.deadline)
     : null;
+
+  // ========== [NEW 2026-04-30] 関連記事を取得 ==========
+  const relatedArticles = await getRelatedArticles({
+    currentSlug: slug,
+    tags: article.tags ?? [],
+    limit: 3,
+  });
+  // ========== /NEW ==========
 
   return (
     <>
@@ -203,10 +253,35 @@ export default async function SubsidyArticlePage({ params }: PageProps) {
             </div>
           </header>
 
+          {/* ========== [NEW 2026-04-30] 速報バッジ ========== */}
+          {/* タイトル直下・本文直前に配置 */}
+          {/* TODO: minutesAfterAnnouncement は DB フィールド追加後に渡す */}
+          {article.publishedAt && (
+            <div className="mt-6">
+              <LivePublishedBadge publishedAt={article.publishedAt} />
+            </div>
+          )}
+
+          {/* ========== [NEW 2026-04-30] 目次 ========== */}
+          {/* 本文直前に配置。contentContainerId="article-body" のコンテナを参照する */}
+          <ArticleToc contentContainerId="article-body" />
+          {/* ========== /NEW ========== */}
+
           {/* 本文 Markdown */}
-          <div className="prose prose-neutral mt-10 max-w-none prose-headings:font-heading prose-headings:text-neutral-900 prose-h2:mt-10 prose-h2:border-l-4 prose-h2:border-accent-500 prose-h2:pl-3 prose-h2:text-xl prose-h2:font-bold sm:prose-h2:text-2xl prose-h3:mt-6 prose-h3:text-lg prose-h3:font-semibold prose-p:leading-relaxed prose-p:text-neutral-700 prose-a:text-primary-700 prose-a:font-medium prose-a:no-underline hover:prose-a:underline prose-strong:text-neutral-900 prose-li:text-neutral-700">
+          {/* [NEW 2026-04-30] id="article-body" を追加（ArticleToc がh2/h3を収集するため） */}
+          {/* 変更前: <div className="prose prose-neutral ..."> */}
+          <div
+            id="article-body"
+            className="prose prose-neutral mt-10 max-w-none prose-headings:font-heading prose-headings:text-neutral-900 prose-h2:mt-10 prose-h2:border-l-4 prose-h2:border-accent-500 prose-h2:pl-3 prose-h2:text-xl prose-h2:font-bold sm:prose-h2:text-2xl prose-h3:mt-6 prose-h3:text-lg prose-h3:font-semibold prose-p:leading-relaxed prose-p:text-neutral-700 prose-a:text-primary-700 prose-a:font-medium prose-a:no-underline hover:prose-a:underline prose-strong:text-neutral-900 prose-li:text-neutral-700"
+          >
             <ReactMarkdown remarkPlugins={[remarkGfm]}>{article.body}</ReactMarkdown>
           </div>
+
+          {/* ========== [NEW 2026-04-30] コンサルタントコメント枠 ========== */}
+          {/* 本文末尾・CTA直前に配置 */}
+          {/* TODO: article.consultantComment が DB に追加されたら comment prop に渡す */}
+          <ConsultantComment />
+          {/* ========== /NEW ========== */}
 
           {/* 関連補助金 CTA */}
           {article.grant && (
@@ -244,7 +319,7 @@ export default async function SubsidyArticlePage({ params }: PageProps) {
             </section>
           )}
 
-          {/* NTS 無料相談 CTA */}
+          {/* ========== [LEGACY 2026-04-30] 旧NTS無料相談CTA（1本のみ） ==========
           <section className="mt-10 overflow-hidden rounded-xl bg-gradient-to-br from-primary-700 to-primary-900 p-8 text-white shadow-sm">
             <h2 className="font-heading text-xl font-bold text-white drop-shadow-sm sm:text-2xl">
               補助金活用の戦略設計は、NTS にご相談ください
@@ -260,6 +335,18 @@ export default async function SubsidyArticlePage({ params }: PageProps) {
               無料相談を予約する
             </Link>
           </section>
+          ========== /LEGACY ========== */}
+
+          {/* ========== [NEW 2026-04-30] 温度別マルチCTA ========== */}
+          <ArticleCTA
+            diagnosisHref="/diagnosis"
+            subsidyName={article.title ?? undefined}
+          />
+          {/* ========== /NEW ========== */}
+
+          {/* ========== [NEW 2026-04-30] 関連記事カード ========== */}
+          <RelatedArticles articles={relatedArticles} />
+          {/* ========== /NEW ========== */}
 
           {/* 戻る */}
           <div className="mt-10 text-center">
