@@ -69,8 +69,8 @@ export default function Header() {
       </Link>
 
       {isSubsidies ? (
-        /* ── 補助金プラットフォーム内：ナビ + CTAを明確に分離 ── */
-        <div className="flex min-w-0 flex-1 items-center justify-between gap-3 sm:ml-4 lg:ml-8">
+        /* ── 補助金プラットフォーム内：ナビ + CTAを右端に寄せて整列 ── */
+        <div className="flex min-w-0 flex-1 items-center justify-end gap-3 sm:ml-4 lg:ml-8 lg:gap-5">
           {/* ナビリンク群：短いラベルを優先し、長いものはlgで表示 */}
           <nav
             className="hidden items-center gap-x-3 sm:flex lg:gap-x-5"
