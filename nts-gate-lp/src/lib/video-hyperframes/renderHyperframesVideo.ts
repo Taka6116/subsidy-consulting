@@ -3,15 +3,31 @@ import { promisify } from "node:util";
 import path from "node:path";
 import fs from "node:fs/promises";
 import { existsSync } from "node:fs";
-import { fileURLToPath } from "node:url";
-import { createRequire } from "node:module";
 import ffmpeg from "fluent-ffmpeg";
 import ffmpegStatic from "ffmpeg-static";
 import type { HyperframesVideoData } from "@/lib/video-hyperframes/buildVideoData";
 
 const execFileAsync = promisify(execFile);
 const LOG_PREFIX = "[renderHyperframesVideo]";
-const requireFromHere = createRequire(import.meta.url);
+
+/**
+ * ffprobe を使って音声ファイルの実際の長さ（秒）を計測する。
+ * 計測できない場合は null を返す。
+ */
+export async function getAudioDuration(filePath: string): Promise<number | null> {
+  try {
+    const result = await execFileAsync("ffprobe", [
+      "-v", "quiet",
+      "-show_entries", "format=duration",
+      "-of", "csv=p=0",
+      filePath,
+    ]);
+    const duration = parseFloat(result.stdout.trim());
+    return Number.isFinite(duration) && duration > 0 ? duration : null;
+  } catch {
+    return null;
+  }
+}
 
 export type HyperframesRenderResult = {
   silentVideoPath: string;
@@ -28,12 +44,10 @@ type ComposeInput = {
   durationSec: number;
 };
 
-function moduleDir(): string {
-  return path.dirname(fileURLToPath(import.meta.url));
-}
-
 function templateDir(): string {
-  return path.join(moduleDir(), "templates", "subsidy-lp-video");
+  // process.cwd() はプロジェクトルートを指す。
+  // Next.js RSC バンドル環境では import.meta.url が (rsc)/... に汚染されるため使用しない。
+  return path.join(process.cwd(), "src", "lib", "video-hyperframes", "templates", "subsidy-lp-video");
 }
 
 function resolveFfmpegPath(): string | undefined {
@@ -78,11 +92,10 @@ export async function renderHyperframesVideo(
   const silentVideoPath = path.join(outputDir, "hyperframes-silent.mp4");
   await prepareProject(data, projectDir);
 
-  const hyperframesCli = path.join(
-    path.dirname(requireFromHere.resolve("hyperframes/package.json")),
-    "dist",
-    "cli.js",
-  );
+  // Next.js RSC 環境では createRequire(import.meta.url) がバンドルパスに汚染されるため
+  // process.cwd() から node_modules を直接解決する
+  const hyperframesRoot = path.join(process.cwd(), "node_modules", "hyperframes");
+  const hyperframesCli = path.join(hyperframesRoot, "dist", "cli.js");
   const args = [
     hyperframesCli,
     "render",
@@ -165,4 +178,50 @@ export async function composeHyperframesVideoWithAudio(
     thumbnailPath,
     durationSec: input.durationSec,
   };
+}
+
+type SceneAudioInput = {
+  audioPath: string;
+  start: number;
+  duration: number;
+};
+
+/**
+ * 各シーン音声ファイルを adelay で指定 start 位置に配置し、
+ * 1本のタイムライン MP3 に合成する。
+ * amix で複数入力を正規化してミックスする。
+ */
+export async function composeSceneAudioTimeline(
+  scenes: SceneAudioInput[],
+  outputPath: string,
+  totalDurationSec: number,
+): Promise<void> {
+  const ffmpegPath = resolveFfmpegPath();
+  if (ffmpegPath) ffmpeg.setFfmpegPath(ffmpegPath);
+
+  const delayMs = scenes.map((s) => Math.round(s.start * 1000));
+  const adelayFilters = scenes
+    .map((_, i) => `[${i}:a]adelay=${delayMs[i]}|${delayMs[i]}[a${i}]`)
+    .join(";");
+  const mixInputs = scenes.map((_, i) => `[a${i}]`).join("");
+  const filterComplex = `${adelayFilters};${mixInputs}amix=inputs=${scenes.length}:duration=first:dropout_transition=0[aout]`;
+
+  await new Promise<void>((resolve, reject) => {
+    const cmd = ffmpeg();
+    scenes.forEach((s) => cmd.input(s.audioPath));
+    cmd
+      .complexFilter(filterComplex, "aout")
+      .outputOptions([
+        "-c:a libmp3lame",
+        "-b:a 128k",
+        `-t ${totalDurationSec}`,
+      ])
+      .output(outputPath)
+      .on("start", (c) => console.log(`${LOG_PREFIX} timeline audio cmd:`, c))
+      .on("end", () => resolve())
+      .on("error", (err) => reject(err))
+      .run();
+  });
+
+  console.log(`${LOG_PREFIX} timeline audio composed: ${outputPath}`);
 }

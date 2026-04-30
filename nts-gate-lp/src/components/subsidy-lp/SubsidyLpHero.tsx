@@ -4,6 +4,8 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import type { SubsidyLpData } from "@/lib/subsidy-lp/buildSubsidyLpData";
 import { subsidyLpAsset } from "@/lib/subsidy-lp/assets";
+import { formatYen } from "@/lib/format";
+import { TemperatureCTA } from "@/components/shared/CTAButton";
 
 type Props = { data: SubsidyLpData };
 
@@ -210,8 +212,11 @@ export default function SubsidyLpHero({ data }: Props) {
             className="mt-6 text-sm font-bold"
             style={{ color: "var(--nts-accent-cyan)" }}
           >
-            {data.institutionName}
+            {/* {data.institutionName} ← 旧 */}
+            {data.name} 公募開始
           </p>
+          {/* ========== [LEGACY 2026-04-30] 旧FVコピー - ロールバック時は下のコメントアウトを解除 ========== */}
+          {/*
           <h1
             className="mt-3 max-w-3xl font-heading text-[clamp(34px,5vw,60px)] font-extrabold leading-[1.08] tracking-[-0.03em]"
             style={{ color: "var(--nts-text-primary-dark)" }}
@@ -223,6 +228,28 @@ export default function SubsidyLpHero({ data }: Props) {
             style={{ color: "var(--nts-text-primary-dark)" }}
           >
             {data.subCopy}
+          </p>
+          */}
+
+          {/* ========== [NEW 2026-04-30] 新FVコピー - 速報メディア型 ========== */}
+          <h1
+            className="mt-3 max-w-3xl font-heading text-[clamp(34px,5vw,60px)] font-extrabold leading-[1.12] tracking-[-0.03em]"
+            style={{ color: "var(--nts-text-primary-dark)" }}
+          >
+            <span className="mb-4 block text-[clamp(20px,2.8vw,34px)] leading-[1.35] text-white/64">
+              多くの経営者は、まだ知らない。
+            </span>
+            自社の次の一手に、
+            <br className="hidden sm:block" />
+            最大{formatYen(data.amountValue)}の
+            <wbr />
+            国の支援が使えることを。
+          </h1>
+          <p
+            className="mt-5 max-w-2xl text-base font-medium leading-8 sm:text-lg"
+            style={{ color: "var(--nts-text-primary-dark)" }}
+          >
+            {data.name}の公募情報を速報で整理。対象要件・補助上限・締切を確認し、自社で使える可能性を早めに判断できます。
           </p>
 
           {/* TARGET SUBSIDY ボックス */}
@@ -247,7 +274,8 @@ export default function SubsidyLpHero({ data }: Props) {
             </p>
           </div>
 
-          {/* CTA群 */}
+          {/* ========== [LEGACY 2026-04-30] 旧FV CTA群 - ロールバック時は下のコメントアウトを解除 ========== */}
+          {/*
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <Link
               href="/consult"
@@ -287,6 +315,21 @@ export default function SubsidyLpHero({ data }: Props) {
             >
               制度概要を見る
             </Link>
+          </div>
+          */}
+
+          {/* ========== [NEW 2026-04-30] FV CTA - 温度別「温」診断CTA ========== */}
+          <div className="mt-8">
+            <TemperatureCTA
+              temperature="warm"
+              href={`/check?from=grant_${data.id}`}
+              size="large"
+              label="まず1分で対象か確認する"
+              className="min-h-14 text-[#172033]"
+            />
+            <p className="mt-3 text-xs font-semibold text-white/62">
+              個人情報の入力は不要・所要時間1分
+            </p>
           </div>
 
           {/* 信頼チップ */}

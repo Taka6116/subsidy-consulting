@@ -141,7 +141,8 @@ export default function SubsidyLpFaq({ data }: Props) {
           className="text-2xl font-black tracking-[-0.02em] sm:text-3xl"
           style={{ color: "var(--text-primary)" }}
         >
-          申請前によくある3つの不安
+          {/* 申請前によくある3つの不安 ← 旧 */}
+          動き出す前に、確認しておきたいこと
         </h2>
         <p
           className="mt-2 text-sm font-medium"
@@ -245,7 +246,8 @@ export default function SubsidyLpFaq({ data }: Props) {
             className="mb-5 text-lg font-black"
           style={{ color: "var(--text-primary)" }}
           >
-            よくある質問
+            {/* よくある質問 ← 旧 */}
+            動き出す前に、確認しておきたいこと
           </h3>
           <div
             className="rounded-2xl border border-slate-200 bg-white px-5"

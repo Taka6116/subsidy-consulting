@@ -37,6 +37,8 @@ import { buildHyperframesVideoData } from "@/lib/video-hyperframes/buildVideoDat
 import { validateHyperframesVideoData } from "@/lib/video-hyperframes/validateHyperframesVideoData";
 import {
   composeHyperframesVideoWithAudio,
+  composeSceneAudioTimeline,
+  getAudioDuration,
   renderHyperframesVideo,
 } from "@/lib/video-hyperframes/renderHyperframesVideo";
 import {
@@ -154,6 +156,31 @@ async function uploadMp4ToS3(localPath: string, s3Key: string): Promise<string> 
 }
 
 /**
+ * ローカルの MP3 ファイルを S3 にアップロードして公開 URL を返す。
+ */
+async function uploadMp3ToS3(localPath: string, s3Key: string): Promise<string> {
+  const bucket = process.env.VIDEO_S3_BUCKET!;
+  const region = process.env.VIDEO_S3_REGION ?? process.env.AWS_REGION ?? "ap-northeast-1";
+  const baseUrl = process.env.VIDEO_S3_BASE_URL;
+  const s3 = new S3Client({ region });
+
+  const fileBuffer = await fs.readFile(localPath);
+  await s3.send(
+    new PutObjectCommand({
+      Bucket: bucket,
+      Key: s3Key,
+      Body: fileBuffer,
+      ContentType: "audio/mpeg",
+      CacheControl: "public, max-age=86400",
+    })
+  );
+
+  return baseUrl
+    ? `${baseUrl}/${s3Key}`
+    : `https://${bucket}.s3.${region}.amazonaws.com/${s3Key}`;
+}
+
+/**
  * ローカルの PNG ファイルを S3 にアップロードして公開 URL を返す。
  */
 async function uploadPngToS3(localPath: string, s3Key: string): Promise<string> {
@@ -244,43 +271,99 @@ export async function runVideoJob(
       }
 
       const scriptSlugBase = `video-${subsidyId.replace(/[^a-z0-9]/gi, "").slice(0, 10).toLowerCase() || "subsidy"}`;
+
+      // ── 音声先生成パイプライン ─────────────────────────────────
+      // 設計: 音声を先に生成 → 実際の音声長を計測 → duration を確定 → 映像生成
+      // これにより音声と映像のズレを根本解決する
+
+      await fs.mkdir(workDir, { recursive: true });
+      const sceneAudioDir = path.join(workDir, "scene-audio");
+      await fs.mkdir(sceneAudioDir, { recursive: true });
+
+      // Step A: 各シーンのナレーションを個別に TTS 生成
+      console.log(`${LOG_PREFIX} [音声先生成] シーン別TTS開始 scenes=${videoData.scenes.length}`);
+      const sceneAudioFiles: Array<{ sceneId: string; localPath: string; s3Key: string; publicUrl: string }> = [];
+      for (const sceneItem of videoData.scenes) {
+        const audioResult = await synthesizeNarration(sceneItem.voiceover, subsidyId);
+        if (!audioResult) throw new Error(`Scene TTS failed: ${sceneItem.id}`);
+        const localPath = path.join(sceneAudioDir, `${sceneItem.id}.mp3`);
+        await downloadS3ToFile(audioResult.s3Key, localPath);
+        sceneAudioFiles.push({ sceneId: sceneItem.id, localPath, s3Key: audioResult.s3Key, publicUrl: audioResult.publicUrl });
+        console.log(`${LOG_PREFIX} [音声先生成] scene=${sceneItem.id} chars=${sceneItem.voiceover.length}`);
+      }
+
+      // Step B: 各音声ファイルの実際の長さを ffprobe で計測
+      console.log(`${LOG_PREFIX} [音声計測] ffprobe で各シーン音声長を計測`);
+      let cursor = 0;
+      const measuredScenes = await Promise.all(
+        videoData.scenes.map(async (sceneItem, i) => {
+          const audioFile = sceneAudioFiles[i];
+          const measured = await getAudioDuration(audioFile.localPath);
+          const actualDuration = measured ?? sceneItem.duration; // 計測失敗時は概算値を使用
+          console.log(`${LOG_PREFIX} [音声計測] scene=${sceneItem.id} estimated=${sceneItem.duration.toFixed(1)}s actual=${actualDuration.toFixed(1)}s`);
+          return { audioPath: audioFile.localPath, start: 0, duration: actualDuration }; // start は後で計算
+        }),
+      );
+
+      // Step C: 計測した duration を元に start を再計算してシーンを更新
+      const refinedScenes = videoData.scenes.map((sceneItem, i) => {
+        const start = cursor;
+        cursor += measuredScenes[i].duration;
+        return { ...sceneItem, start, duration: measuredScenes[i].duration };
+      });
+      const totalMeasuredDuration = cursor;
+
+      // videoData を計測済み duration で更新
+      const refinedVideoData = {
+        ...videoData,
+        scenes: refinedScenes,
+        totalDurationSec: Math.ceil(totalMeasuredDuration),
+        narrationText: refinedScenes.map((s) => s.voiceover).join("\n"),
+      };
+
+      console.log(`${LOG_PREFIX} [duration確定] totalDuration=${refinedVideoData.totalDurationSec}s`);
+
+      // Step D: 台本 DB 保存（確定した narrationText で）
       await prisma.generatedContent.upsert({
         where: { slug: `${scriptSlugBase}-hyperframes-script` },
         create: {
           subsidyId,
           contentType: "video_script",
           slug: `${scriptSlugBase}-hyperframes-script`,
-          title: `[台本] ${videoData.title}`,
-          body: videoData.narrationText,
-          excerpt: `${videoData.subsidyName}のLP内容に基づく音声付き説明動画の台本です。`,
+          title: `[台本] ${refinedVideoData.title}`,
+          body: refinedVideoData.narrationText,
+          excerpt: `${refinedVideoData.subsidyName}のLP内容に基づく音声付き説明動画の台本です。`,
           tags: ["HyperFrames", "LP動画", "音声付き"],
           status: "draft",
         },
         update: {
-          title: `[台本] ${videoData.title}`,
-          body: videoData.narrationText,
-          excerpt: `${videoData.subsidyName}のLP内容に基づく音声付き説明動画の台本です。`,
+          title: `[台本] ${refinedVideoData.title}`,
+          body: refinedVideoData.narrationText,
+          excerpt: `${refinedVideoData.subsidyName}のLP内容に基づく音声付き説明動画の台本です。`,
           tags: ["HyperFrames", "LP動画", "音声付き"],
         },
       });
 
-      const audioResult = await synthesizeNarration(videoData.narrationText, subsidyId);
-      if (!audioResult) {
-        throw new Error("HyperFrames narration TTS synthesis failed");
-      }
+      // Step E: シーン音声をタイムライン順に結合（FFmpegで adelay 合成）
+      const sceneAudiosForTimeline = refinedScenes.map((s, i) => ({
+        audioPath: sceneAudioFiles[i].localPath,
+        start: s.start,
+        duration: s.duration,
+      }));
+      const timelineAudioPath = path.join(workDir, "hf-timeline-audio.mp3");
+      await composeSceneAudioTimeline(sceneAudiosForTimeline, timelineAudioPath, refinedVideoData.totalDurationSec);
+      const timelineS3Key = `videos/${subsidyId}/audio-hf-timeline-${Date.now()}.mp3`;
+      const timelinePublicUrl = await uploadMp3ToS3(timelineAudioPath, timelineS3Key);
 
-      await fs.mkdir(workDir, { recursive: true });
-      const localMp3 = path.join(workDir, "audio.mp3");
-      await downloadS3ToFile(audioResult.s3Key, localMp3);
-
+      // Step F: 確定した duration で HyperFrames 映像をレンダリング
       const hyperframesDir = path.join(workDir, "hyperframes");
-      const rendered = await renderHyperframesVideo(videoData, hyperframesDir);
+      const rendered = await renderHyperframesVideo(refinedVideoData, hyperframesDir);
       const composed = await composeHyperframesVideoWithAudio({
         silentVideoPath: rendered.silentVideoPath,
-        audioPath: localMp3,
+        audioPath: timelineAudioPath,
         outputDir: path.join(workDir, "output"),
         outputName: "output.mp4",
-        durationSec: videoData.totalDurationSec,
+        durationSec: refinedVideoData.totalDurationSec,
       });
 
       const version = Date.now();
@@ -301,11 +384,11 @@ export async function runVideoJob(
         : await ensureUniqueSlug(scriptSlugBase, null);
       const now = new Date();
       const commonData = {
-        title: videoData.title,
-        excerpt: `${videoData.subsidyName}の概要、数字、課題、活用イメージ、申請の流れを約1分で整理する音声付き動画です。`,
-        body: videoData.narrationText,
+        title: refinedVideoData.title,
+        excerpt: `${refinedVideoData.subsidyName}の概要、数字、活用イメージを約${refinedVideoData.totalDurationSec}秒で整理する音声付き動画です。`,
+        body: refinedVideoData.narrationText,
         tags: ["HyperFrames", "LP動画", "音声付き"],
-        audioPath: audioResult.publicUrl,
+        audioPath: timelinePublicUrl,
         videoPath: videoPublicUrl,
         thumbnailPath: thumbnailPublicUrl,
         duration: composed.durationSec,
@@ -343,10 +426,10 @@ export async function runVideoJob(
       return {
         contentId: saved.id,
         slug: uniqueSlug,
-        title: videoData.title,
+        title: refinedVideoData.title,
         subsidyId,
         status: "published",
-        audioPath: audioResult.publicUrl,
+        audioPath: timelinePublicUrl,
         videoPath: videoPublicUrl,
       };
     }

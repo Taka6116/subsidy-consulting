@@ -15,6 +15,8 @@ export type SubsidyLpData = {
   id: string;
   name: string;
   institutionName: string;
+  /** 補助上限額の数値（ヒーロー表示などで使用。null = 不明） */
+  amountValue: number | null;
   /** 補助上限額の表示文字列（例: "最大 1,500万円"） */
   amountLabel: string;
   /** 補助率の表示文字列（例: "1/2以内"） */
@@ -98,6 +100,19 @@ function resolveAmount(label: string | null, raw: RawLike): string {
     }
   }
   return "要確認";
+}
+
+function resolveAmountValue(label: string | null, raw: RawLike, dbAmount: bigint | null): number | null {
+  const rawValue = Number(raw?.subsidy_max_limit ?? 0);
+  if (Number.isFinite(rawValue) && rawValue > 0) return rawValue;
+
+  if (dbAmount !== null) {
+    const dbValue = Number(dbAmount);
+    if (Number.isFinite(dbValue) && dbValue > 0) return dbValue;
+  }
+
+  const labelValue = Number(label?.replace(/[^\d]/g, "") ?? 0);
+  return Number.isFinite(labelValue) && labelValue > 0 ? labelValue : null;
 }
 
 function resolveRate(raw: RawLike, dbRate: string | null): string {
@@ -435,6 +450,7 @@ export function buildSubsidyLpData(
     id: grant.id,
     name,
     institutionName,
+    amountValue: resolveAmountValue(grant.maxAmountLabel ?? null, raw, grant.subsidyAmount ?? null),
     amountLabel: resolveAmount(grant.maxAmountLabel ?? null, raw),
     rateLabel: resolveRate(raw, grant.subsidyRate != null ? String(grant.subsidyRate) : null),
     deadlineLabel: deadlineDisplay,

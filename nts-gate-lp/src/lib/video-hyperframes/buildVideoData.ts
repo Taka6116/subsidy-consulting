@@ -5,9 +5,7 @@ import { cleanSubsidyName } from "@/lib/subsidyCheckResultHelpers";
 export type HyperframesSceneType =
   | "hook"
   | "overview"
-  | "problem"
   | "useCases"
-  | "process"
   | "cta";
 
 export type HyperframesCaption = {
@@ -59,7 +57,19 @@ export type HyperframesVideoData = {
   };
 };
 
-const TOTAL_DURATION_SEC = 60;
+// 各シーンの duration は音声計測後に runVideoJob 側で確定させる。
+// buildHyperframesVideoData では文字数から概算した仮値を設定する。
+
+// 各シーンのvoiceover文字数上限（日本語 約5.5文字/秒 で計算）
+// hook: 10秒 → 55文字, overview: 15秒 → 82文字,
+// useCases: 18秒 → 99文字, cta: 11秒 → 60文字
+const VOICEOVER_CHAR_LIMITS = {
+  hook: 55,
+  overview: 82,
+  useCases: 99,
+  cta: 60,
+} as const;
+
 const USE_CASE_IMAGES = [
   "assets/isometric_10.webp",
   "assets/isometric_20.webp",
@@ -109,6 +119,24 @@ function scene(
 
 type GrantForLpVideo = SubsidyGrant & { contents?: GeneratedContent[] };
 
+/**
+ * voiceover テキストを文字数上限でカットし、音声と映像のズレを防ぐ。
+ * 日本語は約5.5文字/秒で読み上げられるため、上限を超えないように制御する。
+ */
+function limitVoiceover(text: string, sceneId: keyof typeof VOICEOVER_CHAR_LIMITS): string {
+  const limit = VOICEOVER_CHAR_LIMITS[sceneId];
+  const cleaned = sanitizeText(text);
+  if (cleaned.length <= limit) return cleaned;
+  // 句点・読点で区切って上限内に収める
+  const sentences = cleaned.split(/(?<=[。、])/);
+  let result = "";
+  for (const s of sentences) {
+    if ((result + s).length > limit) break;
+    result += s;
+  }
+  return result.trim() || cleaned.slice(0, limit);
+}
+
 export function buildHyperframesVideoData(
   grant: GrantForLpVideo,
   lpContent: GeneratedContent | null,
@@ -118,7 +146,7 @@ export function buildHyperframesVideoData(
   const shortName = shortSubsidyName(subsidyName);
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") || "https://subsidy-consulting-nts.vercel.app";
   const lpUrl = `${siteUrl}/subsidies/lp/${lpData.id}`;
-  const pains = lpData.pains.slice(0, 3).map((pain) => truncate(pain, 30));
+
   const useCases = lpData.useCases.slice(0, 3).map((useCase, index) => ({
     persona: truncate(useCase.persona ?? `活用イメージ${index + 1}`, 16),
     label: truncate(useCase.label, 24),
@@ -144,90 +172,106 @@ export function buildHyperframesVideoData(
     },
   ];
 
+  // ── voiceover: 映像に映っている内容と1対1で対応させる ──────────
+  // hook: 補助金名・金額・補助率を紹介
+  const hookVoiceover = limitVoiceover(
+    `${shortName}を解説します。補助上限は${lpData.amountLabel}、補助率は${lpData.rateLabel}です。`,
+    "hook",
+  );
+
+  // overview: 映像に表示される3つの数字（補助上限・補助率・公募期限）を読む
+  const overviewVoiceover = limitVoiceover(
+    `数字で見ると、補助上限は${lpData.amountLabel}、補助率は${lpData.rateLabel}、公募期限は${lpData.deadlineLabel}です。詳しい条件は公募要領でご確認ください。`,
+    "overview",
+  );
+
+  // useCases: 映像に表示される3つの活用イメージをそのまま読む
+  const useCasesVoiceover = limitVoiceover(
+    `活用イメージを3つご紹介します。${useCases
+      .map((uc) => `${uc.persona}の場合、${uc.label.replace(/^【活用例】/, "")}`)
+      .join("。")}。`,
+    "useCases",
+  );
+
+  // cta: 映像に表示されるCTAと同じメッセージ
+  const ctaVoiceover = limitVoiceover(
+    `自社で使えるかどうか、まずは無料相談でご確認ください。日本提携支援が、制度選びから活用設計まで伴走します。`,
+    "cta",
+  );
+
+  // ── duration は仮値（実際の音声長計測後に runVideoJob 側で上書き） ──
+  // 文字数 ÷ 5.5文字/秒 の概算値 + 0.5秒の余裕
+  const estimateDuration = (voiceover: string) =>
+    Math.ceil(voiceover.length / 5.5) + 0.5;
+
+  const hookDuration = estimateDuration(hookVoiceover);
+  const overviewDuration = estimateDuration(overviewVoiceover);
+  const useCasesDuration = estimateDuration(useCasesVoiceover);
+  const ctaDuration = estimateDuration(ctaVoiceover);
+
+  // start はそれぞれの duration に基づいて計算
+  const overviewStart = hookDuration;
+  const useCasesStart = overviewStart + overviewDuration;
+  const ctaStart = useCasesStart + useCasesDuration;
+  const totalDuration = ctaStart + ctaDuration;
+
   const scenes: HyperframesScene[] = [
     scene({
       id: "hook",
       start: 0,
-      duration: 6,
+      duration: hookDuration,
       kicker: "SUBSIDY ACTION GUIDE",
       title: truncate(lpData.heroCopy, 34),
-      lines: [truncate(lpData.subCopy, 42), shortName],
-      voiceover: `設備投資やコスト負担が増えるなか、${shortName}を活用できる可能性があります。`,
+      lines: [shortName, `補助上限 ${lpData.amountLabel} ／ 補助率 ${lpData.rateLabel}`],
+      voiceover: hookVoiceover,
       captions: [
-        caption(0, 3, "使える補助金を見落としていませんか"),
-        caption(3, 6, shortName),
+        caption(0, hookDuration / 2, shortName),
+        caption(hookDuration / 2, hookDuration, `補助上限 ${lpData.amountLabel}`),
       ],
     }),
     scene({
       id: "overview",
-      start: 6,
-      duration: 9,
+      start: overviewStart,
+      duration: overviewDuration,
       kicker: "KEY NUMBERS",
       title: "数字で見る制度概要",
-      lines: metrics.map((metric) => `${metric.label}: ${metric.value}`),
+      lines: metrics.map((m) => `${m.label}: ${m.value}`),
       metrics,
-      voiceover: `この制度では、${lpData.amountLabel}、補助率は${lpData.rateLabel}、公募期限は${lpData.deadlineLabel}です。条件は公募要領で確認が必要です。`,
+      voiceover: overviewVoiceover,
       captions: [
-        caption(6, 9, `補助上限 ${lpData.amountLabel}`),
-        caption(9, 12, `補助率 ${lpData.rateLabel}`),
-        caption(12, 15, `公募期限 ${lpData.deadlineLabel}`),
-      ],
-    }),
-    scene({
-      id: "problem",
-      start: 15,
-      duration: 10,
-      kicker: "PROBLEM",
-      title: "こんなお悩みはありませんか",
-      lines: pains,
-      voiceover: `${pains.join("、")}。こうした課題を、補助金を使った投資計画として整理することが重要です。`,
-      captions: [
-        caption(15, 18.3, pains[0] ?? "投資負担を整理"),
-        caption(18.3, 21.6, pains[1] ?? "要件確認が必要"),
-        caption(21.6, 25, pains[2] ?? "申請準備を早めに整理"),
+        caption(overviewStart, overviewStart + overviewDuration / 3, `補助上限 ${lpData.amountLabel}`),
+        caption(overviewStart + overviewDuration / 3, overviewStart + overviewDuration * 2 / 3, `補助率 ${lpData.rateLabel}`),
+        caption(overviewStart + overviewDuration * 2 / 3, overviewStart + overviewDuration, `期限 ${lpData.deadlineLabel}`),
       ],
     }),
     scene({
       id: "useCases",
-      start: 25,
-      duration: 18,
+      start: useCasesStart,
+      duration: useCasesDuration,
       kicker: "USE CASES",
       title: "活用イメージ",
-      lines: useCases.map((useCase) => `${useCase.persona}: ${useCase.label}`),
+      lines: useCases.map((uc) => `${uc.persona}: ${uc.label}`),
       useCases,
-      voiceover: `活用イメージは3つあります。${useCases
-        .map((useCase) => `${useCase.persona}では、${useCase.label.replace(/^【活用例】/, "")}`)
-        .join("。")}。制度に合う投資内容を整理できます。`,
-      captions: useCases.map((useCase, index) =>
-        caption(25 + index * 6, 31 + index * 6, `${useCase.persona}: ${useCase.label}`),
+      voiceover: useCasesVoiceover,
+      captions: useCases.map((uc, i) =>
+        caption(
+          useCasesStart + i * (useCasesDuration / 3),
+          useCasesStart + (i + 1) * (useCasesDuration / 3),
+          `${uc.persona}: ${uc.label}`,
+        ),
       ),
     }),
     scene({
-      id: "process",
-      start: 43,
-      duration: 9,
-      kicker: "PROCESS",
-      title: "申請検討から入金までの流れ",
-      lines: ["事前確認", "申請準備", "採択後の実施", "実績報告", "入金"],
-      steps: ["事前確認", "申請準備", "採択後の実施", "実績報告", "入金"],
-      voiceover: "申請前には、対象要件、補助対象経費、締切を確認します。採択後も、交付申請、事業実施、実績報告まで整理が必要です。",
-      captions: [
-        caption(43, 46, "対象要件と補助対象経費を確認"),
-        caption(46, 49, "申請準備から採択後対応まで整理"),
-        caption(49, 52, "実績報告と入金まで伴走"),
-      ],
-    }),
-    scene({
       id: "cta",
-      start: 52,
-      duration: 8,
+      start: ctaStart,
+      duration: ctaDuration,
       kicker: "FREE CONSULTATION",
       title: "自社で使えるか、まずは無料で確認できます",
       lines: [truncate(subsidyName, 42), "日本提携支援が活用設計から伴走します"],
-      voiceover: "自社で使えるか分からない場合は、まず無料相談で確認できます。日本提携支援が、制度選びから活用設計まで伴走します。",
+      voiceover: ctaVoiceover,
       captions: [
-        caption(52, 56, "自社で使えるか無料で確認"),
-        caption(56, 60, "制度選びから活用設計まで伴走"),
+        caption(ctaStart, ctaStart + ctaDuration / 2, "自社で使えるか無料で確認"),
+        caption(ctaStart + ctaDuration / 2, ctaStart + ctaDuration, "制度選びから活用設計まで伴走"),
       ],
     }),
   ];
@@ -240,8 +284,8 @@ export function buildHyperframesVideoData(
     width: 1280,
     height: 720,
     fps: 30,
-    totalDurationSec: TOTAL_DURATION_SEC,
-    narrationText: scenes.map((item) => item.voiceover).join("\n"),
+    totalDurationSec: Math.ceil(totalDuration),
+    narrationText: scenes.map((s) => s.voiceover).join("\n"),
     scenes,
     assets: {
       useCaseImages: USE_CASE_IMAGES,

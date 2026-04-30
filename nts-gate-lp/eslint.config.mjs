@@ -13,6 +13,16 @@ const compat = new FlatCompat({
 });
 
 export default [
+  // ========== [NEW 2026-04-30] lint対象外 - 生成物と設定ファイル ==========
+  // `.next` はNext.jsの生成物、tailwind.config.js は既存CJS設定のためESLint対象外にする。
+  {
+    ignores: [
+      ".next/**",
+      "node_modules/**",
+      "lambda/**/node_modules/**",
+      "tailwind.config.js",
+    ],
+  },
   ...compat.config(coreWebVitals),
   ...compat.config(typescript),
 ];

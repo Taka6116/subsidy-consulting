@@ -6,6 +6,13 @@
     throw new Error("HyperFrames video data is missing");
   }
 
+  // totalDurationSec を video-data.js から読み取り、stage の data-duration を動的に更新する。
+  // これにより音声長に合わせた映像尺が正確にレンダリングされる。
+  const stage = document.getElementById("stage");
+  if (stage && data.totalDurationSec) {
+    stage.dataset.duration = String(data.totalDurationSec);
+  }
+
   function esc(value) {
     return String(value ?? "")
       .replace(/&/g, "&amp;")

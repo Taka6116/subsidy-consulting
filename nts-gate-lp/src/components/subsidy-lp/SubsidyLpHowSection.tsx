@@ -73,7 +73,8 @@ export default function SubsidyLpHowSection() {
           className="text-2xl font-black tracking-[-0.02em] sm:text-3xl"
           style={{ color: "var(--text-primary)" }}
         >
-          申請検討から採択後までの流れ
+          {/* 申請検討から採択後までの流れ ← 旧 */}
+          動き出してから採択まで、こうなります
         </h2>
         <p
           className="mt-2 text-sm font-medium"
@@ -277,13 +278,15 @@ export default function SubsidyLpHowSection() {
             className="text-base font-black"
             style={{ color: "var(--nts-text-primary-dark)" }}
           >
-            NTSは「申請代行」ではなく「戦略設計と伴走支援」です
+            {/* NTSは「申請代行」ではなく「戦略設計と伴走支援」です ← 旧 */}
+            私たちは「申請代行」ではありません。
           </p>
           <p
             className="mt-2 text-sm font-medium leading-7"
             style={{ color: "var(--nts-text-secondary-dark)" }}
           >
-            どの補助金をどう活用するかという設計から、採択後の実行管理までを一緒に整理します。制度の最終確認は公募要領に基づいて行います。
+            {/* どの補助金をどう活用するかという設計から、採択後の実行管理までを一緒に整理します。制度の最終確認は公募要領に基づいて行います。 ← 旧 */}
+            あなたの事業判断を一緒に整理し、補助金を「使えるなら使う」という選択肢として置く。そういう関係から始めます。
           </p>
           <Link
             href="/consult"

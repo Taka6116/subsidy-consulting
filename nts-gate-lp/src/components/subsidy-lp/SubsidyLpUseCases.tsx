@@ -42,7 +42,8 @@ export default function SubsidyLpUseCases({ data }: Props) {
             className="text-2xl font-black tracking-[-0.02em] sm:text-3xl"
             style={{ color: "var(--text-primary)" }}
           >
-            活用イメージ
+            {/* 活用イメージ ← 旧 */}
+            実際、こういう会社が動いています
           </h2>
         </div>
 

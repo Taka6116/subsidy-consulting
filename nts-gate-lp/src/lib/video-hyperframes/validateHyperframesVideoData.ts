@@ -35,12 +35,13 @@ export function validateHyperframesVideoData(
   const warnings: string[] = [];
   const allText = collectText(data);
 
-  if (data.totalDurationSec < 45 || data.totalDurationSec > 75) {
-    errors.push(`動画の総尺は45〜75秒にしてください: ${data.totalDurationSec}秒`);
+  // 音声先生成パイプラインでは実際の音声長が確定するため、幅広く許容する
+  if (data.totalDurationSec < 30 || data.totalDurationSec > 90) {
+    errors.push(`動画の総尺は30〜90秒の範囲にしてください: ${data.totalDurationSec}秒`);
   }
 
-  if (data.scenes.length !== 6) {
-    errors.push(`動画シーンは6件にしてください: ${data.scenes.length}件`);
+  if (data.scenes.length !== 4) {
+    errors.push(`動画シーンは4件（hook/overview/useCases/cta）にしてください: ${data.scenes.length}件`);
   }
 
   if (BANNED_TEXT_PATTERN.test(allText)) {
@@ -52,12 +53,21 @@ export function validateHyperframesVideoData(
     errors.push("活用イメージは必ず3件にしてください");
   }
 
+  // 各シーンのvoiceover文字数上限（音声先生成なので duration との比較は不要）
+  const voiceoverCharLimits: Record<string, number> = {
+    hook: 70,
+    overview: 100,
+    useCases: 120,
+    cta: 75,
+  };
+
   for (const scene of data.scenes) {
     if (!scene.voiceover.trim()) {
       errors.push(`${scene.id} シーンのナレーションが空です`);
     }
-    if (scene.voiceover.length > scene.duration * 9) {
-      warnings.push(`${scene.id} シーンのナレーションが長めです`);
+    const charLimit = voiceoverCharLimits[scene.id];
+    if (charLimit && scene.voiceover.length > charLimit) {
+      warnings.push(`${scene.id} シーンのナレーションが文字数上限(${charLimit}字)を超えています: ${scene.voiceover.length}字`);
     }
     if (scene.lines.some((line) => line.length > 64)) {
       warnings.push(`${scene.id} シーンの表示テキストが長めです`);

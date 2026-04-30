@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import type { SubsidyLpData } from "@/lib/subsidy-lp/buildSubsidyLpData";
+import { formatYen } from "@/lib/format";
 
 type Props = { data: SubsidyLpData };
 
@@ -89,6 +90,7 @@ type KpiCardProps = {
   inView: boolean;
 };
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function KpiCard({ label, value, sub, tone = "default", delay = 0, inView }: KpiCardProps) {
   const valueColor =
     tone === "urgent"
@@ -138,6 +140,9 @@ function KpiCard({ label, value, sub, tone = "default", delay = 0, inView }: Kpi
 export default function SubsidyLpStats({ data }: Props) {
   const { ref, inView } = useInView(0.15);
 
+  const heroAmount = data.amountValue
+    ? formatYen(data.amountValue, { style: "hero" })
+    : data.amountLabel.replace(/^最大\s*/, "");
   const urgencyTone =
     data.remainingDays !== null && data.remainingDays <= 14
       ? "urgent"
@@ -149,10 +154,11 @@ export default function SubsidyLpStats({ data }: Props) {
     <section
       id="lp-overview"
       aria-label="補助金概要"
-      className="scroll-mt-24 bg-[var(--bg-section-alt)] py-12 md:py-16"
+      className="scroll-mt-24 bg-[var(--bg-section-alt)] py-16 md:py-24"
     >
       <div className="mx-auto max-w-5xl px-4 sm:px-6">
-      {/* セクション見出し */}
+      {/* ========== [LEGACY 2026-04-30] 旧statsカード - ロールバック時は下のコメントアウトを解除 ========== */}
+      {/*
       <div className="mb-6">
         <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-gray-400">
           Key Numbers
@@ -165,7 +171,6 @@ export default function SubsidyLpStats({ data }: Props) {
         </h2>
       </div>
 
-      {/* KPI 4枚 */}
       <div
         ref={ref}
         className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4"
@@ -203,6 +208,52 @@ export default function SubsidyLpStats({ data }: Props) {
           delay={240}
           inView={inView}
         />
+      </div>
+      */}
+
+      {/* ========== [NEW 2026-04-30] 新stats - ヒーロー数字レイアウト ========== */}
+      <div ref={ref} className="text-center">
+        <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-gray-400">
+          Key Numbers
+        </p>
+        <h2
+          className="text-2xl font-black tracking-[-0.02em] sm:text-3xl"
+          style={{ color: "var(--text-primary)" }}
+        >
+          数字で見る制度規模
+        </h2>
+        <p className="mt-10 text-sm font-extrabold uppercase tracking-[0.24em] text-slate-500">
+          最大
+        </p>
+        <p
+          className="mt-2 font-heading text-[clamp(72px,14vw,160px)] font-black leading-none tracking-[-0.08em]"
+          style={{ color: urgencyTone === "urgent" ? "var(--nts-danger)" : "var(--nts-text-primary-light)" }}
+        >
+          {inView ? (
+            <CountUp value={heroAmount || "応相談"} durationMs={1400} />
+          ) : (
+            heroAmount || "応相談"
+          )}
+        </p>
+
+        <div className="mx-auto my-8 h-px w-24 bg-slate-300" />
+
+        <dl className="flex flex-wrap items-center justify-center gap-x-6 gap-y-3 text-sm md:text-base">
+          <div className="flex items-baseline gap-2">
+            <dt className="text-slate-500">補助率</dt>
+            <dd className="font-extrabold text-slate-900">{data.rateLabel || "要確認"}</dd>
+          </div>
+          <span className="hidden text-slate-300 sm:inline">|</span>
+          <div className="flex items-baseline gap-2">
+            <dt className="text-slate-500">締切</dt>
+            <dd className="font-extrabold text-slate-900">{data.deadlineLabel || "要確認"}</dd>
+          </div>
+          <span className="hidden text-slate-300 sm:inline">|</span>
+          <div className="flex items-baseline gap-2">
+            <dt className="text-slate-500">対象地域</dt>
+            <dd className="font-extrabold text-slate-900">{data.targetArea || "全国"}</dd>
+          </div>
+        </dl>
       </div>
 
       {/* 詳細テーブル */}
