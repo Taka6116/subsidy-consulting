@@ -1,6 +1,17 @@
 "use client";
 
-import { CheckCircle2, XCircle, MinusCircle } from "lucide-react";
+/**
+ * [NEW 2026-04-30] NtsComparisonSection — カード型リデザイン
+ *
+ * レイアウト:
+ *   - モバイル（< md）: 1列縦積み
+ *   - デスクトップ（>= md）: 3列横並び、NTS列が2px ボーダーで主役化
+ *
+ * ロールバック手順:
+ *   return文内の [NEW] ブロックをコメントアウトし、[LEGACY] ブロックを解除するだけで旧版に戻る。
+ *   ファイル変更はこのファイル1つのみ。
+ */
+
 import { motion, useReducedMotion } from "framer-motion";
 import {
   fadeInUpInitial,
@@ -9,6 +20,11 @@ import {
   fadeInUpTransition,
   fadeInUpViewport,
 } from "@/components/sections/sectionStyles";
+
+// ========== [LEGACY 2026-04-30] 旧比較テーブル用の型・データ・アイコン ==========
+// ロールバック時: 下の[NEW]ブロックをコメントアウトし、このLEGACYブロックを解除する
+/*
+import { CheckCircle2, XCircle, MinusCircle } from "lucide-react";
 
 type CellValue = "good" | "bad" | "partial";
 
@@ -24,7 +40,7 @@ const AXES: readonly Axis[] = [
     axis: "費用",
     other: { label: "数十万〜数百万円", value: "bad" },
     platform: { label: "数万〜数十万円", value: "partial" },
-    nts: { label: "成果報酬型で明快", value: "good" },
+    nts: { label: "成功報酬型で明快", value: "good" },
   },
   {
     axis: "書類作成",
@@ -74,10 +90,57 @@ function CellIcon({ value }: { value: CellValue }) {
     <XCircle className="h-5 w-5 shrink-0 text-[#9aa5b3]" aria-hidden />
   );
 }
+*/
+// ========== /LEGACY ==========
+
+type ItemStatus = "ok" | "ng" | "warn";
+
+const OTHER_ITEMS: { label: string; status: ItemStatus; text: string }[] = [
+  { label: "パートナーとしての姿勢", status: "ng",   text: "書類を作ることが目的" },
+  { label: "コストの透明性",         status: "ng",   text: "数十万〜数百万円。不透明になりがち" },
+  { label: "申請以外の負担",          status: "warn", text: "別途費用が発生することが多い" },
+  { label: "採択後の伴走",            status: "ng",   text: "採択後の関係は続かない" },
+  { label: "担当者の専門性",          status: "warn", text: "若手〜実績豊富まで、担当で差が出る" },
+  { label: "申請書類の品質",          status: "warn", text: "担当者任せで品質にムラ" },
+];
+
+const PLATFORM_ITEMS: { label: string; status: ItemStatus; text: string }[] = [
+  { label: "パートナーとしての姿勢", status: "ng", text: "申請件数を増やすことが目的" },
+  { label: "コストの透明性",         status: "warn", text: "数万〜数十万円。定額だが対応範囲が限られる" },
+  { label: "申請以外の負担",          status: "ng", text: "対応不可。経営者本人が動く必要がある" },
+  { label: "採択後の伴走",            status: "ng", text: "採択後の関係は続かない" },
+  { label: "担当者の専門性",          status: "ng", text: "担当者なし。自己完結が前提" },
+  { label: "申請書類の品質",          status: "ng", text: "AI自動生成。通過率が下がる傾向" },
+];
+
+const NTS_ITEMS: { label: string; text: string }[] = [
+  { label: "パートナーとしての姿勢", text: "採択の「活用」まで責任を持つ" },
+  { label: "コストの透明性",         text: "成功報酬型で明快。採択まで費用なし" },
+  { label: "申請以外の負担",          text: "NTSが代わりに対応。経営者の時間を守る" },
+  { label: "採択後の伴走",            text: "1年間伴走。実績報告・精算・効果検証まで" },
+  { label: "担当者の専門性",          text: "補助金専門コンサルタントが担当" },
+  { label: "申請書類の品質",          text: "審査側視点＋提携行政書士で設計" },
+];
+
+function StatusIcon({ status }: { status: ItemStatus }) {
+  const cls =
+    status === "ng"
+      ? "text-red-400"
+      : status === "warn"
+      ? "text-amber-500"
+      : "text-emerald-500";
+  const symbol = status === "ng" ? "✕" : status === "warn" ? "△" : "✓";
+  return (
+    <span className={`mt-0.5 flex-shrink-0 text-sm font-bold ${cls}`}>
+      {symbol}
+    </span>
+  );
+}
 
 export default function NtsComparisonSection() {
   const reduce = useReducedMotion();
 
+  // ========== [NEW 2026-04-30] カード型比較UI ==========
   return (
     <section
       className="section-block bg-section-white text-[var(--text-primary)]"
@@ -85,218 +148,161 @@ export default function NtsComparisonSection() {
       aria-labelledby="home-nts-comparison-heading"
     >
       <div className="section-inner">
-        {/* ── ヘッダー ── */}
+        {/* ヘッダー */}
         <motion.div
-          className="mb-10 text-center md:mb-14"
+          className="mb-14 text-center"
           initial={reduce ? fadeInUpReduced : fadeInUpInitial}
           whileInView={reduce ? fadeInUpReduced : fadeInUpInView}
           viewport={fadeInUpViewport}
           transition={fadeInUpTransition}
         >
-          <p className="sec-label mb-4">COMPARISON</p>
+          <p className="sec-label mb-4">Comparison</p>
           <h2
             id="home-nts-comparison-heading"
-            className="font-heading text-[1.75rem] font-bold leading-snug text-[var(--text-primary)] md:text-[2.25rem]"
+            className="mb-4 font-heading text-[1.75rem] font-bold leading-tight tracking-tight text-[var(--text-primary)] md:text-[2.25rem]"
           >
-            他社との違い、ひとめで。
+            「申請して終わり」を、終わらせる。
           </h2>
-          <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-[var(--text-secondary)] md:text-lg">
-            補助金活用のパートナーを選ぶとき、どこを見ればいいのか。
+          <p className="mx-auto max-w-lg text-base leading-relaxed text-[var(--text-secondary)]">
+            補助金パートナー選びで本当に見るべきは、
             <br className="hidden md:inline" />
-            一緒に働く相手として、6つの視点で比較してみてください。
+            「採択の先で何をしてくれるか」です。
           </p>
         </motion.div>
 
-        {/* ── デスクトップ表（md+） ── */}
+        {/* 3カードグリッド */}
         <motion.div
-          className="hidden md:block"
+          className="grid grid-cols-1 items-start gap-4 md:grid-cols-3 md:gap-3"
           initial={reduce ? fadeInUpReduced : fadeInUpInitial}
           whileInView={reduce ? fadeInUpReduced : fadeInUpInView}
           viewport={fadeInUpViewport}
           transition={{ ...fadeInUpTransition, delay: 0.08 }}
         >
-          <div
-            className="overflow-hidden rounded-[24px] border border-[var(--border-subtle)] bg-white shadow-[0_12px_40px_rgba(26,76,142,0.10)]"
-            role="table"
-            aria-label="他社・プラットフォーム・NTSの比較"
-          >
-            {/* ── カラムヘッダー ── */}
-            <div
-              className="grid grid-cols-[minmax(130px,180px)_1fr_1fr_1.15fr]"
-              role="row"
-            >
-              {/* 比較軸ラベル列（空） */}
-              <div
-                className="flex items-end bg-[var(--bg-section-alt)] px-5 pb-5 pt-8"
-                aria-hidden
-              >
-                <p className="text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-[var(--text-secondary)]">
-                  比較項目
-                </p>
-              </div>
-
-              {/* 他社 */}
-              <div className="border-l border-[var(--border-subtle)] bg-[#dfe3ea] px-6 pb-6 pt-7 text-center">
-                <span className="inline-block rounded-full bg-white/70 px-4 py-1 font-heading text-[0.78rem] font-bold uppercase tracking-[0.14em] text-[#7a8392]">
-                  補助金会社・FA
-                </span>
-                <p className="mt-4 font-heading text-[1rem] font-bold leading-snug text-[#7a8392] lg:text-[1.05rem]">
-                  申請で、関係が終わる。
-                </p>
-              </div>
-
-              {/* プラットフォーム */}
-              <div className="border-l border-[var(--border-subtle)] bg-[#e8ecf1] px-6 pb-6 pt-7 text-center">
-                <span className="inline-block rounded-full bg-white/70 px-4 py-1 font-heading text-[0.78rem] font-bold uppercase tracking-[0.14em] text-[#7a8392]">
-                  補助金プラットフォーム
-                </span>
-                <p className="mt-4 font-heading text-[1rem] font-bold leading-snug text-[#7a8392] lg:text-[1.05rem]">
-                  ツールだけで、終わる。
-                </p>
-              </div>
-
-              {/* NTS（ハイライト） */}
-              <div className="relative border-l border-[var(--border-subtle)] bg-[linear-gradient(180deg,rgba(0,184,148,0.14)_0%,rgba(0,184,148,0.06)_100%)] px-6 pb-6 pt-7 text-center">
-                <span className="absolute left-0 top-0 h-full w-[4px] bg-[var(--accent-teal)]" />
-                <span className="inline-block rounded-full bg-[var(--accent-teal)] px-4 py-1 font-heading text-[0.78rem] font-bold uppercase tracking-[0.14em] text-white shadow-[0_2px_8px_rgba(0,184,148,0.35)]">
-                  NTS ニュースタンダード
-                </span>
-                <p className="mt-4 font-heading text-[1rem] font-bold leading-snug text-[var(--text-primary)] lg:text-[1.05rem]">
-                  採択の先まで、一緒に走る。
-                </p>
-              </div>
+          {/* ─── カード①：書類を作る人 ─── */}
+          <div className="rounded-2xl border border-slate-200 bg-slate-50 p-6 opacity-90">
+            <div className="mb-5 border-b border-slate-200 pb-5">
+              <p className="mb-1.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-400">
+                書類を作る人
+              </p>
+              <p className="mb-1 text-base font-semibold text-slate-700">
+                補助金会社・FA
+              </p>
+              <p className="text-sm leading-relaxed text-slate-500">
+                申請で、
+                <br />
+                関係が終わる。
+              </p>
             </div>
 
-            {/* ── 比較行 ── */}
-            {AXES.map((row) => (
-              <div
-                key={row.axis}
-                className="grid grid-cols-[minmax(130px,180px)_1fr_1fr_1.15fr] border-t border-[var(--border-subtle)]"
-                role="row"
+            <ul className="space-y-4">
+              {OTHER_ITEMS.map((item) => (
+                <li key={item.label}>
+                  <p className="mb-1 text-[10px] font-semibold tracking-[0.08em] text-slate-400">
+                    {item.label}
+                  </p>
+                  <div className="flex items-start gap-2">
+                    <StatusIcon status={item.status} />
+                    <p className="text-sm leading-relaxed text-slate-500">{item.text}</p>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* ─── カード②：ツールを使う場所 ─── */}
+          <div className="rounded-2xl border border-slate-200 bg-slate-50 p-6 opacity-90">
+            <div className="mb-5 border-b border-slate-200 pb-5">
+              <p className="mb-1.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-400">
+                ツールを使う場所
+              </p>
+              <p className="mb-1 text-base font-semibold text-slate-700">
+                補助金プラットフォーム
+              </p>
+              <p className="text-sm leading-relaxed text-slate-500">
+                ツールだけで、
+                <br />
+                終わる。
+              </p>
+            </div>
+
+            <ul className="space-y-4">
+              {PLATFORM_ITEMS.map((item) => (
+                <li key={item.label}>
+                  <p className="mb-1 text-[10px] font-semibold tracking-[0.08em] text-slate-400">
+                    {item.label}
+                  </p>
+                  <div className="flex items-start gap-2">
+                    <StatusIcon status={item.status} />
+                    <p className="text-sm leading-relaxed text-slate-500">{item.text}</p>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* ─── カード③：日本提携支援（主役） ─── */}
+          <div className="relative rounded-2xl border-2 border-emerald-500 bg-white p-6 shadow-lg shadow-emerald-500/10">
+            {/* 上部バッジ */}
+            <div className="absolute -top-3.5 left-1/2 -translate-x-1/2">
+              <span className="whitespace-nowrap rounded-full bg-emerald-600 px-4 py-1 text-[11px] font-semibold tracking-wide text-white">
+                NTS ニュースタンダード
+              </span>
+            </div>
+
+            <div className="mb-5 mt-1 border-b border-slate-100 pb-5">
+              <p className="mb-1.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-emerald-600">
+                経営に伴走する仕組み
+              </p>
+              <p className="mb-1 text-base font-semibold text-slate-900">
+                日本提携支援
+              </p>
+              <p className="text-sm leading-relaxed text-slate-600">
+                採択の先まで、
+                <br />
+                一緒に走る。
+              </p>
+            </div>
+
+            <ul className="space-y-4">
+              {NTS_ITEMS.map((item) => (
+                <li key={item.label}>
+                  <p className="mb-1 text-[10px] font-semibold tracking-[0.08em] text-slate-400">
+                    {item.label}
+                  </p>
+                  <div className="flex items-start gap-2">
+                    <span className="mt-0.5 flex-shrink-0 text-sm font-bold text-emerald-500">
+                      ✓
+                    </span>
+                    <p className="text-sm font-semibold leading-relaxed text-slate-900">
+                      {item.text}
+                    </p>
+                  </div>
+                </li>
+              ))}
+            </ul>
+
+            {/* CTA */}
+            <div className="mt-6 border-t border-slate-100 pt-5">
+              <a
+                href="/contact"
+                className="block w-full rounded-full bg-emerald-600 px-6 py-3 text-center text-sm font-semibold text-white transition hover:bg-emerald-700 active:scale-[0.98]"
               >
-                {/* 軸ラベル */}
-                <div
-                  className="flex items-center bg-[var(--bg-section-alt)] px-5 py-5 font-heading text-[0.95rem] font-bold text-[var(--text-primary)] lg:text-[1rem]"
-                  role="rowheader"
-                >
-                  {row.axis}
-                </div>
-
-                {/* 他社 */}
-                <div
-                  className="flex items-start gap-2.5 border-l border-[var(--border-subtle)] bg-[#eef1f5] px-5 py-5"
-                  role="cell"
-                >
-                  <CellIcon value={row.other.value} />
-                  <p className="text-[0.88rem] leading-[1.85] text-[#8a94a3] lg:text-[0.95rem]">
-                    {row.other.label}
-                  </p>
-                </div>
-
-                {/* プラットフォーム */}
-                <div
-                  className="flex items-start gap-2.5 border-l border-[var(--border-subtle)] bg-[#f0f3f7] px-5 py-5"
-                  role="cell"
-                >
-                  <CellIcon value={row.platform.value} />
-                  <p className="text-[0.88rem] leading-[1.85] text-[#8a94a3] lg:text-[0.95rem]">
-                    {row.platform.label}
-                  </p>
-                </div>
-
-                {/* NTS（ハイライト） */}
-                <div
-                  className="relative flex items-start gap-2.5 border-l border-[var(--border-subtle)] bg-[rgba(0,184,148,0.06)] px-5 py-5"
-                  role="cell"
-                >
-                  <span className="absolute left-0 top-0 h-full w-[4px] bg-[var(--accent-teal)]" />
-                  <CellIcon value={row.nts.value} />
-                  <p className="text-[0.88rem] font-semibold leading-[1.85] text-[var(--text-primary)] lg:text-[0.95rem]">
-                    {row.nts.label}
-                  </p>
-                </div>
-              </div>
-            ))}
-
-            {/* ── フッター注釈 ── */}
-            <div className="border-t border-[var(--border-subtle)] bg-[var(--bg-section-alt)] px-6 py-4">
-              <p className="text-[0.72rem] leading-relaxed text-[var(--text-secondary)]">
-                ※ NTSへの相談は無料です。採択後の成果報酬については個別にご案内いたします。
+                無料相談する →
+              </a>
+              <p className="mt-2 text-center text-[11px] text-slate-400">
+                NTSへの相談は無料。採択後の成功報酬のみ
               </p>
             </div>
           </div>
         </motion.div>
 
-        {/* ── モバイル表（〜md） ── */}
-        <div className="md:hidden">
-          <div className="flex flex-col gap-4">
-            {AXES.map((row, i) => (
-              <motion.div
-                key={row.axis}
-                initial={reduce ? fadeInUpReduced : fadeInUpInitial}
-                whileInView={reduce ? fadeInUpReduced : fadeInUpInView}
-                viewport={fadeInUpViewport}
-                transition={{ ...fadeInUpTransition, delay: 0.04 + i * 0.04 }}
-                className="overflow-hidden rounded-2xl border border-[var(--border-subtle)] bg-white shadow-[0_4px_18px_rgba(26,76,142,0.06)]"
-              >
-                {/* 軸タイトル */}
-                <div className="flex items-center gap-2 border-b border-[var(--border-subtle)] bg-[var(--bg-section-alt)] px-4 py-3">
-                  <span className="inline-block h-2 w-2 rounded-full bg-[var(--accent-teal)]" />
-                  <h3 className="font-heading text-[0.92rem] font-bold text-[var(--text-primary)]">
-                    {row.axis}
-                  </h3>
-                </div>
-
-                <div className="divide-y divide-[var(--border-subtle)]">
-                  {/* 他社 */}
-                  <div className="flex items-start gap-2.5 bg-[#eef1f5] px-4 py-3.5">
-                    <CellIcon value={row.other.value} />
-                    <div>
-                      <p className="mb-0.5 font-heading text-[0.65rem] font-bold uppercase tracking-[0.12em] text-[#7a8392]">
-                        補助金会社・FA
-                      </p>
-                      <p className="text-[0.84rem] leading-[1.8] text-[#8a94a3]">
-                        {row.other.label}
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* プラットフォーム */}
-                  <div className="flex items-start gap-2.5 bg-[#f0f3f7] px-4 py-3.5">
-                    <CellIcon value={row.platform.value} />
-                    <div>
-                      <p className="mb-0.5 font-heading text-[0.65rem] font-bold uppercase tracking-[0.12em] text-[#7a8392]">
-                        補助金プラットフォーム
-                      </p>
-                      <p className="text-[0.84rem] leading-[1.8] text-[#8a94a3]">
-                        {row.platform.label}
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* NTS */}
-                  <div className="relative flex items-start gap-2.5 bg-[rgba(0,184,148,0.07)] px-4 py-3.5">
-                    <span className="absolute left-0 top-0 h-full w-[3px] bg-[var(--accent-teal)]" />
-                    <CellIcon value={row.nts.value} />
-                    <div>
-                      <p className="mb-0.5 font-heading text-[0.65rem] font-bold uppercase tracking-[0.12em] text-[var(--accent-teal)]">
-                        NTS ニュースタンダード
-                      </p>
-                      <p className="text-[0.84rem] font-semibold leading-[1.8] text-[var(--text-primary)]">
-                        {row.nts.label}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-
-          <p className="mt-5 text-center text-[0.72rem] leading-relaxed text-[var(--text-secondary)]">
-            ※ NTSへの相談は無料です。採択後の成果報酬については個別にご案内いたします。
-          </p>
-        </div>
+        {/* 注記 */}
+        <p className="mt-8 border-l-2 border-slate-200 pl-4 text-xs leading-relaxed text-[var(--text-secondary)]">
+          ※ NTSへの相談は無料です。採択後の成功報酬については個別にご案内いたします。
+          書類作成や各種対応は、別途費用なくNTSが一括して対応します。
+        </p>
       </div>
     </section>
   );
+  // ========== /NEW ==========
 }
