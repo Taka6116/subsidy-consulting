@@ -119,6 +119,19 @@ model StaticSubsidy {
   @@map("static_subsidies")
 }
 
+/// メールマガジン購読者（補助金速報メール登録）
+model Subscriber {
+  id         String    @id @default(uuid()) @db.Uuid
+  email      String    @unique
+  source     String?   @db.VarChar(100) // "article-cta" / "lp-subscribe" / "exit-intent" など
+  subsidyId  String?   @map("subsidy_id") @db.VarChar(100) // 紐づく補助金ID（任意）
+  createdAt  DateTime  @default(now()) @map("created_at")
+  unsubscribedAt DateTime? @map("unsubscribed_at")
+
+  @@index([email])
+  @@map("subscribers")
+}
+
 /// 同期ジョブの実行単位（部分成功も status で表現可能）。
 model SubsidySyncRun {
   id           String    @id @default(cuid())
