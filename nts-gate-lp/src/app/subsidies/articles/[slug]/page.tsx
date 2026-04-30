@@ -14,6 +14,8 @@ import { ArticleToc } from "@/components/articles/ArticleToc";
 import { ConsultantComment } from "@/components/articles/ConsultantComment";
 import { ArticleCTA } from "@/components/articles/ArticleCTA";
 import { RelatedArticles } from "@/components/articles/RelatedArticles";
+// ========== [NEW 2026-04-30] 締切カウントダウン ==========
+import { ArticleDeadlineCountdown } from "@/components/articles/ArticleDeadlineCountdown";
 // ========== /NEW ==========
 
 // 5 分 ISR（新規生成時は再ビルド不要で切り替わる）
@@ -229,8 +231,8 @@ export default async function SubsidyArticlePage({ params }: PageProps) {
                 </div>
               )}
 
-              {/* ミニメタ（補助上限・公募期限） */}
-              {(grantAmount || grantDeadline) && (
+              {/* ミニメタ（補助上限・締切カウントダウン） */}
+              {(grantAmount || grantDeadline || article.grant?.deadline) && (
                 <dl className="mt-6 grid grid-cols-1 gap-3 text-sm sm:grid-cols-2">
                   {grantAmount && (
                     <div className="rounded-lg bg-white/80 px-4 py-3 ring-1 ring-primary-200/40 backdrop-blur-sm">
@@ -240,14 +242,20 @@ export default async function SubsidyArticlePage({ params }: PageProps) {
                       </dd>
                     </div>
                   )}
-                  {grantDeadline && (
+                  {/* ========== [NEW 2026-04-30] 締切カウントダウン（赤枠の右カラム） ========== */}
+                  {article.grant?.deadline && grantDeadline ? (
+                    <ArticleDeadlineCountdown
+                      deadline={article.grant.deadline}
+                      deadlineLabel={grantDeadline}
+                    />
+                  ) : grantDeadline ? (
                     <div className="rounded-lg bg-white/80 px-4 py-3 ring-1 ring-primary-200/40 backdrop-blur-sm">
                       <dt className="text-xs text-neutral-500">公募期限</dt>
                       <dd className="mt-0.5 font-semibold text-primary-900">
                         {grantDeadline}
                       </dd>
                     </div>
-                  )}
+                  ) : null}
                 </dl>
               )}
             </div>

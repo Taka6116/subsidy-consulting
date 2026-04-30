@@ -12,11 +12,11 @@ export function ArticleCTA({
   subsidyName,
 }: Props) {
   return (
-    <section className="my-12 overflow-hidden rounded-2xl bg-slate-900 px-8 py-10 text-white">
+    <section className="my-12 overflow-hidden rounded-2xl bg-slate-900 px-8 py-10">
       <p className="mb-1 text-xs font-semibold uppercase tracking-widest text-slate-400">
         Next Step
       </p>
-      <h2 className="mb-2 text-xl font-bold leading-tight md:text-2xl">
+      <h2 className="mb-2 text-xl font-bold leading-tight text-white md:text-2xl">
         最初の一歩は、軽くて構いません。
       </h2>
       <p className="mb-8 text-sm leading-relaxed text-slate-300">
@@ -52,7 +52,7 @@ export function ArticleCTA({
 
       {/* メアド登録 */}
       <div className="mt-8 border-t border-white/10 pt-6">
-        <p className="mb-3 text-xs text-slate-400">
+        <p className="mb-3 text-xs text-slate-300">
           {subsidyName ? `「${subsidyName}」` : "この補助金"}
           の次回公募開始を、メールでお知らせします。
         </p>
