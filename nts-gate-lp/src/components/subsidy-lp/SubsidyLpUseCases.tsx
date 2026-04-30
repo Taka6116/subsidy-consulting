@@ -34,7 +34,7 @@ export default function SubsidyLpUseCases({ data }: Props) {
     <section className="bg-[var(--bg-base)] py-16 md:py-24">
       <div className="mx-auto max-w-5xl px-4 sm:px-6">
         {/* ヘッダー */}
-        <div>
+        <div className="text-center">
           <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-gray-400">
             Use Cases
           </p>

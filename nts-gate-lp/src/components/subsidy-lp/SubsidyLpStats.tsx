@@ -140,8 +140,10 @@ function KpiCard({ label, value, sub, tone = "default", delay = 0, inView }: Kpi
 export default function SubsidyLpStats({ data }: Props) {
   const { ref, inView } = useInView(0.15);
 
+  // style:"hero" だと CountUp が小数(1.5)を整数(2)に丸めてしまうため、
+  // FVと同じ style省略（"1.5億円"）に統一する
   const heroAmount = data.amountValue
-    ? formatYen(data.amountValue, { style: "hero" })
+    ? formatYen(data.amountValue)
     : data.amountLabel.replace(/^最大\s*/, "");
   const urgencyTone =
     data.remainingDays !== null && data.remainingDays <= 14
