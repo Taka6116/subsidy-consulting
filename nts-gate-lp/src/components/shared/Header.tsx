@@ -6,7 +6,7 @@ import { trackCTAClick, trackPartnerLinkClick } from "@/lib/analytics";
 import { getPartnerUrl } from "@/lib/partnerUrl";
 
 const navLinkClass = (heroStyle: boolean) =>
-  `rounded-sm text-sm font-medium transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent-navy)] sm:text-[0.9375rem] ${
+  `rounded-sm text-[0.8rem] font-medium transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent-navy)] lg:text-[0.9375rem] ${
     heroStyle
       ? "text-[var(--text-primary)] hover:text-[var(--accent-navy)]"
       : "text-[var(--text-secondary)] hover:text-[var(--accent-navy)]"
@@ -14,18 +14,18 @@ const navLinkClass = (heroStyle: boolean) =>
 
 function HeaderCtaGroup() {
   return (
-    <div className="flex shrink-0 flex-wrap items-center justify-end gap-2 sm:gap-2.5">
+    <div className="flex shrink-0 items-center gap-2">
       <Link
         href="/check"
         onClick={() => trackCTAClick("header_subsidy_lookup")}
-        className="header-cta header-cta--secondary sm:min-w-[11rem] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent-navy)]"
+        className="header-cta header-cta--secondary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent-navy)]"
       >
         対象補助金を確認する
       </Link>
       <Link
         href="/consult"
         onClick={() => trackCTAClick("header_consult")}
-        className="header-cta header-cta--primary sm:min-w-[11rem] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent-navy)]"
+        className="header-cta header-cta--primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent-navy)]"
       >
         無料相談する
       </Link>
@@ -69,45 +69,47 @@ export default function Header() {
       </Link>
 
       {isSubsidies ? (
-        <>
+        /* ── 補助金プラットフォーム内：ナビ + CTAを明確に分離 ── */
+        <div className="flex min-w-0 flex-1 items-center justify-between gap-3 sm:ml-4 lg:ml-8">
+          {/* ナビリンク群：短いラベルを優先し、長いものはlgで表示 */}
           <nav
-            className="flex w-full flex-wrap items-center justify-start gap-x-3 gap-y-2 sm:ml-4 sm:w-auto sm:flex-1 sm:justify-end sm:gap-x-4 lg:ml-8 lg:gap-x-6"
+            className="hidden items-center gap-x-3 sm:flex lg:gap-x-5"
             aria-label="補助金プラットフォーム"
           >
-            <Link href="/subsidies" className={`${navLinkClass(heroStyle)} shrink-0`}>
+            <Link href="/subsidies" className={navLinkClass(heroStyle)}>
               トップへ
             </Link>
-            <Link href="/subsidies/list" className={`${navLinkClass(heroStyle)} shrink-0`}>
+            <Link href="/subsidies/list" className={navLinkClass(heroStyle)}>
               補助金一覧
             </Link>
-            <Link href="/subsidies/articles" className={`${navLinkClass(heroStyle)} shrink-0`}>
+            <Link href="/subsidies/articles" className={navLinkClass(heroStyle)}>
               解説記事
             </Link>
-            <Link href="/subsidies/lp" className={`${navLinkClass(heroStyle)} shrink-0`}>
+            <Link href="/subsidies/lp" className={navLinkClass(heroStyle)}>
               活用ガイド
             </Link>
-            <Link href="/subsidies/videos" className={`${navLinkClass(heroStyle)} shrink-0`}>
+            <Link href="/subsidies/videos" className={navLinkClass(heroStyle)}>
               動画
             </Link>
+            {/* lg以上でのみ表示する長めのリンク */}
             <Link
               href={partnerHref}
               onClick={() => trackPartnerLinkClick("header_subsidies")}
-              className={`${navLinkClass(heroStyle)} shrink-0`}
+              className={`${navLinkClass(heroStyle)} hidden lg:inline`}
             >
-              提携先の方へ
-              <span className="ml-0.5" aria-hidden="true">
-                →
-              </span>
+              提携先の方へ →
             </Link>
-            <Link href="/check" className={`${navLinkClass(heroStyle)} shrink-0`}>
-              補助金を申請したい方へ
-              <span className="ml-0.5" aria-hidden="true">
-                →
-              </span>
+            <Link
+              href="/check"
+              className={`${navLinkClass(heroStyle)} hidden lg:inline`}
+            >
+              補助金を申請したい方へ →
             </Link>
-            <HeaderCtaGroup />
           </nav>
-        </>
+
+          {/* CTAボタン群：常に右端に固定 */}
+          <HeaderCtaGroup />
+        </div>
       ) : (
         <div className="flex min-w-0 flex-1 flex-col gap-2.5 sm:flex-row sm:items-center sm:justify-end sm:gap-4 md:gap-5">
           <div className="order-1 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 sm:justify-end sm:gap-x-5">
