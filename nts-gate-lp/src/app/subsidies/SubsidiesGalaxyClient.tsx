@@ -192,8 +192,7 @@ export default function SubsidiesGalaxyClient({ counts }: Props) {
                   style={hiddenStyle}
                   className="font-heading text-[clamp(40px,6vw,80px)] font-normal leading-[1.1] text-[#1a2544]"
                 >
-                  補助金情報が<br />
-                  最速で一番わかりやすい場所
+                  補助金情報が最速で分かる場所
                 </h1>
                 <p
                   data-intro-reveal
