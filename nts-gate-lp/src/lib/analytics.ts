@@ -46,7 +46,11 @@ export type CTALocation =
   /** 提携LP最終CTA — 資料請求 */
   | "partner_final_cta_document"
   /** 補助金個別LP — 照会導線 */
-  | "lp_subsidy_check";
+  | "lp_subsidy_check"
+  /** 中盤CTA — 補助金診断 */
+  | "mid_cta_check"
+  /** 中盤CTA — 無料相談 */
+  | "mid_cta_consult";
 
 export function trackCTAClick(location: CTALocation) {
   sendEvent("cta_click", { location });
