@@ -1327,6 +1327,14 @@
   }
 }
 
+/* ノートPC帯域（768px〜1279px）: ヘッダー高さ分の余白を確保 */
+@media (min-width: 768px) and (max-width: 1279px) {
+  .heroInnerWide {
+    padding-top: 100px;
+    padding-bottom: 40px;
+  }
+}
+
 .heroImgCol {
   max-width: 100%;
   overflow: visible;

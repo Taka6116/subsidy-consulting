@@ -8,10 +8,10 @@ import styles from "./HeroSection.module.css";
 export default function HeroSection() {
   return (
     <section
-      className={`${styles.hero} section-block relative flex min-h-[min(100svh,720px)] flex-col justify-center`}
+      className={`${styles.hero} section-block relative flex flex-col justify-center`}
       style={{
         background: "linear-gradient(160deg, #E8EFF8 0%, #DDE8F5 100%)",
-        minHeight: "640px",
+        minHeight: "clamp(600px, 100svh, 900px)",
       }}
       aria-label="補助金照会サービス ヒーローセクション"
     >
@@ -26,7 +26,7 @@ export default function HeroSection() {
         <span className={`${styles.decorAccent} ${styles.decorAccentTeal}`} />
       </div>
 
-      <div className={`section-inner relative z-[1] w-full shrink-0 py-10 ${styles.heroInnerWide}`}>
+      <div className={`section-inner relative z-[1] w-full shrink-0 pt-24 pb-10 sm:pt-28 ${styles.heroInnerWide}`}>
         <header className={styles.heroHeader}>
           <h1 className={styles.headlineTight}>
             会社の<em>URL</em>から、使える<em>補助金</em>が見つかる。
