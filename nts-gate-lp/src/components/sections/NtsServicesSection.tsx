@@ -63,7 +63,6 @@ export default function NtsServicesSection() {
           viewport={fadeInUpViewport}
           transition={fadeInUpTransition}
         >
-          <p className="sec-label mb-4">DIFFERENCE</p>
           <h2
             id="home-nts-services-heading"
             className="font-heading text-[1.75rem] font-bold leading-snug text-[var(--text-primary)] md:text-[2.25rem]"

@@ -81,7 +81,6 @@ export default function FeeStructureSection() {
           <hr className="mb-16 border-0 border-t border-[rgba(26,76,142,0.1)] lg:mb-20" />
 
           <div className="mb-12 text-center md:mb-16">
-            <p className="sec-label mb-4">FEE STRUCTURE</p>
             <h2
               id="home-fee-structure-heading"
               className="font-heading text-[1.75rem] font-bold leading-snug text-[var(--text-primary)] md:text-[2.25rem]"

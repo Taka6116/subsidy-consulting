@@ -8,7 +8,6 @@ import isometric07 from "../../../../icon-assets/isometric_07.png";
 import isometric06 from "../../../../icon-assets/isometric_06.png";
 
 type Subsidy = {
-  category: string;
   name: string;
   max: string;
   body: string;
@@ -20,7 +19,6 @@ type Subsidy = {
 
 const subsidies: Subsidy[] = [
   {
-    category: "省力化・DX",
     name: "中小企業省力化投資補助金",
     max: "最大1,500万円",
     body: "人手不足に悩む中小企業の省力化・自動化投資を支援。デジタコや業務システム、省人化機器の導入に活用できます。",
@@ -30,7 +28,6 @@ const subsidies: Subsidy[] = [
     bgClass: "bg-[#EEF6FF]",
   },
   {
-    category: "事業承継・引継ぎ",
     name: "事業承継・引継ぎ補助金",
     max: "最大600万円",
     body: "後継者への事業承継や、M&Aを活用した事業引継ぎに伴う費用を補助。経営課題として事業承継を抱える顧客に適しています。",
@@ -40,7 +37,6 @@ const subsidies: Subsidy[] = [
     bgClass: "bg-[#E8F9F4]",
   },
   {
-    category: "販路開拓・業務改善",
     name: "小規模事業者持続化補助金",
     max: "最大200万円",
     body: "販路開拓や業務効率化の取り組みを支援。小規模な顧客にも提案できる補助金です。",
@@ -68,7 +64,6 @@ export default function PartnerSubsidySection() {
     >
       <div className="mx-auto max-w-5xl px-6 md:px-8">
         <motion.div className="mb-16 text-center" {...fadeUp(0)}>
-          <p className="label-section mb-4">Target Subsidies</p>
           <h2 className="font-heading text-3xl font-bold leading-tight text-[var(--text-primary)] md:text-4xl">
             例えばこんな補助金もあります。
           </h2>
@@ -100,9 +95,6 @@ export default function PartnerSubsidySection() {
 
               {/* 下段：コンテンツ */}
               <div className="flex flex-1 flex-col p-7">
-                <p className="mb-2 text-[10px] font-bold uppercase tracking-wider text-[var(--text-muted)]">
-                  {s.category}
-                </p>
                 <h3 className="mb-1 text-lg font-bold leading-snug text-[var(--text-primary)]">
                   {s.name}
                 </h3>

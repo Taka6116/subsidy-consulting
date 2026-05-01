@@ -36,12 +36,6 @@ export default function PartnerFeeSection() {
           whileInView="visible"
           viewport={VIEWPORT}
         >
-          <motion.p
-            variants={itemVariants}
-            className="label-section mb-6"
-          >
-            HOW IT WORKS
-          </motion.p>
           <motion.h2
             variants={itemVariants}
             className="font-heading mb-4 text-4xl font-bold leading-tight text-[var(--text-primary)] md:text-5xl"

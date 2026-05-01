@@ -31,7 +31,6 @@ export default function NtsWarmIntroSection() {
           transition={fadeInUpTransition}
         >
           <div className="mb-12 text-center md:mb-16">
-            <p className="sec-label mb-3">日本提携支援</p>
             <h2
               id="home-nts-warm-intro-heading"
               className="font-heading text-[1.75rem] font-bold leading-snug text-[var(--text-primary)] md:text-[2.25rem]"

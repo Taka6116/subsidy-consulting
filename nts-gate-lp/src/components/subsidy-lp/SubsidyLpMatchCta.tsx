@@ -24,7 +24,6 @@ export default function SubsidyLpMatchCta() {
           className="two-col img-right"
         >
           <div className="col-text space-y-6 text-center lg:text-left">
-            <p className="sec-label mb-2">補助金照会</p>
             <h2
               id="lp-subsidy-match-heading"
               className="font-heading text-[1.75rem] font-bold leading-snug text-[var(--text-primary)] md:text-[2.25rem]"

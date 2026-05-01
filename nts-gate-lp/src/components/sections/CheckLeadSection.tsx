@@ -25,7 +25,6 @@ export default function CheckLeadSection() {
           className={`${glassShellClass} text-center`}
         >
           <div className="mb-12 text-center md:mb-16">
-            <p className="sec-label mb-4">1分で確認できます</p>
             <h2
               id="home-check-lead-heading"
               className="font-heading text-[1.75rem] font-bold leading-snug text-[var(--text-primary)] md:text-[2.25rem]"

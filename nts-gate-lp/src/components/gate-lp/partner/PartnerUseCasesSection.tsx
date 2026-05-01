@@ -54,12 +54,6 @@ export default function PartnerUseCasesSection() {
     >
       <div className="mx-auto max-w-4xl px-6 md:px-8">
         <div className="mb-20 text-center">
-          <motion.p
-            className="label-section mb-4"
-            {...fadeUp(0)}
-          >
-            FOR PARTNERS
-          </motion.p>
           <motion.h2
             className="font-heading text-3xl font-bold leading-tight text-[var(--text-primary)] md:text-4xl lg:text-5xl"
             {...fadeUp(0.05)}

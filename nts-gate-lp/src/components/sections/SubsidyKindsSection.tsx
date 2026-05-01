@@ -18,14 +18,6 @@ const CARDS = [
     title: "職人不足・設備更新・事業承継",
     imageSrc: imgCraftswoman,
     imageAlt: "建設業の職人不足と現場課題のイメージ",
-    keywords: [
-      "省力化補助金",
-      "事業承継補助金",
-      "2024年問題",
-      "主力重機の更新",
-      "建設業許可",
-      "後継者不在",
-    ],
     body: "2024年問題による工期制約、主力重機の老朽化、後継者問題——建設業が今抱える課題に直結する補助金活用を、業界の実情を理解した視点でご提案します。",
     useCase:
       "現場の人手不足や主力重機の更新タイミングが重なり、投資判断を迫られている元請・下請の経営者。許可更新や事業承継を見据え、補助金の枠に沿った投資順序を整理したいケースに合います。",
@@ -35,14 +27,6 @@ const CARDS = [
     title: "ドライバー不足・デジタル化・2代目承継",
     imageSrc: imgDelivery,
     imageAlt: "運送業の配送現場とドライバー不足のイメージ",
-    keywords: [
-      "省力化補助金",
-      "事業承継補助金",
-      "Gマーク",
-      "デジタコ",
-      "2024年問題",
-      "主要荷主への依存",
-    ],
     body: "ドライバー不足、デジタコ・Gマーク対応、荷主依存からの脱却——運送業が直面する経営課題を補助金で動かすための戦略を、一緒に設計します。",
     useCase:
       "荷主依存やドライバー確保、デジタコ・車両更新のコストが同時に押し寄せている運送会社。省力化投資や2代目への引き継ぎを、補助金を組み込んだ計画で進めたい経営者向けです。",
@@ -63,7 +47,6 @@ export default function SubsidyKindsSection() {
           transition={fadeInUpTransition}
         >
           <div className="mb-12 text-center md:mb-16">
-            <p className="sec-label mb-3">対象業種</p>
             <h2
               id="home-subsidy-kinds-heading"
               className="font-heading text-[1.75rem] font-bold leading-snug text-[var(--text-primary)] md:text-[2.25rem]"
@@ -102,16 +85,6 @@ export default function SubsidyKindsSection() {
                 <h3 className="font-heading text-xl font-bold text-[var(--text-primary)] md:text-2xl">
                   {c.title}
                 </h3>
-                <div className="mt-3 flex flex-wrap gap-2">
-                  {c.keywords.map((k) => (
-                    <span
-                      key={k}
-                      className="rounded-full border border-[var(--border-subtle)] bg-[#f0f4fa] px-2.5 py-1 text-[11px] text-[var(--text-secondary)]"
-                    >
-                      {k}
-                    </span>
-                  ))}
-                </div>
                 <p className="mt-3 text-sm leading-relaxed text-[var(--text-secondary)] md:text-base">
                   {c.body}
                 </p>

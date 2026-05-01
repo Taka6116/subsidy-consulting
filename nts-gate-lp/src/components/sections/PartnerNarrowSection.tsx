@@ -41,7 +41,6 @@ export default function PartnerNarrowSection() {
           </div>
 
           <div className="col-text space-y-6 text-center lg:text-left">
-            <p className="sec-label mb-3">税理士・士業・ベンダーの方へ</p>
             <h2
               id="home-partner-heading"
               className="font-heading text-[1.75rem] font-bold leading-snug text-[var(--text-primary)] md:text-[2.25rem]"

@@ -26,7 +26,6 @@ export default function NewSubsidySection() {
           transition={fadeInUpTransition}
           className="text-center text-[var(--text-primary)]"
         >
-          <p className="sec-label mb-3">新着情報</p>
           <h2
             id="home-subsidy-news-heading"
             className="font-heading text-[1.75rem] font-bold leading-snug text-[var(--text-primary)] md:text-[2.25rem]"

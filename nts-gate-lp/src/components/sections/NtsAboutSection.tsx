@@ -29,7 +29,6 @@ export default function NtsAboutSection() {
 
       <div className="section-inner relative z-10">
         <div className="mb-12 text-center md:mb-16">
-          <p className="sec-label mb-3">NTSとは</p>
           <h2 className="font-heading text-[1.75rem] font-bold leading-snug text-[var(--text-primary)] md:text-[2.25rem]">
             補助金活用の専門チームが、
             <br />

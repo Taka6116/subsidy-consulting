@@ -78,7 +78,6 @@ export default function WhatIsNtsSection() {
           transition={fadeInUpTransition}
         >
           <div className="mb-12 text-center md:mb-16">
-            <p className="sec-label mb-2">FLOW &amp; DIFFERENCE</p>
             <h2
               id="home-what-is-nts-heading"
               className="font-heading text-[1.75rem] font-bold leading-snug text-[var(--text-primary)] md:text-[2.25rem]"

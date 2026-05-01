@@ -49,7 +49,6 @@ export default function FaqSection() {
           transition={fadeInUpTransition}
           className="mb-12 text-center md:mb-16"
         >
-          <p className="sec-label mb-3">FAQ</p>
           <h2
             id={`${baseId}-faq-title`}
             className="font-heading text-[1.75rem] font-bold leading-snug text-[var(--text-primary)] md:text-[2.25rem]"

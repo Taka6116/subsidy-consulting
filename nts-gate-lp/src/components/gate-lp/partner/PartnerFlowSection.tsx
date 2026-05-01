@@ -55,7 +55,6 @@ export default function PartnerFlowSection() {
     >
       <div className="mx-auto max-w-5xl px-6 md:px-8">
         <motion.div className="mb-16 text-center" {...fadeUp(0)}>
-          <p className="label-section mb-4">How It Works</p>
           <h2 className="font-heading text-3xl font-bold text-[var(--text-primary)] md:text-4xl">
             お客様をご紹介いただいたら、
             <br />

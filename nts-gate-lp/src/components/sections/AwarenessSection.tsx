@@ -116,10 +116,9 @@ export default function AwarenessSection() {
           transition={fadeInUpTransition}
         >
           <div className="mb-12 text-center md:mb-16">
-            <span className="sec-label">ISSUES</span>
             <h2
               id="home-awareness-heading"
-              className="font-heading mt-3 text-[1.75rem] font-bold leading-snug text-[var(--text-primary)] md:text-[2.25rem]"
+              className="font-heading text-[1.75rem] font-bold leading-snug text-[var(--text-primary)] md:text-[2.25rem]"
             >
               「申請できればいい」だけでは、
               <br />

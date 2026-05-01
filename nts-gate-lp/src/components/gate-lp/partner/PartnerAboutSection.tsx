@@ -63,10 +63,6 @@ export default function PartnerAboutSection() {
           {/* 下段：コピー + Stats */}
           <div className="bg-white px-6 py-12 md:px-12 md:py-16 lg:px-16 lg:py-20">
             <div className="mx-auto max-w-3xl text-center">
-              <motion.p className="label-section mb-4" {...fadeUp(0.1)}>
-                About NTS
-              </motion.p>
-
               <motion.h2
                 className="font-heading text-2xl font-bold leading-snug text-[var(--text-primary)] md:text-3xl lg:text-[2.25rem] lg:leading-[1.35]"
                 {...fadeUp(0.15)}

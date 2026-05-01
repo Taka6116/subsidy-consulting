@@ -50,12 +50,6 @@ const PITFALLS: readonly Pitfall[] = [
   },
 ] as const;
 
-const NTS_CHIPS = [
-  "審査側視点で設計",
-  "各種対応サポート",
-  "採択後1年間伴走",
-] as const;
-
 export default function NtsAiGapSection() {
   const reduce = useReducedMotion();
 
@@ -74,7 +68,6 @@ export default function NtsAiGapSection() {
           viewport={fadeInUpViewport}
           transition={fadeInUpTransition}
         >
-          <p className="sec-label mb-4">AI ERA</p>
           <h2
             id="home-nts-aigap-heading"
             className="font-heading text-[1.75rem] font-bold leading-snug text-[var(--text-primary)] md:text-[2.25rem]"
@@ -216,10 +209,7 @@ export default function NtsAiGapSection() {
           <div className="relative grid grid-cols-1 items-center gap-8 p-7 md:grid-cols-[1.1fr_1fr] md:gap-12 md:p-12 lg:p-14">
             {/* Text */}
             <div>
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-[var(--accent-teal)] px-3 py-1 font-heading text-[0.7rem] font-bold uppercase tracking-[0.14em] text-white shadow-[0_2px_10px_rgba(0,184,148,0.4)]">
-                NTS DOES
-              </span>
-              <h3 className="mt-5 font-heading text-[1.6rem] font-bold leading-[1.25] text-[var(--text-primary)] md:text-[2rem] lg:text-[2.2rem]">
+              <h3 className="font-heading text-[1.6rem] font-bold leading-[1.25] text-[var(--text-primary)] md:text-[2rem] lg:text-[2.2rem]">
                 経営者の時間を使わず、
                 <br />
                 <span className="text-[var(--accent-teal)]">採択まで</span>
@@ -236,19 +226,6 @@ export default function NtsAiGapSection() {
                 </strong>
                 で、経営者の時間を守ります。
               </p>
-              <ul className="mt-6 flex flex-wrap gap-2">
-                {NTS_CHIPS.map((chip) => (
-                  <li key={chip}>
-                    <span className="inline-flex items-center gap-1.5 rounded-full border border-[var(--accent-teal)] bg-white px-3.5 py-1.5 font-heading text-[0.78rem] font-bold text-[var(--accent-teal)] shadow-[0_2px_8px_rgba(0,184,148,0.08)] md:text-[0.82rem]">
-                      <span
-                        aria-hidden
-                        className="inline-block h-1.5 w-1.5 rounded-full bg-[var(--accent-teal)]"
-                      />
-                      {chip}
-                    </span>
-                  </li>
-                ))}
-              </ul>
             </div>
 
             {/* Image with soft frame */}

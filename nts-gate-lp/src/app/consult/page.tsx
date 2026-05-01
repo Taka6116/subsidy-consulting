@@ -17,7 +17,6 @@ export default function ConsultPage() {
       <CheckPortalHeader audience="end_user" />
       <main className="min-h-[calc(100vh-5rem)] px-6 pb-24 pt-28 md:pt-32">
         <div className="mx-auto max-w-2xl">
-          <p className="label-section mb-3">Contact</p>
           <h1 className="font-heading text-3xl font-bold leading-tight text-[var(--text-primary)] md:text-4xl">
             無料相談・お問い合わせ
           </h1>

@@ -23,7 +23,6 @@ export default function PartnerMeritSection() {
     >
       <div className="mx-auto max-w-5xl px-6 md:px-8">
         <motion.div className="mb-20 text-center" {...fadeUp(0)}>
-          <p className="label-section mb-4">Partner Benefits</p>
           <h2 className="font-heading text-3xl font-bold leading-tight text-[var(--text-primary)] md:text-4xl lg:text-5xl">
             御社の営業に、
             <br />
@@ -46,9 +45,6 @@ export default function PartnerMeritSection() {
                 >
                   01
                 </div>
-                <p className="text-xs font-bold uppercase tracking-[0.2em] text-[var(--text-muted)]">
-                  Merit
-                </p>
               </div>
               <h3 className="font-heading text-2xl font-bold leading-snug text-[var(--text-primary)] md:text-3xl">
                 成約率が上がる
@@ -106,9 +102,6 @@ export default function PartnerMeritSection() {
                 >
                   02
                 </div>
-                <p className="text-xs font-bold uppercase tracking-[0.2em] text-[var(--text-muted)]">
-                  Merit
-                </p>
               </div>
               <h3 className="font-heading text-2xl font-bold leading-snug text-[var(--text-primary)] md:text-3xl">
                 紹介フィーで

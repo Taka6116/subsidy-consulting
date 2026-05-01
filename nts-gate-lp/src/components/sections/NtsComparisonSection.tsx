@@ -156,7 +156,6 @@ export default function NtsComparisonSection() {
           viewport={fadeInUpViewport}
           transition={fadeInUpTransition}
         >
-          <p className="sec-label mb-4">Comparison</p>
           <h2
             id="home-nts-comparison-heading"
             className="mb-4 font-heading text-[1.75rem] font-bold leading-tight tracking-tight text-[var(--text-primary)] md:text-[2.25rem]"
