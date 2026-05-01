@@ -1,11 +1,16 @@
 "use client";
 
 import Image from "next/image";
+import { ArrowDown, ArrowLeft, ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
 import isometric13 from "../../../../icon-assets/isometric_13.webp";
 import isometric16 from "../../../../icon-assets/isometric_16.webp";
 import isometric21 from "../../../../icon-assets/isometric_21.png";
 import isometric14 from "../../../../icon-assets/isometric_14.webp";
+import PANA3025 from "../../../../icon-assets/PANA3025.webp";
+import PANA2727 from "../../../../icon-assets/PANA2727.webp";
+import PANA2741 from "../../../../icon-assets/PANA2741.webp";
+import PANA2962 from "../../../../icon-assets/PANA2962.webp";
 
 const steps = [
   {
@@ -38,6 +43,9 @@ const steps = [
   },
 ];
 
+const flowGridSteps = [steps[0], steps[1], steps[3], steps[2]];
+const consultantPhotos = [PANA3025, PANA2727, PANA2741, PANA2962];
+
 const EASE_OUT = [0.22, 1, 0.36, 1] as const;
 
 const fadeUp = (delay: number) => ({
@@ -67,45 +75,106 @@ export default function PartnerFlowSection() {
           </p>
         </motion.div>
 
-        <div>
-          <div className="grid grid-cols-1 gap-4 lg:grid-cols-4 lg:gap-5">
-            {steps.map((step, i) => (
-              <motion.div
-                key={step.number}
-                {...fadeUp(i * 0.08)}
-                className="card group relative overflow-hidden p-0 transition-all duration-300"
-              >
-                <div
-                  className="relative h-[120px] w-full overflow-hidden rounded-t-xl md:h-[130px]"
-                  style={{ background: step.bg }}
-                  data-placeholder={`flow-step-${i + 1}`}
+        <div className="grid gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:items-stretch lg:gap-12">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-6">
+            {flowGridSteps.map((step, i) => {
+              const showRightArrow = i === 0;
+              const showDownArrow = i === 1;
+              const showLeftArrow = i === 3;
+
+              return (
+                <motion.div
+                  key={step.number}
+                  {...fadeUp(i * 0.08)}
+                  className="relative flex min-h-0 flex-col"
                 >
-                  <Image
-                    src={step.image}
-                    alt="（後から差し替え）紹介後の流れイラスト"
-                    width={640}
-                    height={640}
-                    className={`absolute bottom-0 left-1/2 w-auto -translate-x-1/2 object-contain ${i === 1 || i === 3 ? "h-[88%]" : "h-[85%]"}`}
-                  />
-                </div>
-                <div className="px-6 py-5">
-                  <div className="mb-3 flex items-center gap-3">
+                  <div
+                    className="flex h-full min-h-[300px] flex-col overflow-hidden rounded-2xl border bg-white shadow-[0_2px_14px_rgba(26,76,142,0.08)]"
+                    style={{ borderColor: "rgba(26, 76, 142, 0.08)" }}
+                  >
                     <div
-                      className="flex h-[3.2rem] w-[3.2rem] items-center justify-center rounded-full border text-lg font-bold text-[var(--accent-navy)]"
-                      style={{
-                        borderColor: "rgba(245, 166, 35, 0.4)",
-                        background: "rgba(245, 166, 35, 0.12)",
-                      }}
+                      className="relative h-[118px] w-full shrink-0 overflow-hidden"
+                      style={{ background: step.bg }}
+                      data-placeholder={`flow-step-${step.number}`}
                     >
-                      {step.number}
+                      <Image
+                        src={step.image}
+                        alt={`${step.title}のイラスト`}
+                        width={640}
+                        height={640}
+                        className="absolute bottom-0 left-1/2 h-[86%] w-auto -translate-x-1/2 object-contain"
+                      />
+                    </div>
+                    <div className="flex flex-1 flex-col px-6 py-5">
+                      <div
+                        className="mb-4 flex h-12 w-12 items-center justify-center rounded-full border font-heading text-base font-bold text-[var(--accent-navy)]"
+                        style={{
+                          borderColor: "rgba(245, 166, 35, 0.4)",
+                          background: "rgba(245, 166, 35, 0.12)",
+                        }}
+                      >
+                        {step.number}
+                      </div>
+                      <h3 className="mb-2 text-base font-bold text-[var(--text-primary)]">
+                        {step.title}
+                      </h3>
+                      <p className="text-sm leading-relaxed text-[var(--text-secondary)]">
+                        {step.body}
+                      </p>
                     </div>
                   </div>
-                  <h3 className="mb-2 text-base font-bold text-[var(--text-primary)]">{step.title}</h3>
-                  <p className="text-sm leading-relaxed text-[var(--text-secondary)]">{step.body}</p>
-                </div>
-              </motion.div>
-            ))}
+
+                  {showRightArrow && (
+                    <span
+                      className="absolute right-[-18px] top-1/2 z-10 hidden h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white text-[var(--accent-teal)] shadow-[0_4px_14px_rgba(26,76,142,0.12)] sm:flex"
+                      aria-hidden
+                    >
+                      <ArrowRight className="h-5 w-5" />
+                    </span>
+                  )}
+                  {showDownArrow && (
+                    <span
+                      className="absolute -bottom-[20px] left-1/2 z-10 hidden h-9 w-9 -translate-x-1/2 items-center justify-center rounded-full bg-white text-[var(--accent-teal)] shadow-[0_4px_14px_rgba(26,76,142,0.12)] sm:flex"
+                      aria-hidden
+                    >
+                      <ArrowDown className="h-5 w-5" />
+                    </span>
+                  )}
+                  {showLeftArrow && (
+                    <span
+                      className="absolute left-[-18px] top-1/2 z-10 hidden h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white text-[var(--accent-teal)] shadow-[0_4px_14px_rgba(26,76,142,0.12)] sm:flex"
+                      aria-hidden
+                    >
+                      <ArrowLeft className="h-5 w-5" />
+                    </span>
+                  )}
+                </motion.div>
+              );
+            })}
           </div>
+
+          <motion.div
+            {...fadeUp(0.18)}
+            className="grid min-h-[420px] grid-cols-2 gap-3 sm:grid-cols-4 lg:h-full lg:min-h-[560px]"
+            aria-label="日本提携支援の担当者"
+          >
+            {consultantPhotos.map((photo, i) => (
+              <div
+                key={photo.src}
+                className={`relative overflow-hidden rounded-[20px] bg-white shadow-[0_16px_44px_-28px_rgba(26,76,142,0.45)] ${
+                  i % 2 === 0 ? "sm:mt-0" : "sm:mt-8"
+                }`}
+              >
+                <Image
+                  src={photo}
+                  alt="日本提携支援の担当者"
+                  fill
+                  sizes="(max-width: 768px) 45vw, (max-width: 1280px) 12vw, 160px"
+                  className="object-cover object-[50%_18%]"
+                />
+              </div>
+            ))}
+          </motion.div>
         </div>
       </div>
     </section>
