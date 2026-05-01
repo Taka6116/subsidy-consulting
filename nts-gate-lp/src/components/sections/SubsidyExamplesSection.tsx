@@ -3,18 +3,18 @@
 import Image, { type StaticImageData } from "next/image";
 import { motion } from "framer-motion";
 
-import iso30 from "../../../icon-assets/isometric_30.webp";
-import iso31 from "../../../icon-assets/isometric_31.webp";
-import iso32 from "../../../icon-assets/isometric_32.webp";
-import iso33 from "../../../icon-assets/isometric_33.webp";
-import iso14 from "../../../icon-assets/isometric_14.webp";
-import iso13 from "../../../icon-assets/isometric_13.webp";
-import iso09 from "../../../icon-assets/isometric_09.webp";
-import iso10 from "../../../icon-assets/isometric_10.webp";
-import iso11 from "../../../icon-assets/isometric_11.webp";
-import iso12 from "../../../icon-assets/isometric_12.webp";
-import iso20 from "../../../icon-assets/isometric_20.webp";
-import iso16 from "../../../icon-assets/isometric_16.webp";
+import iso30 from "../../../../icon-assets/isometric_30.webp";
+import iso31 from "../../../../icon-assets/isometric_31.webp";
+import iso32 from "../../../../icon-assets/isometric_32.webp";
+import iso33 from "../../../../icon-assets/isometric_33.webp";
+import iso14 from "../../../../icon-assets/isometric_14.webp";
+import iso13 from "../../../../icon-assets/isometric_13.webp";
+import iso09 from "../../../../icon-assets/isometric_09.webp";
+import iso10 from "../../../../icon-assets/isometric_10.webp";
+import iso11 from "../../../../icon-assets/isometric_11.webp";
+import iso12 from "../../../../icon-assets/isometric_12.webp";
+import iso20 from "../../../../icon-assets/isometric_20.webp";
+import iso16 from "../../../../icon-assets/isometric_16.webp";
 
 type Card = {
   name: string;
