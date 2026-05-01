@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { INDUSTRY_OPTIONS } from "@/data/industryOptions";
 import { JAPAN_PREFECTURES } from "@/data/japanPrefectures";
 import type { MatchedSubsidyPreview } from "@/lib/subsidyCheckMocks";
@@ -112,8 +112,19 @@ function parseMatchApiResults(payload: unknown): MatchedSubsidyPreview[] {
 
 type Step = "form" | "loading" | "results";
 
+type InitialValues = {
+  companyName?: string;
+  companyWebsiteUrl?: string;
+  industryId?: string;
+  prefecture?: string;
+  employees?: string;
+  businessNotes?: string;
+  autorun?: boolean;
+};
+
 type Props = {
   audience: "end_user" | "partner";
+  initialValues?: InitialValues;
 };
 
 function syntheticCorporate(name: string, prefecture: string): CorporateCandidate {
@@ -126,14 +137,16 @@ function syntheticCorporate(name: string, prefecture: string): CorporateCandidat
   };
 }
 
-export default function SubsidyCheckClient({ audience }: Props) {
+export default function SubsidyCheckClient({ audience, initialValues }: Props) {
   const [step, setStep] = useState<Step>("form");
-  const [companyName, setCompanyName] = useState("");
-  const [industryId, setIndustryId] = useState("");
-  const [prefecture, setPrefecture] = useState("");
-  const [employees, setEmployees] = useState("");
-  const [businessNotes, setBusinessNotes] = useState("");
-  const [companyWebsiteUrl, setCompanyWebsiteUrl] = useState("");
+  const [companyName, setCompanyName] = useState(initialValues?.companyName ?? "");
+  const [industryId, setIndustryId] = useState(initialValues?.industryId ?? "");
+  const [prefecture, setPrefecture] = useState(initialValues?.prefecture ?? "");
+  const [employees, setEmployees] = useState(initialValues?.employees ?? "");
+  const [businessNotes, setBusinessNotes] = useState(initialValues?.businessNotes ?? "");
+  const [companyWebsiteUrl, setCompanyWebsiteUrl] = useState(
+    initialValues?.companyWebsiteUrl ?? "",
+  );
   const [formError, setFormError] = useState<string | null>(null);
   const [confirmed, setConfirmed] = useState<CorporateCandidate | null>(null);
   const [results, setResults] = useState<MatchedSubsidyPreview[]>([]);
@@ -152,6 +165,10 @@ export default function SubsidyCheckClient({ audience }: Props) {
     setStep("results");
     setMatchApiComplete(false);
   }, []);
+
+  /** ヒーロー側のクイック診断フォームから ?autorun=1 で渡された場合に
+   *  着地と同時に照合を走らせる。重複起動防止のため ref ガード。 */
+  const autoRunStartedRef = useRef(false);
 
   const reset = useCallback(() => {
     setStep("form");
@@ -207,6 +224,25 @@ export default function SubsidyCheckClient({ audience }: Props) {
     },
     [industryId, employees, businessNotes, companyWebsiteUrl],
   );
+
+  useEffect(() => {
+    if (autoRunStartedRef.current) return;
+    if (!initialValues?.autorun) return;
+    const name = (initialValues.companyName ?? "").trim();
+    const indId = initialValues.industryId ?? "";
+    const pref = initialValues.prefecture ?? "";
+    if (!name || !indId || !pref) return;
+
+    autoRunStartedRef.current = true;
+    const corp = syntheticCorporate(name, pref);
+    setConfirmed(corp);
+    setSearchLoading(true);
+    setMatchApiComplete(false);
+    setStep("loading");
+    void runMatch(corp).finally(() => {
+      setSearchLoading(false);
+    });
+  }, [initialValues, runMatch]);
 
   const submitForm = async (e: React.FormEvent) => {
     e.preventDefault();

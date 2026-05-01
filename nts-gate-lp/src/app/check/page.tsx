@@ -9,7 +9,21 @@ export const metadata: Metadata = {
     "会社名・業種で対象になり得る補助金のイメージを確認できます。公式サイトURLは任意です。表示は参考例です。公募要領で必ずご確認ください。",
 };
 
-type SearchParams = { audience?: string | string[] };
+type SearchParams = {
+  audience?: string | string[];
+  company?: string | string[];
+  url?: string | string[];
+  industry?: string | string[];
+  prefecture?: string | string[];
+  employees?: string | string[];
+  businessNotes?: string | string[];
+  autorun?: string | string[];
+};
+
+function pickFirst(v: string | string[] | undefined): string | undefined {
+  if (Array.isArray(v)) return v[0];
+  return v;
+}
 
 export default async function CheckPage({
   searchParams,
@@ -17,16 +31,25 @@ export default async function CheckPage({
   searchParams: Promise<SearchParams>;
 }) {
   const params = await searchParams;
-  const raw = params.audience;
-  const audienceParam = Array.isArray(raw) ? raw[0] : raw;
+  const audienceParam = pickFirst(params.audience);
   const audience = audienceParam === "partner" ? "partner" : "end_user";
+
+  const initialValues = {
+    companyName: pickFirst(params.company) ?? "",
+    companyWebsiteUrl: pickFirst(params.url) ?? "",
+    industryId: pickFirst(params.industry) ?? "",
+    prefecture: pickFirst(params.prefecture) ?? "",
+    employees: pickFirst(params.employees) ?? "",
+    businessNotes: pickFirst(params.businessNotes) ?? "",
+    autorun: pickFirst(params.autorun) === "1",
+  };
 
   return (
     <div className="check-lp min-h-screen font-body" style={{ background: "var(--bg-base)" }}>
       <CheckPortalHeader audience={audience} />
       <main className="min-h-[calc(100vh-5rem)] px-4 pb-16 pt-24 sm:px-6">
         <div className="mx-auto max-w-5xl">
-          <SubsidyCheckClient audience={audience} />
+          <SubsidyCheckClient audience={audience} initialValues={initialValues} />
         </div>
       </main>
       <footer className="border-t border-[var(--border-subtle)] bg-[var(--bg-base)] py-8">

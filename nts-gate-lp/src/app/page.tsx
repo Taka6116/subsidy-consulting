@@ -9,7 +9,6 @@ import NtsWarmIntroSection from "@/components/sections/NtsWarmIntroSection";
 import SubsidyKindsSection from "@/components/sections/SubsidyKindsSection";
 import SubsidyMatchCtaSection from "@/components/sections/SubsidyMatchCtaSection";
 import WhatIsNtsSection from "@/components/sections/WhatIsNtsSection";
-import NtsServicesSection from "@/components/sections/NtsServicesSection";
 import NtsAiGapSection from "@/components/sections/NtsAiGapSection";
 import NtsComparisonSection from "@/components/sections/NtsComparisonSection";
 import BenefitSection from "@/components/sections/BenefitSection";
@@ -37,13 +36,12 @@ export default function Home() {
             <HeroPartnerStrip />
           </div>
         </div>
+        <NtsAiGapSection />
         <AwarenessSection />
         <NtsWarmIntroSection />
         <SubsidyKindsSection />
         <SubsidyMatchCtaSection />
         <WhatIsNtsSection />
-        <NtsServicesSection />
-        <NtsAiGapSection />
         <NtsComparisonSection />
         <BenefitSection />
         <PartnerNarrowSection />

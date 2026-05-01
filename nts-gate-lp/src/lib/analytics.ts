@@ -29,6 +29,8 @@ export type CTALocation =
   | "home_check_lead"
   /** トップ LP — 対象補助金確認（/check） */
   | "home_subsidy_check"
+  /** トップ LP — ヒーロー内クイック診断フォーム送信 */
+  | "hero_quick_check_submit"
   /** サイトヘッダー — 無料相談 */
   | "header_consult"
   /** サイトヘッダー — 補助金照会 */

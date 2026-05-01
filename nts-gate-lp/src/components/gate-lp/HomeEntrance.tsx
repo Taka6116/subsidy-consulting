@@ -22,8 +22,8 @@ const CONTENT_IN = 0.55;
 const CONTENT_Y = 14;
 
 const SPLASH_LINES = [
-  "多くの経営者は知らない。",
-  "自分の会社が、国の支援を受けられることを。",
+  "その事業、使える補助金があるかもしれません。",
+  "URLひとつで、御社が使える補助金がわかる。",
 ] as const;
 
 const FULL_INTRO_ARIA = SPLASH_LINES.join(" ");
@@ -267,16 +267,24 @@ export default function HomeEntrance({ children }: { children: ReactNode }) {
             ref={overlayRef}
             role="dialog"
             aria-modal="true"
-            aria-label={FULL_INTRO_ARIA}
-            className="fixed inset-0 z-[9999] flex flex-col items-center justify-center overflow-hidden bg-[var(--bg-base)] px-4 sm:px-6"
+            aria-label={`${FULL_INTRO_ARIA}（画面のどこかをタップでスキップ）`}
+            onClick={skip}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " " || e.key === "Escape") {
+                e.preventDefault();
+                skip();
+              }
+            }}
+            tabIndex={0}
+            className="fixed inset-0 z-[9999] flex flex-col items-center justify-center overflow-hidden bg-[var(--bg-base)] px-4 sm:px-6 cursor-pointer focus:outline-none"
           >
-            <div className="mx-auto w-full max-w-[min(100%,36rem)] shrink-0 text-center font-heading">
+            <div className="mx-auto w-fit max-w-full shrink-0 text-center font-heading">
               <p
                 ref={(el) => {
                   lineRefs.current[0] = el;
                 }}
                 aria-hidden="true"
-                className="opacity-0 will-change-[opacity] text-[clamp(1.375rem,5.2vmin,2.5rem)] font-bold leading-snug text-[var(--text-secondary)]"
+                className="opacity-0 whitespace-nowrap will-change-[opacity] text-[clamp(0.95rem,4.4vw,2.4rem)] font-bold leading-snug text-[var(--text-secondary)]"
               >
                 {SPLASH_LINES[0]}
               </p>
@@ -285,7 +293,7 @@ export default function HomeEntrance({ children }: { children: ReactNode }) {
                   lineRefs.current[1] = el;
                 }}
                 aria-hidden="true"
-                className="opacity-0 will-change-[opacity] mt-[clamp(0.75rem,2.8vmin,1.25rem)] text-[clamp(1.5rem,5.8vmin,2.75rem)] font-bold leading-snug text-[var(--text-primary)]"
+                className="opacity-0 whitespace-nowrap will-change-[opacity] mt-[clamp(0.75rem,2.8vmin,1.25rem)] text-[clamp(1.05rem,4.8vw,2.6rem)] font-bold leading-snug text-[var(--text-primary)]"
               >
                 {SPLASH_LINES[1]}
               </p>
@@ -294,10 +302,13 @@ export default function HomeEntrance({ children }: { children: ReactNode }) {
             <button
               ref={skipRef}
               type="button"
-              onClick={skip}
+              onClick={(e) => {
+                e.stopPropagation();
+                skip();
+              }}
               className="absolute bottom-10 left-1/2 opacity-0 -translate-x-1/2 rounded-sm text-caption text-[var(--text-muted)] underline underline-offset-4 transition-colors hover:text-[var(--text-primary)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent-navy)]"
             >
-              スキップ
+              タップでスキップ
             </button>
           </div>
         )}
