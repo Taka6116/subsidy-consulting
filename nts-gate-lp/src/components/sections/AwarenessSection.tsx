@@ -125,7 +125,6 @@ export default function AwarenessSection() {
               もったいない。
             </h2>
             <div className="mx-auto mt-4 max-w-2xl space-y-3 text-base leading-loose text-[var(--text-secondary)] md:mt-4 md:text-lg">
-              <p>補助金は、取ることがゴールではありません。</p>
               <p>採択後の1年間をどう動くかで、会社の未来が変わります。</p>
             </div>
           </div>
