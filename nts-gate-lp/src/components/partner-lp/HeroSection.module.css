@@ -342,8 +342,10 @@
 /* ── CTAボタン群 ─────────────────────────────────────────── */
 .ctas {
   display: flex;
+  flex-direction: column;
   gap: 12px;
   flex-wrap: wrap;
+  align-items: center;
   justify-content: center;
   opacity: 0;
   transform: translateY(12px);
@@ -351,8 +353,15 @@
 
 @media (min-width: 1024px) {
   .ctas {
+    align-items: flex-start;
     justify-content: flex-start;
   }
+}
+
+.btnP,
+.btnS {
+  width: min(100%, 320px);
+  text-align: center;
 }
 
 .btnP {

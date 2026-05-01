@@ -31,9 +31,9 @@ export default function PartnerPage() {
         <HeroSection />
         <PartnerAgitationSection />
         <PartnerMeritSection />
+        <PartnerFlowSection />
         <PartnerUseCasesSection />
         <PartnerSubsidySection />
-        <PartnerFlowSection />
         <NtsAiGapSection />
         <PartnerAboutSection />
         <PartnerFaqSection />
