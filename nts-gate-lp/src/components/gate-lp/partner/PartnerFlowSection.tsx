@@ -61,7 +61,7 @@ export default function PartnerFlowSection() {
       className="section-alt relative py-32 md:py-40"
       style={{ zIndex: 10 }}
     >
-      <div className="mx-auto max-w-5xl px-6 md:px-8">
+      <div className="mx-auto max-w-7xl px-6 md:px-8">
         <motion.div className="mb-16 text-center" {...fadeUp(0)}>
           <h2 className="font-heading text-3xl font-bold text-[var(--text-primary)] md:text-4xl">
             お客様をご紹介いただいたら、
@@ -75,7 +75,7 @@ export default function PartnerFlowSection() {
           </p>
         </motion.div>
 
-        <div className="grid gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:items-stretch lg:gap-12">
+        <div className="grid gap-12 lg:grid-cols-[0.95fr_1.05fr] lg:items-stretch lg:gap-16">
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-6">
             {flowGridSteps.map((step, i) => {
               const showRightArrow = i === 0;
@@ -89,11 +89,11 @@ export default function PartnerFlowSection() {
                   className="relative flex min-h-0 flex-col"
                 >
                   <div
-                    className="flex h-full min-h-[300px] flex-col overflow-hidden rounded-2xl border bg-white shadow-[0_2px_14px_rgba(26,76,142,0.08)]"
+                    className="flex h-full min-h-[260px] flex-col overflow-hidden rounded-2xl border bg-white shadow-[0_2px_14px_rgba(26,76,142,0.08)]"
                     style={{ borderColor: "rgba(26, 76, 142, 0.08)" }}
                   >
                     <div
-                      className="relative h-[118px] w-full shrink-0 overflow-hidden"
+                      className="relative h-[112px] w-full shrink-0 overflow-hidden"
                       style={{ background: step.bg }}
                       data-placeholder={`flow-step-${step.number}`}
                     >
@@ -106,15 +106,6 @@ export default function PartnerFlowSection() {
                       />
                     </div>
                     <div className="flex flex-1 flex-col px-6 py-5">
-                      <div
-                        className="mb-4 flex h-12 w-12 items-center justify-center rounded-full border font-heading text-base font-bold text-[var(--accent-navy)]"
-                        style={{
-                          borderColor: "rgba(245, 166, 35, 0.4)",
-                          background: "rgba(245, 166, 35, 0.12)",
-                        }}
-                      >
-                        {step.number}
-                      </div>
                       <h3 className="mb-2 text-base font-bold text-[var(--text-primary)]">
                         {step.title}
                       </h3>
@@ -155,21 +146,21 @@ export default function PartnerFlowSection() {
 
           <motion.div
             {...fadeUp(0.18)}
-            className="grid min-h-[420px] grid-cols-2 gap-3 sm:grid-cols-4 lg:h-full lg:min-h-[560px]"
+            className="grid min-h-[420px] grid-cols-2 gap-4 sm:grid-cols-4 lg:min-h-[520px] lg:gap-5"
             aria-label="日本提携支援の担当者"
           >
             {consultantPhotos.map((photo, i) => (
               <div
                 key={photo.src}
-                className={`relative overflow-hidden rounded-[20px] bg-white shadow-[0_16px_44px_-28px_rgba(26,76,142,0.45)] ${
-                  i % 2 === 0 ? "sm:mt-0" : "sm:mt-8"
+                className={`relative min-h-[360px] overflow-hidden rounded-[22px] bg-white shadow-[0_18px_46px_-26px_rgba(26,76,142,0.48)] lg:min-h-[500px] ${
+                  i === 1 ? "sm:mt-8 lg:mt-10" : i === 3 ? "sm:mt-7 lg:mt-8" : "sm:mt-0"
                 }`}
               >
                 <Image
                   src={photo}
                   alt="日本提携支援の担当者"
                   fill
-                  sizes="(max-width: 768px) 45vw, (max-width: 1280px) 12vw, 160px"
+                  sizes="(max-width: 768px) 45vw, (max-width: 1280px) 13vw, 180px"
                   className="object-cover object-[50%_18%]"
                 />
               </div>
