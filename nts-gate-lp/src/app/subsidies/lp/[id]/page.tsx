@@ -26,7 +26,6 @@ import SubsidyLpCtaBottom from "@/components/subsidy-lp/SubsidyLpCtaBottom";
 import SubsidyLpFaq from "@/components/subsidy-lp/SubsidyLpFaq";
 import DeadlineCountdown from "@/components/subsidy-lp/DeadlineCountdown";
 import LiveStatusBar from "@/components/subsidy-lp/LiveStatusBar";
-import SideFloatingCTA from "@/components/subsidy-lp/SideFloatingCTA";
 import SubscribeSection from "@/components/subsidy-lp/SubscribeSection";
 // ========== [NEW 2026-04-30] Phase 7: Exit Intent モーダル ==========
 import ExitIntentModal from "@/components/subsidy-lp/ExitIntentModal";
@@ -170,8 +169,6 @@ export default async function SubsidyLpPage({ params }: Props) {
 
         {/* モバイル スティッキー CTA */}
         <SubsidyLpCtaBottom data={data} />
-        {/* ========== [NEW 2026-04-30] サイドフローティングCTA - PDF持ち帰り ========== */}
-        <SideFloatingCTA subsidyId={data.id} />
         {/* ========== [NEW 2026-04-30] Phase 7: Exit Intent モーダル ========== */}
         {/* マウスがビューポート上部を抜けたときに表示。モバイルでは mouseleave が発火しないため自然に無効 */}
         <ExitIntentModal subsidyId={data.id} />
