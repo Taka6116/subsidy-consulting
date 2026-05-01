@@ -70,10 +70,10 @@
   .heroMain {
     flex-direction: row;
     align-items: center;
-    justify-content: center;
-    gap: 40px;
-    padding: 0 6vw 64px;
-    max-width: 1440px;
+    justify-content: flex-start;
+    gap: clamp(52px, 5vw, 96px);
+    padding: 0 max(20px, 3vw) 64px max(36px, 8vw);
+    max-width: 1680px;
     width: 100%;
     margin-left: auto;
     margin-right: auto;
@@ -104,7 +104,8 @@
     align-items: flex-start;
     text-align: left;
     flex: 0 0 auto;
-    width: 36%;
+    width: 32%;
+    max-width: 560px;
   }
 }
 
@@ -117,9 +118,21 @@
 
 @media (min-width: 1024px) {
   .imgCol {
-    width: 64%;
+    width: 68%;
     flex: 0 0 auto;
     max-width: none;
+    transform: translateX(clamp(20px, 4vw, 72px));
+  }
+}
+
+@media (min-width: 1440px) {
+  .heroMain {
+    padding-left: max(64px, 9vw);
+    padding-right: 0;
+  }
+
+  .imgCol {
+    transform: translateX(clamp(56px, 6vw, 120px));
   }
 }
 
