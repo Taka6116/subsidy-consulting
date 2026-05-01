@@ -3,9 +3,11 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useMemo, useState } from "react";
+import FilterBar, { type StatusTab } from "@/components/subsidies/FilterBar";
 
 const ALL = "__all__";
 const PAGE_SIZE = 12;
+const DEADLINE_MAX = new Date("2050-01-01");
 
 export type VideoCard = {
   id: string;
@@ -16,6 +18,7 @@ export type VideoCard = {
   subsidyName: string;
   maxAmountLabel: string | null;
   deadlineLabel: string | null;
+  deadlineIso: string | null;
   prefecture: string | null;
   tags: string[];
   duration: number | null;
@@ -33,6 +36,13 @@ function formatDuration(sec: number | null): string {
   const m = Math.floor(sec / 60);
   const s = sec % 60;
   return `${m}:${String(s).padStart(2, "0")}`;
+}
+
+function isExpired(deadlineIso: string | null): boolean {
+  if (!deadlineIso) return false;
+  const d = new Date(deadlineIso);
+  if (Number.isNaN(d.getTime()) || d > DEADLINE_MAX) return false;
+  return d < new Date();
 }
 
 type TagOption = { label: string; count: number };
@@ -58,6 +68,8 @@ export default function SubsidiesVideosIndex({
   const [selectedTag, setSelectedTag] = useState<string>(ALL);
   const [showAllTags, setShowAllTags] = useState(false);
   const [page, setPage] = useState(1);
+  const [query, setQuery] = useState("");
+  const [tab, setTab] = useState<StatusTab>("all");
 
   const tagOptions = useMemo(() => buildTagOptions(videos), [videos]);
   const visibleTagOpts = useMemo(
@@ -66,10 +78,38 @@ export default function SubsidiesVideosIndex({
   );
   const hiddenCount = tagOptions.length - visibleTagOpts.length;
 
+  const counts = useMemo(
+    () => ({
+      all: videos.length,
+      open: videos.filter((v) => !isExpired(v.deadlineIso)).length,
+      closed: videos.filter((v) => isExpired(v.deadlineIso)).length,
+    }),
+    [videos],
+  );
+
   const filtered: VideoCard[] = useMemo(() => {
-    if (selectedTag === ALL) return videos;
-    return videos.filter((v) => v.tags.includes(selectedTag));
-  }, [videos, selectedTag]);
+    let list = videos;
+
+    // タブフィルタ
+    if (tab === "open") list = list.filter((v) => !isExpired(v.deadlineIso));
+    else if (tab === "closed") list = list.filter((v) => isExpired(v.deadlineIso));
+
+    // タグフィルタ
+    if (selectedTag !== ALL) list = list.filter((v) => v.tags.includes(selectedTag));
+
+    // キーワード検索
+    if (query.trim()) {
+      const q = query.trim().toLowerCase();
+      list = list.filter(
+        (v) =>
+          v.title.toLowerCase().includes(q) ||
+          v.subsidyName.toLowerCase().includes(q) ||
+          v.tags.some((t) => t.toLowerCase().includes(q)),
+      );
+    }
+
+    return list;
+  }, [videos, tab, selectedTag, query]);
 
   const totalPages = Math.ceil(filtered.length / PAGE_SIZE);
   const paginated = useMemo(
@@ -97,9 +137,25 @@ export default function SubsidiesVideosIndex({
         </p>
       </div>
 
+      {/* タブ・検索バー */}
+      <div className="mb-8">
+        <FilterBar
+          query={query}
+          onQueryChange={(v) => { setQuery(v); setPage(1); }}
+          tab={tab}
+          onTabChange={(v) => { setTab(v); setPage(1); }}
+          counts={counts}
+          placeholder="補助金名・タグで検索"
+        />
+      </div>
+
       <div className="flex gap-8 lg:items-start">
         {/* メインコンテンツ */}
         <div className="min-w-0 flex-1">
+          <p className="mb-4 text-sm text-neutral-500">
+            <span className="font-semibold text-neutral-700">{filtered.length}</span> 件表示
+          </p>
+
           {paginated.length === 0 ? (
             <div className="flex flex-col items-center justify-center rounded-xl bg-white py-20 text-center shadow-sm ring-1 ring-neutral-200">
               <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary-50">
@@ -108,9 +164,9 @@ export default function SubsidiesVideosIndex({
                 </svg>
               </div>
               <p className="text-neutral-500">
-                {selectedTag === ALL
-                  ? "動画は現在生成中です。しばらくお待ちください。"
-                  : "このタグの動画はまだありません。"}
+                {query || tab !== "all" || selectedTag !== ALL
+                  ? "条件に一致する動画が見つかりませんでした。"
+                  : "動画は現在生成中です。しばらくお待ちください。"}
               </p>
             </div>
           ) : (
@@ -218,11 +274,12 @@ function VideoCardItem({ video }: { video: VideoCard }) {
   const tags = visibleTags(video.tags);
   const dur = formatDuration(video.duration);
   const hasMedia = !!(video.audioPath || video.videoPath);
+  const expired = isExpired(video.deadlineIso);
 
   return (
     <Link
       href={`/subsidies/videos/${video.slug}`}
-      className="group flex flex-col overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-neutral-200 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg"
+      className={`group flex flex-col overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-neutral-200 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg ${expired ? "opacity-60 grayscale" : ""}`}
     >
       {/* サムネイル / プレースホルダー */}
       <div className="relative aspect-video overflow-hidden bg-gradient-to-br from-primary-700 to-primary-900">
@@ -257,6 +314,12 @@ function VideoCardItem({ video }: { video: VideoCard }) {
             {dur}
           </span>
         )}
+        {/* 受付終了バッジ */}
+        {expired && (
+          <span className="absolute left-2 top-2 rounded bg-black/60 px-2 py-0.5 text-xs font-medium text-white/80">
+            受付終了
+          </span>
+        )}
         {/* 再生ボタンオーバーレイ */}
         {hasMedia && (
           <div className="absolute inset-0 flex items-center justify-center bg-black/0 transition-colors group-hover:bg-black/20">
@@ -284,19 +347,18 @@ function VideoCardItem({ video }: { video: VideoCard }) {
             ))}
           </div>
         )}
-        {/* タイトル */}
-        <h2 className="font-heading line-clamp-2 text-sm font-bold leading-snug text-neutral-900 group-hover:text-primary-700 sm:text-base">
+        <h2 className="line-clamp-2 text-sm font-semibold leading-snug text-neutral-800 sm:text-base">
           {video.title}
         </h2>
-        {/* 補助金名 */}
         {video.subsidyName && (
           <p className="mt-1 line-clamp-1 text-xs text-neutral-500">{video.subsidyName}</p>
         )}
-        {/* メタ情報 */}
-        <div className="mt-auto flex items-center justify-between pt-3 text-xs text-neutral-400">
-          <span>{video.publishedAt}</span>
+        <div className="mt-auto flex items-center justify-between pt-3">
+          <span className="text-xs text-neutral-400">{video.publishedAt}</span>
           {video.maxAmountLabel && (
-            <span className="font-medium text-accent-600">{video.maxAmountLabel}</span>
+            <span className="rounded-full bg-neutral-100 px-2 py-0.5 text-xs font-medium text-neutral-600">
+              {video.maxAmountLabel}
+            </span>
           )}
         </div>
       </div>

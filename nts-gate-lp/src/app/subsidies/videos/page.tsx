@@ -104,6 +104,7 @@ export default async function SubsidiesVideosPage() {
         r.grant?.deadline,
         r.grant?.rawPayload,
       ),
+      deadlineIso: r.grant?.deadline ? r.grant.deadline.toISOString() : null,
       prefecture: r.grant?.prefecture ?? null,
       tags: r.tags ?? [],
       duration: r.duration ?? null,
