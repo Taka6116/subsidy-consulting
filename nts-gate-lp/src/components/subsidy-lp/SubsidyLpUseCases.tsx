@@ -35,9 +35,6 @@ export default function SubsidyLpUseCases({ data }: Props) {
       <div className="mx-auto max-w-5xl px-4 sm:px-6">
         {/* ヘッダー */}
         <div className="text-center">
-          <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-gray-400">
-            Use Cases
-          </p>
           <h2
             className="text-2xl font-black tracking-[-0.02em] sm:text-3xl"
             style={{ color: "var(--text-primary)" }}
@@ -78,12 +75,6 @@ export default function SubsidyLpUseCases({ data }: Props) {
 
               {/* カード下部 — テキスト */}
               <div className="flex flex-1 flex-col px-5 py-5">
-                <p
-                  className="text-[10px] font-extrabold uppercase tracking-wider"
-                  style={{ color: "var(--text-muted)" }}
-                >
-                  Case {String(i + 1).padStart(2, "0")} — {uc.persona ?? "活用イメージ"}
-                </p>
                 <p
                   className="mt-2 text-sm font-black leading-snug"
                   style={{ color: "var(--text-primary)" }}

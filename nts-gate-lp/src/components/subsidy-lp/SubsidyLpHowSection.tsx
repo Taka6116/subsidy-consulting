@@ -66,9 +66,6 @@ export default function SubsidyLpHowSection() {
     <section className="bg-[var(--bg-section-alt)] pt-12 md:pt-16">
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
       <div>
-        <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-gray-400">
-          Process
-        </p>
         <h2
           className="text-2xl font-black tracking-[-0.02em] sm:text-3xl"
           style={{ color: "var(--text-primary)" }}

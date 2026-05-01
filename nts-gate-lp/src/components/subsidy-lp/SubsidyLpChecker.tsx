@@ -88,11 +88,6 @@ export default function SubsidyLpChecker() {
 
       <div className="relative">
         {/* ヘッダー */}
-        <p
-          className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-gray-400"
-        >
-          30 sec check
-        </p>
         <h2
           className="text-xl font-black leading-snug tracking-[-0.02em] sm:text-2xl"
           style={{ color: "var(--text-primary)" }}

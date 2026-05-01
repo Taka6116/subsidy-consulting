@@ -54,9 +54,6 @@ export default function SubsidyLpPainSection({ data }: Props) {
 
       {/* ========== [NEW 2026-04-30] 縦スクロール式お悩み - 既存Isometric画像を流用 ========== */}
       <div className="mx-auto max-w-3xl px-4 text-center sm:px-6">
-        <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-gray-400">
-          Problem
-        </p>
         {/* <h2>こんなお悩みはありませんか？</h2> ← 旧 */}
         <h2
           className="text-2xl font-black leading-tight tracking-[-0.02em] sm:text-4xl"
@@ -92,12 +89,6 @@ export default function SubsidyLpPainSection({ data }: Props) {
               </div>
             </div>
             <div className="text-center md:text-left">
-              <p
-                className="text-xs font-black uppercase tracking-[0.2em]"
-                style={{ color: "var(--text-muted)" }}
-              >
-                ISSUE {String(i + 1).padStart(2, "0")}
-              </p>
               <p
                 className="mt-3 text-2xl font-black leading-tight tracking-[-0.02em] sm:text-3xl md:text-4xl md:leading-[1.25]"
                 style={{ color: "var(--text-primary)" }}

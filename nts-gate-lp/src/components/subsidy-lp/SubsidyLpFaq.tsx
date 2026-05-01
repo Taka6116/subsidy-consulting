@@ -134,9 +134,6 @@ export default function SubsidyLpFaq({ data }: Props) {
     <section className="bg-[var(--bg-base)] pt-12 md:pt-16">
       <div className="mx-auto max-w-5xl px-4 sm:px-6">
       <div>
-        <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-gray-400">
-          よくある不安
-        </p>
         <h2
           className="text-2xl font-black tracking-[-0.02em] sm:text-3xl"
           style={{ color: "var(--text-primary)" }}
@@ -239,9 +236,6 @@ export default function SubsidyLpFaq({ data }: Props) {
       {data.faqs.length > 0 && (
         <div className="mt-12 bg-[var(--bg-section-alt)] py-12 md:py-16">
           <div className="mx-auto max-w-5xl px-4 sm:px-6">
-          <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-gray-400">
-            FAQ
-          </p>
           <h3
             className="mb-5 text-lg font-black"
           style={{ color: "var(--text-primary)" }}
