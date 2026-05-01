@@ -8,6 +8,7 @@ import AwarenessSection from "@/components/sections/AwarenessSection";
 import NtsWarmIntroSection from "@/components/sections/NtsWarmIntroSection";
 import SubsidyKindsSection from "@/components/sections/SubsidyKindsSection";
 import SubsidyMatchCtaSection from "@/components/sections/SubsidyMatchCtaSection";
+import PartnerSubsidySection from "@/components/gate-lp/partner/PartnerSubsidySection";
 import WhatIsNtsSection from "@/components/sections/WhatIsNtsSection";
 import NtsAiGapSection from "@/components/sections/NtsAiGapSection";
 import NtsComparisonSection from "@/components/sections/NtsComparisonSection";
@@ -41,6 +42,7 @@ export default function Home() {
         <AwarenessSection />
         <WhatIsNtsSection />
         <NtsComparisonSection />
+        <PartnerSubsidySection />
         <SubsidyKindsSection />
         <SubsidyMatchCtaSection />
         <BenefitSection />
