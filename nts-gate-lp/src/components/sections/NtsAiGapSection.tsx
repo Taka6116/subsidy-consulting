@@ -28,7 +28,7 @@ const PITFALLS: readonly Pitfall[] = [
   {
     num: "01",
     line1: "AIで書類は作れる",
-    bridge: "↓ でも",
+    bridge: "↓",
     line2: "テンプレ生成では",
     line3: "通過率が下がる",
     image: imgPit01,
@@ -127,7 +127,7 @@ export default function NtsAiGapSection() {
                 <br />
                 <span className="text-[0.88em] text-[var(--accent-teal)]">{p.bridge}</span>
                 <br />
-                {p.line2}
+                <span className="text-[var(--accent-teal)]">{p.line2}</span>
                 <br />
                 <span className="text-[var(--accent-teal)]">{p.line3}</span>
               </h3>
