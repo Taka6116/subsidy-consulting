@@ -40,9 +40,9 @@ export default function Home() {
         <NtsWarmIntroSection />
         <AwarenessSection />
         <WhatIsNtsSection />
+        <NtsComparisonSection />
         <SubsidyKindsSection />
         <SubsidyMatchCtaSection />
-        <NtsComparisonSection />
         <BenefitSection />
         <PartnerNarrowSection />
         <FaqSection />
