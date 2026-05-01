@@ -5,7 +5,7 @@ import LpFooter from "@/components/gate-lp/LpFooter";
 import { prisma } from "@/lib/db/prisma";
 
 export const metadata: Metadata = {
-  title: "補助金別アクションガイド | 日本提携支援",
+  title: "補助金ページ一覧 | 日本提携支援",
   description:
     "制度ごとに、対象企業のイメージ・申請の流れ・相談前に確認すべきポイントを1ページで整理。あなたの会社が使える補助金を最短で見つけられます。",
 };
@@ -104,12 +104,9 @@ export default async function SubsidiesLpIndexPage() {
             className="pointer-events-none absolute -left-24 top-0 -z-10 h-full w-[36%] skew-x-[-13deg] bg-[#1e9bdb]/20"
           />
           <div className="mx-auto max-w-7xl px-6 py-16 lg:py-20">
-            <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[#7DD3FC]">
-              Action Guide Library
-            </p>
-            <div className="mt-4 max-w-3xl">
+            <div className="max-w-3xl">
               <h1 className="font-heading text-[clamp(34px,5vw,58px)] font-black leading-tight tracking-[-0.03em] text-white">
-                補助金別アクションガイド
+                補助金ページ一覧
               </h1>
               <p className="mt-5 text-base font-medium leading-8 text-white/80 sm:text-lg">
                 制度ごとに、対象企業のイメージ・申請の流れ・相談前に確認すべきポイントを1ページで整理。<br className="hidden sm:inline" />
@@ -172,10 +169,7 @@ export default async function SubsidiesLpIndexPage() {
                     {/* カードヘッダー */}
                     <div className="relative overflow-hidden px-6 pt-6 pb-4">
                       <div className="absolute -right-8 -top-10 h-28 w-28 rounded-full bg-[#7DD3FC]/10" aria-hidden />
-                      <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-[rgba(125,211,252,0.9)]">
-                        Action Guide
-                      </p>
-                      <h2 className="relative mt-2 line-clamp-2 text-lg font-bold leading-[1.4] text-white sm:text-[20px]">
+                      <h2 className="relative line-clamp-2 text-lg font-bold leading-[1.4] text-white sm:text-[20px]">
                         {grant.name ?? row.title ?? "補助金活用ガイド"}
                       </h2>
                     </div>

@@ -84,7 +84,7 @@ export default function Header() {
               解説記事
             </Link>
             <Link href="/subsidies/lp" className={`${navLinkClass(heroStyle)} shrink-0`}>
-              活用ガイド
+              補助金ページ
             </Link>
             <Link href="/subsidies/videos" className={`${navLinkClass(heroStyle)} shrink-0`}>
               動画
