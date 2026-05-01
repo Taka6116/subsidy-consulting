@@ -71,9 +71,9 @@
     flex-direction: row;
     align-items: center;
     justify-content: center;
-    gap: 56px;
+    gap: 40px;
     padding: 0 6vw 64px;
-    max-width: 1280px;
+    max-width: 1440px;
     width: 100%;
     margin-left: auto;
     margin-right: auto;
@@ -104,22 +104,57 @@
     align-items: flex-start;
     text-align: left;
     flex: 0 0 auto;
-    width: 55%;
+    width: 36%;
   }
 }
 
 /* ── 右カラム: 画像プレースホルダー ─────────────────────── */
 .imgCol {
   width: 100%;
-  max-width: 480px;
+  max-width: 920px;
   flex-shrink: 0;
 }
 
 @media (min-width: 1024px) {
   .imgCol {
-    width: 45%;
+    width: 64%;
     flex: 0 0 auto;
     max-width: none;
+  }
+}
+
+.endUserPreview {
+  position: relative;
+  width: 100%;
+  border-radius: 22px;
+  background: linear-gradient(160deg, #e8eff8 0%, #dde8f5 100%);
+}
+
+.partnerFormVideoUnit {
+  max-width: 100%;
+  margin: 0;
+  opacity: 1;
+  animation: none;
+}
+
+.partnerVideoCard {
+  min-width: 0;
+}
+
+@media (min-width: 1024px) {
+  .partnerFormVideoUnit {
+    transform: scale(0.88);
+    transform-origin: center;
+    width: 113.7%;
+    margin: -30px -6.85%;
+  }
+}
+
+@media (min-width: 1280px) {
+  .partnerFormVideoUnit {
+    transform: scale(0.94);
+    width: 106.4%;
+    margin: -18px -3.2%;
   }
 }
 

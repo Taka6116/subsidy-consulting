@@ -17,6 +17,7 @@ import {
 type Pitfall = {
   num: string;
   line1: string;
+  bridge: string;
   line2: string;
   line3: string;
   image: StaticImageData;
@@ -26,25 +27,28 @@ type Pitfall = {
 const PITFALLS: readonly Pitfall[] = [
   {
     num: "01",
-    line1: "AIで書類は作れても、",
+    line1: "AIで書類は作れる",
+    bridge: "↓ でも",
     line2: "テンプレ生成では",
-    line3: "通過率が下がります。",
+    line3: "通過率が下がる",
     image: imgPit01,
     alt: "AI生成の書類で通過率が下がるイメージ",
   },
   {
     num: "02",
-    line1: "審査側の視点がないと、",
+    line1: "審査側の視点がない",
+    bridge: "↓",
     line2: "設計が甘くなり",
-    line3: "対策は徒労に終わります。",
+    line3: "対策は徒労に終わる",
     image: imgPit02,
     alt: "審査側の視点が抜けて書類づくりが徒労に終わるイメージ",
   },
   {
     num: "03",
-    line1: "書類ができても、",
+    line1: "たとえ書類ができても",
+    bridge: "↓",
     line2: "事務局対応が残り",
-    line3: "経営者の時間が削られます。",
+    line3: "経営者の時間が削られる",
     image: imgPit03,
     alt: "事務局対応で経営者の時間が削られるイメージ",
   },
@@ -118,16 +122,10 @@ export default function NtsAiGapSection() {
               }}
               className="relative flex flex-col items-center overflow-hidden rounded-[24px] bg-[#eef1f7] px-5 pb-10 pt-6 shadow-[0_4px_18px_rgba(26,76,142,0.05)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_14px_34px_rgba(26,76,142,0.10)] md:px-6 md:pb-12 md:pt-7"
             >
-              {/* Pill label (inside card, top center) */}
-              <div className="mb-5 md:mb-6">
-                <span className="inline-flex items-center rounded-full bg-[var(--text-primary)] px-4 py-1.5 font-heading text-[0.78rem] font-bold tracking-[0.06em] text-white md:text-[0.82rem]">
-                  例 {p.num}
-                </span>
-              </div>
-
-              {/* 3-line title with teal highlight on last line */}
               <h3 className="mb-6 text-center font-heading text-[1.05rem] font-bold leading-[1.85] text-[var(--text-primary)] md:mb-7 md:text-[1.15rem]">
                 {p.line1}
+                <br />
+                <span className="text-[0.88em] text-[var(--accent-teal)]">{p.bridge}</span>
                 <br />
                 {p.line2}
                 <br />

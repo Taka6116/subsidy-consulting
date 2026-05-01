@@ -1,12 +1,11 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { useLayoutEffect, useRef } from "react";
 import gsap from "gsap";
 import HeroPartnerStrip from "@/components/gate-lp/HeroPartnerStrip";
-import isometric08 from "../../../icon-assets/isometric_08.webp";
-import isometric16 from "../../../icon-assets/isometric_16.webp";
+import HeroQuickCheckForm from "@/components/gate-lp/hero-three/HeroQuickCheckForm";
+import heroStyles from "@/components/gate-lp/hero-three/HeroSection.module.css";
 import styles from "./HeroSection.module.css";
 
 export default function HeroSection() {
@@ -74,49 +73,87 @@ export default function HeroSection() {
           </div>
         </div>
 
-        {/* 右カラム: 画像プレースホルダー */}
+        {/* 右カラム: エンドユーザーFVの診断体験を提携先向けにコンパクト表示 */}
         <div
           ref={imgColRef}
           className={styles.imgCol}
           style={{ opacity: 0, transform: "translateY(20px)" }}
         >
-          <div className={styles.imgPlaceholder} data-placeholder="hero-main">
-            <Image
-              src={isometric08}
-              alt="（後から差し替え）Heroイラスト"
-              width={640}
-              height={640}
-              className={styles.heroImageLeft}
-            />
-            <Image
-              src={isometric16}
-              alt="（後から差し替え）Heroイラスト"
-              width={640}
-              height={640}
-              className={styles.heroImageRight}
-            />
-
-            {/* フローティング・キーワードチップ — 価値提案を視覚的に先取り */}
-            <div
-              className={`${styles.chip} ${styles.chipTeal} ${styles.chipTopLeft}`}
-              aria-hidden="true"
-            >
-              <span className={styles.chipDot} />
-              紹介フィーあり
-            </div>
-            <div
-              className={`${styles.chip} ${styles.chipNavy} ${styles.chipTopRight}`}
-              aria-hidden="true"
-            >
-              <span className={styles.chipDot} />
-              採択後1年伴走
-            </div>
-            <div
-              className={`${styles.chip} ${styles.chipGold} ${styles.chipBottomCenter}`}
-              aria-hidden="true"
-            >
-              <span className={styles.chipDot} />
-              「補助金が使えますよ」
+          <div className={styles.endUserPreview} data-placeholder="hero-main">
+            <div className={`${heroStyles.formVideoUnit} ${styles.partnerFormVideoUnit}`}>
+              <HeroQuickCheckForm />
+              <div className={`${heroStyles.videoCard} ${styles.partnerVideoCard}`} aria-label="補助金診断の操作デモ">
+                <p className={heroStyles.videoCardLead}>
+                  AIが御社の公式サイトを読み取り、事業内容にフィットする補助金だけを抽出します。名前や連絡先の登録は不要。まずは結果だけ確認できます。
+                </p>
+                <div className={heroStyles.videoCardBody}>
+                  <video
+                    className={heroStyles.videoCardVideo}
+                    src="/video/subsidy-check-demo.mp4"
+                    autoPlay
+                    muted
+                    loop
+                    playsInline
+                    preload="metadata"
+                    aria-label="補助金照会サービスの操作デモ動画"
+                  />
+                </div>
+                <div className={heroStyles.videoStepsRow} aria-label="3ステップで確認できます">
+                  <div className={heroStyles.videoStepItem}>
+                    <div className={heroStyles.videoStepMedia}>
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src="/images/FV_content_001.png"
+                        alt=""
+                        aria-hidden="true"
+                        className={heroStyles.videoStepImg}
+                        width={240}
+                        height={240}
+                        loading="eager"
+                        decoding="async"
+                      />
+                      <span className={heroStyles.videoStepNum}>1</span>
+                    </div>
+                    <span className={heroStyles.videoStepLabel}>URL／社名を入力</span>
+                  </div>
+                  <span className={heroStyles.videoStepArrow} aria-hidden="true">→</span>
+                  <div className={heroStyles.videoStepItem}>
+                    <div className={heroStyles.videoStepMedia}>
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src="/images/FV_content_002.png"
+                        alt=""
+                        aria-hidden="true"
+                        className={heroStyles.videoStepImg}
+                        width={240}
+                        height={240}
+                        loading="eager"
+                        decoding="async"
+                      />
+                      <span className={heroStyles.videoStepNum}>2</span>
+                    </div>
+                    <span className={heroStyles.videoStepLabel}>AIが事業を照合</span>
+                  </div>
+                  <span className={heroStyles.videoStepArrow} aria-hidden="true">→</span>
+                  <div className={heroStyles.videoStepItem}>
+                    <div className={heroStyles.videoStepMedia}>
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src="/images/FV_content_003.png"
+                        alt=""
+                        aria-hidden="true"
+                        className={heroStyles.videoStepImg}
+                        width={240}
+                        height={240}
+                        loading="eager"
+                        decoding="async"
+                      />
+                      <span className={heroStyles.videoStepNum}>3</span>
+                    </div>
+                    <span className={heroStyles.videoStepLabel}>対象制度を表示</span>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
