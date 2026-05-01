@@ -102,27 +102,28 @@ export default function IntroOverlay({ onComplete }: IntroOverlayProps) {
           ref={line1Ref}
           style={{
             fontFamily: "var(--font-heading, inherit)",
-            fontSize: "clamp(36px, 5.5vw, 72px)",
+            fontSize: "clamp(30px, 4.6vw, 64px)",
             fontWeight: 400,
             lineHeight: 1.1,
             color: "#1a2544",
-            margin: 0,
+            margin: "0 0 1.5rem",
+            whiteSpace: "nowrap",
           }}
         >
-          補助金情報を
+          補助金情報を最速で届けます
         </p>
         <p
           ref={line2Ref}
           style={{
             fontFamily: "var(--font-heading, inherit)",
-            fontSize: "clamp(36px, 5.5vw, 72px)",
+            fontSize: 0,
             fontWeight: 400,
-            lineHeight: 1.1,
+            lineHeight: 0,
             color: "#1a2544",
-            margin: "0 0 1.5rem",
+            margin: 0,
           }}
         >
-          最速で届ける。
+          {" "}
         </p>
         <p
           ref={subRef}
