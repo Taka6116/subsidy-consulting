@@ -161,7 +161,6 @@ export default function HeroSection() {
 
       {/* ── ロゴスクロール帯: heroMain の外に置き重なりをゼロに ── */}
       <div className={styles.heroStrip}>
-        <p className={styles.stripLabel}>PARTNER COMPANIES</p>
         <HeroPartnerStrip variant="dark" />
       </div>
     </section>
