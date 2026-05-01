@@ -245,7 +245,7 @@ export default function NtsComparisonSection() {
             {/* 上部バッジ */}
             <div className="absolute -top-3.5 left-1/2 -translate-x-1/2">
               <span className="whitespace-nowrap rounded-full bg-emerald-600 px-4 py-1 text-[11px] font-semibold tracking-wide text-white">
-                NTS ニュースタンダード
+                日本提携支援
               </span>
             </div>
 

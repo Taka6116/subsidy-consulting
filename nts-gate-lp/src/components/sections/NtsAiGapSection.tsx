@@ -175,12 +175,19 @@ export default function NtsAiGapSection() {
             aria-hidden
             className="h-12 w-px bg-[var(--border-subtle)] md:h-16"
           />
-          <span className="my-4 inline-flex items-center gap-2.5 rounded-full border border-[rgba(0,184,148,0.4)] bg-white px-6 py-2.5 font-heading text-[0.95rem] font-bold tracking-[0.04em] text-[var(--accent-teal)] shadow-[0_8px_22px_rgba(0,184,148,0.18)] md:px-8 md:py-3.5 md:text-[1.1rem]">
-            <span
-              aria-hidden
-              className="inline-block h-2 w-2 rounded-full bg-[var(--accent-teal)]"
+          <span className="my-4 inline-flex items-center gap-3 rounded-full border-2 border-[rgba(0,184,148,0.55)] bg-white px-7 py-3 font-heading text-[1rem] font-bold tracking-[0.04em] text-[var(--accent-teal)] shadow-[0_12px_28px_rgba(0,184,148,0.25)] md:px-9 md:py-4 md:text-[1.15rem]">
+            <span>だから、</span>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/nts-logo.svg"
+              alt="日本提携支援"
+              className="inline-block h-8 w-auto align-middle drop-shadow-[0_2px_6px_rgba(26,76,142,0.18)] md:h-10"
+              width={200}
+              height={32}
+              loading="lazy"
+              decoding="async"
             />
-            だから、NTSが担います
+            <span>が担います</span>
           </span>
           <span
             aria-hidden

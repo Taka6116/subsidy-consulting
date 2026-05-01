@@ -109,7 +109,7 @@ export default function IntroOverlay({ onComplete }: IntroOverlayProps) {
             margin: 0,
           }}
         >
-          補助金情報を、
+          補助金を、
         </p>
         <p
           ref={line2Ref}

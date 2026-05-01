@@ -78,15 +78,19 @@ export default function WhatIsNtsSection() {
           transition={fadeInUpTransition}
         >
           <div className="mb-12 text-center md:mb-16">
-            <p className="sec-label mb-2">FLOW</p>
+            <p className="sec-label mb-2">FLOW &amp; DIFFERENCE</p>
             <h2
               id="home-what-is-nts-heading"
               className="font-heading text-[1.75rem] font-bold leading-snug text-[var(--text-primary)] md:text-[2.25rem]"
             >
-              相談から採択、そして1年後まで。
-              <br />
-              私たちが一緒に動きます。
+              申請が、ゴールではありません。
             </h2>
+            <p className="mt-4 font-heading text-[1.05rem] font-bold leading-snug text-[var(--text-secondary)] md:text-[1.25rem]">
+              相談から採択、そして1年後まで。私たちが一緒に動きます。
+            </p>
+            <p className="mx-auto mt-5 max-w-2xl text-[0.95rem] leading-relaxed text-[var(--text-secondary)] md:text-base">
+              従来の補助金コンサルとの違い——私たちが提供するのは、書類ではなく「伴走」です。下のフローで、相談から効果検証までの流れをご確認いただけます。
+            </p>
           </div>
 
           <div className="flex flex-col gap-10 lg:flex-row lg:items-stretch lg:gap-12">
