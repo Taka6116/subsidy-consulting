@@ -38,14 +38,6 @@ export default function PartnerMeritSection() {
           >
             {/* テキスト */}
             <div className="flex-1">
-              <div className="mb-6 flex items-center gap-4">
-                <div
-                  className="flex h-12 w-12 flex-none items-center justify-center rounded-full border border-[var(--border-card)] text-lg font-bold text-[var(--accent-navy)]"
-                  style={{ background: "rgba(245, 166, 35, 0.12)" }}
-                >
-                  01
-                </div>
-              </div>
               <h3 className="font-heading text-2xl font-bold leading-snug text-[var(--text-primary)] md:text-3xl">
                 成約率が上がる
               </h3>
@@ -95,14 +87,6 @@ export default function PartnerMeritSection() {
 
             {/* テキスト */}
             <div className="flex-1">
-              <div className="mb-6 flex items-center gap-4">
-                <div
-                  className="flex h-12 w-12 flex-none items-center justify-center rounded-full border border-[var(--border-card)] text-lg font-bold text-[var(--accent-navy)]"
-                  style={{ background: "rgba(245, 166, 35, 0.12)" }}
-                >
-                  02
-                </div>
-              </div>
               <h3 className="font-heading text-2xl font-bold leading-snug text-[var(--text-primary)] md:text-3xl">
                 紹介フィーで
                 <br />

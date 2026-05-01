@@ -2,7 +2,8 @@
 
 import Image from "next/image";
 import { ArrowDown, ArrowLeft, ArrowRight } from "lucide-react";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
+import { useEffect, useState } from "react";
 import isometric13 from "../../../../icon-assets/isometric_13.webp";
 import isometric16 from "../../../../icon-assets/isometric_16.webp";
 import isometric21 from "../../../../icon-assets/isometric_21.png";
@@ -57,6 +58,17 @@ const fadeUp = (delay: number) => ({
 });
 
 export default function PartnerFlowSection() {
+  const [offset, setOffset] = useState(0);
+
+  useEffect(() => {
+    const id = setInterval(() => setOffset((o) => (o + 1) % consultantPhotos.length), 5000);
+    return () => clearInterval(id);
+  }, []);
+
+  // カルーセル: offset番が主役大1枚、残り4枚を右グリッドに表示
+  const heroPhoto = consultantPhotos[offset % consultantPhotos.length];
+  const subPhotos = [1, 2, 3, 4].map((d) => consultantPhotos[(offset + d) % consultantPhotos.length]);
+
   return (
     <section
       className="section-alt relative py-32 md:py-40"
@@ -145,41 +157,61 @@ export default function PartnerFlowSection() {
             })}
           </div>
 
-          {/* 右カラム: 大1枚＋サブ縦積み2枚 の2カラム構成 */}
+          {/* 右カラム: カルーセル（PC） 大1枚＋2×2グリッド4枚均等 */}
           <motion.div
             {...fadeUp(0.18)}
-            className="hidden lg:flex lg:flex-row lg:gap-3 lg:self-stretch lg:min-h-[520px]"
+            className="hidden lg:flex lg:min-h-[520px] lg:flex-row lg:gap-3 lg:self-stretch"
             aria-label="日本提携支援の担当者"
           >
-            {/* 左側: 大きい1枚 */}
+            {/* 左側: ヒーロー大1枚（カルーセル切り替え） */}
             <div className="relative flex-1 overflow-hidden rounded-[22px] shadow-[0_18px_46px_-26px_rgba(26,76,142,0.48)]">
-              <Image
-                src={consultantPhotos[0]}
-                alt="日本提携支援の担当者"
-                fill
-                sizes="(max-width: 1280px) 20vw, 260px"
-                quality={90}
-                className="object-cover object-[50%_15%]"
-              />
-            </div>
-
-            {/* 右側: 縦2段 × 2列 = 4枚 */}
-            <div className="grid flex-1 grid-cols-2 gap-3">
-              {consultantPhotos.slice(1).map((photo, i) => (
-                <div
-                  key={photo.src}
-                  className={`relative overflow-hidden rounded-[22px] shadow-[0_18px_46px_-26px_rgba(26,76,142,0.48)] ${
-                    i === 1 || i === 2 ? "mt-5" : ""
-                  }`}
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={heroPhoto.src}
+                  className="absolute inset-0"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.8 }}
                 >
                   <Image
-                    src={photo}
+                    src={heroPhoto}
                     alt="日本提携支援の担当者"
                     fill
-                    sizes="(max-width: 1280px) 10vw, 130px"
+                    sizes="(max-width: 1280px) 20vw, 260px"
                     quality={90}
                     className="object-cover object-[50%_15%]"
                   />
+                </motion.div>
+              </AnimatePresence>
+            </div>
+
+            {/* 右側: 2×2 グリッド 4枚均等（カルーセル連動） */}
+            <div className="grid flex-1 grid-cols-2 grid-rows-2 gap-3">
+              {subPhotos.map((photo, i) => (
+                <div
+                  key={`${photo.src}-${i}`}
+                  className="relative overflow-hidden rounded-[22px] shadow-[0_18px_46px_-26px_rgba(26,76,142,0.48)]"
+                >
+                  <AnimatePresence mode="wait">
+                    <motion.div
+                      key={photo.src}
+                      className="absolute inset-0"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.8, delay: i * 0.06 }}
+                    >
+                      <Image
+                        src={photo}
+                        alt="日本提携支援の担当者"
+                        fill
+                        sizes="(max-width: 1280px) 10vw, 130px"
+                        quality={90}
+                        className="object-cover object-[50%_15%]"
+                      />
+                    </motion.div>
+                  </AnimatePresence>
                 </div>
               ))}
             </div>
