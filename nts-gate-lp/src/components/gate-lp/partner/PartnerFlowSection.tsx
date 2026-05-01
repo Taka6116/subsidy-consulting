@@ -11,6 +11,7 @@ import PANA3025 from "../../../../icon-assets/PANA3025.webp";
 import PANA2727 from "../../../../icon-assets/PANA2727.webp";
 import PANA2741 from "../../../../icon-assets/PANA2741.webp";
 import PANA2962 from "../../../../icon-assets/PANA2962.webp";
+import PANA2975 from "../../../../icon-assets/PANA2975.webp";
 
 const steps = [
   {
@@ -44,7 +45,7 @@ const steps = [
 ];
 
 const flowGridSteps = [steps[0], steps[1], steps[3], steps[2]];
-const consultantPhotos = [PANA3025, PANA2727, PANA2741, PANA2962];
+const consultantPhotos = [PANA3025, PANA2727, PANA2741, PANA2962, PANA2975];
 
 const EASE_OUT = [0.22, 1, 0.36, 1] as const;
 
@@ -146,21 +147,22 @@ export default function PartnerFlowSection() {
 
           <motion.div
             {...fadeUp(0.18)}
-            className="grid min-h-[420px] grid-cols-2 gap-4 sm:grid-cols-4 lg:min-h-[520px] lg:gap-5"
+            className="grid min-h-[420px] grid-cols-2 gap-4 sm:grid-cols-3 lg:min-h-[520px] lg:grid-cols-5 lg:gap-4"
             aria-label="日本提携支援の担当者"
           >
             {consultantPhotos.map((photo, i) => (
               <div
                 key={photo.src}
-                className={`relative min-h-[360px] overflow-hidden rounded-[22px] bg-white shadow-[0_18px_46px_-26px_rgba(26,76,142,0.48)] lg:min-h-[500px] ${
-                  i === 1 ? "sm:mt-8 lg:mt-10" : i === 3 ? "sm:mt-7 lg:mt-8" : "sm:mt-0"
+                className={`relative min-h-[320px] overflow-hidden rounded-[22px] bg-white shadow-[0_18px_46px_-26px_rgba(26,76,142,0.48)] lg:min-h-[500px] ${
+                  i === 1 || i === 4 ? "sm:mt-8 lg:mt-10" : i === 3 ? "sm:mt-7 lg:mt-8" : "sm:mt-0"
                 }`}
               >
                 <Image
                   src={photo}
                   alt="日本提携支援の担当者"
                   fill
-                  sizes="(max-width: 768px) 45vw, (max-width: 1280px) 13vw, 180px"
+                  sizes="(max-width: 768px) 45vw, (max-width: 1024px) 30vw, (max-width: 1280px) 10vw, 150px"
+                  quality={95}
                   className="object-cover object-[50%_18%]"
                 />
               </div>
