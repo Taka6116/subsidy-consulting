@@ -145,25 +145,66 @@ export default function PartnerFlowSection() {
             })}
           </div>
 
+          {/* 右カラム: 大1枚＋サブ縦積み2枚 の2カラム構成 */}
           <motion.div
             {...fadeUp(0.18)}
-            className="grid min-h-[420px] grid-cols-2 gap-4 sm:grid-cols-3 lg:min-h-[520px] lg:grid-cols-5 lg:gap-4"
+            className="hidden lg:flex lg:flex-row lg:gap-3 lg:self-stretch lg:min-h-[520px]"
             aria-label="日本提携支援の担当者"
+          >
+            {/* 左側: 大きい1枚 */}
+            <div className="relative flex-1 overflow-hidden rounded-[22px] shadow-[0_18px_46px_-26px_rgba(26,76,142,0.48)]">
+              <Image
+                src={consultantPhotos[0]}
+                alt="日本提携支援の担当者"
+                fill
+                sizes="(max-width: 1280px) 20vw, 260px"
+                quality={90}
+                className="object-cover object-[50%_15%]"
+              />
+            </div>
+
+            {/* 右側: 縦2段 × 2列 = 4枚 */}
+            <div className="grid flex-1 grid-cols-2 gap-3">
+              {consultantPhotos.slice(1).map((photo, i) => (
+                <div
+                  key={photo.src}
+                  className={`relative overflow-hidden rounded-[22px] shadow-[0_18px_46px_-26px_rgba(26,76,142,0.48)] ${
+                    i === 1 || i === 2 ? "mt-5" : ""
+                  }`}
+                >
+                  <Image
+                    src={photo}
+                    alt="日本提携支援の担当者"
+                    fill
+                    sizes="(max-width: 1280px) 10vw, 130px"
+                    quality={90}
+                    className="object-cover object-[50%_15%]"
+                  />
+                </div>
+              ))}
+            </div>
+          </motion.div>
+
+          {/* モバイル・タブレット: 2列グリッド表示 */}
+          <motion.div
+            {...fadeUp(0.18)}
+            className="grid grid-cols-2 gap-4 lg:hidden"
+            aria-label="日本提携支援の担当者（モバイル）"
           >
             {consultantPhotos.map((photo, i) => (
               <div
                 key={photo.src}
-                className={`relative min-h-[320px] overflow-hidden rounded-[22px] bg-white shadow-[0_18px_46px_-26px_rgba(26,76,142,0.48)] lg:min-h-[500px] ${
-                  i === 1 || i === 4 ? "sm:mt-8 lg:mt-10" : i === 3 ? "sm:mt-7 lg:mt-8" : "sm:mt-0"
+                className={`relative min-h-[260px] overflow-hidden rounded-[22px] shadow-[0_18px_46px_-26px_rgba(26,76,142,0.48)] ${
+                  i === 1 || i === 3 ? "mt-4" : ""
                 }`}
               >
                 <Image
                   src={photo}
                   alt="日本提携支援の担当者"
                   fill
-                  sizes="(max-width: 768px) 45vw, (max-width: 1024px) 30vw, (max-width: 1280px) 10vw, 150px"
-                  quality={95}
-                  className="object-cover object-[50%_18%]"
+                  sizes="45vw"
+                  quality={90}
+                  className="object-cover object-[50%_15%]"
                 />
               </div>
             ))}
