@@ -12,7 +12,6 @@ import SubsidyExamplesSection from "@/components/sections/SubsidyExamplesSection
 import WhatIsNtsSection from "@/components/sections/WhatIsNtsSection";
 import NtsAiGapSection from "@/components/sections/NtsAiGapSection";
 import NtsComparisonSection from "@/components/sections/NtsComparisonSection";
-import BenefitSection from "@/components/sections/BenefitSection";
 import PartnerNarrowSection from "@/components/sections/PartnerNarrowSection";
 import FaqSection from "@/components/sections/FaqSection";
 import FinalCtaSection from "@/components/sections/FinalCtaSection";
@@ -45,7 +44,6 @@ export default function Home() {
         <SubsidyExamplesSection />
         <SubsidyKindsSection />
         <SubsidyMatchCtaSection />
-        <BenefitSection />
         <PartnerNarrowSection />
         <FaqSection />
         <FinalCtaSection />
