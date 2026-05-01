@@ -37,8 +37,8 @@ export default function Home() {
           </div>
         </div>
         <NtsAiGapSection />
-        <AwarenessSection />
         <NtsWarmIntroSection />
+        <AwarenessSection />
         <SubsidyKindsSection />
         <SubsidyMatchCtaSection />
         <WhatIsNtsSection />
