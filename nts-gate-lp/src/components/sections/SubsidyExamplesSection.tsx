@@ -41,11 +41,13 @@ function MarqueeRow({ cards, reverse = false }: { cards: Card[]; reverse?: boole
     <div className="overflow-hidden">
       <motion.div
         className="flex gap-4"
-        animate={{ x: reverse ? ["0%", "50%"] : ["0%", "-50%"] }}
+        initial={{ x: reverse ? "-50%" : "0%" }}
+        animate={{ x: reverse ? "0%" : "-50%" }}
         transition={{
           duration: 35,
           ease: "linear",
           repeat: Infinity,
+          repeatType: "loop",
         }}
         style={{ width: "max-content" }}
       >
