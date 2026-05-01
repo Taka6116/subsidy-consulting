@@ -44,8 +44,8 @@ export default function Home() {
         <NtsComparisonSection />
         <MidCtaSection />
         <SubsidyExamplesSection />
-        <SubsidyKindsSection />
         <SubsidyMatchCtaSection />
+        <SubsidyKindsSection />
         <PartnerNarrowSection />
         <FaqSection />
         <FinalCtaSection />

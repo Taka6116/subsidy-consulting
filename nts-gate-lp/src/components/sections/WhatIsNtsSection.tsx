@@ -92,10 +92,10 @@ export default function WhatIsNtsSection() {
             </p>
           </div>
 
-          <div className="flex flex-col gap-10 lg:flex-row lg:items-stretch lg:gap-12">
-            {/* 左カラム: 2×2 フロー（各セル＝画像＋テキスト一体カード） */}
-            <div className="lg:flex lg:h-full lg:min-h-0 lg:w-[58%] lg:flex-col">
-              <div className="grid flex-1 grid-cols-2 gap-4 md:gap-6 lg:min-h-0 lg:grid-rows-2">
+          <div className="flex flex-col gap-10">
+            {/* 上段: 2×2 フロー（各セル＝画像＋テキスト一体カード） */}
+            <div>
+              <div className="grid grid-cols-2 gap-4 md:grid-cols-4 md:gap-6">
                 {FLOW_STEPS.map((step, i) => {
                   const stepNo =
                     step.title === "採択後1年間の伴走"
@@ -103,12 +103,10 @@ export default function WhatIsNtsSection() {
                       : step.title === "採択に向けた準備・申請"
                         ? "03"
                         : String(i + 1).padStart(2, "0");
-                  // 01→02（右矢印）のみ
-                  const showRightArrow = i === 0;
-                  // 03→04（左矢印：右下03の左側に配置して左下04へ向かう）
-                  const showLeftArrow = i === 3;
-                  // 02の下に↓矢印（行間ギャップの中央）
-                  const showDownArrow = i === 1;
+                  // PC横並び4列では右矢印のみ（最後以外）
+                  const showRightArrow = i < 3;
+                  const showLeftArrow = false;
+                  const showDownArrow = false;
                   return (
                     <div
                       key={step.title}
@@ -177,61 +175,38 @@ export default function WhatIsNtsSection() {
               </div>
             </div>
 
-            {/* 右カラム: ヒーロー1枚大＋サブ2枚 — 3秒ごとに時計回りローテーション */}
-            <div className="hidden lg:flex lg:w-[42%] lg:flex-row lg:gap-3 lg:self-stretch">
-              {/* ヒーロー枠（左、縦長大） */}
-              <div className="relative min-h-0 flex-1 overflow-hidden rounded-2xl">
-                <AnimatePresence mode="wait">
-                  <motion.div
-                    key={PANA_ALL[offset % PANA_ALL.length].src}
-                    className="absolute inset-0"
-                    initial={reduce ? false : { opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={reduce ? undefined : { opacity: 0 }}
-                    transition={{ duration: 1.0 }}
+            {/* 下段: 担当者写真 — 5枚横並び（カルーセル） */}
+            <div className="grid h-[260px] grid-cols-5 gap-3 md:h-[320px]">
+              {PANA_ALL.map((photo, i) => {
+                const isActive = i === offset % PANA_ALL.length;
+                return (
+                  <div
+                    key={photo.src}
+                    className={`relative overflow-hidden rounded-2xl transition-all duration-700 ${
+                      isActive ? "ring-2 ring-[var(--accent-teal)] ring-offset-2" : ""
+                    }`}
                   >
-                    <Image
-                      src={PANA_ALL[offset % PANA_ALL.length]}
-                      alt="NTSコンサルタント"
-                      fill
-                      sizes="(max-width: 1280px) 18vw, 22vw"
-                      className="object-cover object-[50%_18%]"
-                    />
-                  </motion.div>
-                </AnimatePresence>
-              </div>
-
-              {/* サブ枠（右側2枚縦積み） */}
-              <div className="flex min-h-0 flex-1 flex-col gap-3">
-                {[1, 2].map((delta) => {
-                  const src = PANA_ALL[(offset + delta) % PANA_ALL.length];
-                  return (
-                    <div
-                      key={delta}
-                      className="relative min-h-0 flex-1 overflow-hidden rounded-2xl"
-                    >
-                      <AnimatePresence mode="wait">
-                        <motion.div
-                          key={src.src}
-                          className="absolute inset-0"
-                          initial={reduce ? false : { opacity: 0 }}
-                          animate={{ opacity: 1 }}
-                          exit={reduce ? undefined : { opacity: 0 }}
-                          transition={{ duration: 1.0 }}
-                        >
-                          <Image
-                            src={src}
-                            alt="NTSコンサルタント"
-                            fill
-                            sizes="(max-width: 1280px) 9vw, 11vw"
-                            className="object-cover object-[50%_18%]"
-                          />
-                        </motion.div>
-                      </AnimatePresence>
-                    </div>
-                  );
-                })}
-              </div>
+                    <AnimatePresence mode="wait">
+                      <motion.div
+                        key={`${photo.src}-${offset}`}
+                        className="absolute inset-0"
+                        initial={reduce ? false : { opacity: isActive ? 0 : 1 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 0.8 }}
+                      >
+                        <Image
+                          src={photo}
+                          alt="NTSコンサルタント"
+                          fill
+                          sizes="(max-width: 768px) 18vw, (max-width: 1280px) 15vw, 200px"
+                          quality={90}
+                          className="object-cover object-[50%_15%]"
+                        />
+                      </motion.div>
+                    </AnimatePresence>
+                  </div>
+                );
+              })}
             </div>
           </div>
         </motion.div>
