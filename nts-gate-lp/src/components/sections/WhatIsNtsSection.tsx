@@ -2,8 +2,7 @@
 
 import Image from "next/image";
 import { ArrowDown, ArrowLeft, ArrowRight } from "lucide-react";
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { useEffect, useState } from "react";
+import { motion, useReducedMotion } from "framer-motion";
 import isometric11 from "../../../icon-assets/isometric_11.webp";
 import isometric13 from "../../../icon-assets/isometric_13.webp";
 import isometric15 from "../../../icon-assets/isometric_15.webp";
@@ -58,15 +57,6 @@ const PANA_ALL = [PANA3025, PANA2727, PANA2741, PANA2962, PANA2975];
 
 export default function WhatIsNtsSection() {
   const reduce = useReducedMotion();
-  const [offset, setOffset] = useState(0);
-
-  useEffect(() => {
-    const id = setInterval(
-      () => setOffset((o) => (o + 1) % PANA_ALL.length),
-      5000,
-    );
-    return () => clearInterval(id);
-  }, []);
 
   return (
     <section className="section-block bg-section-white" aria-labelledby="home-what-is-nts-heading">
@@ -175,38 +165,23 @@ export default function WhatIsNtsSection() {
               </div>
             </div>
 
-            {/* 下段: 担当者写真 — 5枚横並び（カルーセル） */}
+            {/* 下段: 担当者写真 — 5枚横並び */}
             <div className="grid h-[260px] grid-cols-5 gap-3 md:h-[320px]">
-              {PANA_ALL.map((photo, i) => {
-                const isActive = i === offset % PANA_ALL.length;
-                return (
-                  <div
-                    key={photo.src}
-                    className={`relative overflow-hidden rounded-2xl transition-all duration-700 ${
-                      isActive ? "ring-2 ring-[var(--accent-teal)] ring-offset-2" : ""
-                    }`}
-                  >
-                    <AnimatePresence mode="wait">
-                      <motion.div
-                        key={`${photo.src}-${offset}`}
-                        className="absolute inset-0"
-                        initial={reduce ? false : { opacity: isActive ? 0 : 1 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ duration: 0.8 }}
-                      >
-                        <Image
-                          src={photo}
-                          alt="NTSコンサルタント"
-                          fill
-                          sizes="(max-width: 768px) 18vw, (max-width: 1280px) 15vw, 200px"
-                          quality={90}
-                          className="object-cover object-[50%_15%]"
-                        />
-                      </motion.div>
-                    </AnimatePresence>
-                  </div>
-                );
-              })}
+              {PANA_ALL.map((photo) => (
+                <div
+                  key={photo.src}
+                  className="relative overflow-hidden rounded-2xl"
+                >
+                  <Image
+                    src={photo}
+                    alt="NTSコンサルタント"
+                    fill
+                    sizes="(max-width: 768px) 18vw, (max-width: 1280px) 15vw, 200px"
+                    quality={90}
+                    className="object-cover object-[50%_15%]"
+                  />
+                </div>
+              ))}
             </div>
           </div>
         </motion.div>
