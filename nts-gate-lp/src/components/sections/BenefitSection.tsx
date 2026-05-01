@@ -27,7 +27,6 @@ const BENEFIT_IMAGES = [
 
 const BENEFITS = [
   {
-    num: "01",
     title: "着手金",
     body: (
       <>
@@ -38,7 +37,6 @@ const BENEFITS = [
     ),
   },
   {
-    num: "02",
     title: "成功報酬（採択時）",
     body: (
       <>
@@ -49,7 +47,6 @@ const BENEFITS = [
     ),
   },
   {
-    num: "03",
     title: "成功報酬（報告完了・1年後）",
     body: (
       <>
@@ -88,11 +85,11 @@ export default function BenefitSection() {
           </div>
 
           <div className="mb-14 grid grid-cols-1 gap-x-6 gap-y-2 md:mb-16 md:grid-cols-3">
-            {BENEFITS.map(({ num, title, body }, idx) => {
+            {BENEFITS.map(({ title, body }, idx) => {
               const hi = HIGHLIGHTS[idx];
               const image = BENEFIT_IMAGES[idx];
               return (
-                <div key={num} className="flex flex-col">
+                <div key={title} className="flex flex-col">
                   {/* カード外・上部 — 全カードで描画サイズを統一（高さ固定・幅 auto） */}
                   <div className="flex h-36 w-full items-end justify-center pb-3">
                     <Image
@@ -104,15 +101,12 @@ export default function BenefitSection() {
                     />
                   </div>
                   {/* カード本体 */}
-                  <div className="nts-card flex flex-1 flex-col p-9 md:p-10">
-                    <p className="mb-3 font-heading text-[0.7rem] font-bold tracking-[0.12em] text-[var(--accent-teal)]">
-                      {num}
-                    </p>
+                  <div className="nts-card flex flex-1 flex-col items-center p-9 text-center md:p-10">
                     <h3 className="mb-4 min-h-[3.5rem] font-heading text-xl font-extrabold leading-snug text-[var(--text-primary)] md:text-[1.25rem]">
                       {title}
                     </h3>
                     <div
-                      className="mb-4 rounded-[10px] px-4 py-3"
+                      className="mb-4 flex w-full items-baseline justify-center rounded-[10px] px-4 py-3 text-center"
                       style={{ backgroundColor: "rgba(0, 184, 148, 0.06)" }}
                     >
                       <span className="font-heading text-2xl font-extrabold leading-none text-[var(--accent-teal)] md:text-[1.5rem]">
@@ -122,7 +116,7 @@ export default function BenefitSection() {
                         <span className="ml-2 text-[0.8rem] text-[var(--text-secondary)]">{hi.sub}</span>
                       ) : null}
                     </div>
-                    <p className="flex-1 text-sm leading-[1.9] text-[var(--text-secondary)] md:text-base">{body}</p>
+                    <p className="flex-1 text-center text-sm leading-[1.9] text-[var(--text-secondary)] md:text-base">{body}</p>
                   </div>
                 </div>
               );
