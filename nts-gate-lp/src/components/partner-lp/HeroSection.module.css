@@ -368,6 +368,13 @@
   }
 }
 
+@media (min-width: 1280px) and (max-width: 1439px) {
+  .partnerFormCard {
+    flex: 0 0 425px;
+    max-width: 425px;
+  }
+}
+
 @media (max-width: 767px) {
   .imgCol {
     display: none;

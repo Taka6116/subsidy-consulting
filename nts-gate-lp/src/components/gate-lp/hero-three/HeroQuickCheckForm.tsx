@@ -19,7 +19,13 @@ const EMPLOYEE_OPTIONS: { id: string; label: string }[] = [
 
 const BUSINESS_NOTES_MAX = 500;
 
-export default function HeroQuickCheckForm() {
+type HeroQuickCheckFormProps = {
+  formCardClassName?: string;
+};
+
+export default function HeroQuickCheckForm({
+  formCardClassName,
+}: HeroQuickCheckFormProps = {}) {
   const router = useRouter();
   const [companyName, setCompanyName] = useState("");
   const [companyWebsiteUrl, setCompanyWebsiteUrl] = useState("");
@@ -66,7 +72,14 @@ export default function HeroQuickCheckForm() {
   };
 
   return (
-    <div className={styles.formCard} aria-label="補助金クイック診断フォーム">
+    <div
+      className={
+        formCardClassName
+          ? `${styles.formCard} ${formCardClassName}`
+          : styles.formCard
+      }
+      aria-label="補助金クイック診断フォーム"
+    >
       <div className={styles.formBody}>
         <div className={styles.formCardHead}>
           <span className={styles.formCardTitle}>対象補助金を約60秒で表示</span>
