@@ -297,7 +297,7 @@
 
   .headlineLine {
     white-space: normal;
-    word-break: keep-all;
+    word-break: auto-phrase;
     overflow-wrap: break-word;
   }
 }
@@ -357,7 +357,7 @@
   .headlineLine {
     display: block;
     white-space: normal;
-    word-break: keep-all;
+    word-break: auto-phrase;
     overflow-wrap: break-word;
   }
 
