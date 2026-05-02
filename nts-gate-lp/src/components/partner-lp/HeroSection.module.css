@@ -145,7 +145,16 @@
   }
 
   .partnerFormVideoUnit {
-    zoom: 0.90;
+    width: 90%;
+    max-width: 90%;
+    margin-left: auto;
+    margin-right: 0;
+    zoom: 1;
+  }
+
+  .partnerVideoCardBody {
+    min-height: 0;
+    padding: 8px;
   }
 
   .headline {

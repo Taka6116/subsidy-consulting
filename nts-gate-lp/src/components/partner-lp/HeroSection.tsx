@@ -86,7 +86,7 @@ export default function HeroSection() {
                 <p className={heroStyles.videoCardLead}>
                   AIが御社の公式サイトを読み取り、事業内容にフィットする補助金だけを抽出します。名前や連絡先の登録は不要。まずは結果だけ確認できます。
                 </p>
-                <div className={heroStyles.videoCardBody}>
+                <div className={`${heroStyles.videoCardBody} ${styles.partnerVideoCardBody}`}>
                   <video
                     className={heroStyles.videoCardVideo}
                     src="/video/subsidy-check-demo.mp4"
