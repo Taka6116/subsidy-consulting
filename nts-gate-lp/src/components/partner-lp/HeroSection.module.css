@@ -106,8 +106,9 @@
   .content {
     align-items: flex-start;
     text-align: left;
-    flex: 0 0 auto;
-    width: 35%;
+    flex: 0 1 35%;
+    width: auto;
+    min-width: 0;
     max-width: 580px;
   }
 }
@@ -121,8 +122,9 @@
 
 @media (min-width: 1024px) {
   .imgCol {
-    width: 65%;
-    flex: 0 0 auto;
+    width: auto;
+    flex: 0 1 62%;
+    min-width: 0;
     max-width: none;
     transform: none;
   }
@@ -290,11 +292,13 @@
 @media (min-width: 1024px) {
   .headline {
     text-align: left;
-    max-width: none;
+    max-width: 100%;
   }
 
   .headlineLine {
-    white-space: nowrap;
+    white-space: normal;
+    word-break: keep-all;
+    overflow-wrap: break-word;
   }
 }
 
