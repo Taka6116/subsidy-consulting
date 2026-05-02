@@ -119,13 +119,13 @@ export default function PartnerMeritSection() {
             {/* テキスト */}
             <div className="flex-1">
               <h3 className="font-heading text-2xl font-bold leading-snug text-[var(--text-primary)] md:text-3xl">
-                申請から採択まで、
+                申請から採択だけじゃない
                 <br />
-                専門家が一貫サポート
+                コンサルティングサポートの提供
               </h3>
               <p className="mt-4 text-base leading-relaxed text-[var(--text-secondary)]">
-                補助金は「知っている」だけでは採択されません。要件の確認・書類の作成・審査対応まで、専門コンサルタントが伴走します。
-                御社はご紹介だけ。面倒な手続きはすべてNTSが引き受けます。
+                補助金を超えた、その先にある経営課題や長年解決できていない課題まで、専門コンサルタントがコンサルティングします。
+                御社はご紹介だけ。面倒な手続きから課題解決まですべてNTSが引き受けます。
               </p>
               <div className="mt-6 rounded-lg bg-[#F5F8FF] px-4 py-3">
                 <p className="mb-2 text-[11px] font-bold uppercase tracking-wider text-[var(--text-muted)]">
