@@ -61,8 +61,8 @@ function FlowNode({ icon, label, dimmed = false, labelColor = '#6a7a90' }: FlowN
         {icon}
       </div>
       <span
-        className="text-center leading-snug"
-        style={{ fontSize: 10, color: labelColor, fontWeight: labelColor === '#0a6b52' ? 500 : 400 }}
+        className="text-center leading-snug block"
+        style={{ fontSize: 10, color: labelColor, fontWeight: labelColor === '#0a6b52' ? 500 : 400, minHeight: '2.4em' }}
       >
         {label.split('・').map((t, i, arr) => (
           <span key={i}>{t}{i < arr.length - 1 ? '・' : ''}<br /></span>

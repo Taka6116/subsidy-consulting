@@ -109,6 +109,24 @@
   }
 }
 
+/* ノートPC（1024〜1279px）: 左カラムを左端に寄せ、右フォームとの重なりを解消 */
+@media (min-width: 1024px) and (max-width: 1279px) {
+  .heroMain {
+    padding-left: max(16px, 2vw);
+    gap: clamp(16px, 2vw, 28px);
+  }
+
+  .content {
+    width: 32%;
+    flex-shrink: 0;
+  }
+
+  .imgCol {
+    width: 68%;
+    transform: none;
+  }
+}
+
 /* ── 右カラム: 画像プレースホルダー ─────────────────────── */
 .imgCol {
   width: 100%;
