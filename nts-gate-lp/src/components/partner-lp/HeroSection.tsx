@@ -53,9 +53,8 @@ export default function HeroSection() {
         <div className={styles.content}>
           <h1 ref={headlineRef} className={`${styles.headline} font-heading`}>
             <span className={styles.headlineLine}>「補助金が使えますよ」</span>
-            <span className={`${styles.headlineLine} ${styles.headlineAccent}`}>
-              その一言で、営業が変わる。
-            </span>
+            <span className={styles.headlineLine}>その一言で、</span>
+            <span className={`${styles.headlineLine} ${styles.headlineAccent}`}>営業が変わる。</span>
           </h1>
           <p ref={subRef} className={`${styles.sub} font-body`}>
             御社の商材を提案するとき、「補助金の対象です」と添えるだけで顧客の反応が変わります。
