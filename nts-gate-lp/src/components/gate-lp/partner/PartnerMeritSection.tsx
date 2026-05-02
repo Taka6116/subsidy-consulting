@@ -4,7 +4,7 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import isometric09 from "../../../../icon-assets/isometric_09.webp";
 import isometric14 from "../../../../icon-assets/isometric_14.webp";
-import isometric23 from "../../../../icon-assets/isometric23.webp";
+import isometric11 from "../../../../icon-assets/isometric_11.webp";
 
 const EASE_OUT = [0.22, 1, 0.36, 1] as const;
 
@@ -140,7 +140,7 @@ export default function PartnerMeritSection() {
             {/* 画像 */}
             <div className="flex w-full items-end justify-center lg:w-[40%] lg:flex-none">
               <Image
-                src={isometric23}
+                src={isometric11}
                 alt="専門家が一貫サポートするイラスト"
                 width={640}
                 height={640}
