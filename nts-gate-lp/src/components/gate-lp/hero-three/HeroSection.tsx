@@ -66,7 +66,6 @@ export default function HeroSection() {
                       loading="eager"
                       decoding="async"
                     />
-                    <span className={styles.videoStepNum}>1</span>
                   </div>
                   <span className={styles.videoStepLabel}>URL／社名を入力</span>
                 </div>
@@ -84,7 +83,6 @@ export default function HeroSection() {
                       loading="eager"
                       decoding="async"
                     />
-                    <span className={styles.videoStepNum}>2</span>
                   </div>
                   <span className={styles.videoStepLabel}>AIが事業を照合</span>
                 </div>
@@ -102,7 +100,6 @@ export default function HeroSection() {
                       loading="eager"
                       decoding="async"
                     />
-                    <span className={styles.videoStepNum}>3</span>
                   </div>
                   <span className={styles.videoStepLabel}>対象制度を表示</span>
                 </div>

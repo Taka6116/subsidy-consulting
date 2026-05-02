@@ -103,9 +103,6 @@ export default function ComparisonDiagram() {
         custom={0}
         variants={fadeUp}
       >
-        <p className="text-xs font-medium tracking-widest mb-3" style={{ color: '#1B4E8B', letterSpacing: '0.14em' }}>
-          なぜ日本提携支援が選ばれるのか
-        </p>
         <h2 className="text-3xl font-bold mb-3" style={{ color: '#1a2740', lineHeight: 1.5 }}>
           「申請して終わり」を、
           <span
