@@ -57,9 +57,13 @@ export default function HeroSection() {
             <span className={`${styles.headlineLine} ${styles.headlineAccent}`}>営業が変わる。</span>
           </h1>
           <p ref={subRef} className={`${styles.sub} font-body`}>
-            御社の商材を提案するとき、「補助金の対象です」と添えるだけで顧客の反応が変わります。
+            御社の商材を提案するとき、「補助金の対象です」
             <br />
-            補助金の知識も、申請の対応も不要。紹介フィーもお支払いします。
+            と添えるだけで顧客の反応が変わります。
+            <br />
+            補助金の知識も、申請の対応も不要。
+            <br />
+            紹介フィーもお支払いします。
           </p>
 
           <div ref={ctRef} className={`${styles.ctas} font-body`}>

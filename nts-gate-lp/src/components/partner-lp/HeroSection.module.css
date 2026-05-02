@@ -321,17 +321,17 @@
   }
 
   .content {
-    flex: 0 1 42%;
+    flex: 0 1 40%;
     width: auto;
     min-width: 0;
-    max-width: 42%;
+    max-width: 40%;
   }
 
   .imgCol {
-    flex: 0 1 55%;
+    flex: 0 1 57%;
     width: auto;
     min-width: 0;
-    max-width: 55%;
+    max-width: 57%;
     transform: none;
     overflow: hidden;
   }
