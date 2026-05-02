@@ -355,18 +355,18 @@
 /* ノートPCでは後続の1024px+指定を上書きし、コピーとフォームの重なりを確実に防ぐ */
 @media (min-width: 1024px) and (max-width: 1439px) {
   .content {
-    width: 38%;
+    width: 40%;
     flex-shrink: 0;
   }
 
   .imgCol {
-    width: 62%;
+    width: 58%;
     flex: 0 0 auto;
   }
 
   .partnerFormVideoUnit {
-    width: 86%;
-    max-width: 86%;
+    width: 84%;
+    max-width: 84%;
     margin-left: auto;
     margin-right: 0;
     zoom: 1;
@@ -374,10 +374,18 @@
 
   .headline {
     font-size: clamp(22px, 2.4vw, 30px);
+    max-width: 100%;
   }
 
   .headlineLine {
+    display: block;
     white-space: normal;
+  }
+
+  .headlineAccent {
+    display: block;
+    max-width: 100%;
+    overflow-wrap: anywhere;
   }
 }
 
