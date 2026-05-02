@@ -4,7 +4,7 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import isometric09 from "../../../../icon-assets/isometric_09.webp";
 import isometric14 from "../../../../icon-assets/isometric_14.webp";
-import isometric23 from "../../../../icon-assets/isometric_23.webp";
+import isometric23 from "../../../../icon-assets/isometric23.webp";
 
 const EASE_OUT = [0.22, 1, 0.36, 1] as const;
 
