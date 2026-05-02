@@ -123,7 +123,7 @@
 @media (min-width: 1024px) {
   .imgCol {
     width: auto;
-    flex: 0 1 55%;
+    flex: 0 1 75%;
     min-width: 0;
     max-width: none;
     transform: none;
@@ -328,7 +328,7 @@
   }
 
   .imgCol {
-    flex: 1 1 57%;
+    flex: 1 1 65%;
     width: auto;
     min-width: 0;
     max-width: none;
@@ -370,8 +370,8 @@
 
 @media (min-width: 1280px) and (max-width: 1439px) {
   .partnerFormCard {
-    flex: 0 0 425px;
-    max-width: 425px;
+    flex: 0 0 400px;
+    max-width: 400px;
   }
 }
 
