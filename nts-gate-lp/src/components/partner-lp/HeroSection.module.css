@@ -111,9 +111,18 @@
 
 /* ノートPC（1024〜1279px）: 左カラムを左端に寄せ、右フォームとの重なりを解消 */
 @media (min-width: 1024px) and (max-width: 1279px) {
+  .page {
+    min-height: 0;
+    height: auto;
+    padding-top: 32px;
+  }
+
   .heroMain {
     padding-left: max(16px, 2vw);
-    gap: clamp(16px, 2vw, 28px);
+    padding-right: max(16px, 2vw);
+    padding-bottom: 32px;
+    gap: clamp(12px, 2vw, 24px);
+    align-items: flex-start;
   }
 
   .content {
@@ -123,15 +132,13 @@
 
   .imgCol {
     width: 68%;
+    flex: 1 1 auto;
     transform: none;
+    overflow: hidden;
   }
 
-  /* フォームユニットをさらに縮小（0.88 → 0.79） */
-  .partnerFormVideoUnit {
-    transform: scale(0.79);
-    transform-origin: center top;
-    width: 126.6%;   /* 1 / 0.79 * 100% */
-    margin: -40px -13.3%;
+  .headlineLine {
+    white-space: normal;
   }
 }
 
@@ -147,7 +154,7 @@
     width: 65%;
     flex: 0 0 auto;
     max-width: none;
-    transform: translateX(clamp(-34px, -2.2vw, -18px));
+    transform: none;
   }
 }
 
@@ -155,10 +162,6 @@
   .heroMain {
     padding-left: max(24px, 3vw);
     padding-right: max(32px, 4vw);
-  }
-
-  .imgCol {
-    transform: translateX(clamp(-56px, -3vw, -28px));
   }
 }
 
@@ -182,18 +185,25 @@
 
 @media (min-width: 1024px) {
   .partnerFormVideoUnit {
-    transform: scale(0.88);
-    transform-origin: center;
-    width: 113.7%;
-    margin: -30px -6.85%;
+    zoom: 0.82;
+    transform: none;
+    width: 100%;
+    margin: 0;
   }
 }
 
 @media (min-width: 1280px) {
   .partnerFormVideoUnit {
-    transform: scale(0.94);
-    width: 106.4%;
-    margin: -18px -3.2%;
+    zoom: 0.90;
+    transform: none;
+    width: 100%;
+    margin: 0;
+  }
+}
+
+@media (min-width: 1440px) {
+  .partnerFormVideoUnit {
+    zoom: 0.96;
   }
 }
 

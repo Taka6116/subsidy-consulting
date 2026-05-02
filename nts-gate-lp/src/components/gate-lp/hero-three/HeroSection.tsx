@@ -11,7 +11,6 @@ export default function HeroSection() {
       className={`${styles.hero} relative flex flex-col justify-center`}
       style={{
         background: "linear-gradient(160deg, #E8EFF8 0%, #DDE8F5 100%)",
-        minHeight: "clamp(600px, 100svh, 900px)",
       }}
       aria-label="補助金照会サービス ヒーローセクション"
     >
