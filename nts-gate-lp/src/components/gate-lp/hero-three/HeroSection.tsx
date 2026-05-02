@@ -8,7 +8,7 @@ import styles from "./HeroSection.module.css";
 export default function HeroSection() {
   return (
     <section
-      className={`${styles.hero} relative flex flex-col justify-center`}
+      className={`${styles.hero} relative flex flex-col`}
       style={{
         background: "linear-gradient(160deg, #E8EFF8 0%, #DDE8F5 100%)",
       }}

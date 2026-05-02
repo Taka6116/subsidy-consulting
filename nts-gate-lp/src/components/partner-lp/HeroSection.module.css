@@ -112,8 +112,8 @@
   }
 }
 
-/* ノートPC（1024〜1279px）: タグバーを必ずフォームの下に配置し、重なりを完全解消 */
-@media (min-width: 1024px) and (max-width: 1279px) {
+/* ノートPC（1024〜1439px）: タグバーを必ずフォームの下に配置し、重なりを完全解消 */
+@media (min-width: 1024px) and (max-width: 1439px) {
   .page {
     /* min-height を解除して完全にコンテンツ追従に */
     min-height: 0;

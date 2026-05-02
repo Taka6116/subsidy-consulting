@@ -26,13 +26,13 @@ export default function Home() {
       <ScrollDepthTracker />
       <Header />
       <main className="relative z-[2]">
-        <div className="flex min-h-[100svh] flex-col">
-          <div className="relative min-h-0 flex-1 basis-0">
+        <div>
+          <div className="relative">
             <HeroSection />
           </div>
           <div
             id="partner-lp"
-            className="relative z-[6] shrink-0 scroll-mt-20 sm:scroll-mt-24"
+            className="relative scroll-mt-20 sm:scroll-mt-24"
           >
             <HeroPartnerStrip />
           </div>

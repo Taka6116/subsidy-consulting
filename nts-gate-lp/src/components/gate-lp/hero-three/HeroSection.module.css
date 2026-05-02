@@ -10,15 +10,13 @@
   overflow: visible;
   background: transparent;
   font-family: var(--font-body);
-  /* コンテンツに追従。小さい画面でも最低560px確保 */
-  min-height: clamp(560px, 100svh, 820px);
+  /* コンテンツ追従。タグバーがフォームに重ならないよう min-height は使わない */
 }
 
-@media (min-width: 1024px) and (max-width: 1279px) {
+/* スマホのみ視覚バランス確保のため最低高さを設ける */
+@media (max-width: 767px) {
   .hero {
-    /* ノートPCではコンテンツ高さに追従させる */
-    min-height: 0;
-    height: auto;
+    min-height: 560px;
   }
 }
 
@@ -607,7 +605,14 @@
   }
 }
 
-@media (min-width: 1280px) {
+@media (min-width: 1280px) and (max-width: 1439px) {
+  .formCard {
+    flex: 0 0 400px;
+    max-width: 400px;
+  }
+}
+
+@media (min-width: 1440px) {
   .formCard {
     flex: 0 0 460px;
   }
@@ -1352,8 +1357,18 @@
   }
 }
 
-/* ノートPC帯域（1024px〜1279px）: フォーム/動画ユニットを CSS で直接コンパクトに */
-@media (min-width: 1024px) and (max-width: 1279px) {
+/* ノートPC帯域（1024px〜1439px）: フォーム/動画ユニットを CSS で直接コンパクトに */
+@media (min-width: 1024px) and (max-width: 1439px) {
+  /* h1見出しを縮小し、margin-bottom も詰める */
+  .heroHeader {
+    margin-bottom: 16px;
+  }
+
+  .headlineTight {
+    font-size: clamp(1.4rem, 2.4vw, 2rem);
+    line-height: 1.22;
+  }
+
   .formVideoUnit {
     width: 100%;
     margin: 0;
@@ -1444,8 +1459,8 @@
   }
 }
 
-/* ノートPC帯域（768px〜1279px）: ヘッダー高さ分の余白を確保 + フォームをコンパクトに */
-@media (min-width: 768px) and (max-width: 1279px) {
+/* ノートPC帯域（768px〜1439px）: ヘッダー高さ分の余白を確保 + フォームをコンパクトに */
+@media (min-width: 768px) and (max-width: 1439px) {
   .heroInnerWide {
     padding-top: 80px;
     padding-bottom: 16px;
