@@ -80,13 +80,16 @@
   }
 }
 
-/* ── ロゴ帯: heroMain の外・負marginなし ─────────────────── */
+/* ── ロゴ帯: heroMain の外・確実にフォームの下に ─────────────────── */
 .heroStrip {
   flex-shrink: 0;
+  flex-grow: 0;
   position: relative;
   z-index: 6;
-  /* 重なりを解消: margin-top をゼロに */
   margin-top: 0;
+  width: 100%;
+  /* clear で float 影響を確実に断ち、フォームの直下に来るようにする */
+  clear: both;
 }
 
 /* ── 左カラム: テキスト ──────────────────────────────────── */
@@ -109,18 +112,22 @@
   }
 }
 
-/* ノートPC（1024〜1279px）: 左カラムを左端に寄せ、右フォームとの重なりを解消 */
+/* ノートPC（1024〜1279px）: タグバーを必ずフォームの下に配置し、重なりを完全解消 */
 @media (min-width: 1024px) and (max-width: 1279px) {
   .page {
+    /* min-height を解除して完全にコンテンツ追従に */
     min-height: 0;
     height: auto;
-    padding-top: 32px;
+    padding-top: 24px;
+    padding-bottom: 0;
   }
 
   .heroMain {
+    /* flex: 1 を解除しコンテンツに追従。タグバーは確実に下に */
+    flex: 0 0 auto;
     padding-left: max(16px, 2vw);
     padding-right: max(16px, 2vw);
-    padding-bottom: 32px;
+    padding-bottom: 24px;
     gap: clamp(12px, 2vw, 24px);
     align-items: flex-start;
   }
@@ -183,28 +190,11 @@
   min-width: 0;
 }
 
-@media (min-width: 1024px) {
-  .partnerFormVideoUnit {
-    zoom: 0.82;
-    transform: none;
-    width: 100%;
-    margin: 0;
-  }
-}
-
-@media (min-width: 1280px) {
-  .partnerFormVideoUnit {
-    zoom: 0.90;
-    transform: none;
-    width: 100%;
-    margin: 0;
-  }
-}
-
-@media (min-width: 1440px) {
-  .partnerFormVideoUnit {
-    zoom: 0.96;
-  }
+/* zoom hack をやめ、CSS modules の :global で hero-three 側のクラスを直接縮小 */
+.partnerFormVideoUnit {
+  width: 100%;
+  margin: 0;
+  transform: none;
 }
 
 .imgPlaceholder {

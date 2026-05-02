@@ -1352,48 +1352,95 @@
   }
 }
 
-/* ノートPC帯域（1024px〜1279px）: formVideoUnit を zoom で縮小＋videoCard調整 */
+/* ノートPC帯域（1024px〜1279px）: フォーム/動画ユニットを CSS で直接コンパクトに */
 @media (min-width: 1024px) and (max-width: 1279px) {
   .formVideoUnit {
-    zoom: 0.82;
-    transform: none;
     width: 100%;
     margin: 0;
+    transform: none;
   }
 
+  /* フォームカードを徹底的に縦圧縮 */
+  .formBody {
+    padding: 12px 14px 12px;
+  }
+
+  .formCardLead {
+    margin: 0 0 6px;
+    font-size: 0.72rem;
+    line-height: 1.45;
+  }
+
+  .formCardTitle {
+    font-size: 0.92rem;
+  }
+
+  .formGrid {
+    gap: 6px;
+  }
+
+  .formLabel {
+    font-size: 0.68rem;
+  }
+
+  .formInput,
+  .formSelect {
+    padding: 6px 9px;
+    font-size: 0.8rem;
+  }
+
+  .formHelp {
+    display: none;
+  }
+
+  .formTextarea {
+    min-height: 32px;
+  }
+
+  .formSubmit {
+    padding: 9px 16px;
+    font-size: 0.84rem;
+    margin-top: 2px;
+  }
+
+  .formFootnote {
+    display: none;
+  }
+
+  /* 動画カード側もコンパクトに */
   .videoCardLead {
-    padding: 12px 16px 10px;
-    font-size: 0.82rem;
-    line-height: 1.6;
+    padding: 10px 14px 8px;
+    font-size: 0.78rem;
+    line-height: 1.55;
   }
 
   .videoCardBody {
     min-height: 0;
-    padding: 10px;
+    padding: 8px;
   }
 
   .videoStepsRow {
-    padding: 10px 10px 12px;
-    gap: 6px;
+    padding: 8px 8px 10px;
+    gap: 5px;
   }
 
   .videoStepImg {
-    width: 50px;
-    height: 50px;
+    width: 44px;
+    height: 44px;
   }
 
   .videoStepLabel {
-    font-size: 0.68rem;
+    font-size: 0.66rem;
   }
 
   .videoCardFooter {
-    padding: 10px 12px 12px;
-    gap: 8px;
+    padding: 8px 10px 10px;
+    gap: 6px;
   }
 
   .videoTrustItem {
-    padding: 5px 10px 5px 8px;
-    font-size: 0.72rem;
+    padding: 4px 9px 4px 7px;
+    font-size: 0.7rem;
   }
 }
 
