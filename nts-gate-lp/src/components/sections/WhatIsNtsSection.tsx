@@ -87,12 +87,6 @@ export default function WhatIsNtsSection() {
             <div>
               <div className="grid grid-cols-2 gap-4 md:grid-cols-4 md:gap-6">
                 {FLOW_STEPS.map((step, i) => {
-                  const stepNo =
-                    step.title === "採択後1年間の伴走"
-                      ? "04"
-                      : step.title === "採択に向けた準備・申請"
-                        ? "03"
-                        : String(i + 1).padStart(2, "0");
                   // PC横並び4列では右矢印のみ（最後以外）
                   const showRightArrow = i < 3;
                   const showLeftArrow = false;
@@ -116,11 +110,8 @@ export default function WhatIsNtsSection() {
                             className="absolute bottom-0 left-1/2 h-[92%] w-auto max-w-[95%] -translate-x-1/2 object-contain object-bottom"
                           />
                         </div>
-                        {/* 番号・タイトル・本文 */}
-                        <div className="flex flex-1 flex-col items-center px-3 pb-3 pt-1 text-center">
-                          <div className="mb-2 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#1A7B6F] text-xs font-semibold text-white">
-                            {stepNo}
-                          </div>
+                        {/* タイトル・本文 */}
+                        <div className="flex flex-1 flex-col items-center px-3 pb-3 pt-2 text-center">
                           <p className="mb-1 text-sm font-semibold leading-snug text-[var(--text-primary)]">
                             {step.title}
                           </p>

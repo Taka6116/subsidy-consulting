@@ -160,15 +160,17 @@ export default function ComparisonDiagram() {
             custom={2}
             variants={fadeUp}
           >
-            <span
-              className="inline-block text-xs font-medium rounded-full px-3 py-0.5 mb-2"
-              style={{ background: '#eef0f4', color: '#6a7a90', letterSpacing: '0.08em' }}
-            >
-              通常の補助金会社・FAの場合
-            </span>
-            <p className="text-xs font-bold mb-3" style={{ color: '#1a2740' }}>
-              申請が終わると、関係も終わる
-            </p>
+            <div className="flex flex-col items-center text-center mb-3">
+              <span
+                className="inline-block text-xs font-medium rounded-full px-3 py-0.5 mb-2"
+                style={{ background: '#eef0f4', color: '#6a7a90', letterSpacing: '0.08em' }}
+              >
+                通常の補助金会社・FAの場合
+              </span>
+              <p className="text-xs font-bold" style={{ color: '#1a2740' }}>
+                申請が終わると、関係も終わる
+              </p>
+            </div>
             <div className="flex items-center justify-center">
               <FlowNode
                 icon={<div className="w-[38px] h-[38px] rounded-full flex items-center justify-center" style={{ background: '#dce8f7' }}><IconDoc color="#1B4E8B" /></div>}
@@ -211,15 +213,17 @@ export default function ComparisonDiagram() {
             custom={3}
             variants={fadeUp}
           >
-            <span
-              className="inline-block text-xs font-medium rounded-full px-3 py-0.5 mb-2"
-              style={{ background: '#1B4E8B', color: '#fff', letterSpacing: '0.08em' }}
-            >
-              日本提携支援の場合
-            </span>
-            <p className="text-xs font-bold mb-3" style={{ color: '#1B4E8B' }}>
-              採択の先まで、一緒に走る
-            </p>
+            <div className="flex flex-col items-center text-center mb-3">
+              <span
+                className="inline-block text-xs font-medium rounded-full px-3 py-0.5 mb-2"
+                style={{ background: '#1B4E8B', color: '#fff', letterSpacing: '0.08em' }}
+              >
+                日本提携支援の場合
+              </span>
+              <p className="text-xs font-bold" style={{ color: '#1B4E8B' }}>
+                採択の先まで、一緒に走る
+              </p>
+            </div>
             <div className="flex items-center justify-center">
               <FlowNode
                 icon={<div className="w-[38px] h-[38px] rounded-full flex items-center justify-center" style={{ background: '#dce8f7' }}><IconDoc color="#1B4E8B" /></div>}
