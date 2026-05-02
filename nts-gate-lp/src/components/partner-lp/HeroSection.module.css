@@ -112,60 +112,6 @@
   }
 }
 
-/* ノートPC（1024〜1439px）: タグバーを必ずフォームの下に配置し、重なりを完全解消 */
-@media (min-width: 1024px) and (max-width: 1439px) {
-  .page {
-    /* min-height を解除して完全にコンテンツ追従に */
-    min-height: 0;
-    height: auto;
-    padding-top: 24px;
-    padding-bottom: 0;
-  }
-
-  .heroMain {
-    /* flex: 1 を解除しコンテンツに追従。タグバーは確実に下に */
-    flex: 0 0 auto;
-    padding-left: max(16px, 2vw);
-    padding-right: max(16px, 2vw);
-    padding-bottom: 24px;
-    gap: clamp(12px, 2vw, 24px);
-    align-items: flex-start;
-  }
-
-  .content {
-    width: 38%;
-    flex-shrink: 0;
-  }
-
-  .imgCol {
-    width: 62%;
-    flex: 0 0 auto;
-    transform: none;
-    overflow: hidden;
-  }
-
-  .partnerFormVideoUnit {
-    width: 86%;
-    max-width: 86%;
-    margin-left: auto;
-    margin-right: 0;
-    zoom: 1;
-  }
-
-  .partnerVideoCardBody {
-    min-height: 0;
-    padding: 8px;
-  }
-
-  .headline {
-    font-size: clamp(22px, 2.4vw, 30px);
-  }
-
-  .headlineLine {
-    white-space: normal;
-  }
-}
-
 /* ── 右カラム: 画像プレースホルダー ─────────────────────── */
 .imgCol {
   width: 100%;
@@ -354,22 +300,49 @@
 
 /* ノートPCでは後続の1024px+指定を上書きし、コピーとフォームの重なりを確実に防ぐ */
 @media (min-width: 1024px) and (max-width: 1439px) {
+  .page {
+    min-height: 0;
+    height: auto;
+    padding-top: 24px;
+    padding-bottom: 0;
+  }
+
+  .heroMain {
+    flex: 0 0 auto;
+    padding-left: max(16px, 2vw);
+    padding-right: max(16px, 2vw);
+    padding-bottom: 24px;
+    gap: clamp(12px, 2vw, 24px);
+    align-items: flex-start;
+  }
+
   .content {
-    width: 40%;
-    flex-shrink: 0;
+    flex: 0 1 38%;
+    width: auto;
+    min-width: 0;
+    max-width: 38%;
   }
 
   .imgCol {
-    width: 58%;
-    flex: 0 0 auto;
+    flex: 0 1 58%;
+    width: auto;
+    min-width: 0;
+    max-width: 58%;
+    transform: none;
+    overflow: hidden;
   }
 
   .partnerFormVideoUnit {
-    width: 84%;
-    max-width: 84%;
+    width: 86%;
+    max-width: 86%;
     margin-left: auto;
     margin-right: 0;
     zoom: 1;
+  }
+
+  .partnerVideoCardBody {
+    min-height: 0;
+    padding: 8px;
   }
 
   .headline {
@@ -380,6 +353,8 @@
   .headlineLine {
     display: block;
     white-space: normal;
+    word-break: keep-all;
+    overflow-wrap: break-word;
   }
 
   .headlineAccent {
