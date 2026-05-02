@@ -130,7 +130,7 @@ export default function ComparisonDiagram() {
           custom={1}
           variants={fadeUp}
         >
-          <p className="text-sm mb-6" style={{ color: '#4a5a72', lineHeight: 2.3 }}>
+          <p className="text-sm mb-6 text-[var(--text-secondary)]" style={{ lineHeight: 2.3 }}>
             補助金パートナーの多くは、採択をゴールにしています。申請が終わった瞬間、関係も終わる。その先は経営者ひとりで対応しなければなりません。
             <br /><br />
             実績報告・精算・効果検証——採択後にこそ、本当の経営支援が必要です。NTSは採択後も責任を持って1年間伴走します。
@@ -169,7 +169,7 @@ export default function ComparisonDiagram() {
             <p className="text-xs font-bold mb-3" style={{ color: '#1a2740' }}>
               申請が終わると、関係も終わる
             </p>
-            <div className="flex items-center">
+            <div className="flex items-center justify-center">
               <FlowNode
                 icon={<div className="w-[38px] h-[38px] rounded-full flex items-center justify-center" style={{ background: '#dce8f7' }}><IconDoc color="#1B4E8B" /></div>}
                 label="相談・書類作成"
@@ -205,7 +205,7 @@ export default function ComparisonDiagram() {
           {/* NTSケース */}
           <motion.div
             className="rounded-xl p-4"
-            style={{ background: '#f5fdfb', border: '2px solid #00B38A' }}
+            style={{ background: '#f0f5fc', border: '2px solid #1B4E8B' }}
             initial="hidden"
             animate={inView ? 'visible' : 'hidden'}
             custom={3}
@@ -213,51 +213,51 @@ export default function ComparisonDiagram() {
           >
             <span
               className="inline-block text-xs font-medium rounded-full px-3 py-0.5 mb-2"
-              style={{ background: '#00B38A', color: '#fff', letterSpacing: '0.08em' }}
+              style={{ background: '#1B4E8B', color: '#fff', letterSpacing: '0.08em' }}
             >
               日本提携支援の場合
             </span>
-            <p className="text-xs font-bold mb-3" style={{ color: '#0a6b52' }}>
+            <p className="text-xs font-bold mb-3" style={{ color: '#1B4E8B' }}>
               採択の先まで、一緒に走る
             </p>
-            <div className="flex items-center">
+            <div className="flex items-center justify-center">
               <FlowNode
-                icon={<div className="w-[38px] h-[38px] rounded-full flex items-center justify-center" style={{ background: '#d4f0e8' }}><IconDoc color="#00B38A" /></div>}
+                icon={<div className="w-[38px] h-[38px] rounded-full flex items-center justify-center" style={{ background: '#dce8f7' }}><IconDoc color="#1B4E8B" /></div>}
                 label="相談・書類作成"
-                labelColor="#0a6b52"
+                labelColor="#1B4E8B"
               />
               <div className="flex items-center pb-5 w-4 flex-shrink-0">
-                <ArrowRight color="#00B38A" />
+                <ArrowRight color="#1B4E8B" />
               </div>
               <FlowNode
-                icon={<div className="w-[38px] h-[38px] rounded-full flex items-center justify-center" style={{ background: '#d4f0e8' }}><IconClock color="#00B38A" /></div>}
+                icon={<div className="w-[38px] h-[38px] rounded-full flex items-center justify-center" style={{ background: '#dce8f7' }}><IconClock color="#1B4E8B" /></div>}
                 label="申請・採択"
-                labelColor="#0a6b52"
+                labelColor="#1B4E8B"
               />
               <div className="flex items-center pb-5 w-4 flex-shrink-0">
-                <ArrowRight color="#00B38A" />
+                <ArrowRight color="#1B4E8B" />
               </div>
               <FlowNode
-                icon={<div className="w-[38px] h-[38px] rounded-full flex items-center justify-center" style={{ background: '#d4f0e8' }}><IconPerson color="#00B38A" /></div>}
+                icon={<div className="w-[38px] h-[38px] rounded-full flex items-center justify-center" style={{ background: '#dce8f7' }}><IconPerson color="#1B4E8B" /></div>}
                 label="採択後の活用"
-                labelColor="#0a6b52"
+                labelColor="#1B4E8B"
               />
               <div className="flex items-center pb-5 w-4 flex-shrink-0">
-                <ArrowRight color="#00B38A" />
+                <ArrowRight color="#1B4E8B" />
               </div>
               <FlowNode
-                icon={<div className="w-[38px] h-[38px] rounded-full flex items-center justify-center" style={{ background: '#d4f0e8' }}><IconCheckBox color="#00B38A" /></div>}
+                icon={<div className="w-[38px] h-[38px] rounded-full flex items-center justify-center" style={{ background: '#dce8f7' }}><IconCheckBox color="#1B4E8B" /></div>}
                 label="効果検証"
-                labelColor="#0a6b52"
+                labelColor="#1B4E8B"
               />
             </div>
             {/* 伴走バー */}
             <div className="flex items-center mt-3 gap-2">
-              <div className="flex-1 h-[3px] rounded-full" style={{ background: '#00B38A' }} />
-              <span className="text-xs font-medium whitespace-nowrap" style={{ color: '#0a6b52' }}>
+              <div className="flex-1 h-[3px] rounded-full" style={{ background: '#1B4E8B' }} />
+              <span className="text-xs font-medium whitespace-nowrap" style={{ color: '#1B4E8B' }}>
                 採択後も1年間伴走
               </span>
-              <div className="flex-1 h-[3px] rounded-full" style={{ background: '#00B38A' }} />
+              <div className="flex-1 h-[3px] rounded-full" style={{ background: '#1B4E8B' }} />
             </div>
           </motion.div>
 
