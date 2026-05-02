@@ -103,7 +103,7 @@ export default function ComparisonDiagram() {
         custom={0}
         variants={fadeUp}
       >
-        <h2 className="font-heading text-[1.75rem] font-bold leading-snug md:text-[2.25rem] mb-3" style={{ color: '#1a2740', lineHeight: 1.5 }}>
+        <h2 className="font-heading text-[1.75rem] font-bold leading-snug text-[var(--text-primary)] md:text-[2.25rem] mb-3">
           「申請して終わり」を、
           <span
             className="inline-block px-2 py-0.5 rounded"
