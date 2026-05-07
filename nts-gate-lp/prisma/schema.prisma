@@ -183,6 +183,21 @@ model Subscriber {
   @@map("subscribers")
 }
 
+/// 補助金LP からの無料相談申込
+model ContactInquiry {
+  id        String   @id @default(uuid()) @db.Uuid
+  name      String   @db.VarChar(200)
+  email     String   @db.VarChar(200)
+  company   String?  @db.VarChar(200)
+  message   String   @db.Text
+  source    String?  @db.VarChar(200) // どのLPから来たか（例: "construction-electrification"）
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([email])
+  @@index([createdAt])
+  @@map("contact_inquiries")
+}
+
 /// 同期ジョブの実行単位（部分成功も status で表現可能）。
 model SubsidySyncRun {
   id           String    @id @default(cuid())

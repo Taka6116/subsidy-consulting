@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import Header from "@/components/shared/Header";
 import LpFooter from "@/components/gate-lp/LpFooter";
 import HeroSection from "@/components/subsidy-lp/HeroSection";
@@ -8,6 +8,7 @@ import BeforeAfterSection from "@/components/subsidy-lp/BeforeAfterSection";
 import CaseStudiesSection from "@/components/subsidy-lp/CaseStudiesSection";
 import FlowSection from "@/components/subsidy-lp/FlowSection";
 import FinalCtaSection from "@/components/subsidy-lp/FinalCtaSection";
+import ContactSection from "@/components/subsidy-lp/ContactSection";
 import { dxSubsidy as data } from "@/lib/subsidy-data/dx-subsidy";
 
 export const metadata: Metadata = {
@@ -28,22 +29,8 @@ export default function DxSupportLP() {
         <CaseStudiesSection data={data} />
         <FlowSection data={data} />
         <FinalCtaSection />
+        <ContactSection source="dx-support" grantName="中小・小規模企業デジタル技術導入支援" />
 
-        <section id="contact" className="bg-[#F3F6FA] py-14">
-          <div className="mx-auto max-w-3xl px-6 text-center">
-            <p className="text-sm text-gray-500">お問い合わせ</p>
-            <h2 className="mt-2 text-2xl font-bold text-[#0B173A]">
-              無料相談フォーム（準備中）
-            </h2>
-            <p className="mt-3 text-sm leading-relaxed text-gray-600">
-              詳細フォームは次フェーズで実装予定です。先行相談をご希望の場合は
-              <a className="mx-1 text-[#1E40AF] underline" href="/consult">
-                こちら
-              </a>
-              からご連絡ください。
-            </p>
-          </div>
-        </section>
       </main>
       <LpFooter />
     </>
