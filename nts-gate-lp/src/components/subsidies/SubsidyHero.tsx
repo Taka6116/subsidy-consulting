@@ -157,13 +157,18 @@ export default function SubsidyHero({ counts, activePrefectureCount }: { counts:
               </p>
             </div>
 
-            {/* 1.5倍拡大・左に12%シフト */}
+            {/* 地図スケール：lg以下=1.5倍、xl以上=1.25倍（北海道が隠れないよう縮小） */}
             <div
-              className="absolute inset-0 origin-center"
+              className="absolute inset-0 origin-center map-scale-wrapper"
               style={{ transform: "scale(1.5) translateX(-12%)" }}
             >
               <JapanNetworkMap />
             </div>
+            <style>{`
+              @media (min-width: 1280px) {
+                .map-scale-wrapper { transform: scale(1.25) translateX(-8%) !important; }
+              }
+            `}</style>
           </motion.div>
 
           {/* ── 右：リアルタイム検知 ── */}
