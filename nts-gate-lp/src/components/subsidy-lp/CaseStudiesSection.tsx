@@ -16,9 +16,11 @@ export default function CaseStudiesSection({
     <section className="bg-white py-16 md:py-24">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
         <h2 className="mb-5 text-center text-2xl font-bold text-[#0B173A] md:text-3xl">
-          活用侁E        </h2>
+          ???
+        </h2>
         <p className="mx-auto mb-12 max-w-2xl text-center text-sm leading-relaxed text-gray-500 md:text-base">
-          建設機械の電動化補助金�E、業種めE��業フェーズによって活用の仕方が大きく異なります。代表皁E��活用例をもとに、貴社に近い使ぁE��をイメージしてください、E        </p>
+          ????????????????????????????????????????????????????????????
+        </p>
 
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {data.caseStudies.map((item, index) => (
