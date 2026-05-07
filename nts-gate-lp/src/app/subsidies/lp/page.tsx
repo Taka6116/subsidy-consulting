@@ -37,6 +37,38 @@ const FEATURED_LPS = [
     deadline: "2026年12月31日",
     badge: "令和8年度",
   },
+  {
+    href: "/subsidies/equipment-investment",
+    name: "設備投資・省力化補助金（令和8年度）",
+    copy: "老朽設備の更新・自動化・省力化投資を最大2億円で支援。人手不足・コスト高騰を設備投資で一気に解決します。",
+    amount: "最大2億円",
+    deadline: "2027年3月31日",
+    badge: "令和8年度",
+  },
+  {
+    href: "/subsidies/monodukuri-business",
+    name: "ものづくり・商業・サービス補助金（21次締切）",
+    copy: "新製品開発・生産プロセス改善・販路拡大など、事業計画の実現を最大4,000万円で支援します。",
+    amount: "最大4,000万円",
+    deadline: "2027年3月23日",
+    badge: "令和8年度（21次）",
+  },
+  {
+    href: "/subsidies/logistics-support",
+    name: "物流・運送効率化補助金",
+    copy: "2024年問題・ドライバー不足・燃料費高騰に対応。配送ルート最適化・WMS導入・省力化投資を補助金で実現。",
+    amount: "最大500万円",
+    deadline: "2026年5月25日",
+    badge: "令和7年度補正",
+  },
+  {
+    href: "/subsidies/human-resources",
+    name: "人材確保・賃上げ支援補助金",
+    copy: "採用・研修・職場環境整備に最大300万円。人材不足と離職率の悩みを補助金活用で解決します。",
+    amount: "最大300万円",
+    deadline: "要確認",
+    badge: "令和8年度",
+  },
 ] as const;
 
 export const metadata: Metadata = {

@@ -4,11 +4,17 @@ import constructionHeroVisual from "../../../icon-assets/construction-hero.webp"
 import dxHeroVisual from "../../../icon-assets/dx-hero.webp";
 import equipmentHeroVisual from "../../../icon-assets/equipment-hero.webp";
 import generalHeroVisual from "../../../icon-assets/general-hero.webp";
+import businessPlanHeroVisual from "../../../icon-assets/business-plan-hero.webp";
+import humanResourcesHeroVisual from "../../../icon-assets/human-resources-hero.webp";
+import logisticsHeroVisual from "../../../icon-assets/logistics-hero.webp";
 import type { SubsidyLpData } from "@/lib/subsidy-data/types";
 
 const CONSTRUCTION_KEYWORDS = ["建設業", "建設機械", "重機", "建機"];
-const DX_KEYWORDS = ["DX", "デジタル", "IT導入", "デジタル化", "情報化", "クラウド"];
-const EQUIPMENT_KEYWORDS = ["設備投資", "生産性向上", "ものづくり", "設備更新", "設備導入", "製造"];
+const DX_KEYWORDS = ["DX", "デジタル", "IT導入", "デジタル化", "情報化", "クラウド", "AI"];
+const EQUIPMENT_KEYWORDS = ["設備投資", "ものづくり", "設備更新", "設備導入", "製造", "省力化"];
+const BUSINESS_PLAN_KEYWORDS = ["事業再構築", "新事業", "事業計画", "経営革新", "事業展開", "販路"];
+const HUMAN_RESOURCES_KEYWORDS = ["人材", "雇用", "人手不足", "採用", "研修", "賃上げ", "働き方", "テレワーク", "副業", "兼業"];
+const LOGISTICS_KEYWORDS = ["物流", "運送", "輸送", "配送", "流通", "トラック", "運輸", "倉庫"];
 
 function pickHeroVisual(category: string): {
   src: StaticImageData;
@@ -20,6 +26,15 @@ function pickHeroVisual(category: string): {
   }
   if (DX_KEYWORDS.some((k) => category.includes(k))) {
     return { src: dxHeroVisual, alt: "DX補助金イメージ", isPhotoStyle: true };
+  }
+  if (LOGISTICS_KEYWORDS.some((k) => category.includes(k))) {
+    return { src: logisticsHeroVisual, alt: "物流・運送向け補助金イメージ", isPhotoStyle: true };
+  }
+  if (BUSINESS_PLAN_KEYWORDS.some((k) => category.includes(k))) {
+    return { src: businessPlanHeroVisual, alt: "事業計画向け補助金イメージ", isPhotoStyle: true };
+  }
+  if (HUMAN_RESOURCES_KEYWORDS.some((k) => category.includes(k))) {
+    return { src: humanResourcesHeroVisual, alt: "人材向け補助金イメージ", isPhotoStyle: true };
   }
   if (EQUIPMENT_KEYWORDS.some((k) => category.includes(k))) {
     return { src: equipmentHeroVisual, alt: "設備投資補助金イメージ", isPhotoStyle: true };
