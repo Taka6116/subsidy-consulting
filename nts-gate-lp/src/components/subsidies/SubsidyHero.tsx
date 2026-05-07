@@ -27,15 +27,6 @@ const REALTIME_ITEMS = [
 
 const FEATURES = [
   {
-    title: "全国を24時間監視",
-    desc: "自治体・省庁サイトをリアルタイムで監視",
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" className="h-5 w-5">
-        <circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 2" />
-      </svg>
-    ),
-  },
-  {
     title: "公開直後に検知",
     desc: "リリースされた瞬間にAIが情報を取得",
     icon: (
@@ -45,7 +36,7 @@ const FEATURES = [
     ),
   },
   {
-    title: "AIで自動コンテンツ化",
+    title: "即座にコンテンツ化",
     desc: "記事・LP・動画・SNSまで自動で生成",
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" className="h-5 w-5">
@@ -232,7 +223,7 @@ export default function SubsidyHero({ counts, activePrefectureCount }: { counts:
         </div>
 
         {/* ── 4特徴カード（地図下部に重ねる・glassmorphism） ── */}
-        <div className="relative z-10 -mt-28 grid gap-3 md:grid-cols-2 lg:-mt-24 lg:grid-cols-4">
+        <div className="relative z-10 -mt-28 grid gap-3 md:grid-cols-3 lg:-mt-24 lg:grid-cols-3">
           {FEATURES.map((f, i) => (
             <motion.div
               key={f.title}
