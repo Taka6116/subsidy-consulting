@@ -58,7 +58,7 @@ const FEATURES = [
 export default function SubsidyHero({ counts, activePrefectureCount }: { counts: Counts; activePrefectureCount: number }) {
   return (
     <div
-      className="relative overflow-x-hidden overflow-y-visible"
+      className="relative overflow-hidden"
       style={{
         background: "#f7f9fc",
         backgroundImage:
@@ -71,7 +71,7 @@ export default function SubsidyHero({ counts, activePrefectureCount }: { counts:
       <div className="pointer-events-none absolute -bottom-28 right-[4%] h-[400px] w-[400px] rounded-full bg-cyan-200/20 blur-[120px]" />
 
       {/* ══ HERO ══ */}
-      <section className="relative z-10 w-full pb-10 pt-20 md:pt-22 lg:pt-16 2xl:pb-32">
+      <section className="relative z-10 w-full pb-10 pt-20 md:pt-22 lg:pt-16 2xl:pb-20">
         <div className="grid items-center gap-6 lg:grid-cols-[0.9fr_2.6fr_296px] lg:gap-8 2xl:grid-cols-[1fr_2.6fr_320px] 2xl:gap-6">
 
           {/* ── 左：コピー ── */}
@@ -163,7 +163,7 @@ export default function SubsidyHero({ counts, activePrefectureCount }: { counts:
             {/* 地図スケール：ノートPCとモニターで段階調整 */}
             <div
               className="absolute inset-0 origin-center map-scale-wrapper"
-              style={{ transform: "scale(1.38) translateX(-10%)" }}
+              style={{ transform: "scale(1.3) translateX(-8%)" }}
             >
               <JapanNetworkMap />
             </div>
@@ -171,13 +171,13 @@ export default function SubsidyHero({ counts, activePrefectureCount }: { counts:
               @media (min-width: 1280px) {
                 .map-scale-wrapper {
                   transform-origin: top center !important;
-                  transform: scale(1.18) translateX(-8%) translateY(2%) !important;
+                  transform: scale(1.1) translateX(-7%) translateY(1%) !important;
                 }
               }
               @media (min-width: 1536px) {
                 .map-scale-wrapper {
                   transform-origin: top center !important;
-                  transform: scale(1.1) translateX(-6%) translateY(6%) !important;
+                  transform: scale(1) translateX(-6%) translateY(6%) !important;
                 }
               }
             `}</style>
@@ -234,7 +234,7 @@ export default function SubsidyHero({ counts, activePrefectureCount }: { counts:
         </div>
 
         {/* ── 4特徴カード（地図下部に重ねる・glassmorphism） ── */}
-        <div className="relative z-10 -mt-28 grid gap-3 md:grid-cols-3 lg:-mt-24 lg:grid-cols-3 lg:pr-80 lg:pl-6 2xl:-mt-24 2xl:pl-16 2xl:pr-[368px]">
+        <div className="relative z-10 -mt-28 grid gap-3 md:grid-cols-3 lg:-mt-24 lg:grid-cols-3 lg:pr-80 lg:pl-6 2xl:-mt-8 2xl:pl-16 2xl:pr-[368px]">
           {FEATURES.map((f, i) => (
             <motion.div
               key={f.title}
