@@ -156,25 +156,19 @@ export default function SubsidyHero({ counts }: { counts: Counts }) {
             </div>
           </motion.div>
 
-          {/* ── 中央：日本地図（ボックスなし・背景に溶け込む） ── */}
+          {/* ── 中央：日本地図（拡大・左シフト） ── */}
           <motion.div
             initial={{ opacity: 0, scale: 0.97 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.9, ease: EASE, delay: 0.1 }}
-            className="relative h-[440px] md:h-[500px] lg:h-[560px]"
+            className="relative h-[440px] overflow-visible md:h-[500px] lg:h-[560px]"
           >
-            {/* 地図本体（枠なし・背景透過） */}
-            <div className="absolute inset-0">
+            {/* 1.3倍拡大・左に12%シフト */}
+            <div
+              className="absolute inset-0 origin-center"
+              style={{ transform: "scale(1.3) translateX(-12%)" }}
+            >
               <JapanNetworkMap />
-            </div>
-
-            {/* AI Crawling バッジ */}
-            <div className="absolute left-4 top-4 z-10 flex items-center gap-2 rounded-full border border-blue-200/70 bg-white/90 px-3 py-1.5 text-[11px] font-semibold text-blue-700 shadow-sm backdrop-blur">
-              <span className="relative flex h-1.5 w-1.5">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-blue-400" />
-                <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-blue-500" />
-              </span>
-              AI Crawling Network
             </div>
 
             {/* Active nodes バッジ */}
