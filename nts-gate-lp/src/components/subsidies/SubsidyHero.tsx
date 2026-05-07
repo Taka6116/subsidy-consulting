@@ -231,21 +231,21 @@ export default function SubsidyHero({ counts, activePrefectureCount }: { counts:
           </motion.aside>
         </div>
 
-        {/* ── 4特徴カード ── */}
-        <div className="mt-10 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        {/* ── 4特徴カード（地図下部に重ねる・glassmorphism） ── */}
+        <div className="relative z-10 -mt-28 grid gap-3 md:grid-cols-2 lg:-mt-24 lg:grid-cols-4">
           {FEATURES.map((f, i) => (
             <motion.div
               key={f.title}
               initial={{ opacity: 0, y: 16 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.4 }}
+              viewport={{ once: true, amount: 0.2 }}
               transition={{ duration: 0.5, delay: i * 0.08, ease: EASE }}
-              className="rounded-[22px] border border-[#dbe4f0] bg-white/80 p-5 shadow-lg shadow-slate-100/60 backdrop-blur"
+              className="rounded-[20px] border border-white/60 bg-white/40 p-4 shadow-lg shadow-slate-200/30 backdrop-blur-md"
             >
-              <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-blue-50 text-[#2563eb]">
+              <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-blue-100/60 text-[#2563eb]">
                 {f.icon}
               </div>
-              <h3 className="mb-1.5 text-sm font-bold text-[#0f172a]">{f.title}</h3>
+              <h3 className="mb-1 text-sm font-bold text-[#0f172a]">{f.title}</h3>
               <p className="text-xs leading-relaxed text-[#475569]">{f.desc}</p>
             </motion.div>
           ))}
