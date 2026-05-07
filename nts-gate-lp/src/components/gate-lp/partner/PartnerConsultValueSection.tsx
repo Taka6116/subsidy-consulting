@@ -217,7 +217,7 @@ export default function PartnerConsultValueSection() {
           >
             私たちは、課題の
             <span style={{ textDecoration: "underline", textDecorationColor: "#93c5fd" }}>
-              "本質"
+              &quot;本質&quot;
             </span>
             に向き合うことで、
             <br />
