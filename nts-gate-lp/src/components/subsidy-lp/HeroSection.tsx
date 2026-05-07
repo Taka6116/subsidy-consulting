@@ -109,28 +109,24 @@ export default function HeroSection({
         </div>
 
         {/* 公募期間バー */}
-        <div className="grid max-w-2xl grid-cols-2 gap-4 rounded-lg bg-white/10 px-5 py-4 md:grid-cols-4">
-          <div>
-            <p className="mb-1 text-xs text-white/60">公募開始</p>
-            <p className="text-sm font-bold text-white">{data.dates.start}</p>
+        <div className="grid max-w-3xl grid-cols-2 gap-0 rounded-lg bg-white/10 md:grid-cols-4">
+          <div className="flex flex-col justify-center px-6 py-5 md:border-r md:border-white/10">
+            <p className="mb-1.5 text-xs font-medium text-white/60">公募開始</p>
+            <p className="text-xl font-bold text-white">{data.dates.start}</p>
           </div>
-          <div>
-            <p className="mb-1 text-xs text-white/60">申請締切</p>
-            <p className="text-sm font-bold text-white">{data.dates.deadline}</p>
+          <div className="flex flex-col justify-center px-6 py-5 md:border-r md:border-white/10">
+            <p className="mb-1.5 text-xs font-medium text-white/60">申請締切</p>
+            <p className="text-xl font-bold text-white">{data.dates.deadline}</p>
           </div>
-          <div>
-            <p className="mb-1 text-xs text-white/60">残り期間</p>
-            <p className="text-sm font-bold text-white">
-              あと
-              <span className="ml-1 text-lg text-[#FEA00D]">
-                {data.dates.remainingDays}
-              </span>
-              日
+          <div className="flex flex-col justify-center px-6 py-5 md:border-r md:border-white/10">
+            <p className="mb-1.5 text-xs font-medium text-white/60">残り期間</p>
+            <p className="text-xl font-bold text-white">
+              あと<span className="mx-1 text-2xl text-[#FEA00D]">{data.dates.remainingDays}</span>日
             </p>
           </div>
-          <div>
-            <p className="mb-1 text-xs text-white/60">補助上限</p>
-            <p className="text-sm font-bold text-[#FEA00D]">{data.dates.maxAmount}</p>
+          <div className="flex flex-col justify-center px-6 py-5">
+            <p className="mb-1.5 text-xs font-medium text-white/60">補助上限</p>
+            <p className="text-xl font-bold text-[#FEA00D]">{data.dates.maxAmount}</p>
           </div>
         </div>
       </div>
