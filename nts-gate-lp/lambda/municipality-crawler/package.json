@@ -1,0 +1,14 @@
+{
+  "name": "nts-municipality-crawler-lambda",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "AWS Lambda: crawl municipalities via Vercel crawler endpoint and upsert SubsidyGrant",
+  "main": "index.mjs",
+  "scripts": {
+    "package": "rm -rf build && mkdir -p build && cp index.mjs package.json build/ && cd build && npm install --omit=dev --no-audit --no-fund && zip -r ../function.zip . && cd .. && rm -rf build"
+  },
+  "dependencies": {
+    "pg": "^8.20.0"
+  }
+}
