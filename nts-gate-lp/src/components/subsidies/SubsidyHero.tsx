@@ -71,15 +71,15 @@ export default function SubsidyHero({ counts, activePrefectureCount }: { counts:
       <div className="pointer-events-none absolute -bottom-28 right-[4%] h-[400px] w-[400px] rounded-full bg-cyan-200/20 blur-[120px]" />
 
       {/* ══ HERO ══ */}
-      <section className="relative z-10 w-full pb-10 pt-20 md:pt-22 lg:pt-16 xl:pb-32">
-        <div className="grid items-center gap-6 lg:grid-cols-[0.9fr_2.6fr_296px] lg:gap-8 xl:grid-cols-[1fr_2.6fr_320px] xl:gap-6">
+      <section className="relative z-10 w-full pb-10 pt-20 md:pt-22 lg:pt-16 2xl:pb-32">
+        <div className="grid items-center gap-6 lg:grid-cols-[0.9fr_2.6fr_296px] lg:gap-8 2xl:grid-cols-[1fr_2.6fr_320px] 2xl:gap-6">
 
           {/* ── 左：コピー ── */}
           <motion.div
             initial={{ opacity: 0, y: 28 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.75, ease: EASE }}
-            className="flex flex-col lg:pl-8 lg:-mt-10 xl:pl-16"
+            className="flex flex-col lg:pl-8 lg:-mt-10 2xl:pl-16"
           >
             {/* 上部タグ */}
             <div className="mb-5 inline-flex w-fit items-center gap-2 rounded-full border border-blue-200/80 bg-blue-50 px-4 py-2 text-xs font-semibold text-blue-700">
@@ -150,7 +150,7 @@ export default function SubsidyHero({ counts, activePrefectureCount }: { counts:
             initial={{ opacity: 0, scale: 0.97 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.9, ease: EASE, delay: 0.1 }}
-            className="relative h-[440px] overflow-visible md:h-[500px] lg:h-[560px] xl:h-[680px]"
+            className="relative h-[440px] overflow-visible md:h-[500px] lg:h-[560px] 2xl:h-[680px]"
           >
             {/* 補助金公募中都道府県バッジ：地図左上 */}
             <div className="absolute -left-8 top-4 z-10 rounded-2xl border border-[#dbe4f0] bg-white/90 px-4 py-2.5 text-xs shadow-sm backdrop-blur">
@@ -168,7 +168,7 @@ export default function SubsidyHero({ counts, activePrefectureCount }: { counts:
               <JapanNetworkMap />
             </div>
             <style>{`
-              @media (min-width: 1280px) {
+              @media (min-width: 1536px) {
                 .map-scale-wrapper {
                   transform-origin: top center !important;
                   transform: scale(1.02) translateX(-6%) translateY(4%) !important;
@@ -182,7 +182,7 @@ export default function SubsidyHero({ counts, activePrefectureCount }: { counts:
             initial={{ opacity: 0, x: 24 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.75, ease: EASE, delay: 0.15 }}
-            className="rounded-[28px] border border-[#dbe4f0] bg-white/90 p-5 shadow-xl shadow-slate-200/60 backdrop-blur-xl xl:mr-10"
+            className="rounded-[28px] border border-[#dbe4f0] bg-white/90 p-5 shadow-xl shadow-slate-200/60 backdrop-blur-xl 2xl:mr-10"
             aria-label="リアルタイム検知"
           >
             <div className="mb-5 flex items-center justify-between">
@@ -228,7 +228,7 @@ export default function SubsidyHero({ counts, activePrefectureCount }: { counts:
         </div>
 
         {/* ── 4特徴カード（地図下部に重ねる・glassmorphism） ── */}
-        <div className="relative z-10 -mt-28 grid gap-3 md:grid-cols-3 lg:-mt-24 lg:grid-cols-3 lg:pr-80 lg:pl-6 xl:-mt-16 xl:pl-16 xl:pr-[368px]">
+        <div className="relative z-10 -mt-28 grid gap-3 md:grid-cols-3 lg:-mt-24 lg:grid-cols-3 lg:pr-80 lg:pl-6 2xl:-mt-16 2xl:pl-16 2xl:pr-[368px]">
           {FEATURES.map((f, i) => (
             <motion.div
               key={f.title}
