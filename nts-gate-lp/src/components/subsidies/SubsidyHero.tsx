@@ -207,7 +207,7 @@ export default function SubsidyHero({ counts, activePrefectureCount }: { counts:
                   initial={{ opacity: 0, y: 8 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.4, delay: 0.35 + i * 0.09, ease: EASE }}
-                  className={`group cursor-pointer rounded-2xl border border-[#dbe4f0] bg-white p-3.5 transition hover:border-blue-200 hover:shadow-md${i === 3 ? " hidden xl:block" : ""}`}
+                  className={`group cursor-pointer rounded-2xl border border-[#dbe4f0] bg-white p-3.5 transition hover:border-blue-200 hover:shadow-md${i === 3 ? " hidden 2xl:block" : ""}`}
                 >
                   <div className="mb-1.5 flex items-center gap-2">
                     <span className="rounded-md bg-[#2563eb] px-1.5 py-0.5 text-[10px] font-bold text-white">
@@ -240,7 +240,7 @@ export default function SubsidyHero({ counts, activePrefectureCount }: { counts:
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.2 }}
               transition={{ duration: 0.5, delay: i * 0.08, ease: EASE }}
-              className="rounded-[20px] border border-white/60 bg-white/40 p-4 shadow-lg shadow-slate-200/30 backdrop-blur-md"
+              className="rounded-[20px] border border-white/40 bg-white/20 p-4 shadow-md shadow-slate-200/20 backdrop-blur-sm"
             >
               <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-blue-100/60 text-[#2563eb]">
                 {f.icon}
