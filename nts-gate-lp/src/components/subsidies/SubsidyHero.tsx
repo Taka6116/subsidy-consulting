@@ -105,9 +105,22 @@ export default function SubsidyHero({ counts, activePrefectureCount }: { counts:
                     backgroundClip: "text",
                   }}
                 >
-                  &ldquo;探す時代&rdquo;を
+                  &ldquo;探す時代&rdquo;
                 </span>
-                終わらせる。
+                を終わらせ
+              </span>
+              <span className="block whitespace-nowrap">
+                <span
+                  style={{
+                    background: "linear-gradient(90deg, #2563eb 0%, #22d3ee 100%)",
+                    WebkitBackgroundClip: "text",
+                    WebkitTextFillColor: "transparent",
+                    backgroundClip: "text",
+                  }}
+                >
+                  &ldquo;最速&rdquo;
+                </span>
+                で届ける
               </span>
             </h1>
 
@@ -166,7 +179,7 @@ export default function SubsidyHero({ counts, activePrefectureCount }: { counts:
             </div>
             <style>{`
               @media (min-width: 1280px) {
-                .map-scale-wrapper { transform: scale(1.25) translateX(-8%) translateY(6%) !important; }
+                .map-scale-wrapper { transform: scale(1.25) translateX(-8%) translateY(12%) !important; }
               }
             `}</style>
           </motion.div>
