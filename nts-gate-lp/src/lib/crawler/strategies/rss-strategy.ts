@@ -9,18 +9,17 @@ import type {
 import { fetchWithRetry } from "../utils/fetch-with-retry";
 import { DomainRateLimiter } from "../utils/rate-limiter";
 
-const INCLUDE_KEYWORDS = [
+const STRONG_INCLUDE_KEYWORDS = [
   "補助金",
   "助成金",
   "支援金",
   "給付金",
   "交付金",
-  "公募",
-  "募集",
-  "支援制度",
   "補助事業",
   "助成事業",
 ];
+const WEAK_INCLUDE_KEYWORDS = ["公募", "募集", "支援制度"];
+const WEAK_CONTEXT_KEYWORDS = ["中小企業", "事業者", "産業", "経営", "設備投資", "創業", "DX", "省エネ"];
 
 const EXCLUDE_KEYWORDS = ["終了", "締切済", "募集は終了", "受付終了", "実績報告", "交付決定一覧"];
 
@@ -28,6 +27,14 @@ const limiter = new DomainRateLimiter({ requestDelayMs: 1_000, maxConcurrent: 10
 
 function includesAnyKeyword(text: string, keywords: string[]) {
   return keywords.some((k) => text.includes(k));
+}
+
+function isLikelySubsidyTitle(title: string): boolean {
+  if (includesAnyKeyword(title, STRONG_INCLUDE_KEYWORDS)) return true;
+  if (includesAnyKeyword(title, WEAK_INCLUDE_KEYWORDS) && includesAnyKeyword(title, WEAK_CONTEXT_KEYWORDS)) {
+    return true;
+  }
+  return false;
 }
 
 function resolveUrl(baseUrl: string, maybeUrl: string): string | null {
@@ -99,7 +106,7 @@ export class RssStrategy implements CrawlStrategy {
           const pubDateRaw = el.find("pubDate").first().text().trim();
 
           if (!title || !linkRaw) return;
-          if (!includesAnyKeyword(title, INCLUDE_KEYWORDS)) return;
+          if (!isLikelySubsidyTitle(title)) return;
           if (includesAnyKeyword(title, EXCLUDE_KEYWORDS)) return;
 
           const url = resolveUrl(feedUrl, linkRaw);
@@ -119,7 +126,7 @@ export class RssStrategy implements CrawlStrategy {
           const updated = el.find("updated").first().text().trim() || el.find("published").first().text().trim();
 
           if (!title || !href) return;
-          if (!includesAnyKeyword(title, INCLUDE_KEYWORDS)) return;
+          if (!isLikelySubsidyTitle(title)) return;
           if (includesAnyKeyword(title, EXCLUDE_KEYWORDS)) return;
 
           const url = resolveUrl(feedUrl, href);
