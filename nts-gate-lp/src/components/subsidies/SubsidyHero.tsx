@@ -166,7 +166,7 @@ export default function SubsidyHero({ counts, activePrefectureCount }: { counts:
             </div>
             <style>{`
               @media (min-width: 1280px) {
-                .map-scale-wrapper { transform: scale(1.25) translateX(-8%) !important; }
+                .map-scale-wrapper { transform: scale(1.25) translateX(-8%) translateY(6%) !important; }
               }
             `}</style>
           </motion.div>
