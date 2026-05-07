@@ -7,7 +7,7 @@ import IntroOverlay from "@/components/subsidies/IntroOverlay";
 import SubsidyHero from "@/components/subsidies/SubsidyHero";
 
 type Counts = { grants: number; articles: number; videos: number; lps: number };
-type Props  = { counts: Counts };
+type Props  = { counts: Counts; activePrefectureCount: number };
 
 const CATEGORY_CARDS = [
   {
@@ -44,7 +44,7 @@ const CATEGORY_CARDS = [
   },
 ] as const;
 
-export default function SubsidiesGalaxyClient({ counts }: Props) {
+export default function SubsidiesGalaxyClient({ counts, activePrefectureCount }: Props) {
   const partnerHref = getPartnerUrl();
   const [introComplete, setIntroComplete] = useState(false);
   const handleIntroComplete = useCallback(() => setIntroComplete(true), []);
@@ -73,7 +73,7 @@ export default function SubsidiesGalaxyClient({ counts }: Props) {
         className="relative font-body"
       >
         {/* ヒーロー（地図 + コピー + リアルタイム検知 + 特徴カード） */}
-        <SubsidyHero counts={counts} />
+        <SubsidyHero counts={counts} activePrefectureCount={activePrefectureCount} />
 
         {/* ── カテゴリナビ ── */}
         <section className="mx-auto w-full max-w-[1400px] px-6 pb-16 pt-6">

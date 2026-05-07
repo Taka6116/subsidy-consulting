@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 export const revalidate = 300;
 
 export default async function SubsidiesPage() {
-  const [grantCount, articleCount, videoCount, lpCount] = await Promise.all([
+  const [grantCount, articleCount, videoCount, lpCount, prefectureRows] = await Promise.all([
     prisma.subsidyGrant.count({ where: { status: "open" } }),
     prisma.generatedContent.count({
       where: { contentType: "article", status: "published" },
@@ -24,7 +24,14 @@ export default async function SubsidiesPage() {
     prisma.generatedContent.count({
       where: { contentType: "lp", status: "published" },
     }),
+    prisma.subsidyGrant.findMany({
+      where: { status: "open", prefecture: { not: null } },
+      select: { prefecture: true },
+      distinct: ["prefecture"],
+    }),
   ]);
+
+  const activePrefectureCount = prefectureRows.length;
 
   return (
     <>
@@ -37,6 +44,7 @@ export default async function SubsidiesPage() {
             videos: videoCount,
             lps: lpCount,
           }}
+          activePrefectureCount={activePrefectureCount}
         />
       </main>
       <LpFooter />

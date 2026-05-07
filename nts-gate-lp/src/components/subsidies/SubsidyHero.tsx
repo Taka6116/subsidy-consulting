@@ -64,7 +64,7 @@ const FEATURES = [
   },
 ];
 
-export default function SubsidyHero({ counts }: { counts: Counts }) {
+export default function SubsidyHero({ counts, activePrefectureCount }: { counts: Counts; activePrefectureCount: number }) {
   return (
     <div
       className="relative overflow-hidden"
@@ -168,7 +168,7 @@ export default function SubsidyHero({ counts }: { counts: Counts }) {
             <div className="absolute left-4 top-4 z-10 rounded-2xl border border-[#dbe4f0] bg-white/90 px-4 py-2.5 text-xs shadow-sm backdrop-blur">
               <p className="font-mono text-[#94a3b8]">Active nodes</p>
               <p className="mt-0.5 font-bold text-[#0f172a]">
-                16<span className="ml-1 font-normal text-[#94a3b8]">/47</span>
+                {activePrefectureCount}<span className="ml-1 font-normal text-[#94a3b8]">/47</span>
               </p>
             </div>
 
