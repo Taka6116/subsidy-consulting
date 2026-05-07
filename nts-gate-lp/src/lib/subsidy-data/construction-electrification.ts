@@ -1,42 +1,8 @@
-export type ConstructionElectrificationSubsidy = {
-  id: string;
-  badge: string;
-  category: string;
-  headline: string;
-  headlineAccent: string;
-  subheadline: string;
-  benefits: Array<{ icon: "fuel" | "leaf" | "chart"; label: string }>;
-  dates: {
-    start: string;
-    deadline: string;
-    remainingDays: number;
-    maxAmount: string;
-  };
-  targetChecklist: string[];
-  targetIndustries: Array<{ label: string; desc: string }>;
-  beforeAfter: {
-    before: string[];
-    after: string[];
-  };
-  caseStudies: Array<{
-    industry: string;
-    result: string;
-    detail: string;
-    amount: string;
-  }>;
-  flow: Array<{
-    step: string;
-    title: string;
-    desc: string;
-  }>;
-  stats: Array<{
-    value: string;
-    label: string;
-    suffix?: string;
-  }>;
-};
+export type { SubsidyLpData as ConstructionElectrificationSubsidy } from "./types";
 
-export const constructionElectrificationSubsidy: ConstructionElectrificationSubsidy =
+import type { SubsidyLpData } from "./types";
+
+export const constructionElectrificationSubsidy: SubsidyLpData =
   {
     id: "construction-electrification-2025",
     badge: "令和7年度（補正）",

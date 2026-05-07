@@ -5,18 +5,18 @@ import {
   MessageSquareMore,
   ShieldCheck,
 } from "lucide-react";
-import type { ConstructionElectrificationSubsidy } from "@/lib/subsidy-data/construction-electrification";
+import type { SubsidyLpData } from "@/lib/subsidy-data/types";
 
 export default function FlowSection({
   data,
 }: {
-  data: ConstructionElectrificationSubsidy;
+  data: SubsidyLpData;
 }) {
   return (
     <section className="bg-white py-16 md:py-24">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
         <h2 className="mb-12 text-center text-2xl font-bold text-[#0B173A] md:text-3xl">
-          ご相談から採択・受給までの流れ
+          ???????????????
         </h2>
 
         <div className="mb-12 grid grid-cols-1 gap-4 md:grid-cols-5">
@@ -32,7 +32,7 @@ export default function FlowSection({
               <p className="text-xs leading-relaxed text-gray-500">{step.desc}</p>
               {index < data.flow.length - 1 && (
                 <span className="absolute -right-3 top-1/2 hidden -translate-y-1/2 text-xl font-bold text-gray-300 md:block">
-                  ›
+                  ?
                 </span>
               )}
             </div>
@@ -41,10 +41,10 @@ export default function FlowSection({
 
         <div className="grid grid-cols-2 gap-4 border-t border-gray-100 pt-8 md:grid-cols-4">
           {[
-            { label: "相談無料", Icon: MessageSquareMore },
-            { label: "全国対応", Icon: Globe2 },
-            { label: "採択率を高めるサポート", Icon: BadgeCheck },
-            { label: "申請後も伴走支援", Icon: FileCheck2 },
+            { label: "????", Icon: MessageSquareMore },
+            { label: "????", Icon: Globe2 },
+            { label: "???????????", Icon: BadgeCheck },
+            { label: "????????", Icon: FileCheck2 },
           ].map(({ label, Icon }) => (
             <div key={label} className="flex items-center justify-center gap-2">
               <Icon className="h-5 w-5 text-[#008894]" />
@@ -55,7 +55,7 @@ export default function FlowSection({
 
         <div className="mt-6 flex items-center justify-center gap-2 text-xs text-gray-500">
           <ShieldCheck className="h-4 w-4 text-[#008894]" />
-          専門チームが要件確認から受給完了まで段階ごとに伴走します。
+          ?????????????????????????????
         </div>
       </div>
     </section>

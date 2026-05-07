@@ -1,33 +1,36 @@
 import Image, { type StaticImageData } from "next/image";
 import Link from "next/link";
-import defaultHeroVisual from "../../../icon-assets/isometric_22.png";
 import constructionHeroVisual from "../../../icon-assets/construction-hero.webp";
-import type { ConstructionElectrificationSubsidy } from "@/lib/subsidy-data/construction-electrification";
+import dxHeroVisual from "../../../icon-assets/dx-hero.webp";
+import equipmentHeroVisual from "../../../icon-assets/equipment-hero.webp";
+import generalHeroVisual from "../../../icon-assets/general-hero.webp";
+import type { SubsidyLpData } from "@/lib/subsidy-data/types";
 
 const CONSTRUCTION_KEYWORDS = ["建設業", "建設機械", "重機", "建機"];
+const DX_KEYWORDS = ["DX", "デジタル", "IT導入", "デジタル化", "情報化", "クラウド"];
+const EQUIPMENT_KEYWORDS = ["設備投資", "生産性向上", "ものづくり", "設備更新", "設備導入", "製造"];
 
 function pickHeroVisual(category: string): {
   src: StaticImageData;
   alt: string;
   isPhotoStyle: boolean;
 } {
-  const matchesConstruction = CONSTRUCTION_KEYWORDS.some((keyword) =>
-    category.includes(keyword),
-  );
-  if (matchesConstruction) {
-    return {
-      src: constructionHeroVisual,
-      alt: "建設業向け補助金イメージ",
-      isPhotoStyle: true,
-    };
+  if (CONSTRUCTION_KEYWORDS.some((k) => category.includes(k))) {
+    return { src: constructionHeroVisual, alt: "建設業向け補助金イメージ", isPhotoStyle: true };
   }
-  return { src: defaultHeroVisual, alt: "補助金イメージ", isPhotoStyle: false };
+  if (DX_KEYWORDS.some((k) => category.includes(k))) {
+    return { src: dxHeroVisual, alt: "DX補助金イメージ", isPhotoStyle: true };
+  }
+  if (EQUIPMENT_KEYWORDS.some((k) => category.includes(k))) {
+    return { src: equipmentHeroVisual, alt: "設備投資補助金イメージ", isPhotoStyle: true };
+  }
+  return { src: generalHeroVisual, alt: "補助金イメージ", isPhotoStyle: true };
 }
 
 export default function HeroSection({
   data,
 }: {
-  data: ConstructionElectrificationSubsidy;
+  data: SubsidyLpData;
 }) {
   const heroVisual = pickHeroVisual(data.category);
 
