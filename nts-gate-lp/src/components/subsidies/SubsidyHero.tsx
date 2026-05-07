@@ -80,7 +80,7 @@ export default function SubsidyHero({ counts }: { counts: Counts }) {
       <div className="pointer-events-none absolute -bottom-28 right-[4%] h-[400px] w-[400px] rounded-full bg-cyan-200/20 blur-[120px]" />
 
       {/* ══ HERO ══ */}
-      <section className="relative z-10 mx-auto w-full max-w-[1400px] px-6 pb-10 pt-24 md:pt-28">
+      <section className="relative z-10 mx-auto w-full max-w-[1400px] px-6 pb-10 pt-20 md:pt-22 lg:pt-16">
         <div className="grid items-center gap-6 lg:grid-cols-[0.9fr_1.3fr_296px] lg:gap-8">
 
           {/* ── 左：コピー ── */}
@@ -91,7 +91,7 @@ export default function SubsidyHero({ counts }: { counts: Counts }) {
             className="flex flex-col"
           >
             {/* 上部タグ */}
-            <div className="mb-7 inline-flex w-fit items-center gap-2 rounded-full border border-blue-200/80 bg-blue-50 px-4 py-2 text-xs font-semibold text-blue-700">
+            <div className="mb-5 inline-flex w-fit items-center gap-2 rounded-full border border-blue-200/80 bg-blue-50 px-4 py-2 text-xs font-semibold text-blue-700">
               <span className="relative flex h-2 w-2">
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-blue-400 opacity-75" />
                 <span className="relative inline-flex h-2 w-2 rounded-full bg-blue-500" />
@@ -99,35 +99,36 @@ export default function SubsidyHero({ counts }: { counts: Counts }) {
               全国の補助金をAIがリアルタイム解析
             </div>
 
-            {/* キャッチコピー */}
+            {/* キャッチコピー：2行 */}
             <h1
-              className="font-heading font-black leading-[1.08] tracking-[-0.02em] text-[#0f172a]"
-              style={{ fontSize: "clamp(2.6rem, 4vw, 4.2rem)" }}
+              className="font-heading font-black leading-[1.1] tracking-[-0.02em] text-[#0f172a]"
+              style={{ fontSize: "clamp(2.2rem, 3.5vw, 4rem)" }}
             >
-              <span className="block">補助金情報を、</span>
-              <span
-                className="block"
-                style={{
-                  background: "linear-gradient(90deg, #2563eb 0%, #22d3ee 100%)",
-                  WebkitBackgroundClip: "text",
-                  WebkitTextFillColor: "transparent",
-                  backgroundClip: "text",
-                }}
-              >
-                &ldquo;探す時代&rdquo;を
+              <span className="block whitespace-nowrap">補助金情報を、</span>
+              <span className="block whitespace-nowrap">
+                <span
+                  style={{
+                    background: "linear-gradient(90deg, #2563eb 0%, #22d3ee 100%)",
+                    WebkitBackgroundClip: "text",
+                    WebkitTextFillColor: "transparent",
+                    backgroundClip: "text",
+                  }}
+                >
+                  &ldquo;探す時代&rdquo;を
+                </span>
+                終わらせる。
               </span>
-              <span className="block">終わらせる。</span>
             </h1>
 
             {/* 説明文 */}
-            <p className="mt-6 text-base leading-relaxed text-[#475569]">
+            <p className="mt-4 text-base leading-relaxed text-[#475569]">
               全国の自治体・省庁サイトをAIが24時間クロール。
               <br />
               公開直後に記事・LP・動画まで自動生成します。
             </p>
 
             {/* CTAボタン */}
-            <div className="mt-8 flex flex-wrap gap-3">
+            <div className="mt-6 flex flex-wrap gap-3">
               <Link
                 href="/consult"
                 className="inline-flex items-center justify-center rounded-2xl bg-[#2563eb] px-7 py-3.5 text-sm font-semibold text-white shadow-lg shadow-blue-500/30 transition-all hover:-translate-y-px hover:bg-blue-600 hover:shadow-xl"
@@ -143,7 +144,7 @@ export default function SubsidyHero({ counts }: { counts: Counts }) {
             </div>
 
             {/* 統計バッジ */}
-            <div className="mt-8 flex flex-wrap gap-2">
+            <div className="mt-5 flex flex-wrap gap-2">
               <span className="rounded-full border border-amber-200 bg-amber-50 px-3 py-1.5 text-xs font-medium text-amber-700">
                 掲載補助金 {counts.grants.toLocaleString()} 件
               </span>
