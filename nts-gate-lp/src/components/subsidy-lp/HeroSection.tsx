@@ -1,6 +1,7 @@
 import { BarChart3, Fuel, Leaf } from "lucide-react";
-import Image from "next/image";
-import heroVisual from "../../../icon-assets/isometric_22.png";
+import Image, { type StaticImageData } from "next/image";
+import defaultHeroVisual from "../../../icon-assets/isometric_22.png";
+import constructionHeroVisual from "../../../icon-assets/construction-hero.webp";
 import type { ConstructionElectrificationSubsidy } from "@/lib/subsidy-data/construction-electrification";
 
 const benefitIcons = {
@@ -9,21 +10,57 @@ const benefitIcons = {
   chart: BarChart3,
 } as const;
 
+const CONSTRUCTION_KEYWORDS = ["建設業", "建設機械", "重機", "建機"];
+
+function pickHeroVisual(category: string): {
+  src: StaticImageData;
+  alt: string;
+  isPhotoStyle: boolean;
+} {
+  const matchesConstruction = CONSTRUCTION_KEYWORDS.some((keyword) =>
+    category.includes(keyword),
+  );
+  if (matchesConstruction) {
+    return {
+      src: constructionHeroVisual,
+      alt: "建設業向け補助金イメージ",
+      isPhotoStyle: true,
+    };
+  }
+  return {
+    src: defaultHeroVisual,
+    alt: "補助金イメージ",
+    isPhotoStyle: false,
+  };
+}
+
 export default function HeroSection({
   data,
 }: {
   data: ConstructionElectrificationSubsidy;
 }) {
+  const heroVisual = pickHeroVisual(data.category);
+
   return (
     <section className="relative min-h-[520px] overflow-hidden bg-[#0B173A] md:min-h-[600px]">
       <Image
-        src={heroVisual}
-        alt="建設機械の電動化イメージ"
+        src={heroVisual.src}
+        alt={heroVisual.alt}
         fill
-        className="object-cover opacity-25"
+        className={
+          heroVisual.isPhotoStyle
+            ? "object-cover opacity-55"
+            : "object-cover opacity-25"
+        }
         priority
       />
-      <div className="absolute inset-0 bg-[#0B173A]/78" />
+      <div
+        className={
+          heroVisual.isPhotoStyle
+            ? "absolute inset-0 bg-gradient-to-r from-[#0B173A]/92 via-[#0B173A]/72 to-[#0B173A]/55"
+            : "absolute inset-0 bg-[#0B173A]/78"
+        }
+      />
 
       <div className="relative z-10 mx-auto max-w-7xl px-6 py-16 lg:px-8 md:py-20">
         <div className="flex flex-col items-start gap-10 lg:flex-row">
