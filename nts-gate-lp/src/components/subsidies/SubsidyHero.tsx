@@ -80,15 +80,15 @@ export default function SubsidyHero({ counts }: { counts: Counts }) {
       <div className="pointer-events-none absolute -bottom-28 right-[4%] h-[400px] w-[400px] rounded-full bg-cyan-200/20 blur-[120px]" />
 
       {/* ══ HERO ══ */}
-      <section className="relative z-10 mx-auto w-full max-w-[1400px] px-6 pb-10 pt-20 md:pt-22 lg:pt-16">
-        <div className="grid items-center gap-6 lg:grid-cols-[0.9fr_1.3fr_296px] lg:gap-8">
+      <section className="relative z-10 mx-auto w-full max-w-[1400px] px-0 pb-10 pt-20 md:pt-22 lg:pt-16">
+        <div className="grid items-center gap-6 lg:grid-cols-[0.9fr_2.6fr_296px] lg:gap-8">
 
           {/* ── 左：コピー ── */}
           <motion.div
             initial={{ opacity: 0, y: 28 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.75, ease: EASE }}
-            className="flex flex-col"
+            className="flex flex-col lg:pl-8 lg:-mt-10"
           >
             {/* 上部タグ */}
             <div className="mb-5 inline-flex w-fit items-center gap-2 rounded-full border border-blue-200/80 bg-blue-50 px-4 py-2 text-xs font-semibold text-blue-700">
@@ -164,20 +164,20 @@ export default function SubsidyHero({ counts }: { counts: Counts }) {
             transition={{ duration: 0.9, ease: EASE, delay: 0.1 }}
             className="relative h-[440px] overflow-visible md:h-[500px] lg:h-[560px]"
           >
-            {/* 1.3倍拡大・左に12%シフト */}
-            <div
-              className="absolute inset-0 origin-center"
-              style={{ transform: "scale(1.3) translateX(-12%)" }}
-            >
-              <JapanNetworkMap />
-            </div>
-
-            {/* Active nodes バッジ */}
-            <div className="absolute bottom-4 right-4 z-10 rounded-2xl border border-[#dbe4f0] bg-white/90 px-4 py-2.5 text-xs shadow-sm backdrop-blur">
+            {/* Active nodes バッジ：地図左上（赤枠位置） */}
+            <div className="absolute left-4 top-4 z-10 rounded-2xl border border-[#dbe4f0] bg-white/90 px-4 py-2.5 text-xs shadow-sm backdrop-blur">
               <p className="font-mono text-[#94a3b8]">Active nodes</p>
               <p className="mt-0.5 font-bold text-[#0f172a]">
                 16<span className="ml-1 font-normal text-[#94a3b8]">/47</span>
               </p>
+            </div>
+
+            {/* 1.5倍拡大・左に12%シフト */}
+            <div
+              className="absolute inset-0 origin-center"
+              style={{ transform: "scale(1.5) translateX(-12%)" }}
+            >
+              <JapanNetworkMap />
             </div>
           </motion.div>
 
@@ -207,7 +207,7 @@ export default function SubsidyHero({ counts }: { counts: Counts }) {
                   initial={{ opacity: 0, y: 8 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.4, delay: 0.35 + i * 0.09, ease: EASE }}
-                  className="group cursor-pointer rounded-2xl border border-[#dbe4f0] bg-white p-3.5 transition hover:border-blue-200 hover:shadow-md"
+                  className={`group cursor-pointer rounded-2xl border border-[#dbe4f0] bg-white p-3.5 transition hover:border-blue-200 hover:shadow-md${i === 3 ? " hidden xl:block" : ""}`}
                 >
                   <div className="mb-1.5 flex items-center gap-2">
                     <span className="rounded-md bg-[#2563eb] px-1.5 py-0.5 text-[10px] font-bold text-white">
