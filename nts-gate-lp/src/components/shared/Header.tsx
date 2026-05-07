@@ -95,10 +95,10 @@ export default function Header() {
               onClick={() => trackPartnerLinkClick("header_subsidies")}
               className="shrink-0 whitespace-nowrap text-xs font-medium text-[var(--text-secondary)] transition-colors hover:text-[var(--accent-navy)] lg:text-sm"
             >
-              提携先の方へ →
+              提携先の方へ
             </Link>
             <Link href="/check" className="shrink-0 whitespace-nowrap text-xs font-medium text-[var(--text-secondary)] transition-colors hover:text-[var(--accent-navy)] lg:text-sm">
-              補助金を申請したい方へ →
+              補助金を申請したい方へ
             </Link>
           </nav>
           {/* CTAボタンはnavの外・右端固定 */}
