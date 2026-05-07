@@ -150,7 +150,7 @@ export default function SubsidyHero({ counts, activePrefectureCount }: { counts:
             initial={{ opacity: 0, scale: 0.97 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.9, ease: EASE, delay: 0.1 }}
-            className="relative h-[440px] overflow-visible md:h-[500px] lg:h-[560px] xl:h-[560px]"
+            className="relative h-[440px] overflow-visible md:h-[500px] lg:h-[560px] xl:h-[620px]"
           >
             {/* 補助金公募中都道府県バッジ：地図左上 */}
             <div className="absolute -left-8 top-4 z-10 rounded-2xl border border-[#dbe4f0] bg-white/90 px-4 py-2.5 text-xs shadow-sm backdrop-blur">
@@ -160,7 +160,7 @@ export default function SubsidyHero({ counts, activePrefectureCount }: { counts:
               </p>
             </div>
 
-            {/* 地図スケール：lg以下=1.5倍、xl以上=1.25倍（北海道が隠れないよう縮小） */}
+            {/* 地図スケール：lg以下=1.5倍origin-center、xl以上=origin-topで上端固定 */}
             <div
               className="absolute inset-0 origin-center map-scale-wrapper"
               style={{ transform: "scale(1.5) translateX(-12%)" }}
@@ -169,7 +169,10 @@ export default function SubsidyHero({ counts, activePrefectureCount }: { counts:
             </div>
             <style>{`
               @media (min-width: 1280px) {
-                .map-scale-wrapper { transform: scale(1.25) translateX(-8%) translateY(12%) !important; }
+                .map-scale-wrapper {
+                  transform-origin: top center !important;
+                  transform: scale(1.15) translateX(-6%) !important;
+                }
               }
             `}</style>
           </motion.div>
