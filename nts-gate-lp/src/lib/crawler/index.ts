@@ -26,6 +26,7 @@ export async function crawlMunicipality(
 export * from "./strategies/base";
 export * from "./strategies/html-list-strategy";
 export * from "./strategies/rss-strategy";
+export * from "./llm/classify-subsidy";
 export * from "./utils/fetch-with-retry";
 export * from "./utils/rate-limiter";
 export * from "./utils/charset-detector";
