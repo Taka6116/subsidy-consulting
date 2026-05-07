@@ -162,7 +162,7 @@ export default function SubsidyHero({ counts, activePrefectureCount }: { counts:
             initial={{ opacity: 0, scale: 0.97 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.9, ease: EASE, delay: 0.1 }}
-            className="relative h-[440px] overflow-visible md:h-[500px] lg:h-[560px]"
+            className="relative overflow-visible h-[560px] md:h-[640px] lg:h-[720px] xl:h-[820px] 2xl:h-[960px]"
           >
             {/* Active nodes バッジ：地図左上（赤枠位置） */}
             <div className="absolute left-4 top-4 z-10 rounded-2xl border border-[#dbe4f0] bg-white/90 px-4 py-2.5 text-xs shadow-sm backdrop-blur">

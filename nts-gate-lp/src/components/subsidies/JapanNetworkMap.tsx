@@ -1,6 +1,6 @@
 "use client";
 
-import { memo } from "react";
+import React, { memo } from "react";
 import { ComposableMap, Geographies, Geography, Marker, Line } from "react-simple-maps";
 import { motion } from "framer-motion";
 
@@ -30,7 +30,28 @@ const NODES = [
 const TOKYO = { lng: 139.69, lat: 35.69 };
 const LINE_TARGETS = [0, 1, 4, 6, 8, 9, 12, 14];
 
+function useMapScale(): number {
+  const [scale, setScale] = React.useState(2400);
+
+  React.useEffect(() => {
+    const update = () => {
+      const w = window.innerWidth;
+      if (w >= 1920) setScale(3400);
+      else if (w >= 1600) setScale(2900);
+      else if (w >= 1440) setScale(2650);
+      else setScale(2400);
+    };
+    update();
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
+  }, []);
+
+  return scale;
+}
+
 export default memo(function JapanNetworkMap() {
+  const mapScale = useMapScale();
+
   return (
     <div className="relative h-full w-full overflow-hidden">
       {/* 変更3：中央グロー強化 */}
@@ -46,7 +67,7 @@ export default memo(function JapanNetworkMap() {
         projection="geoMercator"
         projectionConfig={{
           rotate: [-136, -36, 0],
-          scale: 2200,   // 変更1: 1750→2200（沖縄まで収まる最大値）
+          scale: mapScale,
           center: [0, 0],
         }}
         style={{ width: "100%", height: "100%" }}
