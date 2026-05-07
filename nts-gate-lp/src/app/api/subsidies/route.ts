@@ -19,8 +19,8 @@ function parseOffset(raw: string | null): number {
   return Math.floor(n);
 }
 
-function parseSource(raw: string | null): "jgrants" | "manual" | undefined {
-  if (raw === "jgrants" || raw === "manual") return raw;
+function parseSource(raw: string | null): "jgrants" | "manual" | "municipality" | "ministry" | undefined {
+  if (raw === "jgrants" || raw === "manual" || raw === "municipality" || raw === "ministry") return raw;
   return undefined;
 }
 
@@ -31,12 +31,13 @@ export async function GET(req: Request) {
     const offset = parseOffset(searchParams.get("offset"));
     const source = parseSource(searchParams.get("source"));
     const sourceRaw = searchParams.get("source");
+    const municipalityCode = searchParams.get("municipalityCode")?.trim() || null;
     /** 都道府県フィルター。"全国" を渡すと prefecture が null のものを含む全件。それ以外は完全一致 */
     const prefecture = searchParams.get("prefecture")?.trim() || null;
 
     if (sourceRaw && !source) {
       return NextResponse.json(
-        { error: "Invalid source. Use 'jgrants' or 'manual'." },
+        { error: "Invalid source. Use 'jgrants' | 'manual' | 'municipality' | 'ministry'." },
         { status: 400 },
       );
     }
@@ -66,7 +67,12 @@ export async function GET(req: Request) {
 
     const where = {
       status: "open" as const,
-      ...(source ? { source } : {}),
+      ...(source === "ministry"
+        ? { source: { in: ["meti", "chusho", "maff", "mlit", "ministry"] } }
+        : source
+          ? { source }
+          : {}),
+      ...(municipalityCode ? { municipalityCode } : {}),
       AND: exclusionAnd,
       ...prefectureFilter,
     };
@@ -89,6 +95,10 @@ export async function GET(req: Request) {
           prefecture: true,
           status: true,
           source: true,
+          municipalityCode: true,
+          officialPageUrl: true,
+          institutionName: true,
+          fetchedAt: true,
           updatedAt: true,
         },
       }),
@@ -100,6 +110,8 @@ export async function GET(req: Request) {
       total,
       limit,
       offset,
+      source: source ?? null,
+      municipalityCode,
     });
   } catch (error) {
     console.error("[api/subsidies] failed to query database:", error);

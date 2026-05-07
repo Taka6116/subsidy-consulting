@@ -144,6 +144,25 @@ function pickArea(rawPayload: RawPayloadLike): string {
   return "全国";
 }
 
+function sourceBadgeLabel(
+  source: string,
+  opts: { municipalityName: string | null; institutionName: string | null },
+): string {
+  if (source === "jgrants") return "jGrants";
+  if (source === "manual") return "NTS取扱";
+  if (source === "municipality") return `${opts.municipalityName ?? "自治体"}公式`;
+  if (["meti", "chusho", "maff", "mlit"].includes(source)) return "省庁公式";
+  return source;
+}
+
+function formatFetchedAtJP(value: Date | null): string {
+  if (!value) return "-";
+  return `${value.toLocaleDateString("ja-JP")} ${value.toLocaleTimeString("ja-JP", {
+    hour: "2-digit",
+    minute: "2-digit",
+  })}`;
+}
+
 function remainingDays(deadlineLabel: string | null, deadline: Date | null): number | null {
   const raw = deadlineLabel ?? deadline?.toISOString() ?? null;
   if (!raw) return null;
@@ -191,6 +210,10 @@ export default async function SubsidyDetailPage({ params }: DetailPageProps) {
         targetIndustryNote: true,
         source: true,
         updatedAt: true,
+        municipalityCode: true,
+        officialPageUrl: true,
+        institutionName: true,
+        fetchedAt: true,
         rawPayload: true,
       },
     }),
@@ -208,6 +231,17 @@ export default async function SubsidyDetailPage({ params }: DetailPageProps) {
     }),
   ]);
 
+  const municipality = grant?.municipalityCode
+    ? await prisma.municipality.findUnique({
+        where: { code: grant.municipalityCode },
+        select: {
+          name: true,
+          officialUrl: true,
+          lastCrawledAt: true,
+        },
+      })
+    : null;
+
   const realtimeItems = recentSubsidies.map((s) => ({
     area: pickArea(toObj(s.rawPayload)),
     title: s.name ?? "名称未設定",
@@ -216,11 +250,23 @@ export default async function SubsidyDetailPage({ params }: DetailPageProps) {
 
   const raw = toObj(grant?.rawPayload);
   const titleFromRaw = getString(raw, "title");
-  const institutionName = getString(raw, "institution_name") ?? "所管未設定";
+  const institutionName =
+    grant?.institutionName ??
+    getString(raw, "institution_name") ??
+    municipality?.name ??
+    "所管未設定";
   const targetArea = getString(raw, "target_area_search") ?? grant?.targetIndustryNote ?? "全国";
   const acceptanceStart = formatDateJP(getString(raw, "acceptance_start_datetime"));
   const acceptanceEnd = formatDateJP(getString(raw, "acceptance_end_datetime") ?? grant?.deadlineLabel ?? null);
   const displayName = grant?.name ?? titleFromRaw ?? "名称未設定";
+  const officialPageUrl = grant?.officialPageUrl ?? getString(raw, "official_page_url");
+  const sourceBadge = grant
+    ? sourceBadgeLabel(grant.source, {
+        municipalityName: municipality?.name ?? null,
+        institutionName,
+      })
+    : "-";
+  const fetchedAtLabel = formatFetchedAtJP(grant?.fetchedAt ?? null);
   const context = classifyGrantContext(displayName);
   const amountLabel = grant ? formatAmountLabel(grant.maxAmountLabel, raw) : "-";
   const amountValue = grant ? parseAmount(grant.maxAmountLabel, raw) : null;
@@ -267,7 +313,10 @@ export default async function SubsidyDetailPage({ params }: DetailPageProps) {
                       更新: {new Date(grant.updatedAt).toLocaleDateString("ja-JP")}
                     </span>
                     <span className="rounded-full bg-[#f4f2ee] px-2.5 py-1 text-xs text-[#5f5c55]">
-                      {grant.source === "manual" ? "NTS取扱" : "jGrants"}
+                      {sourceBadge}
+                    </span>
+                    <span className="rounded-full bg-[#f4f2ee] px-2.5 py-1 text-xs text-[#5f5c55]">
+                      取得: {fetchedAtLabel}
                     </span>
                   </div>
 
@@ -348,6 +397,7 @@ export default async function SubsidyDetailPage({ params }: DetailPageProps) {
                           ["対象エリア", targetArea],
                           ["公募期間", `${acceptanceStart} 〜 ${acceptanceEnd}`],
                           ["所管省庁", institutionName],
+                          ["情報取得日時", fetchedAtLabel],
                         ].map(([k, v]) => (
                           <tr key={k}>
                             <th className="w-40 bg-[#f9f7f3] px-4 py-3 text-left font-medium text-[#625f58]">
@@ -360,6 +410,23 @@ export default async function SubsidyDetailPage({ params }: DetailPageProps) {
                     </table>
                   </div>
                 </section>
+
+                {officialPageUrl ? (
+                  <section className="rounded-xl border border-[#d8e7f5] bg-[#f5f9ff] p-6 shadow-sm">
+                    <h2 className="text-xl font-semibold text-[#2f2e2b]">公式ページ</h2>
+                    <p className="mt-2 text-sm text-[#4d5b69]">
+                      最新の公募要領・要件は原典で確認してください。
+                    </p>
+                    <Link
+                      href={officialPageUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="mt-4 inline-flex items-center rounded-full bg-[#0d2640] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#12365a]"
+                    >
+                      公式ページで確認する ↗
+                    </Link>
+                  </section>
+                ) : null}
 
                 <section className="rounded-xl border border-neutral-200 bg-white p-6 shadow-sm">
                   <h2 className="text-xl font-semibold text-[#2f2e2b]">申請の流れ</h2>
