@@ -28,6 +28,16 @@ const MAX_TITLE_LEN = 400;
 const MAX_DESC_LEN = 20_000;
 const MAX_INSTITUTION_LEN = 255;
 
+function getJstHour(now = new Date()) {
+  const jst = new Date(now.getTime() + 9 * 60 * 60 * 1000);
+  return jst.getUTCHours();
+}
+
+function isNightWindowJst(now = new Date()) {
+  const hour = getJstHour(now);
+  return hour >= 21 || hour < 7;
+}
+
 function toIsoDateOrNull(input) {
   if (!input) return null;
   const dt = new Date(input);
@@ -399,6 +409,29 @@ export async function handler(event = {}) {
   if (!DATABASE_URL) throw new Error("DATABASE_URL is required");
   if (!VERCEL_APP_URL) throw new Error("VERCEL_APP_URL is required");
   if (!MUNICIPALITY_CRAWLER_TOKEN) throw new Error("MUNICIPALITY_CRAWLER_TOKEN is required");
+
+  const forceRun =
+    event?.force === true ||
+    process.env.MUNICIPALITY_CRAWLER_FORCE_RUN === "1";
+
+  if (!forceRun && isNightWindowJst()) {
+    const hour = getJstHour();
+    const report = {
+      ok: true,
+      event,
+      skipped: true,
+      reason: `night-window-jst:${hour}`,
+      pickedMunicipalities: 0,
+      processedMunicipalities: 0,
+      totalLinksFound: 0,
+      totalNewGrants: 0,
+      totalUpdatedGrants: 0,
+      municipalities: [],
+      elapsedMs: Date.now() - startedAt,
+    };
+    console.log(`${LOG} skipped in night window`, JSON.stringify(report));
+    return report;
+  }
 
   const { Client } = pg;
   const client = new Client({

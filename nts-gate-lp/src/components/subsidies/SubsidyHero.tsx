@@ -2,7 +2,7 @@
 
 import dynamic from "next/dynamic";
 import Link from "next/link";
-import { motion, type Easing } from "framer-motion";
+import { AnimatePresence, motion, type Easing } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 
 /* 地図はSSRなしで読み込む（react-simple-mapsがブラウザ専用） */
@@ -276,41 +276,49 @@ export default function SubsidyHero({ counts, activePrefectureCount }: { counts:
               </span>
             </div>
 
-            <ul className="space-y-2.5 overflow-hidden">
+            <AnimatePresence mode="wait">
               {visibleItems === null ? (
-                Array.from({ length: 3 }).map((_, i) => (
-                  <li key={i} className="animate-pulse rounded-2xl border border-[#dbe4f0] bg-white p-3.5">
-                    <div className="mb-2 h-3 w-1/2 rounded bg-slate-100" />
-                    <div className="h-4 w-3/4 rounded bg-slate-100" />
-                    <div className="mt-2 h-2.5 w-1/4 rounded bg-slate-100" />
-                  </li>
-                ))
+                <ul key="skeleton" className="space-y-2.5 overflow-hidden">
+                  {Array.from({ length: 3 }).map((_, i) => (
+                    <li key={i} className="animate-pulse rounded-2xl border border-[#dbe4f0] bg-white p-3.5">
+                      <div className="mb-2 h-3 w-1/2 rounded bg-slate-100" />
+                      <div className="h-4 w-3/4 rounded bg-slate-100" />
+                      <div className="mt-2 h-2.5 w-1/4 rounded bg-slate-100" />
+                    </li>
+                  ))}
+                </ul>
               ) : (
-                visibleItems.map((item, i) => (
-                  <motion.li
-                    key={`${visibleStart}-${i}`}
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ duration: 0.45, delay: i * 0.08, ease: EASE }}
-                    className={`group cursor-pointer rounded-2xl border border-[#dbe4f0] bg-white p-3.5 transition hover:border-blue-200 hover:shadow-md${i === 3 ? " hidden 2xl:block" : ""}`}
-                  >
-                    <div className="mb-1.5 flex items-center gap-2">
-                      <span className="rounded-md bg-[#2563eb] px-1.5 py-0.5 text-[10px] font-bold text-white">
-                        NEW
-                      </span>
-                      <p className="text-xs font-semibold text-[#475569]">{item.area}</p>
-                      <span className="ml-auto text-[#cbd5e1] transition group-hover:text-blue-400">›</span>
-                    </div>
-                    <p className="text-sm font-semibold leading-snug text-[#0f172a]">{item.title}</p>
-                    <p className="mt-1.5 font-mono text-[11px] text-[#94a3b8]">
-                      {item.minutesAgo !== null
-                        ? `公開 ${formatElapsed(item.minutesAgo + tick)}`
-                        : "公開情報あり"}
-                    </p>
-                  </motion.li>
-                ))
+                <motion.ul
+                  key={`live-${visibleStart}`}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.65, ease: EASE }}
+                  className="space-y-2.5 overflow-hidden"
+                >
+                  {visibleItems.map((item, i) => (
+                    <li
+                      key={`${item.id}-${i}`}
+                      className={`group cursor-pointer rounded-2xl border border-[#dbe4f0] bg-white p-3.5 transition hover:border-blue-200 hover:shadow-md${i === 3 ? " hidden 2xl:block" : ""}`}
+                    >
+                      <div className="mb-1.5 flex items-center gap-2">
+                        <span className="rounded-md bg-[#2563eb] px-1.5 py-0.5 text-[10px] font-bold text-white">
+                          NEW
+                        </span>
+                        <p className="text-xs font-semibold text-[#475569]">{item.area}</p>
+                        <span className="ml-auto text-[#cbd5e1] transition group-hover:text-blue-400">›</span>
+                      </div>
+                      <p className="text-sm font-semibold leading-snug text-[#0f172a]">{item.title}</p>
+                      <p className="mt-1.5 font-mono text-[11px] text-[#94a3b8]">
+                        {item.minutesAgo !== null
+                          ? `公開 ${formatElapsed(item.minutesAgo + tick)}`
+                          : "公開情報あり"}
+                      </p>
+                    </li>
+                  ))}
+                </motion.ul>
               )}
-            </ul>
+            </AnimatePresence>
 
             <Link
               href="/subsidies/list"
