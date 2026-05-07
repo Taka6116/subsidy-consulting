@@ -71,8 +71,8 @@ export default function SubsidyHero({ counts, activePrefectureCount }: { counts:
       <div className="pointer-events-none absolute -bottom-28 right-[4%] h-[400px] w-[400px] rounded-full bg-cyan-200/20 blur-[120px]" />
 
       {/* ══ HERO ══ */}
-      <section className="relative z-10 mx-auto w-full max-w-[1400px] px-0 pb-10 pt-20 md:pt-22 lg:pt-16">
-        <div className="grid items-center gap-6 lg:grid-cols-[0.9fr_2.6fr_296px] lg:gap-8">
+      <section className="relative z-10 w-full pb-10 pt-20 md:pt-22 lg:pt-16">
+        <div className="grid items-center gap-6 lg:grid-cols-[0.9fr_2.6fr_296px] lg:gap-8 xl:grid-cols-[0.9fr_2.6fr_320px]">
 
           {/* ── 左：コピー ── */}
           <motion.div
@@ -147,7 +147,7 @@ export default function SubsidyHero({ counts, activePrefectureCount }: { counts:
             initial={{ opacity: 0, scale: 0.97 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.9, ease: EASE, delay: 0.1 }}
-            className="relative h-[440px] overflow-visible md:h-[500px] lg:h-[560px]"
+            className="relative h-[440px] overflow-visible md:h-[500px] lg:h-[560px] xl:h-[640px] 2xl:h-[700px]"
           >
             {/* 補助金公募中都道府県バッジ：地図左上 */}
             <div className="absolute -left-8 top-4 z-10 rounded-2xl border border-[#dbe4f0] bg-white/90 px-4 py-2.5 text-xs shadow-sm backdrop-blur">
@@ -217,7 +217,7 @@ export default function SubsidyHero({ counts, activePrefectureCount }: { counts:
         </div>
 
         {/* ── 4特徴カード（地図下部に重ねる・glassmorphism） ── */}
-        <div className="relative z-10 -mt-28 grid gap-3 md:grid-cols-3 lg:-mt-24 lg:grid-cols-3 lg:pr-80 lg:pl-6">
+        <div className="relative z-10 -mt-28 grid gap-3 md:grid-cols-3 lg:-mt-24 lg:grid-cols-3 lg:pr-80 lg:pl-6 xl:pr-[336px]">
           {FEATURES.map((f, i) => (
             <motion.div
               key={f.title}
