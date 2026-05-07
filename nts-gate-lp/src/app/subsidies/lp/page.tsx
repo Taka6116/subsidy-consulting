@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Header from "@/components/shared/Header";
 import LpFooter from "@/components/gate-lp/LpFooter";
-import Link from "next/link";
 import { prisma } from "@/lib/db/prisma";
 import SubsidiesLpClient from "./SubsidiesLpClient";
 
@@ -129,51 +128,8 @@ export default async function SubsidiesLpIndexPage() {
           </div>
         </section>
 
-        {/* 特集LP（固定カード） */}
-        <section className="border-b border-white/10 bg-[rgba(7,21,37,0.7)] px-6 py-10">
-          <div className="mx-auto max-w-7xl">
-            <p className="mb-5 text-xs font-bold tracking-[0.14em] text-[#7DD3FC]">
-              特集補助金 — NTS専門LPあり
-            </p>
-            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-              {FEATURED_LPS.map((lp) => (
-                <Link
-                  key={lp.href}
-                  href={lp.href}
-                  className="group flex flex-col overflow-hidden rounded-[16px] border border-[#7DD3FC]/30 bg-[rgba(30,100,200,0.08)] shadow-[0_2px_12px_rgba(125,211,252,0.08)] transition hover:-translate-y-0.5 hover:border-[#7DD3FC]/60 hover:shadow-[0_6px_20px_rgba(125,211,252,0.15)]"
-                >
-                  <div className="flex flex-1 flex-col px-5 py-5">
-                    <span className="mb-2 inline-block self-start rounded-full bg-[#7DD3FC]/10 px-2.5 py-0.5 text-[11px] font-semibold text-[#7DD3FC]">
-                      {lp.badge}
-                    </span>
-                    <h3 className="mb-2 line-clamp-2 text-base font-bold leading-snug text-white">
-                      {lp.name}
-                    </h3>
-                    <p className="mb-4 line-clamp-2 text-xs leading-relaxed text-white/60">
-                      {lp.copy}
-                    </p>
-                    <dl className="mt-auto grid grid-cols-2 gap-2">
-                      <div className="rounded-[8px] bg-white/[0.04] p-2.5">
-                        <dt className="text-[10px] font-medium text-white/50">補助上限</dt>
-                        <dd className="mt-0.5 text-xs font-semibold text-white">{lp.amount}</dd>
-                      </div>
-                      <div className="rounded-[8px] bg-white/[0.04] p-2.5">
-                        <dt className="text-[10px] font-medium text-white/50">締切目安</dt>
-                        <dd className="mt-0.5 text-xs font-semibold text-white">{lp.deadline}</dd>
-                      </div>
-                    </dl>
-                    <div className="mt-4 text-xs font-semibold text-[#7DD3FC] underline-offset-4 group-hover:underline">
-                      専門LPを見る →
-                    </div>
-                  </div>
-                </Link>
-              ))}
-            </div>
-          </div>
-        </section>
-
         <section className="mx-auto max-w-7xl px-6 py-12 lg:py-16">
-          <SubsidiesLpClient rows={rows} />
+          <SubsidiesLpClient rows={rows} featuredLps={FEATURED_LPS} />
         </section>
       </main>
       <LpFooter />
