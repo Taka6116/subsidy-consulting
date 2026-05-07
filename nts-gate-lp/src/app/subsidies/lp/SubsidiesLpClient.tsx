@@ -68,21 +68,34 @@ function formatDeadlineLabel(
   return null;
 }
 
+function formatYen(yen: number): string {
+  const man = yen / 10000;
+  if (man >= 10000) {
+    const oku = man / 10000;
+    return `最大${oku % 1 === 0 ? oku.toFixed(0) : oku.toFixed(1)}億円`;
+  }
+  return `最大${Math.round(man).toLocaleString("ja-JP")}万円`;
+}
+
 function formatMaxAmount(
   label: string | null | undefined,
   amountStr: string | null | undefined,
 ): string | null {
   const raw = label?.trim();
-  if (raw) return raw.startsWith("最大") ? raw : `最大 ${raw}`;
+  if (raw) {
+    // 「最大1,431,000,000円」のように円単位の数値が混入している場合は変換
+    const numericMatch = raw.match(/最大([0-9,]+)円/);
+    if (numericMatch) {
+      const yen = Number(numericMatch[1].replace(/,/g, ""));
+      if (Number.isFinite(yen) && yen > 0) return formatYen(yen);
+    }
+    // 既に「最大〇〇万円」「最大〇〇億円」形式ならそのまま
+    return raw.startsWith("最大") ? raw : `最大${raw}`;
+  }
   if (!amountStr) return null;
   const yen = Number(amountStr);
   if (!Number.isFinite(yen) || yen <= 0) return null;
-  const man = yen / 10000;
-  if (man >= 10000) {
-    const oku = man / 10000;
-    return `最大 ${oku.toFixed(oku >= 10 ? 0 : 1)}億円`;
-  }
-  return `最大 ${Math.round(man).toLocaleString("ja-JP")}万円`;
+  return formatYen(yen);
 }
 
 function parseHeroCopy(body: string | null): string | null {

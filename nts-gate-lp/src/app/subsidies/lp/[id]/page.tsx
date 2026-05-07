@@ -67,11 +67,21 @@ export default async function SubsidyLpPage({ params }: Props) {
   if (!grant) notFound();
 
   // 専用設計の個別LPへリダイレクト
-  const isConstructionElectrification =
-    grant.name?.includes("商用車等の電動化促進事業（建設機械）") ||
-    grant.name?.includes("高用車等の電動化促進事業（建設機械）");
-  if (isConstructionElectrification) {
+  const name = grant.name ?? "";
+  if (
+    name.includes("商用車等の電動化促進事業（建設機械）") ||
+    name.includes("高用車等の電動化促進事業（建設機械）")
+  ) {
     redirect("/subsidies/construction-electrification");
+  }
+  if (name.includes("デジタル技術導入")) {
+    redirect("/subsidies/dx-support");
+  }
+  if (name.includes("賃上げ環境整備")) {
+    redirect("/subsidies/wage-support");
+  }
+  if (name.includes("ものづくり・商業・サービス生産性向上促進補助金")) {
+    redirect("/subsidies/monodukuri-business");
   }
 
   const lpContent = grant.contents[0] ?? null;

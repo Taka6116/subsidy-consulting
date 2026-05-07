@@ -79,6 +79,26 @@ export const metadata: Metadata = {
 
 export const revalidate = 300;
 
+// 専用LP が存在する補助金の grant.id（動的カードから除外するため）
+const DEDICATED_LP_GRANT_IDS = new Set([
+  "6a3d0ab9-a809-4175-aa5e-90de437b8931", // 令和7年度（補正）商用車等の電動化促進事業（建設機械）
+  "b4069491-2fca-4be7-9b2f-d78fc2be1650", // 令和6年度補正予算 商用車等の電動化促進事業
+  "88dd0856-9201-45df-ad8b-c8c83472f00c", // 令和7年度補正予算 商用車等の電動化促進事業
+  "7152db8b-561f-4863-a1cf-c9585dbdb5fa", // 中小・小規模企業デジタル技術導入等緊急支援事業費補助金
+  "0be58438-f9b7-4f2c-b268-bdac62206ea3", // 中小・小規模事業者賃上げ環境整備支援補助金
+  "3dc697a6-1100-4832-84d1-81c23b04153d", // 中小・小規模事業者賃上げ環境整備支援補助金（別レコード）
+  "7568bddb-d453-47d9-9dd3-a7f17644a908", // 令和8年_設備投資
+  "78c0b3e8-0e32-455e-aaa2-6742c75deb23", // ものづくり補助金21次
+  "7e0a85e7-a3c5-4ff1-9ee2-4e991cca300f", // ものづくり補助金19次
+  "878c848d-9d00-48ea-8fbd-6a1b55fad214", // ものづくり補助金20次
+  "13a8828e-3646-4bdc-a854-b5f5767fb53b", // ものづくり補助金22次
+  "c79da422-866e-42e1-a37b-c7196db632bc", // 食品等物流合理化緊急対策事業（物流）
+  "280f0902-6d50-45d7-a1fb-b265bb7af971", // 食品等物流合理化緊急対策事業（輸出物流）
+  "4d6cd8a1-c047-4a9c-8d30-1e8dea559681", // 島根県地域物流効率化
+  "99e1d191-fe5e-4cb8-9f66-3a28749fa8d3", // 副業・兼業人材活用促進補助金
+  "34fbaf27-54a0-4396-b386-ec33d054d0e2", // 県外専門人材確保支援補助金
+]);
+
 export default async function SubsidiesLpIndexPage() {
   const raw = await prisma.generatedContent.findMany({
     where: {
@@ -104,7 +124,10 @@ export default async function SubsidiesLpIndexPage() {
     },
   });
 
-  const rows = raw.map((r) => ({
+  // 専用LPが存在するものは動的カードから除外（重複防止）
+  const filtered = raw.filter((r) => !DEDICATED_LP_GRANT_IDS.has(r.grant.id));
+
+  const rows = filtered.map((r) => ({
     id: r.id,
     title: r.title,
     body: r.body,
