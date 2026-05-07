@@ -71,15 +71,15 @@ export default memo(function JapanNetworkMap() {
                 geography={geo}
                 style={{
                   default: {
-                    fill: "rgba(235,244,255,0.55)",
+                    fill: "rgba(219,234,254,0.25)",
                     stroke: "#93c5fd",
-                    strokeWidth: 0.45,
+                    strokeWidth: 0.5,
                     outline: "none",
                   },
                   hover: {
-                    fill: "rgba(219,234,254,0.70)",
+                    fill: "rgba(219,234,254,0.45)",
                     stroke: "#60a5fa",
-                    strokeWidth: 0.6,
+                    strokeWidth: 0.7,
                     outline: "none",
                   },
                   pressed: { outline: "none" },

@@ -156,18 +156,15 @@ export default function SubsidyHero({ counts }: { counts: Counts }) {
             </div>
           </motion.div>
 
-          {/* ── 中央：日本地図 ── */}
+          {/* ── 中央：日本地図（ボックスなし・背景に溶け込む） ── */}
           <motion.div
             initial={{ opacity: 0, scale: 0.97 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.9, ease: EASE, delay: 0.1 }}
             className="relative h-[440px] md:h-[500px] lg:h-[560px]"
           >
-            {/* glassmorphism card */}
-            <div className="absolute inset-0 overflow-hidden rounded-[40px] border border-white bg-white/55 shadow-2xl shadow-slate-200/50 backdrop-blur-xl" />
-
-            {/* 地図本体 */}
-            <div className="absolute inset-0 overflow-hidden rounded-[40px]">
+            {/* 地図本体（枠なし・背景透過） */}
+            <div className="absolute inset-0">
               <JapanNetworkMap />
             </div>
 

@@ -70,43 +70,41 @@ export default function Header() {
 
       {isSubsidies ? (
         <>
+          {/* ナビリンク：CTA除外・フォント小さめで1段に収める */}
           <nav
-            className="flex w-full flex-wrap items-center justify-start gap-x-3 gap-y-2 sm:ml-4 sm:w-auto sm:flex-1 sm:justify-end sm:gap-x-4 lg:ml-8 lg:gap-x-6"
+            className="flex min-w-0 flex-1 items-center justify-end gap-x-3 overflow-hidden sm:ml-2 lg:ml-6 lg:gap-x-5"
             aria-label="補助金プラットフォーム"
           >
-            <Link href="/subsidies" className={`${navLinkClass(heroStyle)} shrink-0`}>
+            <Link href="/subsidies" className="shrink-0 whitespace-nowrap text-xs font-medium text-[var(--text-secondary)] transition-colors hover:text-[var(--accent-navy)] lg:text-sm">
               トップへ
             </Link>
-            <Link href="/subsidies/list" className={`${navLinkClass(heroStyle)} shrink-0`}>
+            <Link href="/subsidies/list" className="shrink-0 whitespace-nowrap text-xs font-medium text-[var(--text-secondary)] transition-colors hover:text-[var(--accent-navy)] lg:text-sm">
               補助金一覧
             </Link>
-            <Link href="/subsidies/articles" className={`${navLinkClass(heroStyle)} shrink-0`}>
+            <Link href="/subsidies/articles" className="shrink-0 whitespace-nowrap text-xs font-medium text-[var(--text-secondary)] transition-colors hover:text-[var(--accent-navy)] lg:text-sm">
               解説記事
             </Link>
-            <Link href="/subsidies/lp" className={`${navLinkClass(heroStyle)} shrink-0`}>
+            <Link href="/subsidies/lp" className="shrink-0 whitespace-nowrap text-xs font-medium text-[var(--text-secondary)] transition-colors hover:text-[var(--accent-navy)] lg:text-sm">
               補助金ページ
             </Link>
-            <Link href="/subsidies/videos" className={`${navLinkClass(heroStyle)} shrink-0`}>
+            <Link href="/subsidies/videos" className="shrink-0 whitespace-nowrap text-xs font-medium text-[var(--text-secondary)] transition-colors hover:text-[var(--accent-navy)] lg:text-sm">
               動画
             </Link>
             <Link
               href={partnerHref}
               onClick={() => trackPartnerLinkClick("header_subsidies")}
-              className={`${navLinkClass(heroStyle)} shrink-0`}
+              className="shrink-0 whitespace-nowrap text-xs font-medium text-[var(--text-secondary)] transition-colors hover:text-[var(--accent-navy)] lg:text-sm"
             >
-              提携先の方へ
-              <span className="ml-0.5" aria-hidden="true">
-                →
-              </span>
+              提携先の方へ →
             </Link>
-            <Link href="/check" className={`${navLinkClass(heroStyle)} shrink-0`}>
-              補助金を申請したい方へ
-              <span className="ml-0.5" aria-hidden="true">
-                →
-              </span>
+            <Link href="/check" className="shrink-0 whitespace-nowrap text-xs font-medium text-[var(--text-secondary)] transition-colors hover:text-[var(--accent-navy)] lg:text-sm">
+              補助金を申請したい方へ →
             </Link>
-            <HeaderCtaGroup />
           </nav>
+          {/* CTAボタンはnavの外・右端固定 */}
+          <div className="shrink-0">
+            <HeaderCtaGroup />
+          </div>
         </>
       ) : (
         <div className="flex min-w-0 flex-1 flex-col gap-2.5 sm:flex-row sm:items-center sm:justify-end sm:gap-4 md:gap-5">
