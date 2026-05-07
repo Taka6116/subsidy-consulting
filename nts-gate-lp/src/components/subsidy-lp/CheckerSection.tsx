@@ -29,11 +29,11 @@ export default function CheckerSection({
       <div className="mx-auto max-w-4xl px-6 lg:px-8">
         <div className="text-center mb-10">
           <h2 className="text-2xl font-bold text-[#0B173A] md:text-3xl">
-            ?????????????
+            あなたの会社は対象ですか？
           </h2>
           <p className="mt-3 text-sm leading-relaxed text-gray-500">
-            ???????????????????<br className="hidden sm:inline" />
-            <span className="font-semibold text-[#008894]">1?????????</span>??????????????????????
+            当てはまる項目にチェックしてください。<br className="hidden sm:inline" />
+            <span className="font-semibold text-[#008894]">1つでも当てはまれば</span>、本補助金の対象企業である可能性があります。
           </p>
         </div>
 
@@ -79,7 +79,6 @@ export default function CheckerSection({
           ))}
         </div>
 
-        {/* ????? */}
         <div
           className={[
             "mt-8 rounded-2xl px-6 py-5 transition-all md:flex md:items-center md:justify-between md:gap-6",
@@ -102,19 +101,19 @@ export default function CheckerSection({
               {checkedCount === 0 ? (
                 <>
                   <p className="text-sm font-bold text-gray-500">
-                    ?????????????????????
+                    気になる項目にチェックを入れてみてください
                   </p>
                   <p className="mt-1 text-xs text-gray-400">
-                    1????????????????????????
+                    1つでも当てはまれば、対象となる可能性があります。
                   </p>
                 </>
               ) : (
                 <>
                   <p className="text-base font-bold text-[#0B173A]">
-                    <span className="text-[#008894]">{checkedCount}??</span>??????????
+                    <span className="text-[#008894]">{checkedCount}項目</span>が当てはまっています
                   </p>
                   <p className="mt-1 text-sm text-gray-600">
-                    ????????????????????????????????????????
+                    本補助金の対象企業である可能性があります。まずは無料相談で詳細をご確認ください。
                   </p>
                 </>
               )}
@@ -129,7 +128,7 @@ export default function CheckerSection({
                 : "bg-[#0B173A] hover:bg-[#162340]",
             ].join(" ")}
           >
-            ????????? ?
+            無料相談を予約する →
           </a>
         </div>
       </div>

@@ -17,10 +17,10 @@ export default function TargetIndustriesSection({
     <section className="bg-white py-16 md:py-24">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
         <h2 className="mb-5 text-center text-2xl font-bold text-[#0B173A] md:text-3xl">
-          ????????????????
+          こんな企業におすすめの補助金です
         </h2>
         <p className="mx-auto mb-12 max-w-2xl text-center text-sm leading-relaxed text-gray-500 md:text-base">
-          ????????????????????????????????????
+          下記いずれかに該当する企業は、本補助金の対象となる可能性が高い領域です。
         </p>
 
         <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-4">
@@ -51,26 +51,26 @@ export default function TargetIndustriesSection({
             </div>
             <div>
               <p className="mb-1 text-sm font-bold text-[#0B173A]">
-                ???????????????????????????
+                予算がなくなり次第終了のため、早めの検討がおすすめです
               </p>
               <p className="text-xs leading-relaxed text-gray-500">
-                ??????????????????????????????????????????
+                本補助金は予算上限に達し次第、受付終了となります。早めのご相談で採択率も高まります。
               </p>
             </div>
           </div>
           <div className="flex-shrink-0 text-right">
-            <p className="mb-1 text-xs text-gray-500">??????</p>
+            <p className="mb-1 text-xs text-gray-500">申請締切まで</p>
             <p className="text-2xl font-bold text-[#0B173A]">
-              ??
-              <span className="text-[#FEA00D]">{data.dates.remainingDays}</span>?
+              あと
+              <span className="text-[#FEA00D]">{data.dates.remainingDays}</span>日
             </p>
-            <p className="text-xs text-gray-400">{data.dates.deadline}??</p>
+            <p className="text-xs text-gray-400">{data.dates.deadline}まで</p>
           </div>
           <a
             href="#contact"
             className="inline-flex flex-shrink-0 items-center whitespace-nowrap rounded-lg bg-[#FEA00D] px-6 py-3 text-sm font-bold text-white transition-colors hover:bg-[#e8900a]"
           >
-            ?????????? ?
+            今すぐ無料で相談する →
           </a>
         </div>
       </div>
