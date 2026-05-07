@@ -9,7 +9,7 @@
 
 import type { Metadata } from "next";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { prisma } from "@/lib/db/prisma";
 import Header from "@/components/shared/Header";
 import { TemperatureCTA } from "@/components/shared/CTAButton";
@@ -82,6 +82,14 @@ export default async function SubsidyLpPage({ params }: Props) {
   });
 
   if (!grant) notFound();
+
+  // 専用設計の個別LPへ誘導（/subsidies/lp 一覧カードからの遷移も統一）
+  const isConstructionElectrification =
+    grant.name?.includes("商用車等の電動化促進事業（建設機械）") ||
+    grant.name?.includes("高用車等の電動化促進事業（建設機械）");
+  if (isConstructionElectrification) {
+    redirect("/subsidies/construction-electrification");
+  }
 
   // ========== [LEGACY 2026-04-30] 動画セクション用データ取得 - Phase 3では表示のみ非表示 ==========
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
