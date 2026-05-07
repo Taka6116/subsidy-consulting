@@ -26,13 +26,20 @@ model SubsidyGrant {
   updatedAt          DateTime @updatedAt // auto-updated by Prisma (DB default is for initial fill)
   syncRunId          String?
 
-  status        String    @default("open")
-  source        String    @default("manual")
-  subsidyAmount BigInt?   @map("subsidy_amount")
-  subsidyRate   Decimal?  @map("subsidy_rate") @db.Decimal(4, 2)
-  deadline      DateTime? @db.Date
-  /** 対象地域。"全国" / "東京都" / "愛知県" など。jGrants の target_area_search から抽出 */
-  prefecture    String?
+  status           String    @default("open")
+  source           String    @default("manual")
+  subsidyAmount    BigInt?   @map("subsidy_amount")
+  subsidyRate      Decimal?  @map("subsidy_rate") @db.Decimal(4, 2)
+  deadline         DateTime? @db.Date
+  municipalityCode String?   @map("municipality_code")
+  officialPageUrl  String?   @map("official_page_url")
+  institutionName  String?   @map("institution_name")
+  fetchedAt        DateTime? @map("fetched_at")
+  contentHash      String?   @map("content_hash")
+  /**
+   * 対象地域。"全国" / "東京都" / "愛知県" など。jGrants の target_area_search から抽出
+   */
+  prefecture       String?
 
   syncRun  SubsidySyncRun?    @relation(fields: [syncRunId], references: [id], onDelete: SetNull)
   contents GeneratedContent[]
@@ -41,6 +48,50 @@ model SubsidyGrant {
   @@index([syncedAt])
   @@index([updatedAt])
   @@index([prefecture])
+  @@index([municipalityCode])
+  @@index([officialPageUrl])
+}
+
+model Municipality {
+  id             String    @id @default(cuid())
+  code           String    @unique
+  name           String
+  prefectureName String    @map("prefecture_name")
+  type           String
+  officialUrl    String?   @map("official_url")
+  subsidyPageUrl String?   @map("subsidy_page_url")
+  feedUrl        String?   @map("feed_url")
+  crawlStrategy  String    @default("html_list") @map("crawl_strategy")
+  crawlConfig    Json?     @map("crawl_config")
+  lastCrawledAt  DateTime? @map("last_crawled_at")
+  crawlStatus    String    @default("pending") @map("crawl_status")
+  errorMessage   String?   @map("error_message")
+  priority       Int       @default(0)
+  createdAt      DateTime  @default(now()) @map("created_at")
+  updatedAt      DateTime  @updatedAt @map("updated_at")
+
+  crawlResults MunicipalityCrawlResult[]
+
+  @@index([prefectureName])
+  @@index([crawlStatus])
+  @@index([lastCrawledAt])
+  @@map("municipalities")
+}
+
+model MunicipalityCrawlResult {
+  id             String       @id @default(cuid())
+  municipalityId String       @map("municipality_id")
+  municipality   Municipality @relation(fields: [municipalityId], references: [id], onDelete: Cascade)
+  crawledAt      DateTime     @default(now()) @map("crawled_at")
+  linksFound     Int          @default(0) @map("links_found")
+  newGrants      Int          @default(0) @map("new_grants")
+  updatedGrants  Int          @default(0) @map("updated_grants")
+  errors         Json?
+  duration       Int?
+
+  @@index([municipalityId])
+  @@index([crawledAt])
+  @@map("municipality_crawl_results")
 }
 
 /// 補助金に紐づく生成コンテンツ（記事 / LP / 台本等）
@@ -81,8 +132,8 @@ model ContentJob {
 
   grant SubsidyGrant @relation(fields: [subsidyId], references: [id], onDelete: Cascade)
 
-  @@index([subsidyId])
   @@unique([subsidyId, jobType])
+  @@index([subsidyId])
   @@map("content_jobs")
 }
 
@@ -99,33 +150,33 @@ model SyncLog {
 
 /// 静的マスタ（LP 等で参照）。既存テーブルを保持するためモデル化。
 model StaticSubsidy {
-  id                        String    @id @db.VarChar(100)
-  title                     String    @db.Text
-  summary                   String    @db.Text
-  subsidyMaxLimit           BigInt?   @map("subsidy_max_limit")
-  subsidyRate               String?   @map("subsidy_rate") @db.VarChar(50)
-  targetAreaSearch          String?   @map("target_area_search") @db.Text
-  targetNumberOfEmployees   String?   @map("target_number_of_employees") @db.Text
-  acceptanceStatus          String?   @map("acceptance_status") @db.VarChar(100)
-  acceptanceEndDatetime     DateTime? @map("acceptance_end_datetime")
-  targetThemes              String[]  @default([]) @map("target_themes")
-  excludedIndustries        String[]  @default([]) @map("excluded_industries")
-  officialUrl               String?   @map("official_url") @db.Text
-  institutionName           String?   @map("institution_name") @db.Text
-  isActive                  Boolean?  @map("is_active")
-  createdAt                 DateTime? @map("created_at")
-  updatedAt                 DateTime? @map("updated_at")
+  id                      String    @id @db.VarChar(100)
+  title                   String    @db.Text
+  summary                 String    @db.Text
+  subsidyMaxLimit         BigInt?   @map("subsidy_max_limit")
+  subsidyRate             String?   @map("subsidy_rate") @db.VarChar(50)
+  targetAreaSearch        String?   @map("target_area_search") @db.Text
+  targetNumberOfEmployees String?   @map("target_number_of_employees") @db.Text
+  acceptanceStatus        String?   @map("acceptance_status") @db.VarChar(100)
+  acceptanceEndDatetime   DateTime? @map("acceptance_end_datetime")
+  targetThemes            String[]  @default([]) @map("target_themes")
+  excludedIndustries      String[]  @default([]) @map("excluded_industries")
+  officialUrl             String?   @map("official_url") @db.Text
+  institutionName         String?   @map("institution_name") @db.Text
+  isActive                Boolean?  @map("is_active")
+  createdAt               DateTime? @map("created_at")
+  updatedAt               DateTime? @map("updated_at")
 
   @@map("static_subsidies")
 }
 
 /// メールマガジン購読者（補助金速報メール登録）
 model Subscriber {
-  id         String    @id @default(uuid()) @db.Uuid
-  email      String    @unique
-  source     String?   @db.VarChar(100) // "article-cta" / "lp-subscribe" / "exit-intent" など
-  subsidyId  String?   @map("subsidy_id") @db.VarChar(100) // 紐づく補助金ID（任意）
-  createdAt  DateTime  @default(now()) @map("created_at")
+  id             String    @id @default(uuid()) @db.Uuid
+  email          String    @unique
+  source         String?   @db.VarChar(100) // "article-cta" / "lp-subscribe" / "exit-intent" など
+  subsidyId      String?   @map("subsidy_id") @db.VarChar(100) // 紐づく補助金ID（任意）
+  createdAt      DateTime  @default(now()) @map("created_at")
   unsubscribedAt DateTime? @map("unsubscribed_at")
 
   @@index([email])
