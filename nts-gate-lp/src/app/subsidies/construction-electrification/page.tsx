@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Header from "@/components/shared/Header";
 import LpFooter from "@/components/gate-lp/LpFooter";
 import HeroSection from "@/components/subsidy-lp/HeroSection";
+import CheckerSection from "@/components/subsidy-lp/CheckerSection";
 import TargetIndustriesSection from "@/components/subsidy-lp/TargetIndustriesSection";
 import BeforeAfterSection from "@/components/subsidy-lp/BeforeAfterSection";
 import CaseStudiesSection from "@/components/subsidy-lp/CaseStudiesSection";
@@ -22,6 +23,7 @@ export default function ConstructionElectrificationLP() {
       <Header />
       <main className="bg-white pt-16 sm:pt-20">
         <HeroSection data={data} />
+        <CheckerSection data={data} />
         <TargetIndustriesSection data={data} />
         <BeforeAfterSection data={data} />
         <CaseStudiesSection data={data} />
