@@ -32,7 +32,7 @@ const LINE_TARGETS = [0, 1, 4, 6, 8, 9, 12, 14];
 
 export default memo(function JapanNetworkMap() {
   return (
-    <div className="relative h-full w-full overflow-hidden">
+    <div className="relative h-full w-full overflow-visible">
       {/* 変更3：中央グロー強化 */}
       <div
         className="pointer-events-none absolute inset-0 z-[1]"
@@ -46,7 +46,7 @@ export default memo(function JapanNetworkMap() {
         projection="geoMercator"
         projectionConfig={{
           rotate: [-136, -36, 0],
-          scale: 2200,   // 変更1: 1750→2200（沖縄まで収まる最大値）
+          scale: 2000,
           center: [0, 0],
         }}
         style={{ width: "100%", height: "100%" }}
