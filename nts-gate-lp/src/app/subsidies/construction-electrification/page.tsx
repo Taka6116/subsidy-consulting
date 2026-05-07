@@ -7,7 +7,7 @@ import BeforeAfterSection from "@/components/subsidy-lp/BeforeAfterSection";
 import CaseStudiesSection from "@/components/subsidy-lp/CaseStudiesSection";
 import FlowSection from "@/components/subsidy-lp/FlowSection";
 import FinalCtaSection from "@/components/subsidy-lp/FinalCtaSection";
-import StatsSection from "@/components/subsidy-lp/StatsSection";
+import PartnerConsultValueSection from "@/components/gate-lp/partner/PartnerConsultValueSection";
 import { constructionElectrificationSubsidy as data } from "@/lib/subsidy-data/construction-electrification";
 
 export const metadata: Metadata = {
@@ -27,7 +27,7 @@ export default function ConstructionElectrificationLP() {
         <CaseStudiesSection data={data} />
         <FlowSection data={data} />
         <FinalCtaSection />
-        <StatsSection data={data} />
+        <PartnerConsultValueSection />
 
         <section id="contact" className="bg-[#F3F6FA] py-14">
           <div className="mx-auto max-w-3xl px-6 text-center">
