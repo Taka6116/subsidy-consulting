@@ -171,7 +171,7 @@ export default function SubsidyHero({ counts, activePrefectureCount }: { counts:
               @media (min-width: 1280px) {
                 .map-scale-wrapper {
                   transform-origin: top center !important;
-                  transform: scale(1.2) translateX(-6%) translateY(8%) !important;
+                  transform: scale(1.02) translateX(-6%) translateY(4%) !important;
                 }
               }
             `}</style>
@@ -228,7 +228,7 @@ export default function SubsidyHero({ counts, activePrefectureCount }: { counts:
         </div>
 
         {/* ── 4特徴カード（地図下部に重ねる・glassmorphism） ── */}
-        <div className="relative z-10 -mt-28 grid gap-3 md:grid-cols-3 lg:-mt-24 lg:grid-cols-3 lg:pr-80 lg:pl-6 xl:-mt-40 xl:pl-16 xl:pr-[368px]">
+        <div className="relative z-10 -mt-28 grid gap-3 md:grid-cols-3 lg:-mt-24 lg:grid-cols-3 lg:pr-80 lg:pl-6 xl:-mt-16 xl:pl-16 xl:pr-[368px]">
           {FEATURES.map((f, i) => (
             <motion.div
               key={f.title}
