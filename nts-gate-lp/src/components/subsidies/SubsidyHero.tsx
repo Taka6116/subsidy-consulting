@@ -150,7 +150,7 @@ export default function SubsidyHero({ counts, activePrefectureCount }: { counts:
             initial={{ opacity: 0, scale: 0.97 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.9, ease: EASE, delay: 0.1 }}
-            className="relative h-[440px] overflow-visible md:h-[500px] lg:h-[560px] xl:h-[600px] 2xl:h-[680px]"
+            className="relative h-[440px] overflow-visible md:h-[500px] lg:h-[560px] xl:h-[600px] 2xl:h-[740px]"
           >
             {/* 補助金公募中都道府県バッジ：地図左上 */}
             <div className="absolute -left-8 top-4 z-10 rounded-2xl border border-[#dbe4f0] bg-white/90 px-4 py-2.5 text-xs shadow-sm backdrop-blur">
@@ -170,14 +170,20 @@ export default function SubsidyHero({ counts, activePrefectureCount }: { counts:
             <style>{`
               @media (min-width: 1280px) {
                 .map-scale-wrapper {
-                  transform-origin: top center !important;
-                  transform: scale(1.1) translateX(-7%) translateY(1%) !important;
+                  transform-origin: center center !important;
+                  transform: scale(1.05) translateX(-7%) translateY(4%) !important;
                 }
               }
               @media (min-width: 1536px) {
                 .map-scale-wrapper {
-                  transform-origin: top center !important;
-                  transform: scale(0.99) translateX(-6%) translateY(7%) !important;
+                  transform-origin: center center !important;
+                  transform: scale(0.95) translateX(-5%) translateY(5%) !important;
+                }
+              }
+              @media (min-width: 1920px) {
+                .map-scale-wrapper {
+                  transform-origin: center center !important;
+                  transform: scale(0.88) translateX(-4%) translateY(6%) !important;
                 }
               }
             `}</style>

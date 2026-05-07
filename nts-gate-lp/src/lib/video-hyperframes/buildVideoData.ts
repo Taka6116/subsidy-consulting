@@ -265,7 +265,7 @@ export function buildHyperframesVideoData(
       id: "cta",
       start: ctaStart,
       duration: ctaDuration,
-      kicker: "FREE CONSULTATION",
+      kicker: "無料相談",
       title: "自社で使えるか、まずは無料で確認できます",
       lines: [truncate(subsidyName, 42), "日本提携支援が活用設計から伴走します"],
       voiceover: ctaVoiceover,

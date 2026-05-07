@@ -1,9 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import { ArrowDown, ArrowLeft, ArrowRight } from "lucide-react";
-import { AnimatePresence, motion } from "framer-motion";
-import { useEffect, useState } from "react";
+import { ArrowRight } from "lucide-react";
+import { motion } from "framer-motion";
 import isometric13 from "../../../../icon-assets/isometric_13.webp";
 import isometric16 from "../../../../icon-assets/isometric_16.webp";
 import isometric21 from "../../../../icon-assets/isometric_21.png";
@@ -45,7 +44,6 @@ const steps = [
   },
 ];
 
-const flowGridSteps = [steps[0], steps[1], steps[3], steps[2]];
 const consultantPhotos = [PANA3025, PANA2727, PANA2741, PANA2962, PANA2975];
 
 const EASE_OUT = [0.22, 1, 0.36, 1] as const;
@@ -58,17 +56,6 @@ const fadeUp = (delay: number) => ({
 });
 
 export default function PartnerFlowSection() {
-  const [offset, setOffset] = useState(0);
-
-  useEffect(() => {
-    const id = setInterval(() => setOffset((o) => (o + 1) % consultantPhotos.length), 5000);
-    return () => clearInterval(id);
-  }, []);
-
-  // カルーセル: offset番が主役大1枚、残り4枚を右グリッドに表示
-  const heroPhoto = consultantPhotos[offset % consultantPhotos.length];
-  const subPhotos = [1, 2, 3, 4].map((d) => consultantPhotos[(offset + d) % consultantPhotos.length]);
-
   return (
     <section
       className="section-alt relative py-32 md:py-40"
@@ -89,152 +76,68 @@ export default function PartnerFlowSection() {
         </motion.div>
 
         <div className="space-y-12 lg:space-y-14">
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-6">
-            {flowGridSteps.map((step, i) => {
-              const showRightArrow = i === 0;
-              const showDownArrow = i === 1;
-              const showLeftArrow = i === 3;
-
-              return (
-                <motion.div
-                  key={step.number}
-                  {...fadeUp(i * 0.08)}
-                  className="relative flex min-h-0 flex-col"
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4 xl:gap-3">
+            {steps.map((step, i) => (
+              <motion.div
+                key={step.number}
+                {...fadeUp(i * 0.08)}
+                className="relative flex min-h-0 flex-col"
+              >
+                <div
+                  className="flex h-full min-h-[248px] flex-col overflow-hidden rounded-2xl border bg-white shadow-[0_2px_14px_rgba(26,76,142,0.08)]"
+                  style={{ borderColor: "rgba(26, 76, 142, 0.08)" }}
                 >
                   <div
-                    className="flex h-full min-h-[260px] flex-col overflow-hidden rounded-2xl border bg-white shadow-[0_2px_14px_rgba(26,76,142,0.08)]"
-                    style={{ borderColor: "rgba(26, 76, 142, 0.08)" }}
+                    className="relative h-[98px] w-full shrink-0 overflow-hidden"
+                    style={{ background: step.bg }}
+                    data-placeholder={`flow-step-${step.number}`}
                   >
-                    <div
-                      className="relative h-[112px] w-full shrink-0 overflow-hidden"
-                      style={{ background: step.bg }}
-                      data-placeholder={`flow-step-${step.number}`}
-                    >
-                      <Image
-                        src={step.image}
-                        alt={`${step.title}のイラスト`}
-                        width={640}
-                        height={640}
-                        className="absolute bottom-0 left-1/2 h-[86%] w-auto -translate-x-1/2 object-contain"
-                      />
-                    </div>
-                    <div className="flex flex-1 flex-col px-6 py-5">
-                      <h3 className="mb-2 text-base font-bold text-[var(--text-primary)]">
-                        {step.title}
-                      </h3>
-                      <p className="text-sm leading-relaxed text-[var(--text-secondary)]">
-                        {step.body}
-                      </p>
-                    </div>
+                    <Image
+                      src={step.image}
+                      alt={`${step.title}のイラスト`}
+                      width={640}
+                      height={640}
+                      className="absolute bottom-0 left-1/2 h-[84%] w-auto -translate-x-1/2 object-contain"
+                    />
                   </div>
+                  <div className="flex flex-1 flex-col px-5 py-4">
+                    <h3 className="mb-2 text-base font-bold text-[var(--text-primary)]">
+                      {step.title}
+                    </h3>
+                    <p className="text-sm leading-relaxed text-[var(--text-secondary)]">
+                      {step.body}
+                    </p>
+                  </div>
+                </div>
 
-                  {showRightArrow && (
-                    <span
-                      className="absolute right-[-18px] top-1/2 z-10 hidden h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white text-[var(--accent-teal)] shadow-[0_4px_14px_rgba(26,76,142,0.12)] sm:flex"
-                      aria-hidden
-                    >
-                      <ArrowRight className="h-5 w-5" />
-                    </span>
-                  )}
-                  {showDownArrow && (
-                    <span
-                      className="absolute -bottom-[20px] left-1/2 z-10 hidden h-9 w-9 -translate-x-1/2 items-center justify-center rounded-full bg-white text-[var(--accent-teal)] shadow-[0_4px_14px_rgba(26,76,142,0.12)] sm:flex"
-                      aria-hidden
-                    >
-                      <ArrowDown className="h-5 w-5" />
-                    </span>
-                  )}
-                  {showLeftArrow && (
-                    <span
-                      className="absolute left-[-18px] top-1/2 z-10 hidden h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white text-[var(--accent-teal)] shadow-[0_4px_14px_rgba(26,76,142,0.12)] sm:flex"
-                      aria-hidden
-                    >
-                      <ArrowLeft className="h-5 w-5" />
-                    </span>
-                  )}
-                </motion.div>
-              );
-            })}
+                {i < steps.length - 1 && (
+                  <span
+                    className="absolute -right-5 top-1/2 z-10 hidden h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white text-[var(--accent-teal)] shadow-[0_4px_14px_rgba(26,76,142,0.12)] xl:flex"
+                    aria-hidden
+                  >
+                    <ArrowRight className="h-5 w-5" />
+                  </span>
+                )}
+              </motion.div>
+            ))}
           </div>
 
-          {/* 右カラム: カルーセル（PC） 大1枚＋2×2グリッド4枚均等 */}
+          {/* 下段: 写真5枚横並び */}
           <motion.div
             {...fadeUp(0.18)}
-            className="hidden lg:flex lg:min-h-[420px] lg:w-full lg:flex-row lg:gap-3"
+            className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-5"
             aria-label="日本提携支援の担当者"
           >
-            {/* 左側: ヒーロー大1枚（カルーセル切り替え） */}
-            <div className="relative flex-1 overflow-hidden rounded-[22px] shadow-[0_18px_46px_-26px_rgba(26,76,142,0.48)]">
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={heroPhoto.src}
-                  className="absolute inset-0"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.8 }}
-                >
-                  <Image
-                    src={heroPhoto}
-                    alt="日本提携支援の担当者"
-                    fill
-                    sizes="(max-width: 1280px) 20vw, 260px"
-                    quality={90}
-                    className="object-cover object-[50%_15%]"
-                  />
-                </motion.div>
-              </AnimatePresence>
-            </div>
-
-            {/* 右側: 2×2 グリッド 4枚均等（カルーセル連動） */}
-            <div className="grid flex-1 grid-cols-2 grid-rows-2 gap-3">
-              {subPhotos.map((photo, i) => (
-                <div
-                  key={`${photo.src}-${i}`}
-                  className="relative overflow-hidden rounded-[22px] shadow-[0_18px_46px_-26px_rgba(26,76,142,0.48)]"
-                >
-                  <AnimatePresence mode="wait">
-                    <motion.div
-                      key={photo.src}
-                      className="absolute inset-0"
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
-                      transition={{ duration: 0.8, delay: i * 0.06 }}
-                    >
-                      <Image
-                        src={photo}
-                        alt="日本提携支援の担当者"
-                        fill
-                        sizes="(max-width: 1280px) 10vw, 130px"
-                        quality={90}
-                        className="object-cover object-[50%_15%]"
-                      />
-                    </motion.div>
-                  </AnimatePresence>
-                </div>
-              ))}
-            </div>
-          </motion.div>
-
-          {/* モバイル・タブレット: 2列グリッド表示 */}
-          <motion.div
-            {...fadeUp(0.18)}
-            className="grid grid-cols-2 gap-4 lg:hidden"
-            aria-label="日本提携支援の担当者（モバイル）"
-          >
-            {consultantPhotos.map((photo, i) => (
+            {consultantPhotos.map((photo) => (
               <div
                 key={photo.src}
-                className={`relative min-h-[260px] overflow-hidden rounded-[22px] shadow-[0_18px_46px_-26px_rgba(26,76,142,0.48)] ${
-                  i === 1 || i === 3 ? "mt-4" : ""
-                }`}
+                className="relative aspect-[4/5] overflow-hidden rounded-[22px] shadow-[0_18px_46px_-26px_rgba(26,76,142,0.48)]"
               >
                 <Image
                   src={photo}
                   alt="日本提携支援の担当者"
                   fill
-                  sizes="45vw"
+                  sizes="(max-width: 1024px) 45vw, (max-width: 1536px) 18vw, 220px"
                   quality={90}
                   className="object-cover object-[50%_15%]"
                 />

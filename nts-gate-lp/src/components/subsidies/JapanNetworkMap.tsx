@@ -32,7 +32,7 @@ const LINE_TARGETS = [0, 1, 4, 6, 8, 9, 12, 14];
 
 export default memo(function JapanNetworkMap() {
   return (
-    <div className="relative h-full w-full overflow-visible">
+    <div className="relative h-full w-full overflow-hidden">
       {/* 変更3：中央グロー強化 */}
       <div
         className="pointer-events-none absolute inset-0 z-[1]"

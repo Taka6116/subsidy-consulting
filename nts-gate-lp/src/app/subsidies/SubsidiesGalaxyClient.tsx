@@ -13,7 +13,6 @@ const CATEGORY_CARDS = [
   {
     href: "/subsidies/list",
     label: "補助金一覧",
-    sub: "GRANT DATABASE",
     desc: "省庁・jGrantsから自動収集した最新補助金を検索。締切・上限額・対象業種を一目で確認。",
     badge: "最速更新",
     badgeClass: "bg-amber-50 text-amber-700 ring-amber-200",
@@ -21,7 +20,6 @@ const CATEGORY_CARDS = [
   {
     href: "/subsidies/articles",
     label: "解説記事",
-    sub: "EXPERT ARTICLES",
     desc: "補助金ごとの詳しい解説・申請ポイントをまとめた専門記事。",
     badge: "補助金記事",
     badgeClass: "bg-blue-50 text-blue-700 ring-blue-200",
@@ -29,7 +27,6 @@ const CATEGORY_CARDS = [
   {
     href: "/subsidies/lp",
     label: "活用ガイド",
-    sub: "ACTION GUIDE",
     desc: "制度ごとの対象課題・活用例・申請の流れをLP形式で整理。",
     badge: "webページ",
     badgeClass: "bg-teal-50 text-teal-700 ring-teal-200",
@@ -37,7 +34,6 @@ const CATEGORY_CARDS = [
   {
     href: "/subsidies/videos",
     label: "解説動画",
-    sub: "VIDEO GUIDE",
     desc: "音声ナレーション付きの動画で補助金の概要を手軽に理解。通勤中にも。",
     badge: "補助金解説動画",
     badgeClass: "bg-emerald-50 text-emerald-700 ring-emerald-200",
@@ -77,13 +73,7 @@ export default function SubsidiesGalaxyClient({ counts, activePrefectureCount }:
 
         {/* ── カテゴリナビ ── */}
         <section className="mx-auto w-full max-w-[1400px] px-6 pb-16 pt-6">
-          <div className="mb-6 flex items-center gap-3">
-            <div className="h-px flex-1 bg-gradient-to-r from-transparent via-slate-300 to-transparent" />
-            <p className="text-[10px] font-semibold tracking-[0.3em] text-slate-400">
-              EXPLORE CATEGORIES
-            </p>
-            <div className="h-px flex-1 bg-gradient-to-r from-transparent via-slate-300 to-transparent" />
-          </div>
+          <div className="mb-6 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent" />
 
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {CATEGORY_CARDS.map((card) => (
@@ -97,9 +87,6 @@ export default function SubsidiesGalaxyClient({ counts, activePrefectureCount }:
                     {card.badge}
                   </span>
                 </div>
-                <p className="mb-0.5 text-[9px] font-semibold tracking-[0.25em] text-slate-400">
-                  {card.sub}
-                </p>
                 <h2 className="font-heading text-lg font-semibold text-[#0f172a]">{card.label}</h2>
                 <p className="mt-3 flex-1 text-sm leading-relaxed text-[#475569]">{card.desc}</p>
                 <div className="mt-5 flex items-center gap-1 text-xs font-semibold text-[#2563eb] transition-all duration-150 group-hover:gap-2">
@@ -115,7 +102,6 @@ export default function SubsidiesGalaxyClient({ counts, activePrefectureCount }:
         <div className="w-full border-t border-slate-200 bg-[#0f172a]">
           <div className="mx-auto flex max-w-[1400px] flex-col items-center gap-4 px-6 py-10 sm:flex-row sm:justify-between">
             <div>
-              <p className="text-[10px] tracking-[0.2em] text-white/40">FREE CONSULTATION</p>
               <p className="mt-1 text-base font-medium text-white">
                 あなたのビジネスに最適な補助金を、専門家が無料でご提案します。
               </p>

@@ -1,207 +1,229 @@
 "use client";
 
+import Image from "next/image";
+import isometric04 from "../../../../icon-assets/isometric_04.png";
+import isometric06 from "../../../../icon-assets/isometric_06.png";
+import isometric08 from "../../../../icon-assets/isometric_08.png";
+import isometric10 from "../../../../icon-assets/isometric_10.png";
+import isometric11 from "../../../../icon-assets/isometric_11.png";
+
+const steps = [
+  {
+    image: isometric06,
+    title: "ヒアリング・対話",
+    body: "経営層や現場の方への対話を通じて、事業や組織の実態を多角的に理解します。",
+  },
+  {
+    image: isometric10,
+    title: "情報収集・分析",
+    body: "既存資料や公開情報なども活用し、課題の背景や構造を整理・分析します。",
+  },
+  {
+    image: isometric11,
+    title: "課題の深掘り・特定",
+    body: "表面的な課題にとどまらず、本質的な経営課題を特定し、優先順位を明確化します。",
+  },
+  {
+    image: isometric08,
+    title: "解決の方向性を設計",
+    body: "特定した課題に対する解決の方向性や、最適な人材・プロジェクトを設計します。",
+  },
+  {
+    image: isometric04,
+    title: "最適なご提案・マッチング",
+    body: "課題解決に最適なソリューションをご提案し、実行まで丁寧に伴走サポートします。",
+  },
+];
+
 export default function PartnerConsultValueSection() {
   return (
     <section
       style={{
-        padding: "80px 24px",
+        padding: "96px 24px",
         background: "var(--bg-surface, #f8fafc)",
       }}
     >
-      <div style={{ maxWidth: "860px", margin: "0 auto" }}>
-
+      <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
         {/* ラベル */}
-        <p
-          style={{
-            fontSize: "0.75rem",
-            fontWeight: 600,
-            letterSpacing: "0.12em",
-            textTransform: "uppercase",
-            color: "var(--color-primary, #1a56db)",
-            marginBottom: "16px",
-          }}
-        >
-          Partner Benefit
-        </p>
-
-        {/* 見出し */}
-        <h2
-          className="font-heading"
-          style={{
-            fontSize: "clamp(1.5rem, 3vw, 2rem)",
-            fontWeight: 700,
-            lineHeight: 1.4,
-            color: "var(--text-primary, #111827)",
-            marginBottom: "20px",
-          }}
-        >
-          紹介するだけではありません。
-          <br />
-          NTSがクライアントの経営課題を、
-          <br />
-          御社の代わりに深掘りします。
-        </h2>
-
-        {/* リード文 */}
-        <p
-          className="font-body"
-          style={{
-            fontSize: "1rem",
-            lineHeight: 1.9,
-            color: "var(--text-secondary, #4b5563)",
-            marginBottom: "48px",
-            maxWidth: "640px",
-          }}
-        >
-          通常、経営課題のヒアリング・整理には専門的なコンサルティングが必要で、
-          外部に依頼すると月額20万円前後のコストがかかります。
-          NTSとご提携いただくと、補助金サポートの伴走過程でこれをすべて無料で担います。
-        </p>
-
-        {/* 3カード */}
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
-            gap: "24px",
-            marginBottom: "48px",
-          }}
-        >
-          {[
-            {
-              num: "01",
-              title: "見えていなかった課題が見える",
-              body: "NTSがクライアントの事業を深掘りする中で、御社だけでは気づけなかった経営課題が浮き彫りになります。",
-            },
-            {
-              num: "02",
-              title: "クロスセルの機会が生まれる",
-              body: "把握した課題は御社にもフィードバック。御社サービスの追加提案・クロスセルに直接活用できます。",
-            },
-            {
-              num: "03",
-              title: "クライアントとの関係が深まる",
-              body: "補助金という入口から、経営全体の伴走者として御社のポジションが自然に高まります。",
-            },
-          ].map((card) => (
-            <div
-              key={card.num}
-              style={{
-                background: "var(--bg-base, #ffffff)",
-                border: "1px solid var(--border-subtle, #e5e7eb)",
-                borderRadius: "12px",
-                padding: "28px 24px",
-              }}
-            >
-              <span
-                style={{
-                  display: "block",
-                  fontSize: "0.7rem",
-                  fontWeight: 700,
-                  letterSpacing: "0.1em",
-                  color: "var(--color-primary, #1a56db)",
-                  marginBottom: "12px",
-                }}
-              >
-                {card.num}
-              </span>
-              <h3
-                className="font-heading"
-                style={{
-                  fontSize: "0.95rem",
-                  fontWeight: 700,
-                  color: "var(--text-primary, #111827)",
-                  marginBottom: "10px",
-                  lineHeight: 1.5,
-                }}
-              >
-                {card.title}
-              </h3>
-              <p
-                className="font-body"
-                style={{
-                  fontSize: "0.875rem",
-                  lineHeight: 1.8,
-                  color: "var(--text-secondary, #4b5563)",
-                  margin: 0,
-                }}
-              >
-                {card.body}
-              </p>
-            </div>
-          ))}
-        </div>
-
-        {/* 比較バー */}
-        <div
-          style={{
-            background: "var(--bg-base, #ffffff)",
-            border: "1px solid var(--border-subtle, #e5e7eb)",
-            borderRadius: "12px",
-            padding: "28px 32px",
-            display: "flex",
-            flexWrap: "wrap",
-            gap: "16px",
-            alignItems: "center",
-            justifyContent: "space-between",
-          }}
-        >
-          <div>
-            <p
-              className="font-body"
-              style={{
-                fontSize: "0.75rem",
-                color: "var(--text-tertiary, #9ca3af)",
-                marginBottom: "4px",
-              }}
-            >
-              一般的な経営コンサルティング
-            </p>
-            <p
-              className="font-heading"
-              style={{
-                fontSize: "1.25rem",
-                fontWeight: 700,
-                color: "var(--text-primary, #111827)",
-              }}
-            >
-              月額 <span style={{ textDecoration: "line-through" }}>20万円〜</span>
-            </p>
-          </div>
-          <div
+        <div style={{ textAlign: "center", marginBottom: "24px" }}>
+          <span
             style={{
-              fontSize: "1.5rem",
-              color: "var(--color-primary, #1a56db)",
+              display: "inline-block",
+              fontSize: "0.75rem",
               fontWeight: 700,
+              letterSpacing: "0.08em",
+              color: "var(--color-primary, #1a56db)",
+              border: "1px solid rgba(26, 86, 219, 0.3)",
+              borderRadius: "999px",
+              padding: "6px 18px",
+              background: "#ffffff",
             }}
           >
-            →
-          </div>
-          <div>
-            <p
-              className="font-body"
-              style={{
-                fontSize: "0.75rem",
-                color: "var(--color-primary, #1a56db)",
-                marginBottom: "4px",
-                fontWeight: 600,
-              }}
-            >
-              NTSパートナープログラムなら
-            </p>
-            <p
-              className="font-heading"
-              style={{
-                fontSize: "1.5rem",
-                fontWeight: 700,
-                color: "var(--color-primary, #1a56db)",
-              }}
-            >
-              無料で提供
-            </p>
+            NTSの伴走スタイル
+          </span>
+        </div>
+
+        {/* 見出し */}
+        <div className="mb-14">
+          <h2
+            className="font-heading"
+            style={{
+              fontSize: "clamp(1.8rem, 3vw, 3rem)",
+              fontWeight: 700,
+              lineHeight: 1.45,
+              color: "var(--text-primary, #111827)",
+              textAlign: "center",
+              marginBottom: "16px",
+            }}
+          >
+            紹介するだけではありません。
+            <br />
+            NTSがクライアントの経営課題を、
+            <br />
+            御社の代わりに
+            <span style={{ color: "var(--color-primary, #1a56db)" }}>深掘りします。</span>
+          </h2>
+
+          <p
+            className="font-body"
+            style={{
+              fontSize: "0.95rem",
+              lineHeight: 1.9,
+              color: "var(--text-secondary, #4b5563)",
+              textAlign: "center",
+              marginBottom: 0,
+            }}
+          >
+            机上の情報だけでなく、対話や現場理解を通じて本質的な課題を見極め、
+            最適な解決策をご提案します。
+          </p>
+        </div>
+
+        {/* フロー（連結デザイン） */}
+        <div className="overflow-x-auto pb-2">
+          <div
+            style={{
+              minWidth: "1040px",
+              background: "#ffffff",
+              borderRadius: "14px",
+            }}
+          >
+            <div className="grid grid-cols-5">
+              {steps.map((step, index) => (
+                <div
+                  key={step.title}
+                  style={{
+                    position: "relative",
+                    minHeight: "338px",
+                    borderRight: index < steps.length - 1 ? "1px solid #eceff4" : "none",
+                    padding: "10px 18px 16px",
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    textAlign: "center",
+                  }}
+                >
+                  <div
+                    style={{
+                      width: "104px",
+                      height: "104px",
+                      borderRadius: "999px",
+                      background: index % 2 === 0 ? "#f3f7ff" : "#eff9f2",
+                      position: "relative",
+                      marginBottom: "16px",
+                      overflow: "hidden",
+                    }}
+                  >
+                    <Image src={step.image} alt={step.title} fill className="object-contain p-4" />
+                  </div>
+                  <h3
+                    className="font-heading"
+                    style={{
+                      fontSize: "1.08rem",
+                      fontWeight: 700,
+                      color: "var(--text-primary, #111827)",
+                      lineHeight: 1.5,
+                      marginBottom: "12px",
+                    }}
+                  >
+                    {step.title}
+                  </h3>
+                  <p
+                    className="font-body"
+                    style={{
+                      fontSize: "0.89rem",
+                      lineHeight: 1.85,
+                      color: "var(--text-secondary, #4b5563)",
+                      margin: 0,
+                    }}
+                  >
+                    {step.body}
+                  </p>
+                  {index < steps.length - 1 && (
+                    <span
+                      style={{
+                        position: "absolute",
+                        right: "-11px",
+                        top: "44%",
+                        transform: "translateY(-50%)",
+                        width: "22px",
+                        height: "22px",
+                        borderRadius: "999px",
+                        background: "#ffffff",
+                        color: "var(--color-primary, #1a56db)",
+                        border: "1px solid #e5edf6",
+                        fontSize: "14px",
+                        fontWeight: 700,
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        zIndex: 2,
+                      }}
+                      aria-hidden
+                    >
+                      &gt;
+                    </span>
+                  )}
+                </div>
+              ))}
+            </div>
           </div>
         </div>
 
+        {/* 下部バナー */}
+        <div
+          style={{
+            marginTop: "56px",
+            background: "linear-gradient(135deg, #eff6ff 0%, #f0f9ff 100%)",
+            border: "1px solid #bfdbfe",
+            borderRadius: "16px",
+            padding: "32px 40px",
+            display: "flex",
+            flexWrap: "wrap",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: "16px",
+          }}
+        >
+          <p
+            className="font-heading"
+            style={{
+              fontSize: "clamp(1rem, 2vw, 1.2rem)",
+              fontWeight: 700,
+              color: "var(--color-primary, #1a56db)",
+              lineHeight: 1.6,
+              margin: 0,
+            }}
+          >
+            私たちは、課題の
+            <span style={{ textDecoration: "underline", textDecorationColor: "#93c5fd" }}>
+              "本質"
+            </span>
+            に向き合うことで、
+            <br />
+            御社の意思決定と変革を力強くサポートします。
+          </p>
+        </div>
       </div>
     </section>
   );
