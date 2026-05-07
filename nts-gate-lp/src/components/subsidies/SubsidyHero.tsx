@@ -124,13 +124,7 @@ export default function SubsidyHero({ counts, activePrefectureCount }: { counts:
                 href="/consult"
                 className="inline-flex items-center justify-center rounded-2xl bg-[#2563eb] px-7 py-3.5 text-sm font-semibold text-white shadow-lg shadow-blue-500/30 transition-all hover:-translate-y-px hover:bg-blue-600 hover:shadow-xl"
               >
-                無料で始める
-              </Link>
-              <Link
-                href="/check"
-                className="inline-flex items-center justify-center rounded-2xl border border-[#dbe4f0] bg-white/90 px-7 py-3.5 text-sm font-semibold text-[#0f172a] backdrop-blur transition-all hover:border-blue-200 hover:bg-white"
-              >
-                デモを予約する
+                無料相談予約
               </Link>
             </div>
 
@@ -155,9 +149,9 @@ export default function SubsidyHero({ counts, activePrefectureCount }: { counts:
             transition={{ duration: 0.9, ease: EASE, delay: 0.1 }}
             className="relative h-[440px] overflow-visible md:h-[500px] lg:h-[560px]"
           >
-            {/* Active nodes バッジ：地図左上（赤枠位置） */}
+            {/* 補助金公募中都道府県バッジ：地図左上 */}
             <div className="absolute left-4 top-4 z-10 rounded-2xl border border-[#dbe4f0] bg-white/90 px-4 py-2.5 text-xs shadow-sm backdrop-blur">
-              <p className="font-mono text-[#94a3b8]">Active nodes</p>
+              <p className="font-mono text-[#94a3b8]">補助金公募中都道府県</p>
               <p className="mt-0.5 font-bold text-[#0f172a]">
                 {activePrefectureCount}<span className="ml-1 font-normal text-[#94a3b8]">/47</span>
               </p>
@@ -223,7 +217,7 @@ export default function SubsidyHero({ counts, activePrefectureCount }: { counts:
         </div>
 
         {/* ── 4特徴カード（地図下部に重ねる・glassmorphism） ── */}
-        <div className="relative z-10 -mt-28 grid gap-3 md:grid-cols-3 lg:-mt-24 lg:grid-cols-3">
+        <div className="relative z-10 -mt-28 grid gap-3 md:grid-cols-3 lg:-mt-24 lg:grid-cols-3 lg:pr-80 lg:pl-6">
           {FEATURES.map((f, i) => (
             <motion.div
               key={f.title}
