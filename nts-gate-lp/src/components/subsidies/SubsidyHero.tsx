@@ -97,17 +97,7 @@ export default function SubsidyHero({ counts, activePrefectureCount }: { counts:
             >
               <span className="block whitespace-nowrap">補助金情報を、</span>
               <span className="block whitespace-nowrap">
-                <span
-                  style={{
-                    background: "linear-gradient(90deg, #2563eb 0%, #22d3ee 100%)",
-                    WebkitBackgroundClip: "text",
-                    WebkitTextFillColor: "transparent",
-                    backgroundClip: "text",
-                  }}
-                >
-                  &ldquo;探す時代&rdquo;
-                </span>
-                を終わらせ
+                探す時代を終わらせ
               </span>
               <span className="block whitespace-nowrap">
                 <span
