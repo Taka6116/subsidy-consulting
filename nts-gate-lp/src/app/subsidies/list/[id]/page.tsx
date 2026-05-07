@@ -3,6 +3,7 @@ import Link from "next/link";
 import Header from "@/components/shared/Header";
 import LpFooter from "@/components/gate-lp/LpFooter";
 import SubsidiesGalaxyBackdrop from "../../SubsidiesGalaxyBackdrop";
+import SubsidyDetailHero from "@/components/subsidies/SubsidyDetailHero";
 import { prisma } from "@/lib/db/prisma";
 
 type DetailPageProps = {
@@ -123,6 +124,26 @@ function classifyGrantContext(text: string): {
 /** 2050年より先は jGrants のデータ不備とみなし null 扱い */
 const DEADLINE_MAX_DETAIL = new Date("2050-01-01");
 
+function formatRelativeTime(date: Date): string {
+  const diff = Date.now() - date.getTime();
+  const minutes = Math.floor(diff / (1000 * 60));
+  if (minutes < 1) return "公開 たった今";
+  if (minutes < 60) return `公開 ${minutes}分前`;
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) return `公開 ${hours}時間前`;
+  const days = Math.floor(hours / 24);
+  if (days < 30) return `公開 ${days}日前`;
+  return `公開 ${date.toLocaleDateString("ja-JP")}`;
+}
+
+function pickArea(rawPayload: RawPayloadLike): string {
+  const area = getString(rawPayload, "target_area_search");
+  if (area) return area;
+  const inst = getString(rawPayload, "institution_name");
+  if (inst) return inst;
+  return "全国";
+}
+
 function remainingDays(deadlineLabel: string | null, deadline: Date | null): number | null {
   const raw = deadlineLabel ?? deadline?.toISOString() ?? null;
   if (!raw) return null;
@@ -156,7 +177,7 @@ export async function generateMetadata({ params }: DetailPageProps): Promise<Met
 
 export default async function SubsidyDetailPage({ params }: DetailPageProps) {
   const { id } = await params;
-  const [grant, relatedArticles] = await Promise.all([
+  const [grant, relatedArticles, recentSubsidies] = await Promise.all([
     prisma.subsidyGrant.findUnique({
       where: { id },
       select: {
@@ -179,7 +200,19 @@ export default async function SubsidyDetailPage({ params }: DetailPageProps) {
       take: 3,
       select: { id: true, title: true, status: true, publishedAt: true, slug: true },
     }),
+    prisma.subsidyGrant.findMany({
+      where: { status: "open", id: { not: id } },
+      orderBy: { updatedAt: "desc" },
+      take: 4,
+      select: { id: true, name: true, updatedAt: true, rawPayload: true },
+    }),
   ]);
+
+  const realtimeItems = recentSubsidies.map((s) => ({
+    area: pickArea(toObj(s.rawPayload)),
+    title: s.name ?? "名称未設定",
+    time: formatRelativeTime(s.updatedAt),
+  }));
 
   const raw = toObj(grant?.rawPayload);
   const titleFromRaw = getString(raw, "title");
@@ -206,7 +239,8 @@ export default async function SubsidyDetailPage({ params }: DetailPageProps) {
       <Header />
       <main className="relative z-[2] min-h-[100svh] pb-44 font-body md:pb-40">
         <SubsidiesGalaxyBackdrop />
-        <div className="relative z-10 mx-auto max-w-6xl px-6 py-24 lg:grid lg:grid-cols-[1fr_320px] lg:gap-8">
+        <SubsidyDetailHero realtimeItems={realtimeItems} />
+        <div className="relative z-10 mx-auto max-w-6xl px-6 pb-24 pt-12 lg:grid lg:grid-cols-[1fr_320px] lg:gap-8">
           <div className="rounded-2xl border border-white/20 bg-white/90 p-8 shadow-sm backdrop-blur-sm md:p-10">
             <Link
               href="/subsidies/list?page=1"
