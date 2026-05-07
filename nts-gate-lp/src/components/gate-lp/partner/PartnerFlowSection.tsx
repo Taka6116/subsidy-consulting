@@ -88,7 +88,7 @@ export default function PartnerFlowSection() {
           </p>
         </motion.div>
 
-        <div className="grid gap-12 lg:grid-cols-[0.95fr_1.05fr] lg:items-stretch lg:gap-16">
+        <div className="space-y-12 lg:space-y-14">
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-6">
             {flowGridSteps.map((step, i) => {
               const showRightArrow = i === 0;
@@ -160,7 +160,7 @@ export default function PartnerFlowSection() {
           {/* 右カラム: カルーセル（PC） 大1枚＋2×2グリッド4枚均等 */}
           <motion.div
             {...fadeUp(0.18)}
-            className="hidden lg:flex lg:min-h-[520px] lg:flex-row lg:gap-3 lg:self-stretch"
+            className="hidden lg:flex lg:min-h-[420px] lg:w-full lg:flex-row lg:gap-3"
             aria-label="日本提携支援の担当者"
           >
             {/* 左側: ヒーロー大1枚（カルーセル切り替え） */}
