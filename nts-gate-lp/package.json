@@ -12,6 +12,7 @@
     "db:migrate": "prisma migrate deploy",
     "db:push": "prisma db push",
     "seed:subsidies": "ts-node --project tsconfig.json scripts/seedStaticSubsidies.ts",
+    "seed:municipalities": "tsx scripts/seed-municipalities.ts",
     "article:generate": "tsx scripts/generate-article.ts",
     "article:drain": "tsx scripts/run-pending-article-jobs.ts",
     "jgrants:sync": "node scripts/sync-jgrants.mjs"
