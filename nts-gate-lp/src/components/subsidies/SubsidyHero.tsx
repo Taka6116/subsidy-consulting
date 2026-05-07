@@ -3,6 +3,7 @@
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { motion, type Easing } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
 
 /* 地図はSSRなしで読み込む（react-simple-mapsがブラウザ専用） */
 const JapanNetworkMap = dynamic(() => import("./JapanNetworkMap"), {
@@ -17,13 +18,7 @@ const JapanNetworkMap = dynamic(() => import("./JapanNetworkMap"), {
 const EASE: Easing = [0.22, 1, 0.36, 1];
 
 type Counts = { grants: number; articles: number; videos: number; lps: number };
-
-const REALTIME_ITEMS = [
-  { area: "北海道 札幌市",   title: "中小企業DX推進補助金",      time: "公開 3分前" },
-  { area: "東京都 渋谷区",   title: "スタートアップ支援補助金",  time: "公開 5分前" },
-  { area: "大阪府 大阪市",   title: "省エネ設備導入補助金",      time: "公開 7分前" },
-  { area: "愛知県 名古屋市", title: "カーボンニュートラル補助金", time: "公開 9分前" },
-];
+type LiveItem = { id: string; title: string; area: string; minutesAgo: number | null };
 
 const FEATURES = [
   {
@@ -56,6 +51,79 @@ const FEATURES = [
 ];
 
 export default function SubsidyHero({ counts, activePrefectureCount }: { counts: Counts; activePrefectureCount: number }) {
+  // ── 実データfetch ──
+  const [liveItems, setLiveItems] = useState<LiveItem[]>([]);
+  useEffect(() => {
+    fetch("/api/subsidies/hero-live")
+      .then((r) => r.json())
+      .then((data) => { if (data.items?.length) setLiveItems(data.items); })
+      .catch(() => {});
+  }, []);
+
+  // ── カードローテーション（実データ取得後に動作） ──
+  const [visibleStart, setVisibleStart] = useState(0);
+  useEffect(() => {
+    if (liveItems.length === 0) return;
+    const timer = setInterval(() => {
+      setVisibleStart((prev) => (prev + 1) % liveItems.length);
+    }, 10000);
+    return () => clearInterval(timer);
+  }, [liveItems]);
+
+  // ── 経過時間のリアルタイム更新（1分ごと） ──
+  const [tick, setTick] = useState(0);
+  useEffect(() => {
+    const timer = setInterval(() => setTick((t) => t + 1), 60_000);
+    return () => clearInterval(timer);
+  }, []);
+
+  // ── カウンターアニメーション ──
+  const [displayCounts, setDisplayCounts] = useState({ grants: 0, articles: 0, videos: 0 });
+  const countRef = useRef(false);
+  const badgeRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (countRef.current) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) return;
+        countRef.current = true;
+        observer.disconnect();
+        const steps = 40;
+        let step = 0;
+        const timer = setInterval(() => {
+          step++;
+          const ease = 1 - Math.pow(1 - step / steps, 3);
+          setDisplayCounts({
+            grants:   Math.round(counts.grants   * ease),
+            articles: Math.round(counts.articles * ease),
+            videos:   Math.round(counts.videos   * ease),
+          });
+          if (step >= steps) clearInterval(timer);
+        }, 1200 / steps);
+      },
+      { threshold: 0.3 }
+    );
+    if (badgeRef.current) observer.observe(badgeRef.current);
+    return () => observer.disconnect();
+  }, [counts]);
+
+  // ── 表示する4枚を循環で取得 ──
+  const visibleItems = liveItems.length > 0
+    ? Array.from({ length: Math.min(4, liveItems.length) }, (_, i) =>
+        liveItems[(visibleStart + i) % liveItems.length]
+      )
+    : null;
+
+  const formatElapsed = (totalMinutes: number) => {
+    if (totalMinutes < 60) return `${totalMinutes}分前`;
+    const hours = Math.floor(totalMinutes / 60);
+    const minutes = totalMinutes % 60;
+    if (hours < 24) return minutes === 0 ? `${hours}時間前` : `${hours}時間${minutes}分前`;
+    const days = Math.floor(hours / 24);
+    const remainHours = hours % 24;
+    return remainHours === 0 ? `${days}日前` : `${days}日${remainHours}時間前`;
+  };
+
   return (
     <div
       className="relative overflow-hidden"
@@ -132,15 +200,15 @@ export default function SubsidyHero({ counts, activePrefectureCount }: { counts:
             </div>
 
             {/* 統計バッジ */}
-            <div className="mt-5 flex flex-wrap gap-2">
+            <div ref={badgeRef} className="mt-5 flex flex-wrap gap-2">
               <span className="rounded-full border border-amber-200 bg-amber-50 px-3 py-1.5 text-xs font-medium text-amber-700">
-                掲載補助金 {counts.grants.toLocaleString()} 件
+                掲載補助金 {displayCounts.grants.toLocaleString()} 件
               </span>
               <span className="rounded-full border border-blue-200 bg-blue-50 px-3 py-1.5 text-xs font-medium text-blue-700">
-                解説記事 {counts.articles.toLocaleString()} 本
+                解説記事 {displayCounts.articles.toLocaleString()} 本
               </span>
               <span className="rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1.5 text-xs font-medium text-emerald-700">
-                動画 {counts.videos.toLocaleString()} 本
+                動画 {displayCounts.videos.toLocaleString()} 本
               </span>
             </div>
           </motion.div>
@@ -208,26 +276,40 @@ export default function SubsidyHero({ counts, activePrefectureCount }: { counts:
               </span>
             </div>
 
-            <ul className="space-y-2.5">
-              {REALTIME_ITEMS.map((item, i) => (
-                <motion.li
-                  key={i}
-                  initial={{ opacity: 0, y: 8 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.4, delay: 0.35 + i * 0.09, ease: EASE }}
-                  className={`group cursor-pointer rounded-2xl border border-[#dbe4f0] bg-white p-3.5 transition hover:border-blue-200 hover:shadow-md${i === 3 ? " hidden 2xl:block" : ""}`}
-                >
-                  <div className="mb-1.5 flex items-center gap-2">
-                    <span className="rounded-md bg-[#2563eb] px-1.5 py-0.5 text-[10px] font-bold text-white">
-                      NEW
-                    </span>
-                    <p className="text-xs font-semibold text-[#475569]">{item.area}</p>
-                    <span className="ml-auto text-[#cbd5e1] transition group-hover:text-blue-400">›</span>
-                  </div>
-                  <p className="text-sm font-semibold leading-snug text-[#0f172a]">{item.title}</p>
-                  <p className="mt-1.5 font-mono text-[11px] text-[#94a3b8]">{item.time}</p>
-                </motion.li>
-              ))}
+            <ul className="space-y-2.5 overflow-hidden">
+              {visibleItems === null ? (
+                Array.from({ length: 3 }).map((_, i) => (
+                  <li key={i} className="animate-pulse rounded-2xl border border-[#dbe4f0] bg-white p-3.5">
+                    <div className="mb-2 h-3 w-1/2 rounded bg-slate-100" />
+                    <div className="h-4 w-3/4 rounded bg-slate-100" />
+                    <div className="mt-2 h-2.5 w-1/4 rounded bg-slate-100" />
+                  </li>
+                ))
+              ) : (
+                visibleItems.map((item, i) => (
+                  <motion.li
+                    key={`${visibleStart}-${i}`}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.45, delay: i * 0.08, ease: EASE }}
+                    className={`group cursor-pointer rounded-2xl border border-[#dbe4f0] bg-white p-3.5 transition hover:border-blue-200 hover:shadow-md${i === 3 ? " hidden 2xl:block" : ""}`}
+                  >
+                    <div className="mb-1.5 flex items-center gap-2">
+                      <span className="rounded-md bg-[#2563eb] px-1.5 py-0.5 text-[10px] font-bold text-white">
+                        NEW
+                      </span>
+                      <p className="text-xs font-semibold text-[#475569]">{item.area}</p>
+                      <span className="ml-auto text-[#cbd5e1] transition group-hover:text-blue-400">›</span>
+                    </div>
+                    <p className="text-sm font-semibold leading-snug text-[#0f172a]">{item.title}</p>
+                    <p className="mt-1.5 font-mono text-[11px] text-[#94a3b8]">
+                      {item.minutesAgo !== null
+                        ? `公開 ${formatElapsed(item.minutesAgo + tick)}`
+                        : "公開情報あり"}
+                    </p>
+                  </motion.li>
+                ))
+              )}
             </ul>
 
             <Link
@@ -240,7 +322,7 @@ export default function SubsidyHero({ counts, activePrefectureCount }: { counts:
         </div>
 
         {/* ── 4特徴カード（地図下部に重ねる・glassmorphism） ── */}
-        <div className="relative z-10 -mt-28 grid gap-3 md:grid-cols-3 lg:-mt-24 lg:grid-cols-3 lg:pr-80 lg:pl-6 2xl:-mt-8 2xl:pl-16 2xl:pr-[368px]">
+        <div className="relative z-10 -mt-28 grid gap-3 md:grid-cols-3 lg:-mt-24 lg:grid-cols-3 lg:pr-80 lg:pl-6 2xl:-mt-24 2xl:pl-16 2xl:pr-[368px]">
           {FEATURES.map((f, i) => (
             <motion.div
               key={f.title}
