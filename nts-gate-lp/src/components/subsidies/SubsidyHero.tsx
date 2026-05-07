@@ -150,7 +150,7 @@ export default function SubsidyHero({ counts, activePrefectureCount }: { counts:
             className="relative h-[440px] overflow-visible md:h-[500px] lg:h-[560px]"
           >
             {/* 補助金公募中都道府県バッジ：地図左上 */}
-            <div className="absolute left-4 top-4 z-10 rounded-2xl border border-[#dbe4f0] bg-white/90 px-4 py-2.5 text-xs shadow-sm backdrop-blur">
+            <div className="absolute -left-8 top-4 z-10 rounded-2xl border border-[#dbe4f0] bg-white/90 px-4 py-2.5 text-xs shadow-sm backdrop-blur">
               <p className="font-mono text-[#94a3b8]">補助金公募中都道府県</p>
               <p className="mt-0.5 font-bold text-[#0f172a]">
                 {activePrefectureCount}<span className="ml-1 font-normal text-[#94a3b8]">/47</span>
