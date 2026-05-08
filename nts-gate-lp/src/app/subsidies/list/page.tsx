@@ -4,6 +4,7 @@ import LpFooter from "@/components/gate-lp/LpFooter";
 import SubsidiesListClient from "./SubsidiesListClient";
 import { prisma } from "@/lib/db/prisma";
 import { buildSmeSubsidyWhere } from "@/lib/subsidies/smeFilter";
+import { pickHeroImage } from "@/lib/content/imagePool";
 
 export const revalidate = 3600;
 
@@ -36,6 +37,12 @@ export default async function SubsidiesListPage() {
     id: g.id,
     name: g.name,
     description: g.description,
+    cardImagePath: pickHeroImage({
+      subsidyId: g.id,
+      seedKey: g.name ?? g.id,
+      tags: [g.name ?? "", g.description ?? ""].filter(Boolean),
+      targetIndustries: g.targetIndustries ?? [],
+    }),
     maxAmountLabel: g.maxAmountLabel,
     rawPayload: null,
     deadlineLabel: g.deadlineLabel,

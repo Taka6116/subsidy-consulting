@@ -21,7 +21,14 @@ import {
   Users,
 } from "lucide-react";
 import type { StaticImageData } from "next/image";
-import listHeroIsometric from "../../../../icon-assets/list-hero-isometric.png";
+import logisticsHero from "../../../../icon-assets/logistics-hero.webp";
+import constructionHero from "../../../../icon-assets/construction-hero.webp";
+import dxHero from "../../../../icon-assets/dx-hero.webp";
+import hrHero from "../../../../icon-assets/human-resources-hero.webp";
+import equipmentHero from "../../../../icon-assets/equipment-hero.webp";
+import businessPlanHero from "../../../../icon-assets/business-plan-hero.webp";
+import generalHero from "../../../../icon-assets/general-hero.webp";
+import oldFacilityHero from "../../../../icon-assets/old-facility.webp";
 import expertPhoto from "../../../../icon-assets/craftswoman.webp";
 
 type StatusTab = "all" | "open" | "closed";
@@ -108,7 +115,7 @@ function resolveLpBadges(grant: SubsidyCard): string[] {
 type CardVisual = {
   title: string;
   subtitle: string;
-  image: StaticImageData;
+  image: string | StaticImageData;
   badge: string;
 };
 
@@ -121,7 +128,7 @@ const VISUAL_RULES: Array<{
     visual: {
       title: "環境・省エネ",
       subtitle: "脱炭素投資",
-      image: listHeroIsometric,
+      image: oldFacilityHero,
       badge: "環境・省エネ",
     },
   },
@@ -130,7 +137,7 @@ const VISUAL_RULES: Array<{
     visual: {
       title: "物流・運送",
       subtitle: "効率化支援",
-      image: listHeroIsometric,
+      image: logisticsHero,
       badge: "物流・運送",
     },
   },
@@ -139,7 +146,7 @@ const VISUAL_RULES: Array<{
     visual: {
       title: "建設・設備",
       subtitle: "省力化投資",
-      image: listHeroIsometric,
+      image: constructionHero,
       badge: "建設・設備",
     },
   },
@@ -148,7 +155,7 @@ const VISUAL_RULES: Array<{
     visual: {
       title: "DX・IT",
       subtitle: "導入支援",
-      image: listHeroIsometric,
+      image: dxHero,
       badge: "DX・IT",
     },
   },
@@ -157,7 +164,7 @@ const VISUAL_RULES: Array<{
     visual: {
       title: "人材・採用",
       subtitle: "賃上げ支援",
-      image: listHeroIsometric,
+      image: hrHero,
       badge: "人材・採用",
     },
   },
@@ -166,7 +173,7 @@ const VISUAL_RULES: Array<{
     visual: {
       title: "事業承継・M&A",
       subtitle: "継続と成長",
-      image: listHeroIsometric,
+      image: generalHero,
       badge: "事業承継",
     },
   },
@@ -175,7 +182,7 @@ const VISUAL_RULES: Array<{
     visual: {
       title: "事業計画",
       subtitle: "成長加速",
-      image: listHeroIsometric,
+      image: businessPlanHero,
       badge: "事業計画",
     },
   },
@@ -184,7 +191,7 @@ const VISUAL_RULES: Array<{
     visual: {
       title: "設備投資",
       subtitle: "生産性向上",
-      image: listHeroIsometric,
+      image: equipmentHero,
       badge: "設備投資",
     },
   },
@@ -193,7 +200,7 @@ const VISUAL_RULES: Array<{
 const DEFAULT_VISUAL: CardVisual = {
   title: "補助金LP",
   subtitle: "最新制度",
-  image: listHeroIsometric,
+  image: generalHero,
   badge: "公募中",
 };
 
@@ -202,7 +209,9 @@ function resolveVisual(grant: SubsidyCard): CardVisual {
   const matched = VISUAL_RULES.find((rule) =>
     rule.keywords.some((keyword) => text.includes(keyword.toLowerCase())),
   );
-  return matched?.visual ?? DEFAULT_VISUAL;
+  const visual = matched?.visual ?? DEFAULT_VISUAL;
+  if (!grant.cardImagePath) return visual;
+  return { ...visual, image: grant.cardImagePath };
 }
 
 type CategoryDef = {
@@ -262,6 +271,7 @@ export type SubsidyCard = {
   id: string;
   name: string | null;
   description: string | null;
+  cardImagePath: string | null;
   maxAmountLabel: string | null;
   rawPayload?: { subsidy_max_limit?: number | string } | null;
   deadlineLabel: string | null;
@@ -374,8 +384,8 @@ export default function SubsidiesListClient({
     <div className="space-y-8">
       {/* Hero */}
       <section className="mx-auto w-full max-w-[1500px]">
-        <div className="rounded-[28px] border border-slate-200/70 bg-gradient-to-b from-white to-[#f6f9ff] p-5 shadow-sm md:p-8 xl:p-10">
-          <div className="grid items-center gap-8 xl:grid-cols-[1.05fr_1.25fr_0.85fr]">
+        <div className="rounded-[28px] border border-slate-200/70 bg-gradient-to-b from-white to-[#f6f9ff] px-6 py-8 shadow-sm md:px-10 md:py-12 xl:px-12 xl:py-12">
+          <div className="grid items-center gap-8 xl:grid-cols-[0.9fr_1.65fr_0.8fr]">
             <div>
               <span className="inline-flex items-center rounded-full bg-blue-50 px-4 py-2 text-sm font-bold text-[#0e357f] ring-1 ring-blue-100">
                 補助金LPライブラリ
@@ -408,17 +418,17 @@ export default function SubsidiesListClient({
               </div>
             </div>
 
-            <div className="relative flex min-h-[300px] items-center justify-center md:min-h-[360px] xl:min-h-[380px]">
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(59,130,246,0.14),transparent_62%)]" />
+            <div className="relative flex min-h-[430px] items-center justify-center overflow-visible xl:min-h-[460px]">
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(59,130,246,0.16),transparent_64%)]" />
               <Image
                 src="/images/subsidy-hero-isometric.webp"
                 alt="補助金情報を分析するビジネスチームのイラスト"
-                width={760}
-                height={520}
+                width={920}
+                height={620}
                 priority
-                className="relative z-10 w-full max-w-[680px] object-contain drop-shadow-[0_24px_50px_rgba(15,23,42,0.12)]"
+                className="relative z-10 w-[115%] max-w-[860px] object-contain drop-shadow-[0_28px_60px_rgba(15,23,42,0.14)]"
               />
-              <div className="absolute bottom-5 left-3 z-20 rounded-2xl bg-white/90 px-5 py-3 shadow-lg ring-1 ring-slate-200 backdrop-blur md:bottom-8 md:left-8 md:px-6 md:py-4">
+              <div className="absolute bottom-6 left-4 z-20 rounded-2xl bg-white/90 px-5 py-3 shadow-lg ring-1 ring-slate-200 backdrop-blur md:bottom-12 md:left-10 md:px-6 md:py-4">
                 <p className="text-sm font-black text-slate-900">リアルタイム検知</p>
                 <p className="mt-1 text-xs text-slate-500">
                   全国の公募情報を24時間更新中 <span className="ml-2 font-semibold text-emerald-500">● LIVE</span>
