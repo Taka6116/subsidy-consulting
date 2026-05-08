@@ -18,6 +18,7 @@ import {
   Users,
 } from "lucide-react";
 import type { StaticImageData } from "next/image";
+import subsidyListPageHero from "../../../../icon-assets/subsidy-list-page-hero.webp";
 import listHeroIsometric from "../../../../icon-assets/list-hero-isometric.png";
 import expertPhoto from "../../../../icon-assets/craftswoman.webp";
 
@@ -419,13 +420,13 @@ export default function SubsidiesListClient({
               </div>
             </div>
 
-            <div className="relative flex min-h-[220px] items-center justify-center overflow-hidden rounded-2xl bg-[#060a14] lg:min-h-[280px]">
+            <div className="relative flex min-h-[220px] items-center justify-center overflow-hidden rounded-2xl bg-[radial-gradient(circle_at_30%_20%,#eff6ff_0%,#dbeafe_45%,#bfdbfe_100%)] lg:min-h-[280px]">
               <Image
-                src={listHeroIsometric}
+                src={subsidyListPageHero}
                 alt=""
                 width={420}
                 height={280}
-                className="relative z-10 h-auto max-h-[240px] w-full max-w-[320px] object-contain"
+                className="relative z-10 h-auto max-h-[240px] w-full max-w-[320px] object-contain drop-shadow-lg"
                 sizes="(max-width: 1024px) 90vw, 320px"
                 priority
               />
