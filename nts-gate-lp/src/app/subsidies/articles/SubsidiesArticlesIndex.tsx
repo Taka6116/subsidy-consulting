@@ -2,7 +2,15 @@
 
 import Link from "next/link";
 import { useMemo, useRef, useState } from "react";
-import { Search, X } from "lucide-react";
+import {
+  BellRing,
+  BookOpen,
+  Clock3,
+  Search,
+  ShieldCheck,
+  Users,
+  X,
+} from "lucide-react";
 
 const ALL = "__all__";
 const PAGE_SIZE = 12;
@@ -13,11 +21,45 @@ export type ArticleCard = {
   title: string;
   excerpt: string;
   publishedAt: string;
+  publishedAtIso: string | null;
   subsidyName: string;
   maxAmountLabel: string | null;
   deadlineLabel: string | null;
   prefecture: string | null;
   tags: string[];
+  heroImagePath: string | null;
+};
+
+export type ArticlesPortalData = {
+  tickerItems: Array<{
+    id: string;
+    slug: string;
+    title: string;
+    isNew: boolean;
+    isClosingSoon: boolean;
+    publishedAtIso: string | null;
+  }>;
+  stats: {
+    newArticlesCount: number;
+    openCount: number;
+    closingSoonCount: number;
+    totalCount: number;
+  };
+  popularCategories: Array<{ label: string; count: number }>;
+  deadlineRanking: Array<{
+    id: string;
+    slug: string;
+    title: string;
+    deadlineLabel: string | null;
+    daysLeft: number;
+  }>;
+  featured: {
+    slug: string;
+    title: string;
+    subsidyName: string;
+    imagePath: string | null;
+    publishedAtIso: string | null;
+  } | null;
 };
 
 /** カードのタグ pill に表示するタグ（「お役立ち情報」除外・最大3件） */
@@ -42,13 +84,19 @@ function buildTagOptions(articles: ArticleCard[]): TagOption[] {
 
 export default function SubsidiesArticlesIndex({
   articles,
+  portalData,
 }: {
   articles: ArticleCard[];
+  portalData: ArticlesPortalData;
 }) {
   const [selectedTag, setSelectedTag] = useState<string>(ALL);
   const [showAllTags, setShowAllTags] = useState(false);
   const [query, setQuery] = useState("");
   const [page, setPage] = useState(1);
+  const [email, setEmail] = useState("");
+  const [isSubscribing, setIsSubscribing] = useState(false);
+  const [subscribeDone, setSubscribeDone] = useState(false);
+  const [subscribeError, setSubscribeError] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
   const tagOptions = useMemo(() => buildTagOptions(articles), [articles]);
@@ -106,171 +154,321 @@ export default function SubsidiesArticlesIndex({
     setPage(1);
   }
 
-  return (
-    <div className="mx-auto max-w-7xl px-6 py-10 lg:py-14">
-      <div className="flex flex-col gap-10 lg:flex-row lg:items-start">
-        {/* メインコンテンツ */}
-        <div className="min-w-0 flex-1">
-          <h1 className="font-heading text-3xl font-normal text-neutral-900 sm:text-4xl">
-            解説記事
-          </h1>
-          <p className="mt-2 max-w-2xl text-sm text-neutral-600 sm:text-base">
-            補助金・支援制度に関する解説を順次公開します。新しい制度が公募されるたびに自動で更新されます。
-          </p>
+  async function handleSubscribe(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    if (!email.trim() || isSubscribing) return;
+    setIsSubscribing(true);
+    setSubscribeError(null);
+    try {
+      const res = await fetch("/api/subscribe", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: email.trim(),
+          source: "articles-index-sidebar",
+        }),
+      });
+      if (!res.ok) {
+        const json = (await res.json().catch(() => null)) as
+          | { error?: string }
+          | null;
+        throw new Error(json?.error ?? "登録に失敗しました。");
+      }
+      setSubscribeDone(true);
+      setEmail("");
+    } catch (err) {
+      const message =
+        err instanceof Error ? err.message : "登録に失敗しました。";
+      setSubscribeError(message);
+    } finally {
+      setIsSubscribing(false);
+    }
+  }
 
-          {/* キーワード検索窓 */}
-          <div className="mt-6 max-w-xl">
-            <div className="relative">
-              <Search
-                className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400"
-                aria-hidden
-              />
-              <input
-                ref={inputRef}
-                type="search"
-                value={query}
-                onChange={handleQueryChange}
-                placeholder="記事タイトル・補助金名・キーワードで検索"
-                className="w-full rounded-lg border border-neutral-200 bg-white py-3 pl-10 pr-10 text-sm text-neutral-800 shadow-sm outline-none transition placeholder:text-gray-400 focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
-              />
-              {query && (
+  return (
+    <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:py-10">
+      <section className="mb-4 rounded-xl border border-blue-100 bg-white px-4 py-3">
+        <div className="flex items-center gap-3 overflow-x-auto whitespace-nowrap">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-primary-700 px-2.5 py-1 text-xs font-bold text-white">
+            <BellRing className="h-3.5 w-3.5" />
+            最新速報
+          </span>
+          {portalData.tickerItems.map((item) => (
+            <Link
+              key={item.id}
+              href={`/subsidies/articles/${item.slug}`}
+              className="inline-flex items-center gap-2 text-xs text-neutral-700 hover:text-primary-700"
+            >
+              {item.isNew && (
+                <span className="rounded bg-pink-500 px-1.5 py-0.5 text-[10px] font-bold text-white">
+                  NEW
+                </span>
+              )}
+              {item.isClosingSoon && (
+                <span className="rounded bg-amber-500 px-1.5 py-0.5 text-[10px] font-bold text-white">
+                  締切間近
+                </span>
+              )}
+              <span className="line-clamp-1 max-w-[320px]">{item.title}</span>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      <section className="grid gap-4 lg:grid-cols-12">
+        <div className="overflow-hidden rounded-2xl border border-neutral-200 bg-white shadow-sm lg:col-span-7">
+          {portalData.featured ? (
+            <Link
+              href={`/subsidies/articles/${portalData.featured.slug}`}
+              className="group block"
+            >
+              <div
+                className="relative h-[250px] bg-cover bg-center sm:h-[300px]"
+                style={
+                  portalData.featured.imagePath
+                    ? { backgroundImage: `url(${portalData.featured.imagePath})` }
+                    : undefined
+                }
+              >
+                {!portalData.featured.imagePath && (
+                  <div className="absolute inset-0 bg-gradient-to-br from-[#0e357f] to-[#28a4a3]" />
+                )}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/65 to-black/15" />
+                <div className="absolute bottom-0 left-0 right-0 p-5 text-white sm:p-6">
+                  <span className="inline-flex rounded bg-red-500 px-2 py-0.5 text-[10px] font-bold">
+                    注目解説
+                  </span>
+                  <p className="mt-2 text-sm text-white/90">
+                    {portalData.featured.subsidyName}
+                  </p>
+                  <h2 className="mt-1 line-clamp-2 text-xl font-black leading-snug sm:text-2xl">
+                    {portalData.featured.title}
+                  </h2>
+                </div>
+              </div>
+            </Link>
+          ) : (
+            <div className="flex h-[250px] items-center justify-center text-sm text-neutral-500 sm:h-[300px]">
+              注目記事を準備中です
+            </div>
+          )}
+        </div>
+
+        <div className="space-y-4 lg:col-span-5">
+          <div className="rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm">
+            <div className="mb-3 flex items-center justify-between">
+              <h3 className="text-sm font-bold text-neutral-900">最新の補助金動向</h3>
+              <span className="text-xs text-neutral-400">今週更新</span>
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <div className="rounded-lg bg-neutral-50 p-3">
+                <p className="text-xs text-neutral-500">新着記事</p>
+                <p className="mt-1 text-xl font-black text-primary-700">
+                  {portalData.stats.newArticlesCount}件
+                </p>
+              </div>
+              <div className="rounded-lg bg-neutral-50 p-3">
+                <p className="text-xs text-neutral-500">公募中補助金</p>
+                <p className="mt-1 text-xl font-black text-primary-700">
+                  {portalData.stats.openCount}件
+                </p>
+              </div>
+              <div className="rounded-lg bg-neutral-50 p-3">
+                <p className="text-xs text-neutral-500">締切間近</p>
+                <p className="mt-1 text-xl font-black text-amber-600">
+                  {portalData.stats.closingSoonCount}件
+                </p>
+              </div>
+              <div className="rounded-lg bg-neutral-50 p-3">
+                <p className="text-xs text-neutral-500">総記事数</p>
+                <p className="mt-1 text-xl font-black text-primary-700">
+                  {portalData.stats.totalCount}件
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div className="rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm">
+            <h3 className="mb-3 text-sm font-bold text-neutral-900">人気カテゴリ</h3>
+            <div className="grid grid-cols-2 gap-2">
+              {portalData.popularCategories.map((c) => (
+                <button
+                  key={c.label}
+                  type="button"
+                  onClick={() => handleTagSelect(c.label)}
+                  className="rounded-lg border border-neutral-200 px-3 py-2 text-left text-xs text-neutral-700 transition hover:border-primary-300 hover:bg-primary-50"
+                >
+                  <p className="line-clamp-1 font-semibold">{c.label}</p>
+                  <p className="mt-0.5 text-[11px] text-neutral-400">{c.count}記事</p>
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div className="mt-6 flex flex-col gap-10 lg:flex-row lg:items-start">
+        <div className="min-w-0 flex-1">
+          <section className="rounded-xl border border-neutral-200 bg-white p-4 shadow-sm">
+            <div className="grid gap-3 lg:grid-cols-[2fr_1fr]">
+              <div className="relative">
+                <Search
+                  className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400"
+                  aria-hidden
+                />
+                <input
+                  ref={inputRef}
+                  type="search"
+                  value={query}
+                  onChange={handleQueryChange}
+                  placeholder="記事タイトル・補助金名・キーワードで検索"
+                  className="w-full rounded-lg border border-neutral-200 bg-white py-2.5 pl-10 pr-10 text-sm text-neutral-800 outline-none transition placeholder:text-gray-400 focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
+                />
+                {query && (
+                  <button
+                    type="button"
+                    onClick={clearQuery}
+                    aria-label="検索をクリア"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
+                )}
+              </div>
+              <div className="flex items-center gap-2 overflow-x-auto whitespace-nowrap">
                 <button
                   type="button"
-                  onClick={clearQuery}
-                  aria-label="検索をクリア"
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                  onClick={() => handleTagSelect(ALL)}
+                  className={`rounded-full px-3 py-1.5 text-xs transition ${
+                    selectedTag === ALL
+                      ? "bg-primary-700 text-white"
+                      : "border border-neutral-200 bg-white text-neutral-800 hover:border-neutral-300"
+                  }`}
                 >
-                  <X className="h-4 w-4" />
+                  すべてのタグ
+                </button>
+                {visibleTagOpts.slice(0, 5).map((opt) => (
+                  <button
+                    key={opt.label}
+                    type="button"
+                    onClick={() => handleTagSelect(opt.label)}
+                    className={`rounded-full px-3 py-1.5 text-xs transition ${
+                      selectedTag === opt.label
+                        ? "bg-primary-700 text-white"
+                        : "border border-neutral-200 bg-white text-neutral-800 hover:border-neutral-300"
+                    }`}
+                  >
+                    {opt.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="mt-3 flex flex-wrap items-center gap-3 text-xs text-neutral-500">
+              <span>
+                全{articles.length}件中 <span className="font-semibold text-neutral-800">{filtered.length}</span>件表示
+              </span>
+              {hiddenCount > 0 && (
+                <button
+                  type="button"
+                  onClick={() => setShowAllTags((v) => !v)}
+                  className="text-primary-700 hover:underline"
+                >
+                  {showAllTags ? "タグを閉じる" : `タグをもっと見る（${hiddenCount}個）`}
                 </button>
               )}
             </div>
-            {query.trim() && (
-              <p className="mt-2 text-xs text-gray-500">
-                「<span className="font-medium text-gray-700">{query.trim()}</span>」の検索結果：
-                <span className="font-semibold text-gray-800"> {filtered.length}件</span>
-              </p>
+
+            {showAllTags && (
+              <div className="mt-3 flex flex-wrap gap-2">
+                {tagOptions.map((opt) => (
+                  <button
+                    key={opt.label}
+                    type="button"
+                    onClick={() => handleTagSelect(opt.label)}
+                    className={`rounded-full px-3 py-1.5 text-xs transition ${
+                      selectedTag === opt.label
+                        ? "bg-primary-700 text-white"
+                        : "border border-neutral-200 bg-white text-neutral-800 hover:border-neutral-300"
+                    }`}
+                  >
+                    {opt.label}（{opt.count}）
+                  </button>
+                ))}
+              </div>
             )}
-          </div>
+          </section>
 
           {articles.length === 0 ? (
-            <div className="mt-12 rounded-lg border border-neutral-200 bg-white p-8 text-center">
+            <div className="mt-8 rounded-lg border border-neutral-200 bg-white p-8 text-center">
               <p className="text-sm text-neutral-600">
                 現在公開中の記事はありません。新しい補助金制度の公募が解禁され次第、順次追加されます。
               </p>
             </div>
           ) : (
             <>
-              <div className="mt-10 grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
+              <div className="mt-6 grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
                 {paginated.map((article) => {
                   const pills = visibleTags(article.tags);
                   return (
                     <Link
                       key={article.id}
                       href={`/subsidies/articles/${article.slug}`}
-                      className="group flex flex-col overflow-hidden rounded-lg border border-neutral-200/90 bg-white shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg"
+                      className="group flex flex-col overflow-hidden rounded-xl border border-neutral-200 bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-lg"
                     >
-                      {/* ミニヘッダーエリア（サムネ代替） */}
-                      <div className="border-b border-gray-100 bg-white p-4">
-                        {/* タグ pill（最大3個） */}
-                        {pills.length > 0 && (
-                          <div className="flex flex-wrap gap-1.5">
-                            {pills.map((t) => (
-                              <span
-                                key={t}
-                                className="rounded-full border border-gray-300 px-2.5 py-0.5 text-gray-600"
-                                style={{ fontSize: "0.7rem" }}
-                              >
-                                {t}
-                              </span>
-                            ))}
-                          </div>
+                      <div
+                        className="relative h-40 bg-cover bg-center"
+                        style={
+                          article.heroImagePath
+                            ? { backgroundImage: `url(${article.heroImagePath})` }
+                            : undefined
+                        }
+                      >
+                        {!article.heroImagePath && (
+                          <div className="absolute inset-0 bg-gradient-to-br from-[#0e357f] to-[#28a4a3]" />
                         )}
-
-                        {/* 補助金名 */}
-                        <p
-                          className="mt-2.5 line-clamp-2 font-bold leading-snug text-gray-900"
-                          style={{ fontSize: "0.95rem" }}
-                        >
-                          {article.subsidyName || article.title}
-                        </p>
-
-                        {/* 補助上限 + 公募期限 */}
-                        {(article.maxAmountLabel || article.deadlineLabel) && (
-                          <div
-                            className="mt-2.5 flex items-stretch overflow-hidden rounded-lg bg-gray-50"
-                            style={{ padding: "8px 12px" }}
-                          >
-                            {article.maxAmountLabel && (
-                              <div className="flex flex-col">
-                                <span
-                                  className="text-gray-400"
-                                  style={{ fontSize: "0.65rem" }}
-                                >
-                                  補助上限
-                                </span>
-                                <span
-                                  className="font-semibold text-gray-800"
-                                  style={{ fontSize: "0.8rem" }}
-                                >
-                                  {article.maxAmountLabel}
-                                </span>
-                              </div>
-                            )}
-                            {article.maxAmountLabel && article.deadlineLabel && (
-                              <div
-                                className="mx-3 self-stretch"
-                                style={{ borderLeft: "1px solid #e5e7eb" }}
-                                aria-hidden
-                              />
-                            )}
-                            {article.deadlineLabel && (
-                              <div className="flex flex-col">
-                                <span
-                                  className="text-gray-400"
-                                  style={{ fontSize: "0.65rem" }}
-                                >
-                                  公募期限
-                                </span>
-                                <span
-                                  className="font-semibold text-gray-800"
-                                  style={{ fontSize: "0.8rem" }}
-                                >
-                                  {article.deadlineLabel}
-                                </span>
-                              </div>
-                            )}
-                          </div>
-                        )}
+                        <div className="absolute inset-0 bg-black/20" />
+                        <div className="absolute left-3 top-3 flex gap-1.5">
+                          {pills.slice(0, 1).map((t) => (
+                            <span
+                              key={t}
+                              className="rounded bg-white/90 px-2 py-0.5 text-[10px] font-semibold text-neutral-700"
+                            >
+                              {t}
+                            </span>
+                          ))}
+                          {article.deadlineLabel && (
+                            <span className="rounded bg-emerald-500 px-2 py-0.5 text-[10px] font-semibold text-white">
+                              公募中
+                            </span>
+                          )}
+                        </div>
                       </div>
 
-                      {/* カード本体 */}
-                      <div className="flex flex-1 flex-col px-4 py-3">
-                        {/* 本文抜粋 */}
-                        <p
-                          className="line-clamp-2 flex-1 leading-relaxed text-gray-500"
-                          style={{ fontSize: "0.85rem" }}
-                        >
+                      <div className="flex flex-1 flex-col p-4">
+                        <h3 className="line-clamp-2 text-[15px] font-bold leading-snug text-neutral-900 group-hover:text-primary-700">
+                          {article.title}
+                        </h3>
+                        <p className="mt-2 line-clamp-2 text-xs leading-relaxed text-neutral-500">
                           {article.excerpt}
                         </p>
-
-                        {/* 日付 + 地域 */}
-                        <div className="mt-2 flex items-center justify-between">
-                          {article.publishedAt && (
-                            <span
-                              className="text-gray-400"
-                              style={{ fontSize: "0.75rem" }}
-                            >
-                              {article.publishedAt}
-                            </span>
-                          )}
-                          {article.prefecture && (
-                            <span
-                              className="text-blue-600"
-                              style={{ fontSize: "0.75rem" }}
-                            >
-                              {article.prefecture}
-                            </span>
-                          )}
+                        <div className="mt-3 grid grid-cols-2 gap-2 text-[11px]">
+                          <div className="rounded bg-neutral-50 px-2 py-1.5">
+                            <p className="text-neutral-400">補助上限</p>
+                            <p className="font-semibold text-neutral-700 line-clamp-1">
+                              {article.maxAmountLabel ?? "要確認"}
+                            </p>
+                          </div>
+                          <div className="rounded bg-neutral-50 px-2 py-1.5">
+                            <p className="text-neutral-400">公募期限</p>
+                            <p className="font-semibold text-neutral-700 line-clamp-1">
+                              {article.deadlineLabel ?? "要確認"}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="mt-3 flex items-center justify-between text-[11px] text-neutral-400">
+                          <span>{article.publishedAt || "-"}</span>
+                          <span className="text-primary-700">{article.prefecture ?? "全国"}</span>
                         </div>
                       </div>
                     </Link>
@@ -284,7 +482,6 @@ export default function SubsidiesArticlesIndex({
                 </p>
               )}
 
-              {/* ページネーション */}
               {totalPages > 1 && (
                 <div className="mt-10 flex items-center justify-center gap-1.5">
                   <button
@@ -325,63 +522,109 @@ export default function SubsidiesArticlesIndex({
           )}
         </div>
 
-        {/* サイドバー */}
-        {articles.length > 0 && (
-          <aside className="w-full shrink-0 lg:sticky lg:top-28 lg:w-72">
-            <div className="rounded-lg border border-neutral-200/80 bg-white p-5 shadow-sm">
-              <h2 className="border-b border-neutral-200 pb-2 text-sm font-semibold text-neutral-900">
-                タグで絞り込む
-              </h2>
-              <div className="mt-4 flex flex-wrap gap-2">
-                <button
-                  type="button"
-                  onClick={() => handleTagSelect(ALL)}
-                  className={`rounded-full px-3 py-1.5 text-xs transition sm:text-sm ${
-                    selectedTag === ALL
-                      ? "bg-primary-700 text-white"
-                      : "border border-neutral-200 bg-white text-neutral-800 hover:border-neutral-300"
-                  }`}
-                >
-                  全て（{articles.length}）
-                </button>
-                {visibleTagOpts.map((opt) => (
-                  <button
-                    key={opt.label}
-                    type="button"
-                    onClick={() => handleTagSelect(opt.label)}
-                    className={`rounded-full px-3 py-1.5 text-xs transition sm:text-sm ${
-                      selectedTag === opt.label
-                        ? "bg-primary-700 text-white"
-                        : "border border-neutral-200 bg-white text-neutral-800 hover:border-neutral-300"
-                    }`}
+        <aside className="w-full shrink-0 space-y-4 lg:sticky lg:top-24 lg:w-80">
+          <section className="rounded-xl border border-neutral-200 bg-white p-5 shadow-sm">
+            <h2 className="mb-3 text-sm font-bold text-neutral-900">締切間近ランキング</h2>
+            <ol className="space-y-2">
+              {portalData.deadlineRanking.map((item, index) => (
+                <li key={item.id}>
+                  <Link
+                    href={`/subsidies/articles/${item.slug}`}
+                    className="group flex items-start gap-2 rounded-lg border border-neutral-100 px-3 py-2 hover:border-primary-200 hover:bg-primary-50"
                   >
-                    {opt.label}（{opt.count}）
-                  </button>
-                ))}
-              </div>
+                    <span className="mt-0.5 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-amber-500 px-1.5 text-[10px] font-bold text-white">
+                      {index + 1}
+                    </span>
+                    <div className="min-w-0">
+                      <p className="line-clamp-2 text-xs font-semibold text-neutral-800 group-hover:text-primary-700">
+                        {item.title}
+                      </p>
+                      <p className="mt-0.5 text-[11px] text-neutral-500">
+                        締切まであと{item.daysLeft}日
+                      </p>
+                    </div>
+                  </Link>
+                </li>
+              ))}
+            </ol>
+          </section>
 
-              {hiddenCount > 0 && (
-                <button
-                  type="button"
-                  onClick={() => setShowAllTags(true)}
-                  className="mt-3 text-xs text-blue-600 hover:underline"
-                >
-                  もっと見る（{hiddenCount}個）
-                </button>
-              )}
-              {showAllTags && hiddenCount > 0 && (
-                <button
-                  type="button"
-                  onClick={() => setShowAllTags(false)}
-                  className="mt-2 text-xs text-gray-400 hover:underline"
-                >
-                  閉じる
-                </button>
-              )}
-            </div>
-          </aside>
-        )}
+          <section className="rounded-xl border border-blue-200 bg-gradient-to-br from-blue-50 to-white p-5 shadow-sm">
+            <h3 className="text-sm font-bold text-neutral-900">
+              あなたに合う補助金を無料診断
+            </h3>
+            <p className="mt-2 text-xs leading-relaxed text-neutral-600">
+              かんたん質問に答えるだけで、申請可能性の高い補助金を判定します。
+            </p>
+            <Link
+              href="/check"
+              className="mt-4 inline-flex w-full items-center justify-center rounded-lg bg-primary-700 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-primary-600"
+            >
+              無料で診断してみる
+            </Link>
+          </section>
+
+          <section className="rounded-xl border border-neutral-200 bg-white p-5 shadow-sm">
+            <h3 className="text-sm font-bold text-neutral-900">最新情報をメールで受け取る</h3>
+            <p className="mt-1 text-xs text-neutral-500">
+              新着記事や公募情報をまとめてお届けします。
+            </p>
+            <form onSubmit={handleSubscribe} className="mt-3 space-y-2">
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="メールアドレスを入力"
+                className="w-full rounded-lg border border-neutral-200 px-3 py-2 text-sm outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
+                required
+              />
+              <button
+                type="submit"
+                disabled={isSubscribing}
+                className="w-full rounded-lg bg-primary-700 px-4 py-2 text-sm font-bold text-white transition hover:bg-primary-600 disabled:opacity-50"
+              >
+                {isSubscribing ? "登録中..." : "登録する"}
+              </button>
+            </form>
+            {subscribeDone && (
+              <p className="mt-2 text-xs text-emerald-600">登録が完了しました。</p>
+            )}
+            {subscribeError && (
+              <p className="mt-2 text-xs text-red-500">{subscribeError}</p>
+            )}
+          </section>
+        </aside>
       </div>
+
+      <section className="mt-10 rounded-xl border border-neutral-200 bg-white p-4 shadow-sm sm:p-6">
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+          <div className="rounded-lg bg-neutral-50 p-3">
+            <ShieldCheck className="h-5 w-5 text-primary-700" />
+            <p className="mt-2 text-xs font-semibold text-neutral-800">専門家監修</p>
+            <p className="mt-1 text-[11px] text-neutral-500">信頼性の高い情報を掲載</p>
+          </div>
+          <div className="rounded-lg bg-neutral-50 p-3">
+            <Clock3 className="h-5 w-5 text-primary-700" />
+            <p className="mt-2 text-xs font-semibold text-neutral-800">毎日更新</p>
+            <p className="mt-1 text-[11px] text-neutral-500">公募情報を素早く反映</p>
+          </div>
+          <div className="rounded-lg bg-neutral-50 p-3">
+            <BookOpen className="h-5 w-5 text-primary-700" />
+            <p className="mt-2 text-xs font-semibold text-neutral-800">わかりやすい解説</p>
+            <p className="mt-1 text-[11px] text-neutral-500">初めてでも理解しやすい構成</p>
+          </div>
+          <div className="rounded-lg bg-neutral-50 p-3">
+            <BellRing className="h-5 w-5 text-primary-700" />
+            <p className="mt-2 text-xs font-semibold text-neutral-800">全国制度対応</p>
+            <p className="mt-1 text-[11px] text-neutral-500">地域の補助金も継続追跡</p>
+          </div>
+          <div className="rounded-lg bg-neutral-50 p-3">
+            <Users className="h-5 w-5 text-primary-700" />
+            <p className="mt-2 text-xs font-semibold text-neutral-800">申請支援連携</p>
+            <p className="mt-1 text-[11px] text-neutral-500">必要時は無料相談へ接続</p>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }

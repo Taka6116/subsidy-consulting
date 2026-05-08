@@ -4,6 +4,7 @@ import LpFooter from "@/components/gate-lp/LpFooter";
 import { prisma } from "@/lib/db/prisma";
 import SubsidiesArticlesIndex, {
   type ArticleCard,
+  type ArticlesPortalData,
 } from "./SubsidiesArticlesIndex";
 
 export const metadata: Metadata = {
@@ -20,6 +21,7 @@ function formatPublishedAt(date: Date | null): string {
 }
 
 const DEADLINE_MAX = new Date("2050-01-01");
+const DAY_MS = 24 * 60 * 60 * 1000;
 
 function formatDeadlineLabelForCard(
   deadlineLabel: string | null | undefined,
@@ -40,6 +42,30 @@ function formatDeadlineLabelForCard(
   for (const d of candidates) {
     if (d && !Number.isNaN(d.getTime()) && d < DEADLINE_MAX) {
       return `${d.getFullYear()}年${d.getMonth() + 1}月${d.getDate()}日`;
+    }
+  }
+  return null;
+}
+
+function resolveDeadlineDate(
+  deadlineLabel: string | null | undefined,
+  deadline: Date | null | undefined,
+  rawPayload: unknown,
+): Date | null {
+  const raw = rawPayload as Record<string, unknown> | null;
+  const dateFromRaw = raw?.application_end_date
+    ? new Date(String(raw.application_end_date))
+    : null;
+
+  const candidates = [
+    deadline instanceof Date ? deadline : null,
+    dateFromRaw,
+    deadlineLabel ? new Date(deadlineLabel) : null,
+  ];
+
+  for (const d of candidates) {
+    if (d && !Number.isNaN(d.getTime()) && d < DEADLINE_MAX) {
+      return d;
     }
   }
   return null;
@@ -71,6 +97,7 @@ function formatMaxAmount(
 }
 
 export default async function SubsidiesArticlesPage() {
+  const now = new Date();
   const rows = await prisma.generatedContent.findMany({
     where: {
       contentType: "article",
@@ -82,6 +109,7 @@ export default async function SubsidiesArticlesPage() {
     include: {
       grant: {
         select: {
+          id: true,
           name: true,
           maxAmountLabel: true,
           subsidyAmount: true,
@@ -102,6 +130,7 @@ export default async function SubsidiesArticlesPage() {
       title: r.title as string,
       excerpt: r.excerpt ?? "",
       publishedAt: formatPublishedAt(r.publishedAt),
+      publishedAtIso: r.publishedAt ? r.publishedAt.toISOString() : null,
       subsidyName: r.grant?.name ?? "",
       maxAmountLabel: formatMaxAmount(
         r.grant?.maxAmountLabel,
@@ -114,13 +143,128 @@ export default async function SubsidiesArticlesPage() {
       ),
       prefecture: r.grant?.prefecture ?? null,
       tags: r.tags ?? [],
+      heroImagePath: r.heroImagePath ?? null,
     }));
+
+  const validRows = rows.filter((r) => r.slug && r.title);
+
+  const tickerItems = validRows.slice(0, 8).map((r) => {
+    const deadlineDate = resolveDeadlineDate(
+      r.grant?.deadlineLabel,
+      r.grant?.deadline,
+      r.grant?.rawPayload,
+    );
+    const isClosingSoon = deadlineDate
+      ? deadlineDate.getTime() - now.getTime() <= 14 * DAY_MS &&
+        deadlineDate.getTime() >= now.getTime()
+      : false;
+    const isNew = r.publishedAt
+      ? now.getTime() - r.publishedAt.getTime() <= 2 * DAY_MS
+      : false;
+    return {
+      id: r.id,
+      slug: r.slug as string,
+      title: r.title as string,
+      isNew,
+      isClosingSoon,
+      publishedAtIso: r.publishedAt ? r.publishedAt.toISOString() : null,
+    };
+  });
+
+  const newArticlesCount = validRows.filter(
+    (r) =>
+      r.publishedAt &&
+      now.getTime() - r.publishedAt.getTime() <= 7 * DAY_MS,
+  ).length;
+
+  const openCount = validRows.filter((r) => {
+    const d = resolveDeadlineDate(
+      r.grant?.deadlineLabel,
+      r.grant?.deadline,
+      r.grant?.rawPayload,
+    );
+    return Boolean(d && d.getTime() > now.getTime());
+  }).length;
+
+  const closingSoonCount = validRows.filter((r) => {
+    const d = resolveDeadlineDate(
+      r.grant?.deadlineLabel,
+      r.grant?.deadline,
+      r.grant?.rawPayload,
+    );
+    if (!d) return false;
+    const diff = d.getTime() - now.getTime();
+    return diff >= 0 && diff <= 14 * DAY_MS;
+  }).length;
+
+  const tagCounter = new Map<string, number>();
+  for (const row of validRows) {
+    for (const tag of row.tags ?? []) {
+      if (tag === "お役立ち情報") continue;
+      tagCounter.set(tag, (tagCounter.get(tag) ?? 0) + 1);
+    }
+  }
+  const popularCategories = [...tagCounter.entries()]
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 6)
+    .map(([label, count]) => ({ label, count }));
+
+  const deadlineRanking = validRows
+    .map((r) => {
+      const deadlineDate = resolveDeadlineDate(
+        r.grant?.deadlineLabel,
+        r.grant?.deadline,
+        r.grant?.rawPayload,
+      );
+      if (!deadlineDate || deadlineDate.getTime() <= now.getTime()) return null;
+      const daysLeft = Math.ceil((deadlineDate.getTime() - now.getTime()) / DAY_MS);
+      return {
+        id: r.id,
+        slug: r.slug as string,
+        title: r.title as string,
+        deadlineLabel: formatDeadlineLabelForCard(
+          r.grant?.deadlineLabel,
+          r.grant?.deadline,
+          r.grant?.rawPayload,
+        ),
+        daysLeft,
+      };
+    })
+    .filter((v): v is NonNullable<typeof v> => Boolean(v))
+    .sort((a, b) => a.daysLeft - b.daysLeft)
+    .slice(0, 5);
+
+  const featuredSource = validRows[0] ?? null;
+  const featured = featuredSource
+    ? {
+        slug: featuredSource.slug as string,
+        title: featuredSource.title as string,
+        subsidyName: featuredSource.grant?.name ?? "注目の補助金",
+        imagePath: featuredSource.heroImagePath ?? null,
+        publishedAtIso: featuredSource.publishedAt
+          ? featuredSource.publishedAt.toISOString()
+          : null,
+      }
+    : null;
+
+  const portalData: ArticlesPortalData = {
+    tickerItems,
+    stats: {
+      newArticlesCount,
+      openCount,
+      closingSoonCount,
+      totalCount: validRows.length,
+    },
+    popularCategories,
+    deadlineRanking,
+    featured,
+  };
 
   return (
     <>
       <Header />
       <main className="relative z-[2] min-h-[100svh] bg-[#f9f7f2] pt-16 font-body sm:pt-20">
-        <SubsidiesArticlesIndex articles={articles} />
+        <SubsidiesArticlesIndex articles={articles} portalData={portalData} />
       </main>
       <LpFooter />
     </>
