@@ -57,7 +57,7 @@ const GENRE_FOLDER_RULES: GenreFolderRule[] = [
   { keywords: ["運送", "物流", "配送", "トラック"], folders: ["運送"] },
   { keywords: ["人材", "採用", "雇用", "賃上げ"], folders: ["人材", "人材・採用"] },
   { keywords: ["DX", "IT導入", "デジタル", "システム"], folders: ["DX・IT", "DX", "IT"] },
-  { keywords: ["設備投資", "設備", "省力化", "機械"], folders: ["設備投資"] },
+  { keywords: ["設備投資", "設備", "省力化", "機械"], folders: ["設備投資", "設備・設備投資"] },
   { keywords: ["ものづくり", "製造", "工場", "生産"], folders: ["ものづくり"] },
   { keywords: ["事業計画", "計画", "申請準備"], folders: ["事業計画"] },
   { keywords: ["建設", "建築", "工事", "電化"], folders: ["建設"] },
@@ -107,6 +107,7 @@ function pickRandom<T>(items: T[]): T | null {
 
 function pickCustomArticlePicture(params: {
   subsidyId: string;
+  seedKey?: string;
   tags?: string[];
   targetIndustries?: string[];
 }): string | null {
@@ -121,7 +122,8 @@ function pickCustomArticlePicture(params: {
       const files = listImagesInFolder(folderName);
       if (files.length === 0) continue;
       // subsidyId ベースで疑似ランダム化（記事ごとに安定）
-      const idx = hashString(`${params.subsidyId}:${folderName}`) % files.length;
+      const seedBase = params.seedKey ?? params.subsidyId;
+      const idx = hashString(`${seedBase}:${folderName}`) % files.length;
       const picked = files[idx] ?? pickRandom(files);
       if (picked) {
         const folder = encodeURIComponent(folderName);
@@ -136,6 +138,7 @@ function pickCustomArticlePicture(params: {
 
 export function pickHeroImage(params: {
   subsidyId: string;
+  seedKey?: string;
   tags?: string[];
   targetIndustries?: string[];
 }): string {

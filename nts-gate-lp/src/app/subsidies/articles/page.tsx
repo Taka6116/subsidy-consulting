@@ -148,6 +148,7 @@ export default async function SubsidiesArticlesPage() {
       // 既存記事でも、ジャンル別フォルダ画像があれば優先的に反映
       heroImagePath: pickHeroImage({
         subsidyId: r.subsidyId,
+        seedKey: r.id,
         tags: r.tags ?? [],
         targetIndustries: r.grant?.targetIndustries ?? [],
       }),
@@ -247,7 +248,12 @@ export default async function SubsidiesArticlesPage() {
         slug: featuredSource.slug as string,
         title: featuredSource.title as string,
         subsidyName: featuredSource.grant?.name ?? "注目の補助金",
-        imagePath: featuredSource.heroImagePath ?? null,
+        imagePath: pickHeroImage({
+          subsidyId: featuredSource.subsidyId,
+          seedKey: featuredSource.id,
+          tags: featuredSource.tags ?? [],
+          targetIndustries: featuredSource.grant?.targetIndustries ?? [],
+        }),
         publishedAtIso: featuredSource.publishedAt
           ? featuredSource.publishedAt.toISOString()
           : null,
