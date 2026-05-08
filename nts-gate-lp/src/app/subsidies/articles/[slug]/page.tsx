@@ -105,39 +105,86 @@ function resolveDeadlineLabel(
   return null;
 }
 
-// ========== [NEW 2026-04-30] 関連記事取得関数 ==========
+// ========== [UPDATED] 関連記事取得：同都道府県・同タグ・公募中を優先 ==========
 async function getRelatedArticles({
   currentSlug,
   tags,
+  prefecture,
   limit,
 }: {
   currentSlug: string;
   tags: string[];
+  prefecture?: string | null;
   limit: number;
 }) {
-  // 同タグの published 記事を取得し、自身を除外して limit 件返す
-  // TODO: タグ一致のフィルタリングは tags.length > 0 の場合のみ行う
-  const articles = await prisma.generatedContent.findMany({
+  const now = new Date();
+
+  // 候補を多めに取得してからスコアリング
+  const candidates = await prisma.generatedContent.findMany({
     where: {
       status: "published",
       slug: { not: currentSlug },
-      ...(tags.length > 0 ? { tags: { hasSome: tags } } : {}),
+      contentType: "article",
     },
-    select: { slug: true, title: true, publishedAt: true, tags: true },
+    select: {
+      slug: true,
+      title: true,
+      publishedAt: true,
+      tags: true,
+      grant: {
+        select: {
+          prefecture: true,
+          status: true,
+          deadline: true,
+          name: true,
+          maxAmountLabel: true,
+        },
+      },
+    },
     orderBy: { publishedAt: "desc" },
-    take: limit,
+    take: 60, // スコアリング母集団
   });
 
-  return articles
+  // スコアリング（高いほど上位）
+  const scored = candidates
     .filter((a) => a.slug != null && a.title != null)
-    .map((a) => ({
-      slug: a.slug!,
-      title: a.title!,
-      publishedAt: (a.publishedAt ?? new Date()).toISOString(),
-      tags: a.tags,
-    }));
+    .map((a) => {
+      let score = 0;
+
+      // 同都道府県 +3
+      if (prefecture && a.grant?.prefecture === prefecture) score += 3;
+
+      // 同タグ +1/件
+      const matchedTags = (a.tags ?? []).filter((t) => tags.includes(t));
+      score += matchedTags.length;
+
+      // 公募中（status=open かつ deadline が未来 or null）+2
+      const isOpen =
+        a.grant?.status === "open" &&
+        (a.grant?.deadline == null || a.grant.deadline > now);
+      if (isOpen) score += 2;
+
+      // 新しい記事 +0.5（最近7日）
+      const age = now.getTime() - (a.publishedAt ?? now).getTime();
+      if (age < 7 * 24 * 60 * 60 * 1000) score += 0.5;
+
+      return {
+        slug: a.slug!,
+        title: a.title!,
+        publishedAt: (a.publishedAt ?? now).toISOString(),
+        tags: a.tags ?? [],
+        prefecture: a.grant?.prefecture ?? null,
+        isOpen,
+        grantName: a.grant?.name ?? null,
+        score,
+      };
+    })
+    .sort((a, b) => b.score - a.score || b.publishedAt.localeCompare(a.publishedAt))
+    .slice(0, limit);
+
+  return scored;
 }
-// ========== /NEW ==========
+// ========== /UPDATED ==========
 
 export default async function SubsidyArticlePage({ params }: PageProps) {
   const { slug } = await params;
@@ -169,13 +216,16 @@ export default async function SubsidyArticlePage({ params }: PageProps) {
     ? resolveDeadlineLabel(article.grant.deadlineLabel, article.grant.deadline)
     : null;
 
-  // ========== [NEW 2026-04-30] 関連記事を取得 ==========
+  // ========== 関連記事を取得（同都道府県・同タグ・公募中優先） ==========
   const relatedArticles = await getRelatedArticles({
     currentSlug: slug,
     tags: article.tags ?? [],
+    prefecture: article.grant?.rawPayload
+      ? (toObj(article.grant.rawPayload)?.prefecture as string | undefined)
+      : null,
     limit: 3,
   });
-  // ========== /NEW ==========
+  // ========== /UPDATED ==========
 
   const currentUrl =
     typeof process !== "undefined"
