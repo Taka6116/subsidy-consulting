@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 type Article = {
   slug: string;
   title: string;
@@ -40,7 +42,7 @@ export function RelatedArticles({ articles }: Props) {
           const colorClass = PLACEHOLDER_COLORS[i % PLACEHOLDER_COLORS.length];
 
           return (
-            <a
+            <Link
               key={article.slug}
               href={`/subsidies/articles/${article.slug}`}
               className="group flex flex-col overflow-hidden rounded-xl border border-gray-200 bg-white transition hover:border-gray-300 hover:shadow-lg"
@@ -91,19 +93,19 @@ export function RelatedArticles({ articles }: Props) {
                   </p>
                 )}
               </div>
-            </a>
+            </Link>
           );
         })}
       </div>
 
       {/* 記事一覧へ */}
       <div className="mt-6 text-right">
-        <a
+        <Link
           href="/subsidies/articles"
           className="inline-flex items-center gap-1 text-sm font-bold text-[#0e357f] transition hover:underline"
         >
           VIEW ALL →
-        </a>
+        </Link>
       </div>
     </section>
   );
