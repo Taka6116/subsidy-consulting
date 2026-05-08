@@ -4,11 +4,7 @@ import Link from "next/link";
 import { useMemo, useRef, useState } from "react";
 import {
   BellRing,
-  BookOpen,
-  Clock3,
   Search,
-  ShieldCheck,
-  Users,
   X,
 } from "lucide-react";
 
@@ -250,15 +246,15 @@ export default function SubsidiesArticlesIndex({
                 {!portalData.featured.imagePath && (
                   <div className="absolute inset-0 bg-gradient-to-br from-[#0e357f] to-[#28a4a3]" />
                 )}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/65 to-black/15" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/45 to-black/20" />
                 <div className="absolute bottom-0 left-0 right-0 p-5 text-white sm:p-6">
                   <span className="inline-flex rounded bg-red-500 px-2 py-0.5 text-[10px] font-bold">
                     注目解説
                   </span>
-                  <p className="mt-2 text-sm text-white/90">
+                  <p className="mt-2 text-sm text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.7)]">
                     {portalData.featured.subsidyName}
                   </p>
-                  <h2 className="mt-1 line-clamp-2 text-xl font-black leading-snug sm:text-2xl">
+                  <h2 className="mt-1 line-clamp-2 text-xl font-black leading-snug text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] sm:text-2xl">
                     {portalData.featured.title}
                   </h2>
                 </div>
@@ -322,6 +318,53 @@ export default function SubsidiesArticlesIndex({
             </div>
           </div>
         </div>
+      </section>
+
+      <section className="mt-4 grid gap-4 md:grid-cols-2">
+        <section className="rounded-xl border border-blue-200 bg-gradient-to-br from-blue-50 to-white p-5 shadow-sm">
+          <h3 className="text-sm font-bold text-neutral-900">
+            あなたに合う補助金を無料診断
+          </h3>
+          <p className="mt-2 text-xs leading-relaxed text-neutral-600">
+            かんたん質問に答えるだけで、申請可能性の高い補助金を判定します。
+          </p>
+          <Link
+            href="/check"
+            className="mt-4 inline-flex w-full items-center justify-center rounded-lg bg-primary-700 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-primary-600"
+          >
+            無料で診断してみる
+          </Link>
+        </section>
+
+        <section className="rounded-xl border border-neutral-200 bg-white p-5 shadow-sm">
+          <h3 className="text-sm font-bold text-neutral-900">最新情報をメールで受け取る</h3>
+          <p className="mt-1 text-xs text-neutral-500">
+            新着記事や公募情報をまとめてお届けします。
+          </p>
+          <form onSubmit={handleSubscribe} className="mt-3 space-y-2">
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="メールアドレスを入力"
+              className="w-full rounded-lg border border-neutral-200 px-3 py-2 text-sm outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
+              required
+            />
+            <button
+              type="submit"
+              disabled={isSubscribing}
+              className="w-full rounded-lg bg-primary-700 px-4 py-2 text-sm font-bold text-white transition hover:bg-primary-600 disabled:opacity-50"
+            >
+              {isSubscribing ? "登録中..." : "登録する"}
+            </button>
+          </form>
+          {subscribeDone && (
+            <p className="mt-2 text-xs text-emerald-600">登録が完了しました。</p>
+          )}
+          {subscribeError && (
+            <p className="mt-2 text-xs text-red-500">{subscribeError}</p>
+          )}
+        </section>
       </section>
 
       <div className="mt-6 flex flex-col gap-8 lg:flex-row lg:items-start">
@@ -565,83 +608,9 @@ export default function SubsidiesArticlesIndex({
               ))}
             </ol>
           </section>
-
-          <section className="rounded-xl border border-blue-200 bg-gradient-to-br from-blue-50 to-white p-5 shadow-sm">
-            <h3 className="text-sm font-bold text-neutral-900">
-              あなたに合う補助金を無料診断
-            </h3>
-            <p className="mt-2 text-xs leading-relaxed text-neutral-600">
-              かんたん質問に答えるだけで、申請可能性の高い補助金を判定します。
-            </p>
-            <Link
-              href="/check"
-              className="mt-4 inline-flex w-full items-center justify-center rounded-lg bg-primary-700 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-primary-600"
-            >
-              無料で診断してみる
-            </Link>
-          </section>
-
-          <section className="rounded-xl border border-neutral-200 bg-white p-5 shadow-sm">
-            <h3 className="text-sm font-bold text-neutral-900">最新情報をメールで受け取る</h3>
-            <p className="mt-1 text-xs text-neutral-500">
-              新着記事や公募情報をまとめてお届けします。
-            </p>
-            <form onSubmit={handleSubscribe} className="mt-3 space-y-2">
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="メールアドレスを入力"
-                className="w-full rounded-lg border border-neutral-200 px-3 py-2 text-sm outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
-                required
-              />
-              <button
-                type="submit"
-                disabled={isSubscribing}
-                className="w-full rounded-lg bg-primary-700 px-4 py-2 text-sm font-bold text-white transition hover:bg-primary-600 disabled:opacity-50"
-              >
-                {isSubscribing ? "登録中..." : "登録する"}
-              </button>
-            </form>
-            {subscribeDone && (
-              <p className="mt-2 text-xs text-emerald-600">登録が完了しました。</p>
-            )}
-            {subscribeError && (
-              <p className="mt-2 text-xs text-red-500">{subscribeError}</p>
-            )}
-          </section>
         </aside>
       </div>
 
-      <section className="mt-10 rounded-xl border border-neutral-200 bg-white p-4 shadow-sm sm:p-6">
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
-          <div className="rounded-lg bg-neutral-50 p-3">
-            <ShieldCheck className="h-5 w-5 text-primary-700" />
-            <p className="mt-2 text-xs font-semibold text-neutral-800">専門家監修</p>
-            <p className="mt-1 text-[11px] text-neutral-500">信頼性の高い情報を掲載</p>
-          </div>
-          <div className="rounded-lg bg-neutral-50 p-3">
-            <Clock3 className="h-5 w-5 text-primary-700" />
-            <p className="mt-2 text-xs font-semibold text-neutral-800">毎日更新</p>
-            <p className="mt-1 text-[11px] text-neutral-500">公募情報を素早く反映</p>
-          </div>
-          <div className="rounded-lg bg-neutral-50 p-3">
-            <BookOpen className="h-5 w-5 text-primary-700" />
-            <p className="mt-2 text-xs font-semibold text-neutral-800">わかりやすい解説</p>
-            <p className="mt-1 text-[11px] text-neutral-500">初めてでも理解しやすい構成</p>
-          </div>
-          <div className="rounded-lg bg-neutral-50 p-3">
-            <BellRing className="h-5 w-5 text-primary-700" />
-            <p className="mt-2 text-xs font-semibold text-neutral-800">全国制度対応</p>
-            <p className="mt-1 text-[11px] text-neutral-500">地域の補助金も継続追跡</p>
-          </div>
-          <div className="rounded-lg bg-neutral-50 p-3">
-            <Users className="h-5 w-5 text-primary-700" />
-            <p className="mt-2 text-xs font-semibold text-neutral-800">申請支援連携</p>
-            <p className="mt-1 text-[11px] text-neutral-500">必要時は無料相談へ接続</p>
-          </div>
-        </div>
-      </section>
       <style jsx>{`
         .ticker-marquee {
           animation: tickerScroll 36s linear infinite;
