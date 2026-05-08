@@ -268,29 +268,34 @@ export default function SubsidiesArticlesIndex({
             )}
           </div>
 
-          {/* 注目解説直下（左カラム）にCTA2ボックス */}
-          <section className="grid gap-4 md:grid-cols-2">
-            <section className="rounded-xl border border-blue-200 bg-gradient-to-br from-blue-50 to-white p-5 shadow-sm">
+          {/* 注目解説直下（左カラム）にCTA2ボックス — グリッドで同じ高さにし、主ボタンを下端で揃える */}
+          <section className="grid gap-4 md:grid-cols-2 md:items-stretch">
+            <section className="flex h-full min-h-0 flex-col rounded-xl border border-blue-200 bg-gradient-to-br from-blue-50 to-white p-5 shadow-sm">
               <h3 className="text-sm font-bold text-neutral-900">
                 あなたに合う補助金を無料診断
               </h3>
               <p className="mt-2 text-xs leading-relaxed text-neutral-600">
                 かんたん質問に答えるだけで、申請可能性の高い補助金を判定します。
               </p>
-              <Link
-                href="/check"
-                className="mt-4 inline-flex h-11 w-full min-h-[44px] items-center justify-center rounded-lg bg-primary-700 px-4 text-sm font-bold text-white transition hover:bg-primary-600"
-              >
-                無料で診断してみる
-              </Link>
+              <div className="mt-auto pt-4">
+                <Link
+                  href="/check"
+                  className="inline-flex h-11 w-full items-center justify-center rounded-lg bg-primary-700 px-4 text-sm font-bold text-white transition hover:bg-primary-600"
+                >
+                  無料で診断してみる
+                </Link>
+              </div>
             </section>
 
-            <section className="rounded-xl border border-neutral-200 bg-white p-5 shadow-sm">
+            <section className="flex h-full min-h-0 flex-col rounded-xl border border-neutral-200 bg-white p-5 shadow-sm">
               <h3 className="text-sm font-bold text-neutral-900">最新情報をメールで受け取る</h3>
               <p className="mt-1 text-xs text-neutral-500">
                 新着記事や公募情報をまとめてお届けします。
               </p>
-              <form onSubmit={handleSubscribe} className="mt-3 space-y-2">
+              <form
+                onSubmit={handleSubscribe}
+                className="mt-3 flex min-h-0 flex-1 flex-col gap-2"
+              >
                 <input
                   type="email"
                   value={email}
@@ -302,7 +307,7 @@ export default function SubsidiesArticlesIndex({
                 <button
                   type="submit"
                   disabled={isSubscribing}
-                  className="h-11 min-h-[44px] w-full rounded-lg bg-primary-700 px-4 text-sm font-bold text-white transition hover:bg-primary-600 disabled:opacity-50"
+                  className="mt-auto inline-flex h-11 w-full shrink-0 items-center justify-center rounded-lg bg-primary-700 px-4 text-sm font-bold text-white transition hover:bg-primary-600 disabled:opacity-50"
                 >
                   {isSubscribing ? "登録中..." : "登録する"}
                 </button>
