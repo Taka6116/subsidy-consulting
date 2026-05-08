@@ -19,21 +19,21 @@ export default function BeforeAfterSection({
         </p>
 
         <div className="flex flex-col items-stretch gap-5 md:flex-row md:items-center">
-          <div className="flex-1 rounded-xl bg-white/70 p-6 md:p-8">
+          <div className="flex flex-1 flex-col items-center rounded-xl bg-white/70 p-6 text-center md:p-8">
             <span className="mb-4 inline-block rounded-full bg-gray-400 px-3 py-1 text-xs font-bold text-white">
               Before
             </span>
             <p className="mb-4 text-base font-bold text-[#1f3856]">
               いまの経営課題
             </p>
-            <ul className="space-y-3">
+            <ul className="w-full space-y-3">
               {data.beforeAfter.before.map((item) => (
                 <li
                   key={item}
-                  className="flex items-start gap-2 text-sm leading-relaxed text-gray-600"
+                  className="flex items-start justify-center gap-2 text-sm leading-relaxed text-gray-600"
                 >
                   <span className="mt-0.5 flex-shrink-0 text-gray-400">×</span>
-                  {item}
+                  <span>{item}</span>
                 </li>
               ))}
             </ul>
@@ -50,21 +50,21 @@ export default function BeforeAfterSection({
             <span className="rotate-90 md:rotate-0">&gt;&gt;</span>
           </div>
 
-          <div className="flex-1 rounded-xl bg-white p-6 shadow-md md:p-8">
+          <div className="flex flex-1 flex-col items-center rounded-xl bg-white p-6 text-center shadow-md md:p-8">
             <span className="mb-4 inline-block rounded-full bg-[#008894] px-3 py-1 text-xs font-bold text-white">
               After
             </span>
             <p className="mb-4 text-base font-bold text-[#0B173A]">
               補助金活用後の未来
             </p>
-            <ul className="space-y-3">
+            <ul className="w-full space-y-3">
               {data.beforeAfter.after.map((item) => (
                 <li
                   key={item}
-                  className="flex items-start gap-2 text-sm font-medium leading-relaxed text-[#0B173A]"
+                  className="flex items-start justify-center gap-2 text-sm font-medium leading-relaxed text-[#0B173A]"
                 >
                   <span className="mt-0.5 flex-shrink-0 text-[#008894]">✓</span>
-                  {item}
+                  <span>{item}</span>
                 </li>
               ))}
             </ul>
