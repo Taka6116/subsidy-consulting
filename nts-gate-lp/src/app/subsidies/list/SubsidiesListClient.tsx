@@ -6,11 +6,14 @@ import Image from "next/image";
 import type { LucideIcon } from "lucide-react";
 import {
   ArrowRight,
-  Bell,
+  BookOpen,
+  CirclePlay,
   CalendarClock,
   Cpu,
+  FileText,
   GitMerge,
   HardHat,
+  LayoutGrid,
   Leaf,
   Search,
   Truck,
@@ -18,7 +21,6 @@ import {
   Users,
 } from "lucide-react";
 import type { StaticImageData } from "next/image";
-import subsidyListPageHero from "../../../../icon-assets/subsidy-list-page-hero.webp";
 import listHeroIsometric from "../../../../icon-assets/list-hero-isometric.png";
 import expertPhoto from "../../../../icon-assets/craftswoman.webp";
 
@@ -101,15 +103,6 @@ function resolveLpBadges(grant: SubsidyCard): string[] {
   if (grant.source === "manual") badges.push("人気");
   else if (parseAmountYen(grant) >= 50_000_000) badges.push("注目");
   return badges.slice(0, 2);
-}
-
-function newsRibbon(item: SubsidyCard, idx: number): { label: string; className: string } {
-  if (idx === 0) return { label: "NEW", className: "bg-red-500 text-white" };
-  if (isDeadlineSoon(item.deadline)) return { label: "締切間近", className: "bg-amber-500 text-white" };
-  if (isNewGrant(item.updatedAt)) return { label: "更新", className: "bg-[#edf4ff] text-[#2453b8]" };
-  const age = Date.now() - new Date(item.updatedAt).getTime();
-  if (age < 14 * 86400000) return { label: "速報", className: "bg-violet-100 text-violet-800" };
-  return { label: "注目", className: "bg-slate-100 text-slate-700" };
 }
 
 type CardVisual = {
@@ -364,14 +357,6 @@ export default function SubsidiesListClient({
     [grants],
   );
 
-  const newsItems = useMemo(
-    () =>
-      [...grants]
-        .sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime())
-        .slice(0, 4),
-    [grants],
-  );
-
   const deadlineRanking = useMemo(
     () =>
       [...grants]
@@ -387,97 +372,137 @@ export default function SubsidiesListClient({
 
   return (
     <div className="space-y-8">
-      {/* Hero + LIVE */}
-      <section className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_340px]">
-        <div className="overflow-hidden rounded-2xl border border-[#dbe3f0] bg-white shadow-sm">
-          <div className="grid gap-6 p-6 lg:grid-cols-[minmax(0,1.05fr)_minmax(200px,320px)_minmax(160px,200px)] lg:items-center lg:gap-8 lg:p-8">
+      {/* Hero */}
+      <section className="mx-auto w-full max-w-[1500px]">
+        <div className="rounded-[28px] border border-slate-200/70 bg-gradient-to-b from-white to-[#f6f9ff] p-5 shadow-sm md:p-8 xl:p-10">
+          <div className="grid items-center gap-8 xl:grid-cols-[1.05fr_1.25fr_0.85fr]">
             <div>
-              <p className="text-xs font-semibold tracking-wide text-[#3f5790]">補助金LPライブラリ</p>
-              <h2 className="mt-3 text-3xl font-extrabold leading-tight text-[#1b2f66] md:text-4xl">
+              <span className="inline-flex items-center rounded-full bg-blue-50 px-4 py-2 text-sm font-bold text-[#0e357f] ring-1 ring-blue-100">
+                補助金LPライブラリ
+              </span>
+              <h1 className="mt-6 text-[32px] font-black leading-[1.22] tracking-tight text-slate-950 md:text-[40px] xl:text-[42px]">
                 あなたの経営課題に、
                 <br />
-                使える補助金があります。
-              </h2>
-              <p className="mt-4 text-sm leading-relaxed text-[#5c6578]">
-                業界・課題ごとの専用LPをご用意しました。
+                使える<span className="text-[#0e57d8]">補助金</span>があります。
+              </h1>
+              <p className="mt-5 text-[15px] leading-7 text-slate-600 md:text-base">
+                全国の自治体・省庁サイトをAIが24時間クロール。
                 <br />
-                自社に合った制度を見つけて、次の一歩へつなげましょう。
+                最新の補助金情報を、わかりやすくお届けします。
               </p>
-              <div className="mt-6 flex flex-wrap gap-3">
+              <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
                 <Link
                   href="/subsidies/check"
-                  className="inline-flex items-center gap-2 rounded-xl bg-[#1248b7] px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#0f3d99]"
+                  className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-[#0f4db8] px-6 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-[#0d419a]"
                 >
-                  今すぐ自社に合う制度を診断する
+                  今すぐ自社に合う制度を診断する（無料・1分）
                   <ArrowRight className="h-4 w-4" />
                 </Link>
                 <Link
                   href="/subsidies/articles"
-                  className="inline-flex items-center gap-2 rounded-xl border border-[#c7d3eb] bg-white px-5 py-3 text-sm font-semibold text-[#2b4685] shadow-sm transition hover:bg-[#f7faff]"
+                  className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl border border-[#c7d3eb] bg-white px-6 py-3 text-sm font-bold text-[#23458a] shadow-sm transition hover:bg-[#f7faff]"
                 >
+                  <BookOpen className="h-4 w-4" />
                   補助金の基礎を知る
                 </Link>
               </div>
             </div>
 
-            <div className="relative flex min-h-[220px] items-center justify-center overflow-hidden rounded-2xl bg-[radial-gradient(circle_at_30%_20%,#eff6ff_0%,#dbeafe_45%,#bfdbfe_100%)] lg:min-h-[280px]">
+            <div className="relative flex min-h-[300px] items-center justify-center md:min-h-[360px] xl:min-h-[380px]">
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(59,130,246,0.14),transparent_62%)]" />
               <Image
-                src={subsidyListPageHero}
-                alt=""
-                width={420}
-                height={280}
-                className="relative z-10 h-auto max-h-[240px] w-full max-w-[320px] object-contain drop-shadow-lg"
-                sizes="(max-width: 1024px) 90vw, 320px"
+                src="/images/subsidy-hero-isometric.webp"
+                alt="補助金情報を分析するビジネスチームのイラスト"
+                width={760}
+                height={520}
                 priority
+                className="relative z-10 w-full max-w-[680px] object-contain drop-shadow-[0_24px_50px_rgba(15,23,42,0.12)]"
               />
+              <div className="absolute bottom-5 left-3 z-20 rounded-2xl bg-white/90 px-5 py-3 shadow-lg ring-1 ring-slate-200 backdrop-blur md:bottom-8 md:left-8 md:px-6 md:py-4">
+                <p className="text-sm font-black text-slate-900">リアルタイム検知</p>
+                <p className="mt-1 text-xs text-slate-500">
+                  全国の公募情報を24時間更新中 <span className="ml-2 font-semibold text-emerald-500">● LIVE</span>
+                </p>
+              </div>
             </div>
 
-            <div className="flex flex-col gap-3">
-              <div className="rounded-xl border border-[#e2ebf7] bg-[#f8fbff] p-4 text-center shadow-sm">
-                <p className="text-[11px] font-medium text-[#5f6d90]">掲載LP数</p>
-                <p className="mt-1 text-2xl font-extrabold text-[#1f3c81]">{total}件</p>
+            <div className="space-y-5">
+              <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+                <div className="flex items-start gap-4">
+                  <span className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-blue-50 text-[#1f54c0]">
+                    <FileText className="h-5 w-5" />
+                  </span>
+                  <div>
+                    <p className="text-sm font-semibold text-slate-500">掲載LP数</p>
+                    <p className="mt-1 text-4xl font-black leading-none text-[#1f3c81]">{total}件</p>
+                    <p className="mt-2 text-xs font-medium text-slate-500">最新の補助金LPを掲載中</p>
+                  </div>
+                </div>
               </div>
-              <div className="rounded-xl border border-[#e2ebf7] bg-[#f8fbff] p-4 text-center shadow-sm">
-                <p className="text-[11px] font-medium text-[#5f6d90]">カテゴリ</p>
-                <p className="mt-1 text-2xl font-extrabold text-[#1f3c81]">{categorySummary.length}</p>
+              <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+                <div className="flex items-start gap-4">
+                  <span className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-emerald-50 text-emerald-600">
+                    <LayoutGrid className="h-5 w-5" />
+                  </span>
+                  <div>
+                    <p className="text-sm font-semibold text-slate-500">カテゴリ</p>
+                    <p className="mt-1 text-4xl font-black leading-none text-[#1f3c81]">{categorySummary.length}</p>
+                    <p className="mt-2 text-xs font-medium text-slate-500">業種・課題別に分類</p>
+                  </div>
+                </div>
               </div>
-              <div className="rounded-xl border border-[#e2ebf7] bg-[#f8fbff] p-4 text-center shadow-sm">
-                <p className="text-[11px] font-medium text-[#5f6d90]">最終更新</p>
-                <p className="mt-1 text-lg font-extrabold leading-tight text-[#1f3c81]">{latestUpdated}</p>
+              <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+                <div className="flex items-start gap-4">
+                  <span className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-violet-50 text-violet-600">
+                    <CalendarClock className="h-5 w-5" />
+                  </span>
+                  <div>
+                    <p className="text-sm font-semibold text-slate-500">最終更新</p>
+                    <p className="mt-1 text-3xl font-black leading-none text-[#1f3c81]">{latestUpdated}</p>
+                    <p className="mt-2 text-xs font-medium text-slate-500">最新情報に自動更新</p>
+                  </div>
+                </div>
               </div>
+            </div>
+          </div>
+
+          <div className="mt-8 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+            <div className="grid gap-px bg-slate-200 md:grid-cols-2 xl:grid-cols-4">
+              <Link href="/subsidies/list" className="bg-white p-6 transition hover:bg-[#f8fbff]">
+                <span className="inline-flex h-14 w-14 items-center justify-center rounded-full bg-[#edf4ff] text-[#2453b8]">
+                  <Search className="h-7 w-7" />
+                </span>
+                <h3 className="mt-4 text-[30px] font-black leading-none text-[#1b2f66]">探す</h3>
+                <p className="mt-3 text-sm leading-6 text-slate-600">業種・課題・地域から使える補助金を検索</p>
+                <p className="mt-4 text-sm font-bold text-[#1f4dab]">補助金一覧を見る →</p>
+              </Link>
+              <Link href="/subsidies/articles" className="bg-white p-6 transition hover:bg-[#f8fbff]">
+                <span className="inline-flex h-14 w-14 items-center justify-center rounded-full bg-emerald-50 text-emerald-600">
+                  <BookOpen className="h-7 w-7" />
+                </span>
+                <h3 className="mt-4 text-[30px] font-black leading-none text-[#1b2f66]">学ぶ</h3>
+                <p className="mt-3 text-sm leading-6 text-slate-600">制度の解説や申請のポイントを記事でわかりやすく解説</p>
+                <p className="mt-4 text-sm font-bold text-[#1f4dab]">解説記事を読む →</p>
+              </Link>
+              <Link href="/subsidies/videos" className="bg-white p-6 transition hover:bg-[#f8fbff]">
+                <span className="inline-flex h-14 w-14 items-center justify-center rounded-full bg-violet-50 text-violet-600">
+                  <CirclePlay className="h-7 w-7" />
+                </span>
+                <h3 className="mt-4 text-[30px] font-black leading-none text-[#1b2f66]">理解する</h3>
+                <p className="mt-3 text-sm leading-6 text-slate-600">動画で制度のポイントや成功事例をチェック</p>
+                <p className="mt-4 text-sm font-bold text-[#1f4dab]">動画を見る →</p>
+              </Link>
+              <Link href="/contact" className="bg-white p-6 transition hover:bg-[#f8fbff]">
+                <span className="inline-flex h-14 w-14 items-center justify-center rounded-full bg-amber-50 text-amber-600">
+                  <Users className="h-7 w-7" />
+                </span>
+                <h3 className="mt-4 text-[30px] font-black leading-none text-[#1b2f66]">相談する</h3>
+                <p className="mt-3 text-sm leading-6 text-slate-600">専門家に無料で相談。伴走支援でサポート</p>
+                <p className="mt-4 text-sm font-bold text-[#1f4dab]">無料相談を予約する →</p>
+              </Link>
             </div>
           </div>
         </div>
-
-        <aside className="rounded-2xl border border-[#dbe3f0] bg-white p-4 shadow-sm">
-          <div className="flex items-center justify-between">
-            <h3 className="text-sm font-bold text-[#1b2f66]">今見るべき最新情報</h3>
-            <Bell className="h-4 w-4 text-[#5372b7]" />
-          </div>
-          <p className="mt-1 text-[11px] text-[#8b95ae]">更新・締切・速報をチェック</p>
-          <div className="mt-3 space-y-2">
-            {newsItems.map((item, idx) => {
-              const ribbon = newsRibbon(item, idx);
-              return (
-                <Link
-                  key={item.id}
-                  href={`/subsidies/list/${item.id}`}
-                  className="block rounded-xl border border-[#e7edf8] p-3 transition hover:border-[#c7d5f1] hover:bg-[#f7faff]"
-                >
-                  <div className="flex items-center justify-between gap-3">
-                    <span className={`rounded px-2 py-0.5 text-[11px] font-bold ${ribbon.className}`}>{ribbon.label}</span>
-                    <span className="text-[11px] text-[#6f7b97]">
-                      {new Date(item.updatedAt).toLocaleDateString("ja-JP")}
-                    </span>
-                  </div>
-                  <p className="mt-2 line-clamp-2 text-sm font-semibold leading-5 text-[#1f2f56]">
-                    {item.name ?? "名称未設定"}
-                  </p>
-                </Link>
-              );
-            })}
-          </div>
-        </aside>
       </section>
 
       {/* 経営課題から探す */}
@@ -744,63 +769,6 @@ export default function SubsidiesListClient({
         </div>
       </section>
 
-      {/* 下部CTA帯 */}
-      <section className="grid gap-4 md:grid-cols-3">
-        <div className="rounded-2xl border border-[#dce4f7] bg-white p-5 shadow-sm">
-          <h4 className="flex items-center gap-2 text-sm font-bold text-[#1d3c80]">
-            <Search className="h-4 w-4" />
-            自社に合う補助金が30秒でわかる
-          </h4>
-          <p className="mt-2 text-xs leading-relaxed text-[#5f719a]">
-            いくつかの質問に答えるだけで、候補制度を提案します。
-          </p>
-          <Link
-            href="/subsidies/check"
-            className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-[#1e4fab]"
-          >
-            無料診断をはじめる
-            <ArrowRight className="h-4 w-4" />
-          </Link>
-        </div>
-        <div className="rounded-2xl border border-[#dce4f7] bg-white p-5 shadow-sm">
-          <h4 className="flex items-center gap-2 text-sm font-bold text-[#1d3c80]">
-            <CalendarClock className="h-4 w-4" />
-            補助金の基礎を知りたい方へ
-          </h4>
-          <p className="mt-2 text-xs leading-relaxed text-[#5f719a]">
-            制度の理解や申請の流れを、初心者向けにわかりやすく解説します。
-          </p>
-          <Link
-            href="/subsidies/articles"
-            className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-[#1e4fab]"
-          >
-            補助金ガイドを見る
-            <ArrowRight className="h-4 w-4" />
-          </Link>
-        </div>
-        <div className="rounded-2xl border border-[#dce4f7] bg-white p-5 shadow-sm">
-          <h4 className="flex items-center gap-2 text-sm font-bold text-[#1d3c80]">
-            <Bell className="h-4 w-4" />
-            最新情報をお届け
-          </h4>
-          <p className="mt-2 text-xs leading-relaxed text-[#5f719a]">
-            新しい公募や更新情報をメールで受け取り、見逃しを防げます。
-          </p>
-          <div className="mt-4 flex gap-2">
-            <input
-              type="email"
-              placeholder="メールアドレス"
-              className="min-w-0 flex-1 rounded-xl border border-[#d6dff2] px-3 py-2 text-sm shadow-sm"
-            />
-            <button
-              type="button"
-              className="shrink-0 rounded-xl bg-[#1248b7] px-4 py-2 text-sm font-semibold text-white shadow-sm"
-            >
-              登録する
-            </button>
-          </div>
-        </div>
-      </section>
     </div>
   );
 }
