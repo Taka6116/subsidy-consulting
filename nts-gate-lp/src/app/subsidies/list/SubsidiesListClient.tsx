@@ -6,13 +6,11 @@ import Image from "next/image";
 import type { LucideIcon } from "lucide-react";
 import {
   ArrowRight,
-  BookOpen,
   CalendarClock,
   Cpu,
   FileText,
   GitMerge,
   HardHat,
-  LayoutGrid,
   Leaf,
   Search,
   Truck,
@@ -284,10 +282,8 @@ export type SubsidyCard = {
 
 export default function SubsidiesListClient({
   grants,
-  total,
 }: {
   grants: SubsidyCard[];
-  total: number;
 }) {
   const [query, setQuery] = useState("");
   const [tab, setTab] = useState<StatusTab>("open");
@@ -378,6 +374,17 @@ export default function SubsidiesListClient({
         .slice(0, 5),
     [grants],
   );
+  const tickerItems = useMemo(
+    () =>
+      [...grants]
+        .sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime())
+        .slice(0, 8),
+    [grants],
+  );
+  const tickerLoopItems = useMemo(
+    () => (tickerItems.length > 0 ? [...tickerItems, ...tickerItems] : []),
+    [tickerItems],
+  );
 
   return (
     <div className="space-y-8">
@@ -390,7 +397,7 @@ export default function SubsidiesListClient({
                 補助金LPライブラリ
               </span>
               <h1 className="mt-6 text-[32px] font-black leading-[1.22] tracking-tight text-slate-950 md:text-[40px] xl:text-[42px]">
-                あなたの経営課題に、
+                あなたの経営課題に
                 <br />
                 使える<span className="text-[#0e57d8]">補助金</span>があります。
               </h1>
@@ -399,7 +406,7 @@ export default function SubsidiesListClient({
                 <br />
                 最新の補助金情報を、わかりやすくお届けします。
               </p>
-              <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+              <div className="mt-7">
                 <Link
                   href="/subsidies/check"
                   className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-[#0f4db8] px-6 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-[#0d419a]"
@@ -407,13 +414,33 @@ export default function SubsidiesListClient({
                   対象の補助金を診断する
                   <ArrowRight className="h-4 w-4" />
                 </Link>
-                <Link
-                  href="/subsidies/articles"
-                  className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl border border-[#c7d3eb] bg-white px-6 py-3 text-sm font-bold text-[#23458a] shadow-sm transition hover:bg-[#f7faff]"
-                >
-                  <BookOpen className="h-4 w-4" />
-                  補助金の基礎を知る
-                </Link>
+              </div>
+              <div className="mt-5 overflow-hidden rounded-xl border border-blue-100 bg-white/80 px-3 py-2">
+                <div className="flex items-center gap-2">
+                  <span className="inline-flex shrink-0 rounded-full bg-primary-700 px-2 py-0.5 text-[10px] font-bold text-white">
+                    最新情報
+                  </span>
+                  <div className="relative min-w-0 flex-1 overflow-hidden">
+                    {tickerLoopItems.length > 0 ? (
+                      <div className="list-ticker-marquee flex w-max items-center gap-3 whitespace-nowrap">
+                        {tickerLoopItems.map((item, index) => (
+                          <Link
+                            key={`${item.id}-${index}`}
+                            href={`/subsidies/list/${item.id}`}
+                            className="inline-flex items-center gap-2 text-xs text-neutral-700 hover:text-primary-700"
+                          >
+                            <span className="rounded bg-pink-500 px-1.5 py-0.5 text-[10px] font-bold text-white">
+                              NEW
+                            </span>
+                            <span className="max-w-[280px] truncate">{item.name ?? "名称未設定"}</span>
+                          </Link>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="text-xs text-neutral-500">現在表示できる最新情報はありません。</p>
+                    )}
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -427,12 +454,6 @@ export default function SubsidiesListClient({
                 priority
                 className="relative z-10 w-[115%] max-w-[860px] object-contain drop-shadow-[0_28px_60px_rgba(15,23,42,0.14)]"
               />
-              <div className="absolute bottom-6 left-4 z-20 rounded-2xl bg-white/90 px-5 py-3 shadow-lg ring-1 ring-slate-200 backdrop-blur md:bottom-12 md:left-10 md:px-6 md:py-4">
-                <p className="text-sm font-black text-slate-900">リアルタイム検知</p>
-                <p className="mt-1 text-xs text-slate-500">
-                  全国の公募情報を24時間更新中 <span className="ml-2 font-semibold text-emerald-500">● LIVE</span>
-                </p>
-              </div>
             </div>
 
             <div className="space-y-5">
@@ -442,21 +463,9 @@ export default function SubsidiesListClient({
                     <FileText className="h-5 w-5" />
                   </span>
                   <div>
-                    <p className="text-sm font-semibold text-slate-500">掲載LP数</p>
-                    <p className="mt-1 text-4xl font-black leading-none text-[#1f3c81]">{total}件</p>
-                    <p className="mt-2 text-xs font-medium text-slate-500">最新の補助金LPを掲載中</p>
-                  </div>
-                </div>
-              </div>
-              <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-                <div className="flex items-start gap-4">
-                  <span className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-emerald-50 text-emerald-600">
-                    <LayoutGrid className="h-5 w-5" />
-                  </span>
-                  <div>
-                    <p className="text-sm font-semibold text-slate-500">カテゴリ</p>
-                    <p className="mt-1 text-4xl font-black leading-none text-[#1f3c81]">{categorySummary.length}</p>
-                    <p className="mt-2 text-xs font-medium text-slate-500">業種・課題別に分類</p>
+                    <p className="text-sm font-semibold text-slate-500">リアルタイム更新</p>
+                    <p className="mt-1 text-3xl font-black leading-none text-[#1f3c81]">{latestUpdated}</p>
+                    <p className="mt-2 text-xs font-medium text-slate-500">全国の公募情報を自動反映</p>
                   </div>
                 </div>
               </div>
@@ -741,7 +750,20 @@ export default function SubsidiesListClient({
           </aside>
         </div>
       </section>
+      <style jsx>{`
+        .list-ticker-marquee {
+          animation: listTickerScroll 36s linear infinite;
+        }
 
+        @keyframes listTickerScroll {
+          from {
+            transform: translateX(0);
+          }
+          to {
+            transform: translateX(-50%);
+          }
+        }
+      `}</style>
     </div>
   );
 }
