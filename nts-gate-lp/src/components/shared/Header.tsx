@@ -48,7 +48,7 @@ export default function Header() {
   return (
     <header
       className={`
-        lp-site-header fixed left-0 right-0 top-0 z-[50]
+        lp-site-header fixed left-0 right-0 top-0 z-[1000] pointer-events-auto
         flex flex-col items-stretch gap-2.5 px-4 py-2.5 transition-all duration-300
         sm:min-h-[3.5rem] sm:flex-row sm:items-center sm:gap-4 sm:px-6 sm:py-0
         ${barClass}
