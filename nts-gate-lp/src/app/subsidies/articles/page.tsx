@@ -110,7 +110,7 @@ export default async function SubsidiesArticlesPage() {
       },
     },
     orderBy: { publishedAt: "desc" },
-    take: 60,
+    take: 500,
     include: {
       grant: {
         select: {
