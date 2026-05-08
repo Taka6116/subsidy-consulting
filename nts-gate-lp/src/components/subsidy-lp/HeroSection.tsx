@@ -1,7 +1,7 @@
 import Image, { type StaticImageData } from "next/image";
 import Link from "next/link";
 import constructionHeroVisual from "../../../icon-assets/construction-hero.webp";
-import dxHeroVisual from "../../../icon-assets/dx-hero.webp";
+import dxHeroVisual from "../../../icon-assets/dx-lp-hero.webp";
 import equipmentHeroVisual from "../../../icon-assets/equipment-hero.webp";
 import generalHeroVisual from "../../../icon-assets/general-hero.webp";
 import businessPlanHeroVisual from "../../../icon-assets/business-plan-hero.webp";
@@ -10,10 +10,14 @@ import logisticsHeroVisual from "../../../icon-assets/logistics-hero.webp";
 import type { SubsidyLpData } from "@/lib/subsidy-data/types";
 
 const CONSTRUCTION_KEYWORDS = ["建設業", "建設機械", "重機", "建機"];
-const DX_KEYWORDS = ["DX", "デジタル", "IT導入", "デジタル化", "情報化", "クラウド", "AI"];
+const DX_KEYWORDS = ["DX", "デジタル", "IT導入", "デジタル化", "情報化", "クラウド", "AI", "システム導入", "IT化", "デジタル技術"];
 const EQUIPMENT_KEYWORDS = ["設備投資", "ものづくり", "設備更新", "設備導入", "製造", "省力化"];
 const BUSINESS_PLAN_KEYWORDS = ["事業再構築", "新事業", "事業計画", "経営革新", "事業展開", "販路"];
-const HUMAN_RESOURCES_KEYWORDS = ["人材", "雇用", "人手不足", "採用", "研修", "賃上げ", "働き方", "テレワーク", "副業", "兼業"];
+const HUMAN_RESOURCES_KEYWORDS = [
+  "人材", "雇用", "人手不足", "採用", "求人", "研修", "育成",
+  "賃上げ", "処遇改善", "働き方", "テレワーク", "副業", "兼業",
+  "定着", "離職", "インターン", "リスキリング", "スキルアップ",
+];
 const LOGISTICS_KEYWORDS = ["物流", "運送", "輸送", "配送", "流通", "トラック", "運輸", "倉庫"];
 
 function pickHeroVisual(category: string): {
@@ -55,12 +59,14 @@ export default function HeroSection({
         src={heroVisual.src}
         alt={heroVisual.alt}
         fill
+        sizes="100vw"
         className={
           heroVisual.isPhotoStyle
             ? "object-cover opacity-55"
             : "object-cover opacity-25"
         }
         priority
+        placeholder="blur"
       />
       <div
         className={
