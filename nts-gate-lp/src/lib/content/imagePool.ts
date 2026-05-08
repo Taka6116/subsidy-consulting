@@ -65,8 +65,6 @@ const GENRE_FOLDER_RULES: GenreFolderRule[] = [
   { keywords: ["省エネ", "脱炭素", "環境", "エネルギー"], folders: ["省エネ"] },
 ];
 
-const folderImagesCache = new Map<string, string[]>();
-
 /** FNV-1a 風の単純ハッシュ（外部依存なし・決定論的） */
 function hashString(input: string): number {
   let hash = 2166136261;
@@ -84,13 +82,9 @@ function normalizePathSegment(name: string): string {
 function listImagesInFolder(folderName: string): string[] {
   const normalized = normalizePathSegment(folderName);
   if (!normalized) return [];
-  if (folderImagesCache.has(normalized)) {
-    return folderImagesCache.get(normalized) ?? [];
-  }
 
   const folderPath = path.join(CUSTOM_ARTICLE_PICTURES_DIR, normalized);
   if (!fs.existsSync(folderPath)) {
-    folderImagesCache.set(normalized, []);
     return [];
   }
 
@@ -102,7 +96,6 @@ function listImagesInFolder(folderName: string): string[] {
       IMAGE_EXTENSIONS.has(path.extname(fileName).toLowerCase() as ".jpg"),
     );
 
-  folderImagesCache.set(normalized, images);
   return images;
 }
 
