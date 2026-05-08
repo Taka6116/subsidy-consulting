@@ -1,5 +1,6 @@
 import type { SubsidyGrant } from "@prisma/client";
 import { prisma } from "./prisma";
+import { buildSmeSubsidyWhere } from "@/lib/subsidies/smeFilter";
 
 const VALID_INDUSTRIES = ["manufacturing", "it", "construction"];
 
@@ -10,13 +11,13 @@ const VALID_INDUSTRIES = ["manufacturing", "it", "construction"];
 export async function findSubsidiesByIndustry(industry?: string): Promise<SubsidyGrant[]> {
   const trimmed = typeof industry === "string" ? industry.trim() : "";
 
-  const where =
+  const baseWhere =
     trimmed && VALID_INDUSTRIES.includes(trimmed)
       ? { targetIndustries: { has: trimmed } }
       : undefined;
 
   return prisma.subsidyGrant.findMany({
-    where,
+    where: buildSmeSubsidyWhere(baseWhere),
     take: 10,
     orderBy: { updatedAt: "desc" },
   });

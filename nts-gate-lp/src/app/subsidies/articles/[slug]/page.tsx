@@ -8,6 +8,7 @@ import Header from "@/components/shared/Header";
 import LpFooter from "@/components/gate-lp/LpFooter";
 import { prisma } from "@/lib/db/prisma";
 import { pickHeroImage } from "@/lib/content/imagePool";
+import { buildSmeSubsidyWhere } from "@/lib/subsidies/smeFilter";
 
 // ========== [NEW 2026-04-30] 追加コンポーネント ==========
 import { LivePublishedBadge } from "@/components/articles/LivePublishedBadge";
@@ -35,8 +36,11 @@ export async function generateStaticParams(): Promise<Array<{ slug: string }>> {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  const article = await prisma.generatedContent.findUnique({
-    where: { slug },
+  const article = await prisma.generatedContent.findFirst({
+    where: {
+      slug,
+      grant: { is: buildSmeSubsidyWhere() },
+    },
     select: { title: true, metaDescription: true, excerpt: true },
   });
   if (!article) {
@@ -126,6 +130,7 @@ async function getRelatedArticles({
       status: "published",
       slug: { not: currentSlug },
       contentType: "article",
+      grant: { is: buildSmeSubsidyWhere() },
     },
     select: {
       id: true,
@@ -199,8 +204,11 @@ async function getRelatedArticles({
 export default async function SubsidyArticlePage({ params }: PageProps) {
   const { slug } = await params;
 
-  const article = await prisma.generatedContent.findUnique({
-    where: { slug },
+  const article = await prisma.generatedContent.findFirst({
+    where: {
+      slug,
+      grant: { is: buildSmeSubsidyWhere() },
+    },
     include: {
       grant: {
         select: {

@@ -5,6 +5,7 @@ import LpFooter from "@/components/gate-lp/LpFooter";
 import SubsidiesGalaxyBackdrop from "../../SubsidiesGalaxyBackdrop";
 import SubsidyDetailHero from "@/components/subsidies/SubsidyDetailHero";
 import { prisma } from "@/lib/db/prisma";
+import { buildSmeSubsidyWhere } from "@/lib/subsidies/smeFilter";
 
 type DetailPageProps = {
   params: Promise<{ id: string }>;
@@ -183,8 +184,8 @@ const APPLICATION_STEPS: { step: string; text: string; active: boolean }[] = [
 
 export async function generateMetadata({ params }: DetailPageProps): Promise<Metadata> {
   const { id } = await params;
-  const grant = await prisma.subsidyGrant.findUnique({
-    where: { id },
+  const grant = await prisma.subsidyGrant.findFirst({
+    where: buildSmeSubsidyWhere({ id }),
     select: { name: true },
   });
   const title = grant?.name ? `${grant.name} | 補助金詳細` : "補助金詳細 | 日本提携支援";
@@ -197,8 +198,8 @@ export async function generateMetadata({ params }: DetailPageProps): Promise<Met
 export default async function SubsidyDetailPage({ params }: DetailPageProps) {
   const { id } = await params;
   const [grant, relatedArticles, recentSubsidies] = await Promise.all([
-    prisma.subsidyGrant.findUnique({
-      where: { id },
+    prisma.subsidyGrant.findFirst({
+      where: buildSmeSubsidyWhere({ id }),
       select: {
         id: true,
         name: true,
@@ -224,7 +225,7 @@ export default async function SubsidyDetailPage({ params }: DetailPageProps) {
       select: { id: true, title: true, status: true, publishedAt: true, slug: true },
     }),
     prisma.subsidyGrant.findMany({
-      where: { status: "open", id: { not: id } },
+      where: buildSmeSubsidyWhere({ status: "open", id: { not: id } }),
       orderBy: { updatedAt: "desc" },
       take: 4,
       select: { id: true, name: true, updatedAt: true, rawPayload: true },

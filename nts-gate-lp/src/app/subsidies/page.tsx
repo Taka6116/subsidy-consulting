@@ -3,6 +3,7 @@ import Header from "@/components/shared/Header";
 import LpFooter from "@/components/gate-lp/LpFooter";
 import { prisma } from "@/lib/db/prisma";
 import SubsidiesGalaxyClient from "./SubsidiesGalaxyClient";
+import { buildSmeSubsidyWhere } from "@/lib/subsidies/smeFilter";
 
 export const metadata: Metadata = {
   title: "補助金情報 | 日本提携支援",
@@ -13,8 +14,10 @@ export const metadata: Metadata = {
 export const revalidate = 300;
 
 export default async function SubsidiesPage() {
+  const openSmeWhere = buildSmeSubsidyWhere({ status: "open" });
+
   const [grantCount, articleCount, videoCount, lpCount, prefectureRows] = await Promise.all([
-    prisma.subsidyGrant.count({ where: { status: "open" } }),
+    prisma.subsidyGrant.count({ where: openSmeWhere }),
     prisma.generatedContent.count({
       where: { contentType: "article", status: "published" },
     }),
@@ -25,7 +28,7 @@ export default async function SubsidiesPage() {
       where: { contentType: "lp", status: "published" },
     }),
     prisma.subsidyGrant.findMany({
-      where: { status: "open", prefecture: { not: null } },
+      where: buildSmeSubsidyWhere({ status: "open", prefecture: { not: null } }),
       select: { prefecture: true },
       distinct: ["prefecture"],
     }),

@@ -91,6 +91,59 @@ function parseDeadline(deadlineRaw) {
   return Number.isNaN(dt.getTime()) ? null : dt;
 }
 
+const EXCLUDED_TEXTS = [
+  "給付金",
+  "奨学金",
+  "就学",
+  "入学",
+  "高校",
+  "中学校",
+  "小学校",
+  "保育",
+  "児童",
+  "生徒",
+  "学生",
+  "妊婦",
+  "子育て",
+  "世帯",
+  "個人向け",
+  "生活支援",
+  "医療費",
+  "介護費",
+];
+
+const INCLUDED_TEXTS = [
+  "補助金",
+  "中小企業",
+  "小規模事業者",
+  "事業者",
+  "法人",
+  "設備投資",
+  "生産性",
+  "販路開拓",
+  "業務改善",
+  "創業",
+  "DX",
+  "デジタル",
+];
+
+function isSmeSubsidyCandidate(grant) {
+  const text = [
+    resolveName(grant),
+    resolveDescription(grant),
+    grant?.target_number_of_employees,
+    grant?.target_area_search,
+    grant?.institution_name,
+  ]
+    .filter((v) => typeof v === "string" && v.trim())
+    .join(" ")
+    .toLowerCase();
+
+  if (!text) return false;
+  if (EXCLUDED_TEXTS.some((keyword) => text.includes(String(keyword).toLowerCase()))) return false;
+  return INCLUDED_TEXTS.some((keyword) => text.includes(String(keyword).toLowerCase()));
+}
+
 async function fetchAllOpenGrants() {
   const results = [];
   const seenIds = new Set();
@@ -162,6 +215,7 @@ function filterRelevantGrants(grants) {
   return grants.filter((g) => {
     const deadline = parseDeadline(resolveDeadlineRaw(g));
     if (deadline && deadline < now) return false;
+    if (!isSmeSubsidyCandidate(g)) return false;
     return true;
   });
 }

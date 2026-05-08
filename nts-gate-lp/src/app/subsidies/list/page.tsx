@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import Header from "@/components/shared/Header";
 import LpFooter from "@/components/gate-lp/LpFooter";
-import SubsidiesGalaxyBackdrop from "../SubsidiesGalaxyBackdrop";
 import SubsidiesListClient from "./SubsidiesListClient";
 import { prisma } from "@/lib/db/prisma";
+import { buildSmeSubsidyWhere } from "@/lib/subsidies/smeFilter";
 
 export const revalidate = 3600;
 
@@ -14,6 +14,7 @@ export const metadata: Metadata = {
 
 export default async function SubsidiesListPage() {
   const raw = await prisma.subsidyGrant.findMany({
+    where: buildSmeSubsidyWhere({ status: "open" }),
     select: {
       id: true,
       name: true,
@@ -48,17 +49,9 @@ export default async function SubsidiesListPage() {
   return (
     <>
       <Header />
-      <main className="relative z-[2] min-h-[100svh] font-body">
-        <SubsidiesGalaxyBackdrop />
-        <div className="relative z-10 mx-auto max-w-7xl px-6 py-24">
-          <div className="rounded-2xl border border-white/20 bg-white/90 p-8 shadow-sm backdrop-blur-sm md:p-10">
-            <h1 className="font-heading text-3xl font-normal text-[#2a2926] sm:text-4xl">
-              公募中の補助金一覧
-            </h1>
-            <div className="mt-6">
-              <SubsidiesListClient grants={grants} total={grants.length} />
-            </div>
-          </div>
+      <main className="min-h-[100svh] bg-[#f3f6fb] font-body">
+        <div className="mx-auto w-full max-w-[1720px] px-3 py-8 md:px-5 lg:px-6">
+          <SubsidiesListClient grants={grants} total={grants.length} />
         </div>
       </main>
       <LpFooter />

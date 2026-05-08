@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db/prisma";
+import { buildSmeSubsidyWhere } from "@/lib/subsidies/smeFilter";
 
 export const revalidate = 3600;
 export const dynamic = "force-dynamic";
@@ -65,7 +66,7 @@ export async function GET(req: Request) {
         ? { OR: [{ prefecture }, { prefecture: null }] }
         : {};
 
-    const where = {
+    const where = buildSmeSubsidyWhere({
       status: "open" as const,
       ...(source === "ministry"
         ? { source: { in: ["meti", "chusho", "maff", "mlit", "ministry"] } }
@@ -75,7 +76,7 @@ export async function GET(req: Request) {
       ...(municipalityCode ? { municipalityCode } : {}),
       AND: exclusionAnd,
       ...prefectureFilter,
-    };
+    });
 
     const [grants, total] = await Promise.all([
       prisma.subsidyGrant.findMany({
