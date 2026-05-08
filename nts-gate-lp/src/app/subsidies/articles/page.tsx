@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Header from "@/components/shared/Header";
 import LpFooter from "@/components/gate-lp/LpFooter";
 import { prisma } from "@/lib/db/prisma";
+import { pickHeroImage } from "@/lib/content/imagePool";
 import SubsidiesArticlesIndex, {
   type ArticleCard,
   type ArticlesPortalData,
@@ -117,6 +118,7 @@ export default async function SubsidiesArticlesPage() {
           deadline: true,
           rawPayload: true,
           prefecture: true,
+          targetIndustries: true,
         },
       },
     },
@@ -143,7 +145,12 @@ export default async function SubsidiesArticlesPage() {
       ),
       prefecture: r.grant?.prefecture ?? null,
       tags: r.tags ?? [],
-      heroImagePath: r.heroImagePath ?? null,
+      // 既存記事でも、ジャンル別フォルダ画像があれば優先的に反映
+      heroImagePath: pickHeroImage({
+        subsidyId: r.subsidyId,
+        tags: r.tags ?? [],
+        targetIndustries: r.grant?.targetIndustries ?? [],
+      }),
     }));
 
   const validRows = rows.filter((r) => r.slug && r.title);

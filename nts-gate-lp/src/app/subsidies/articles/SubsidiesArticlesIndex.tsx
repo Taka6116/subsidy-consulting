@@ -271,32 +271,32 @@ export default function SubsidiesArticlesIndex({
           )}
         </div>
 
-        <div className="space-y-4 lg:col-span-5 lg:h-[372px]">
-          <div className="rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm lg:h-[178px]">
+        <div className="space-y-4 lg:col-span-5">
+          <div className="rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm">
             <div className="mb-3 flex items-center justify-between">
               <h3 className="text-sm font-bold text-neutral-900">最新の補助金動向</h3>
               <span className="text-xs text-neutral-400">今週更新</span>
             </div>
-            <div className="grid grid-cols-2 gap-3">
-              <div className="rounded-lg bg-neutral-50 p-3">
+            <div className="grid grid-cols-2 gap-2 sm:gap-3">
+              <div className="rounded-lg bg-neutral-50 p-2.5 sm:p-3">
                 <p className="text-xs text-neutral-500">新着記事</p>
                 <p className="mt-1 text-xl font-black text-primary-700">
                   {portalData.stats.newArticlesCount}件
                 </p>
               </div>
-              <div className="rounded-lg bg-neutral-50 p-3">
+              <div className="rounded-lg bg-neutral-50 p-2.5 sm:p-3">
                 <p className="text-xs text-neutral-500">公募中補助金</p>
                 <p className="mt-1 text-xl font-black text-primary-700">
                   {portalData.stats.openCount}件
                 </p>
               </div>
-              <div className="rounded-lg bg-neutral-50 p-3">
+              <div className="rounded-lg bg-neutral-50 p-2.5 sm:p-3">
                 <p className="text-xs text-neutral-500">締切間近</p>
                 <p className="mt-1 text-xl font-black text-amber-600">
                   {portalData.stats.closingSoonCount}件
                 </p>
               </div>
-              <div className="rounded-lg bg-neutral-50 p-3">
+              <div className="rounded-lg bg-neutral-50 p-2.5 sm:p-3">
                 <p className="text-xs text-neutral-500">総記事数</p>
                 <p className="mt-1 text-xl font-black text-primary-700">
                   {portalData.stats.totalCount}件
@@ -305,7 +305,7 @@ export default function SubsidiesArticlesIndex({
             </div>
           </div>
 
-          <div className="rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm lg:h-[178px]">
+          <div className="rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm">
             <h3 className="mb-3 text-sm font-bold text-neutral-900">人気カテゴリ</h3>
             <div className="grid grid-cols-2 gap-2">
               {portalData.popularCategories.map((c) => (
