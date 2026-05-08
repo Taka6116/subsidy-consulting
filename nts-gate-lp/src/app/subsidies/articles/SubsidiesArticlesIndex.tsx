@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
+import { Search, X } from "lucide-react";
 
 const ALL = "__all__";
 const PAGE_SIZE = 12;
@@ -46,7 +47,9 @@ export default function SubsidiesArticlesIndex({
 }) {
   const [selectedTag, setSelectedTag] = useState<string>(ALL);
   const [showAllTags, setShowAllTags] = useState(false);
+  const [query, setQuery] = useState("");
   const [page, setPage] = useState(1);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const tagOptions = useMemo(() => buildTagOptions(articles), [articles]);
 
@@ -57,9 +60,28 @@ export default function SubsidiesArticlesIndex({
   const hiddenCount = tagOptions.length - visibleTagOpts.length;
 
   const filtered: ArticleCard[] = useMemo(() => {
-    if (selectedTag === ALL) return articles;
-    return articles.filter((a) => a.tags.includes(selectedTag));
-  }, [articles, selectedTag]);
+    let list = articles;
+
+    // タグ絞り込み
+    if (selectedTag !== ALL) {
+      list = list.filter((a) => a.tags.includes(selectedTag));
+    }
+
+    // キーワード検索（タイトル・補助金名・excerpt・都道府県・タグ）
+    const q = query.trim().toLowerCase();
+    if (q) {
+      list = list.filter(
+        (a) =>
+          a.title.toLowerCase().includes(q) ||
+          a.subsidyName.toLowerCase().includes(q) ||
+          a.excerpt.toLowerCase().includes(q) ||
+          (a.prefecture ?? "").toLowerCase().includes(q) ||
+          a.tags.some((t) => t.toLowerCase().includes(q)),
+      );
+    }
+
+    return list;
+  }, [articles, selectedTag, query]);
 
   const totalPages = Math.ceil(filtered.length / PAGE_SIZE);
 
@@ -70,6 +92,17 @@ export default function SubsidiesArticlesIndex({
 
   function handleTagSelect(tag: string) {
     setSelectedTag(tag);
+    setPage(1);
+  }
+
+  function handleQueryChange(e: React.ChangeEvent<HTMLInputElement>) {
+    setQuery(e.target.value);
+    setPage(1);
+  }
+
+  function clearQuery() {
+    setQuery("");
+    inputRef.current?.focus();
     setPage(1);
   }
 
@@ -84,6 +117,40 @@ export default function SubsidiesArticlesIndex({
           <p className="mt-2 max-w-2xl text-sm text-neutral-600 sm:text-base">
             補助金・支援制度に関する解説を順次公開します。新しい制度が公募されるたびに自動で更新されます。
           </p>
+
+          {/* キーワード検索窓 */}
+          <div className="mt-6 max-w-xl">
+            <div className="relative">
+              <Search
+                className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400"
+                aria-hidden
+              />
+              <input
+                ref={inputRef}
+                type="search"
+                value={query}
+                onChange={handleQueryChange}
+                placeholder="記事タイトル・補助金名・キーワードで検索"
+                className="w-full rounded-lg border border-neutral-200 bg-white py-3 pl-10 pr-10 text-sm text-neutral-800 shadow-sm outline-none transition placeholder:text-gray-400 focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
+              />
+              {query && (
+                <button
+                  type="button"
+                  onClick={clearQuery}
+                  aria-label="検索をクリア"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              )}
+            </div>
+            {query.trim() && (
+              <p className="mt-2 text-xs text-gray-500">
+                「<span className="font-medium text-gray-700">{query.trim()}</span>」の検索結果：
+                <span className="font-semibold text-gray-800"> {filtered.length}件</span>
+              </p>
+            )}
+          </div>
 
           {articles.length === 0 ? (
             <div className="mt-12 rounded-lg border border-neutral-200 bg-white p-8 text-center">
