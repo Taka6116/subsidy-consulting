@@ -137,6 +137,13 @@ export default function SubsidiesArticlesIndex({
     () => filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE),
     [filtered, page],
   );
+  const tickerLoopItems = useMemo(
+    () =>
+      portalData.tickerItems.length > 0
+        ? [...portalData.tickerItems, ...portalData.tickerItems]
+        : [],
+    [portalData.tickerItems],
+  );
 
   function handleTagSelect(tag: string) {
     setSelectedTag(tag);
@@ -186,44 +193,54 @@ export default function SubsidiesArticlesIndex({
   }
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:py-10">
+    <div className="mx-auto w-full max-w-[1720px] px-3 py-8 sm:px-4 lg:px-6 lg:py-10 xl:px-4 2xl:px-2">
       <section className="mb-4 rounded-xl border border-blue-100 bg-white px-4 py-3">
-        <div className="flex items-center gap-3 overflow-x-auto whitespace-nowrap">
+        <div className="flex items-center gap-3">
           <span className="inline-flex items-center gap-1.5 rounded-full bg-primary-700 px-2.5 py-1 text-xs font-bold text-white">
             <BellRing className="h-3.5 w-3.5" />
             最新速報
           </span>
-          {portalData.tickerItems.map((item) => (
-            <Link
-              key={item.id}
-              href={`/subsidies/articles/${item.slug}`}
-              className="inline-flex items-center gap-2 text-xs text-neutral-700 hover:text-primary-700"
-            >
-              {item.isNew && (
-                <span className="rounded bg-pink-500 px-1.5 py-0.5 text-[10px] font-bold text-white">
-                  NEW
-                </span>
-              )}
-              {item.isClosingSoon && (
-                <span className="rounded bg-amber-500 px-1.5 py-0.5 text-[10px] font-bold text-white">
-                  締切間近
-                </span>
-              )}
-              <span className="line-clamp-1 max-w-[320px]">{item.title}</span>
-            </Link>
-          ))}
+          <div className="relative min-w-0 flex-1 overflow-hidden">
+            {tickerLoopItems.length > 0 ? (
+              <div className="ticker-marquee flex w-max items-center gap-3 whitespace-nowrap">
+                {tickerLoopItems.map((item, index) => (
+                  <Link
+                    key={`${item.id}-${index}`}
+                    href={`/subsidies/articles/${item.slug}`}
+                    className="inline-flex items-center gap-2 text-xs text-neutral-700 hover:text-primary-700"
+                  >
+                    {item.isNew && (
+                      <span className="rounded bg-pink-500 px-1.5 py-0.5 text-[10px] font-bold text-white">
+                        NEW
+                      </span>
+                    )}
+                    {item.isClosingSoon && (
+                      <span className="rounded bg-amber-500 px-1.5 py-0.5 text-[10px] font-bold text-white">
+                        締切間近
+                      </span>
+                    )}
+                    <span className="max-w-[320px] truncate">{item.title}</span>
+                  </Link>
+                ))}
+              </div>
+            ) : (
+              <p className="text-xs text-neutral-500">
+                現在表示できる速報記事はありません。
+              </p>
+            )}
+          </div>
         </div>
       </section>
 
-      <section className="grid gap-4 lg:grid-cols-12">
-        <div className="overflow-hidden rounded-2xl border border-neutral-200 bg-white shadow-sm lg:col-span-7">
+      <section className="grid gap-4 lg:grid-cols-12 lg:items-start">
+        <div className="overflow-hidden rounded-2xl border border-neutral-200 bg-white shadow-sm lg:col-span-7 lg:h-[372px]">
           {portalData.featured ? (
             <Link
               href={`/subsidies/articles/${portalData.featured.slug}`}
-              className="group block"
+              className="group block h-full"
             >
               <div
-                className="relative h-[250px] bg-cover bg-center sm:h-[300px]"
+                className="relative h-[250px] bg-cover bg-center sm:h-[300px] lg:h-full"
                 style={
                   portalData.featured.imagePath
                     ? { backgroundImage: `url(${portalData.featured.imagePath})` }
@@ -248,14 +265,14 @@ export default function SubsidiesArticlesIndex({
               </div>
             </Link>
           ) : (
-            <div className="flex h-[250px] items-center justify-center text-sm text-neutral-500 sm:h-[300px]">
+            <div className="flex h-[250px] items-center justify-center text-sm text-neutral-500 sm:h-[300px] lg:h-full">
               注目記事を準備中です
             </div>
           )}
         </div>
 
-        <div className="space-y-4 lg:col-span-5">
-          <div className="rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm">
+        <div className="space-y-4 lg:col-span-5 lg:h-[372px]">
+          <div className="rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm lg:h-[178px]">
             <div className="mb-3 flex items-center justify-between">
               <h3 className="text-sm font-bold text-neutral-900">最新の補助金動向</h3>
               <span className="text-xs text-neutral-400">今週更新</span>
@@ -288,7 +305,7 @@ export default function SubsidiesArticlesIndex({
             </div>
           </div>
 
-          <div className="rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm">
+          <div className="rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm lg:h-[178px]">
             <h3 className="mb-3 text-sm font-bold text-neutral-900">人気カテゴリ</h3>
             <div className="grid grid-cols-2 gap-2">
               {portalData.popularCategories.map((c) => (
@@ -307,7 +324,7 @@ export default function SubsidiesArticlesIndex({
         </div>
       </section>
 
-      <div className="mt-6 flex flex-col gap-10 lg:flex-row lg:items-start">
+      <div className="mt-6 flex flex-col gap-8 lg:flex-row lg:items-start">
         <div className="min-w-0 flex-1">
           <section className="rounded-xl border border-neutral-200 bg-white p-4 shadow-sm">
             <div className="grid gap-3 lg:grid-cols-[2fr_1fr]">
@@ -407,7 +424,7 @@ export default function SubsidiesArticlesIndex({
             </div>
           ) : (
             <>
-              <div className="mt-6 grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
+              <div className="mt-6 grid grid-cols-1 gap-5 md:grid-cols-2 2xl:grid-cols-3">
                 {paginated.map((article) => {
                   const pills = visibleTags(article.tags);
                   return (
@@ -522,9 +539,9 @@ export default function SubsidiesArticlesIndex({
           )}
         </div>
 
-        <aside className="w-full shrink-0 space-y-4 lg:sticky lg:top-24 lg:w-80">
+        <aside className="w-full shrink-0 space-y-4 lg:sticky lg:top-24 lg:w-[360px]">
           <section className="rounded-xl border border-neutral-200 bg-white p-5 shadow-sm">
-            <h2 className="mb-3 text-sm font-bold text-neutral-900">締切間近ランキング</h2>
+            <h2 className="mb-3 text-sm font-bold text-neutral-900">公募締め切り間近の補助金</h2>
             <ol className="space-y-2">
               {portalData.deadlineRanking.map((item, index) => (
                 <li key={item.id}>
@@ -625,6 +642,20 @@ export default function SubsidiesArticlesIndex({
           </div>
         </div>
       </section>
+      <style jsx>{`
+        .ticker-marquee {
+          animation: tickerScroll 36s linear infinite;
+        }
+
+        @keyframes tickerScroll {
+          from {
+            transform: translateX(0);
+          }
+          to {
+            transform: translateX(-50%);
+          }
+        }
+      `}</style>
     </div>
   );
 }
