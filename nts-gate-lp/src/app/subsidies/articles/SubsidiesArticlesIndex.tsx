@@ -279,7 +279,7 @@ export default function SubsidiesArticlesIndex({
               </p>
               <Link
                 href="/check"
-                className="mt-4 inline-flex w-full items-center justify-center rounded-lg bg-primary-700 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-primary-600"
+                className="mt-4 inline-flex h-11 w-full min-h-[44px] items-center justify-center rounded-lg bg-primary-700 px-4 text-sm font-bold text-white transition hover:bg-primary-600"
               >
                 無料で診断してみる
               </Link>
@@ -302,7 +302,7 @@ export default function SubsidiesArticlesIndex({
                 <button
                   type="submit"
                   disabled={isSubscribing}
-                  className="w-full rounded-lg bg-primary-700 px-4 py-2 text-sm font-bold text-white transition hover:bg-primary-600 disabled:opacity-50"
+                  className="h-11 min-h-[44px] w-full rounded-lg bg-primary-700 px-4 text-sm font-bold text-white transition hover:bg-primary-600 disabled:opacity-50"
                 >
                   {isSubscribing ? "登録中..." : "登録する"}
                 </button>

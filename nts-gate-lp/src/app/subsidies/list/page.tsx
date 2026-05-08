@@ -18,6 +18,7 @@ export default async function SubsidiesListPage() {
     select: {
       id: true,
       name: true,
+      description: true,
       maxAmountLabel: true,
       deadlineLabel: true,
       deadline: true,
@@ -34,7 +35,7 @@ export default async function SubsidiesListPage() {
   const grants = raw.map((g) => ({
     id: g.id,
     name: g.name,
-    description: null,
+    description: g.description,
     maxAmountLabel: g.maxAmountLabel,
     rawPayload: null,
     deadlineLabel: g.deadlineLabel,
@@ -49,7 +50,7 @@ export default async function SubsidiesListPage() {
   return (
     <>
       <Header />
-      <main className="min-h-[100svh] bg-[#f3f6fb] font-body">
+      <main className="min-h-[100svh] bg-[#f7f9fc] font-body">
         <div className="mx-auto w-full max-w-[1720px] px-3 py-8 md:px-5 lg:px-6">
           <SubsidiesListClient grants={grants} total={grants.length} />
         </div>
