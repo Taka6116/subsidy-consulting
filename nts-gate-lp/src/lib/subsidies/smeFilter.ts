@@ -45,19 +45,9 @@ export function buildSmeSubsidyWhere(base: Prisma.SubsidyGrantWhereInput = {}): 
   }));
 
   const excludeAnd: Prisma.SubsidyGrantWhereInput[] = EXCLUDED_TEXTS.map((text) => ({
-    AND: [
-      {
-        OR: [
-          { name: { not: { contains: text, mode: "insensitive" } } },
-          { name: null },
-        ],
-      },
-      {
-        OR: [
-          { description: { not: { contains: text, mode: "insensitive" } } },
-          { description: null },
-        ],
-      },
+    NOT: [
+      { name: { contains: text, mode: "insensitive" } },
+      { description: { contains: text, mode: "insensitive" } },
     ],
   }));
 
