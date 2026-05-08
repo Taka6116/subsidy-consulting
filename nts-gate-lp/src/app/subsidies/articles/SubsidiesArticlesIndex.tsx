@@ -229,42 +229,92 @@ export default function SubsidiesArticlesIndex({
       </section>
 
       <section className="grid gap-4 lg:grid-cols-12 lg:items-start">
-        <div className="overflow-hidden rounded-2xl border border-neutral-200 bg-white shadow-sm lg:col-span-7 lg:h-[372px]">
-          {portalData.featured ? (
-            <Link
-              href={`/subsidies/articles/${portalData.featured.slug}`}
-              className="group block h-full"
-            >
-              <div
-                className="relative h-[250px] bg-cover bg-center sm:h-[300px] lg:h-full"
-                style={
-                  portalData.featured.imagePath
-                    ? { backgroundImage: `url(${portalData.featured.imagePath})` }
-                    : undefined
-                }
+        <div className="space-y-4 lg:col-span-7">
+          <div className="overflow-hidden rounded-2xl border border-neutral-200 bg-white shadow-sm lg:h-[372px]">
+            {portalData.featured ? (
+              <Link
+                href={`/subsidies/articles/${portalData.featured.slug}`}
+                className="group block h-full"
               >
-                {!portalData.featured.imagePath && (
-                  <div className="absolute inset-0 bg-gradient-to-br from-[#0e357f] to-[#28a4a3]" />
-                )}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/45 to-black/20" />
-                <div className="absolute bottom-0 left-0 right-0 p-5 text-white sm:p-6">
-                  <span className="inline-flex rounded bg-red-500 px-2 py-0.5 text-[10px] font-bold">
-                    注目解説
-                  </span>
-                  <p className="mt-2 text-sm text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.7)]">
-                    {portalData.featured.subsidyName}
-                  </p>
-                  <h2 className="mt-1 line-clamp-2 text-xl font-black leading-snug text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] sm:text-2xl">
-                    {portalData.featured.title}
-                  </h2>
+                <div
+                  className="relative h-[250px] bg-cover bg-center sm:h-[300px] lg:h-full"
+                  style={
+                    portalData.featured.imagePath
+                      ? { backgroundImage: `url(${portalData.featured.imagePath})` }
+                      : undefined
+                  }
+                >
+                  {!portalData.featured.imagePath && (
+                    <div className="absolute inset-0 bg-gradient-to-br from-[#0e357f] to-[#28a4a3]" />
+                  )}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/45 to-black/20" />
+                  <div className="absolute bottom-0 left-0 right-0 p-5 text-white sm:p-6">
+                    <span className="inline-flex rounded bg-red-500 px-2 py-0.5 text-[10px] font-bold">
+                      注目解説
+                    </span>
+                    <p className="mt-2 text-sm text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.7)]">
+                      {portalData.featured.subsidyName}
+                    </p>
+                    <h2 className="mt-1 line-clamp-2 text-xl font-black leading-snug text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] sm:text-2xl">
+                      {portalData.featured.title}
+                    </h2>
+                  </div>
                 </div>
+              </Link>
+            ) : (
+              <div className="flex h-[250px] items-center justify-center text-sm text-neutral-500 sm:h-[300px] lg:h-full">
+                注目記事を準備中です
               </div>
-            </Link>
-          ) : (
-            <div className="flex h-[250px] items-center justify-center text-sm text-neutral-500 sm:h-[300px] lg:h-full">
-              注目記事を準備中です
-            </div>
-          )}
+            )}
+          </div>
+
+          {/* 注目解説直下（左カラム）にCTA2ボックス */}
+          <section className="grid gap-4 md:grid-cols-2">
+            <section className="rounded-xl border border-blue-200 bg-gradient-to-br from-blue-50 to-white p-5 shadow-sm">
+              <h3 className="text-sm font-bold text-neutral-900">
+                あなたに合う補助金を無料診断
+              </h3>
+              <p className="mt-2 text-xs leading-relaxed text-neutral-600">
+                かんたん質問に答えるだけで、申請可能性の高い補助金を判定します。
+              </p>
+              <Link
+                href="/check"
+                className="mt-4 inline-flex w-full items-center justify-center rounded-lg bg-primary-700 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-primary-600"
+              >
+                無料で診断してみる
+              </Link>
+            </section>
+
+            <section className="rounded-xl border border-neutral-200 bg-white p-5 shadow-sm">
+              <h3 className="text-sm font-bold text-neutral-900">最新情報をメールで受け取る</h3>
+              <p className="mt-1 text-xs text-neutral-500">
+                新着記事や公募情報をまとめてお届けします。
+              </p>
+              <form onSubmit={handleSubscribe} className="mt-3 space-y-2">
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="メールアドレスを入力"
+                  className="w-full rounded-lg border border-neutral-200 px-3 py-2 text-sm outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
+                  required
+                />
+                <button
+                  type="submit"
+                  disabled={isSubscribing}
+                  className="w-full rounded-lg bg-primary-700 px-4 py-2 text-sm font-bold text-white transition hover:bg-primary-600 disabled:opacity-50"
+                >
+                  {isSubscribing ? "登録中..." : "登録する"}
+                </button>
+              </form>
+              {subscribeDone && (
+                <p className="mt-2 text-xs text-emerald-600">登録が完了しました。</p>
+              )}
+              {subscribeError && (
+                <p className="mt-2 text-xs text-red-500">{subscribeError}</p>
+              )}
+            </section>
+          </section>
         </div>
 
         <div className="space-y-4 lg:col-span-5">
@@ -318,53 +368,6 @@ export default function SubsidiesArticlesIndex({
             </div>
           </div>
         </div>
-      </section>
-
-      <section className="mt-4 grid gap-4 md:grid-cols-2">
-        <section className="rounded-xl border border-blue-200 bg-gradient-to-br from-blue-50 to-white p-5 shadow-sm">
-          <h3 className="text-sm font-bold text-neutral-900">
-            あなたに合う補助金を無料診断
-          </h3>
-          <p className="mt-2 text-xs leading-relaxed text-neutral-600">
-            かんたん質問に答えるだけで、申請可能性の高い補助金を判定します。
-          </p>
-          <Link
-            href="/check"
-            className="mt-4 inline-flex w-full items-center justify-center rounded-lg bg-primary-700 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-primary-600"
-          >
-            無料で診断してみる
-          </Link>
-        </section>
-
-        <section className="rounded-xl border border-neutral-200 bg-white p-5 shadow-sm">
-          <h3 className="text-sm font-bold text-neutral-900">最新情報をメールで受け取る</h3>
-          <p className="mt-1 text-xs text-neutral-500">
-            新着記事や公募情報をまとめてお届けします。
-          </p>
-          <form onSubmit={handleSubscribe} className="mt-3 space-y-2">
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="メールアドレスを入力"
-              className="w-full rounded-lg border border-neutral-200 px-3 py-2 text-sm outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
-              required
-            />
-            <button
-              type="submit"
-              disabled={isSubscribing}
-              className="w-full rounded-lg bg-primary-700 px-4 py-2 text-sm font-bold text-white transition hover:bg-primary-600 disabled:opacity-50"
-            >
-              {isSubscribing ? "登録中..." : "登録する"}
-            </button>
-          </form>
-          {subscribeDone && (
-            <p className="mt-2 text-xs text-emerald-600">登録が完了しました。</p>
-          )}
-          {subscribeError && (
-            <p className="mt-2 text-xs text-red-500">{subscribeError}</p>
-          )}
-        </section>
       </section>
 
       <div className="mt-6 flex flex-col gap-8 lg:flex-row lg:items-start">
