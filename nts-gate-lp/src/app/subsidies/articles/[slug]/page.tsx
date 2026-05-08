@@ -7,6 +7,7 @@ import remarkGfm from "remark-gfm";
 import Header from "@/components/shared/Header";
 import LpFooter from "@/components/gate-lp/LpFooter";
 import { prisma } from "@/lib/db/prisma";
+import { pickHeroImage } from "@/lib/content/imagePool";
 
 // ========== [NEW 2026-04-30] 追加コンポーネント ==========
 import { LivePublishedBadge } from "@/components/articles/LivePublishedBadge";
@@ -200,6 +201,7 @@ export default async function SubsidyArticlePage({ params }: PageProps) {
           deadlineLabel: true,
           deadline: true,
           rawPayload: true,
+          targetIndustries: true,
         },
       },
     },
@@ -233,6 +235,12 @@ export default async function SubsidyArticlePage({ params }: PageProps) {
       : "";
   const encodedUrl = encodeURIComponent(currentUrl);
   const encodedTitle = encodeURIComponent(article.title ?? "補助金解説記事");
+  const articleHeroImage = pickHeroImage({
+    subsidyId: article.subsidyId,
+    seedKey: article.id,
+    tags: article.tags ?? [],
+    targetIndustries: article.grant?.targetIndustries ?? [],
+  });
 
   return (
     <>
@@ -242,15 +250,6 @@ export default async function SubsidyArticlePage({ params }: PageProps) {
         {/* ─── ヒーロー帯 ─── */}
         <div className="bg-[#f5f7fa] border-b border-gray-200">
           <div className="mx-auto max-w-[960px] px-5 py-8 sm:px-6">
-            {/* パンくず */}
-            <nav className="mb-5 text-xs text-neutral-400" aria-label="breadcrumb">
-              <Link href="/" className="hover:text-neutral-600 transition">TOP</Link>
-              <span className="mx-1.5">›</span>
-              <Link href="/subsidies/articles" className="hover:text-neutral-600 transition">解説記事</Link>
-              <span className="mx-1.5">›</span>
-              <span className="text-neutral-600 line-clamp-1">{article.title}</span>
-            </nav>
-
             {/* 日付 + カテゴリ */}
             <div className="mb-3 flex flex-wrap items-center gap-3">
               <time className="text-sm text-neutral-500">
@@ -342,6 +341,14 @@ export default async function SubsidyArticlePage({ params }: PageProps) {
               <LivePublishedBadge publishedAt={article.publishedAt} />
             </div>
           )}
+
+          {/* 記事サムネイル（一覧と同じロジックで選択） */}
+          <div className="mb-6 overflow-hidden rounded-xl border border-neutral-200 bg-white shadow-sm">
+            <div
+              className="h-[220px] bg-cover bg-center sm:h-[280px]"
+              style={{ backgroundImage: `url(${articleHeroImage})` }}
+            />
+          </div>
 
           {/* 目次 */}
           <ArticleToc contentContainerId="article-body" />
