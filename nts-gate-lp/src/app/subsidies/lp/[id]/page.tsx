@@ -21,6 +21,7 @@ import FinalCtaSection from "@/components/subsidy-lp/FinalCtaSection";
 import ContactSection from "@/components/subsidy-lp/ContactSection";
 import { buildSubsidyLpData } from "@/lib/subsidy-lp/buildSubsidyLpData";
 import { adaptToLpData } from "@/lib/subsidy-lp/adaptToLpData";
+import { pickLpHeroImage } from "@/lib/content/lpImagePool";
 
 export const revalidate = 300;
 export const dynamicParams = true;
@@ -86,11 +87,18 @@ export default async function SubsidyLpPage({ params }: Props) {
 
   const lpContent = grant.contents[0] ?? null;
   const oldData = buildSubsidyLpData(grant, lpContent);
-  const data = adaptToLpData(
+  const adapted = adaptToLpData(
     oldData,
     grant.name ?? "補助金制度",
     grant.targetIndustries ?? [],
   );
+  const data = {
+    ...adapted,
+    heroImagePath: pickLpHeroImage({
+      category: adapted.category,
+      targetIndustries: grant.targetIndustries ?? [],
+    }),
+  };
 
   return (
     <>

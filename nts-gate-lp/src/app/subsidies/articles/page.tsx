@@ -3,7 +3,6 @@ import Header from "@/components/shared/Header";
 import LpFooter from "@/components/gate-lp/LpFooter";
 import { prisma } from "@/lib/db/prisma";
 import { pickHeroImage } from "@/lib/content/imagePool";
-import { buildSmeSubsidyWhere } from "@/lib/subsidies/smeFilter";
 import SubsidiesArticlesIndex, {
   type ArticleCard,
   type ArticlesPortalData,
@@ -106,7 +105,7 @@ export default async function SubsidiesArticlesPage() {
       status: "published",
       slug: { not: undefined },
       grant: {
-        is: buildSmeSubsidyWhere(),
+        is: { status: "open" },
       },
     },
     orderBy: { publishedAt: "desc" },

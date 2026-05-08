@@ -94,6 +94,7 @@ export function adaptToLpData(
 
   return {
     id: old.id,
+    heroImagePath: null,
     badge: old.institutionName !== "所管省庁・機関" ? old.institutionName : "補助金制度",
     category: grantName,
     headline: old.heroCopy.length <= 24 ? old.heroCopy : `${grantName}を、`,

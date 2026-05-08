@@ -51,7 +51,23 @@ export default function HeroSection({
 }: {
   data: SubsidyLpData;
 }) {
-  const heroVisual = pickHeroVisual(data.category);
+  const fallbackVisual = pickHeroVisual(data.category);
+  const heroVisual: {
+    src: string | StaticImageData;
+    alt: string;
+    isPhotoStyle: boolean;
+    isExternal: boolean;
+  } = data.heroImagePath
+    ? {
+        src: data.heroImagePath,
+        alt: `${data.category}向け補助金イメージ`,
+        isPhotoStyle: true,
+        isExternal: true,
+      }
+    : {
+        ...fallbackVisual,
+        isExternal: false,
+      };
 
   return (
     <section className="relative min-h-[480px] overflow-hidden bg-[#0B173A] md:min-h-[540px]">
@@ -66,7 +82,7 @@ export default function HeroSection({
             : "object-cover opacity-25"
         }
         priority
-        placeholder="blur"
+        placeholder={heroVisual.isExternal ? "empty" : "blur"}
       />
       <div
         className={

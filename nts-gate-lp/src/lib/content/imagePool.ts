@@ -136,6 +136,38 @@ function pickCustomArticlePicture(params: {
   return null;
 }
 
+export function pickArticlePictureOnly(params: {
+  subsidyId: string;
+  seedKey?: string;
+  tags?: string[];
+  targetIndustries?: string[];
+}): string | null {
+  const custom = pickCustomArticlePicture(params);
+  if (custom) return custom;
+
+  if (!fs.existsSync(CUSTOM_ARTICLE_PICTURES_DIR)) return null;
+  const allFolders = fs
+    .readdirSync(CUSTOM_ARTICLE_PICTURES_DIR, { withFileTypes: true })
+    .filter((entry) => entry.isDirectory())
+    .map((entry) => entry.name)
+    .filter((name) => normalizePathSegment(name).length > 0);
+  if (allFolders.length === 0) return null;
+
+  const seedBase = params.seedKey ?? params.subsidyId;
+  const startIndex = hashString(`${seedBase}:fallback-folder`) % allFolders.length;
+  for (let step = 0; step < allFolders.length; step++) {
+    const pickedFolder = allFolders[(startIndex + step) % allFolders.length];
+    if (!pickedFolder) continue;
+    const files = listImagesInFolder(pickedFolder);
+    if (files.length === 0) continue;
+    const fileIndex = hashString(`${seedBase}:${pickedFolder}:fallback-file`) % files.length;
+    const pickedFile = files[fileIndex] ?? files[0];
+    if (!pickedFile) continue;
+    return `/api/article-pictures/${encodeURIComponent(pickedFolder)}/${encodeURIComponent(pickedFile)}`;
+  }
+  return null;
+}
+
 export function pickHeroImage(params: {
   subsidyId: string;
   seedKey?: string;

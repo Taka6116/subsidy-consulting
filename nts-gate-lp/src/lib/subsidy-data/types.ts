@@ -1,5 +1,6 @@
 export type SubsidyLpData = {
   id: string;
+  heroImagePath?: string | null;
   badge: string;
   category: string;
   headline: string;
