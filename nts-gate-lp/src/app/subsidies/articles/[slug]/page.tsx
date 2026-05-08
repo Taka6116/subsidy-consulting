@@ -128,6 +128,8 @@ async function getRelatedArticles({
       contentType: "article",
     },
     select: {
+      id: true,
+      subsidyId: true,
       slug: true,
       title: true,
       publishedAt: true,
@@ -139,6 +141,7 @@ async function getRelatedArticles({
           deadline: true,
           name: true,
           maxAmountLabel: true,
+          targetIndustries: true,
         },
       },
     },
@@ -177,6 +180,12 @@ async function getRelatedArticles({
         prefecture: a.grant?.prefecture ?? null,
         isOpen,
         grantName: a.grant?.name ?? null,
+        thumbnailUrl: pickHeroImage({
+          subsidyId: a.subsidyId,
+          seedKey: a.id,
+          tags: a.tags ?? [],
+          targetIndustries: a.grant?.targetIndustries ?? [],
+        }),
         score,
       };
     })

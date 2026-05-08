@@ -8,6 +8,7 @@ type Article = {
   prefecture?: string | null;
   isOpen?: boolean;
   grantName?: string | null;
+  thumbnailUrl?: string | null;
 };
 
 type Props = {
@@ -48,9 +49,20 @@ export function RelatedArticles({ articles }: Props) {
               className="group flex flex-col overflow-hidden rounded-xl border border-gray-200 bg-white transition hover:border-gray-300 hover:shadow-lg"
             >
               {/* サムネイル（グラデーションプレースホルダー） */}
-              <div
-                className={`relative h-[140px] w-full bg-gradient-to-br ${colorClass} flex items-center justify-center overflow-hidden`}
-              >
+              <div className="relative h-[140px] w-full overflow-hidden">
+                {article.thumbnailUrl ? (
+                  <>
+                    <div
+                      className="absolute inset-0 bg-cover bg-center"
+                      style={{ backgroundImage: `url(${article.thumbnailUrl})` }}
+                    />
+                    <div className="absolute inset-0 bg-black/25" />
+                  </>
+                ) : (
+                  <div
+                    className={`absolute inset-0 bg-gradient-to-br ${colorClass} flex items-center justify-center`}
+                  />
+                )}
                 {/* 公募中バッジ */}
                 {article.isOpen && (
                   <span className="absolute left-3 top-3 rounded bg-[#28a4a3] px-2 py-0.5 text-[10px] font-bold text-white shadow">
@@ -64,7 +76,7 @@ export function RelatedArticles({ articles }: Props) {
                   </span>
                 )}
                 {/* タイトルを画像内にも薄く表示 */}
-                <p className="px-4 text-center text-xs font-bold leading-snug text-white/80 line-clamp-3">
+                <p className="relative z-[1] px-4 text-center text-xs font-bold leading-snug text-white/90 drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)] line-clamp-3">
                   {article.title}
                 </p>
               </div>
