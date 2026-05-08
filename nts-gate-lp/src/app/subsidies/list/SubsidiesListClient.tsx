@@ -7,7 +7,6 @@ import type { LucideIcon } from "lucide-react";
 import {
   ArrowRight,
   BookOpen,
-  CirclePlay,
   CalendarClock,
   Cpu,
   FileText,
@@ -405,7 +404,7 @@ export default function SubsidiesListClient({
                   href="/subsidies/check"
                   className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-[#0f4db8] px-6 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-[#0d419a]"
                 >
-                  今すぐ自社に合う制度を診断する（無料・1分）
+                  対象の補助金を診断する
                   <ArrowRight className="h-4 w-4" />
                 </Link>
                 <Link
@@ -476,42 +475,6 @@ export default function SubsidiesListClient({
             </div>
           </div>
 
-          <div className="mt-8 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-            <div className="grid gap-px bg-slate-200 md:grid-cols-2 xl:grid-cols-4">
-              <Link href="/subsidies/list" className="bg-white p-6 transition hover:bg-[#f8fbff]">
-                <span className="inline-flex h-14 w-14 items-center justify-center rounded-full bg-[#edf4ff] text-[#2453b8]">
-                  <Search className="h-7 w-7" />
-                </span>
-                <h3 className="mt-4 text-[30px] font-black leading-none text-[#1b2f66]">探す</h3>
-                <p className="mt-3 text-sm leading-6 text-slate-600">業種・課題・地域から使える補助金を検索</p>
-                <p className="mt-4 text-sm font-bold text-[#1f4dab]">補助金一覧を見る →</p>
-              </Link>
-              <Link href="/subsidies/articles" className="bg-white p-6 transition hover:bg-[#f8fbff]">
-                <span className="inline-flex h-14 w-14 items-center justify-center rounded-full bg-emerald-50 text-emerald-600">
-                  <BookOpen className="h-7 w-7" />
-                </span>
-                <h3 className="mt-4 text-[30px] font-black leading-none text-[#1b2f66]">学ぶ</h3>
-                <p className="mt-3 text-sm leading-6 text-slate-600">制度の解説や申請のポイントを記事でわかりやすく解説</p>
-                <p className="mt-4 text-sm font-bold text-[#1f4dab]">解説記事を読む →</p>
-              </Link>
-              <Link href="/subsidies/videos" className="bg-white p-6 transition hover:bg-[#f8fbff]">
-                <span className="inline-flex h-14 w-14 items-center justify-center rounded-full bg-violet-50 text-violet-600">
-                  <CirclePlay className="h-7 w-7" />
-                </span>
-                <h3 className="mt-4 text-[30px] font-black leading-none text-[#1b2f66]">理解する</h3>
-                <p className="mt-3 text-sm leading-6 text-slate-600">動画で制度のポイントや成功事例をチェック</p>
-                <p className="mt-4 text-sm font-bold text-[#1f4dab]">動画を見る →</p>
-              </Link>
-              <Link href="/contact" className="bg-white p-6 transition hover:bg-[#f8fbff]">
-                <span className="inline-flex h-14 w-14 items-center justify-center rounded-full bg-amber-50 text-amber-600">
-                  <Users className="h-7 w-7" />
-                </span>
-                <h3 className="mt-4 text-[30px] font-black leading-none text-[#1b2f66]">相談する</h3>
-                <p className="mt-3 text-sm leading-6 text-slate-600">専門家に無料で相談。伴走支援でサポート</p>
-                <p className="mt-4 text-sm font-bold text-[#1f4dab]">無料相談を予約する →</p>
-              </Link>
-            </div>
-          </div>
         </div>
       </section>
 
