@@ -1,80 +1,45 @@
 import Header from "@/components/shared/Header";
 import LpFooter from "@/components/gate-lp/LpFooter";
+import Image from "next/image";
+import generalHeroVisual from "../../../../../icon-assets/general-hero.webp";
 
 export default function LoadingSubsidyLp() {
   return (
     <>
       <Header />
-      <main className="relative z-[2] min-h-[100svh] bg-[#0a1628] font-body">
-        {/* Hero skeleton */}
-        <div className="w-full animate-pulse px-6 py-20 sm:py-28"
-          style={{ background: "linear-gradient(135deg,#0f2027 0%,#203a43 50%,#2c5364 100%)" }}
-        >
-          <div className="mx-auto max-w-4xl">
-            <div className="h-5 w-28 rounded-full bg-white/10" />
-            <div className="mt-6 h-10 w-3/4 rounded bg-white/15" />
-            <div className="mt-3 h-10 w-1/2 rounded bg-white/15" />
-            <div className="mt-4 h-5 w-full rounded bg-white/10" />
-            <div className="mt-2 h-5 w-4/5 rounded bg-white/10" />
-            <div className="mt-8 flex gap-3">
-              <div className="h-12 w-44 rounded-full bg-white/20" />
-              <div className="h-12 w-28 rounded-full bg-white/10" />
-            </div>
+      <main className="bg-white pt-16 sm:pt-20">
+        <section className="relative min-h-[480px] overflow-hidden bg-[#0B173A] md:min-h-[540px]">
+          <Image
+            src={generalHeroVisual}
+            alt=""
+            aria-hidden="true"
+            fill
+            priority
+            placeholder="blur"
+            sizes="100vw"
+            className="object-cover opacity-30"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#0B173A]/94 via-[#0B173A]/75 to-[#0B173A]/40" />
+          <div className="relative z-10 mx-auto max-w-7xl px-6 py-16 lg:px-8 md:py-20">
+            <div className="mb-5 h-6 w-36 rounded-sm bg-white/20" />
+            <div className="mb-3 h-12 w-full max-w-2xl rounded bg-white/15" />
+            <div className="mb-8 h-12 w-[70%] max-w-xl rounded bg-white/15" />
+            <div className="h-12 w-56 rounded-lg bg-[#FEA00D]/80" />
           </div>
-        </div>
-
-        {/* Stats + body skeleton */}
+        </section>
         <div className="mx-auto max-w-6xl px-6 py-10">
-          {/* Stat cards */}
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
             {[1, 2, 3].map((i) => (
-              <div key={i} className="animate-pulse rounded-2xl bg-white/5 p-6">
-                <div className="h-4 w-20 rounded bg-white/10" />
-                <div className="mt-3 h-7 w-32 rounded bg-white/15" />
+              <div key={i} className="rounded-2xl bg-slate-100 p-6">
+                <div className="h-4 w-20 rounded bg-slate-200" />
+                <div className="mt-3 h-7 w-32 rounded bg-slate-200" />
               </div>
             ))}
           </div>
-
-          <div className="mt-10 flex flex-col gap-8 lg:flex-row">
-            {/* Main column */}
-            <div className="flex-1 space-y-8">
-              {/* Pain section */}
-              <div className="animate-pulse rounded-2xl bg-white/5 p-6">
-                <div className="h-6 w-40 rounded bg-white/10" />
-                <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2">
-                  {[1, 2, 3, 4].map((i) => (
-                    <div key={i} className="h-10 rounded-lg bg-white/8" />
-                  ))}
-                </div>
-              </div>
-              {/* Use case section */}
-              <div className="animate-pulse rounded-2xl bg-white/5 p-6">
-                <div className="h-6 w-48 rounded bg-white/10" />
-                <div className="mt-5 space-y-4">
-                  {[1, 2].map((i) => (
-                    <div key={i} className="rounded-xl bg-white/8 p-4">
-                      <div className="h-4 w-36 rounded bg-white/15" />
-                      <div className="mt-3 space-y-2">
-                        <div className="h-3 w-full rounded bg-white/10" />
-                        <div className="h-3 w-4/5 rounded bg-white/10" />
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-            {/* Sidebar skeleton (desktop) */}
-            <div className="hidden animate-pulse lg:block lg:w-72">
-              <div className="rounded-2xl bg-white/5 p-6">
-                <div className="h-5 w-36 rounded bg-white/10" />
-                <div className="mt-4 space-y-3">
-                  {[1, 2, 3].map((i) => (
-                    <div key={i} className="h-4 w-full rounded bg-white/8" />
-                  ))}
-                </div>
-                <div className="mt-6 h-12 w-full rounded-full bg-white/20" />
-              </div>
-            </div>
+          <div className="mt-8 space-y-4">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="h-24 rounded-2xl bg-slate-100" />
+            ))}
           </div>
         </div>
       </main>

@@ -6,7 +6,7 @@ export default function LoadingSubsidiesList() {
   return (
     <>
       <Header />
-      <main className="relative z-[2] min-h-[100svh] font-body">
+      <main className="relative z-[2] min-h-[100svh] bg-[#f7f9fc] pt-16 font-body sm:pt-20">
         <SubsidiesGalaxyBackdrop />
         <div className="relative z-10 mx-auto max-w-7xl px-6 py-24">
           <div className="rounded-2xl border border-[#e4e1da] bg-[#f9f7f3]/95 p-8 shadow-sm backdrop-blur-sm md:p-10">

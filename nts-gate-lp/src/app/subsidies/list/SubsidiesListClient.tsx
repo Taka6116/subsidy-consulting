@@ -18,15 +18,7 @@ import {
   Users,
 } from "lucide-react";
 import type { StaticImageData } from "next/image";
-import logisticsHero from "../../../../icon-assets/logistics-hero.webp";
-import constructionHero from "../../../../icon-assets/construction-hero.webp";
-import dxHero from "../../../../icon-assets/dx-hero.webp";
-import hrHero from "../../../../icon-assets/human-resources-hero.webp";
-import equipmentHero from "../../../../icon-assets/equipment-hero.webp";
-import businessPlanHero from "../../../../icon-assets/business-plan-hero.webp";
-import generalHero from "../../../../icon-assets/general-hero.webp";
-import oldFacilityHero from "../../../../icon-assets/old-facility.webp";
-import heroIsometric from "../../../../icon-assets/isometric_30.webp";
+import listHeroIsometric from "../../../../icon-assets/list-hero-isometric.png";
 import expertPhoto from "../../../../icon-assets/craftswoman.webp";
 
 type StatusTab = "all" | "open" | "closed";
@@ -135,7 +127,7 @@ const VISUAL_RULES: Array<{
     visual: {
       title: "環境・省エネ",
       subtitle: "脱炭素投資",
-      image: oldFacilityHero,
+      image: listHeroIsometric,
       badge: "環境・省エネ",
     },
   },
@@ -144,7 +136,7 @@ const VISUAL_RULES: Array<{
     visual: {
       title: "物流・運送",
       subtitle: "効率化支援",
-      image: logisticsHero,
+      image: listHeroIsometric,
       badge: "物流・運送",
     },
   },
@@ -153,7 +145,7 @@ const VISUAL_RULES: Array<{
     visual: {
       title: "建設・設備",
       subtitle: "省力化投資",
-      image: constructionHero,
+      image: listHeroIsometric,
       badge: "建設・設備",
     },
   },
@@ -162,7 +154,7 @@ const VISUAL_RULES: Array<{
     visual: {
       title: "DX・IT",
       subtitle: "導入支援",
-      image: dxHero,
+      image: listHeroIsometric,
       badge: "DX・IT",
     },
   },
@@ -171,7 +163,7 @@ const VISUAL_RULES: Array<{
     visual: {
       title: "人材・採用",
       subtitle: "賃上げ支援",
-      image: hrHero,
+      image: listHeroIsometric,
       badge: "人材・採用",
     },
   },
@@ -180,7 +172,7 @@ const VISUAL_RULES: Array<{
     visual: {
       title: "事業承継・M&A",
       subtitle: "継続と成長",
-      image: generalHero,
+      image: listHeroIsometric,
       badge: "事業承継",
     },
   },
@@ -189,7 +181,7 @@ const VISUAL_RULES: Array<{
     visual: {
       title: "事業計画",
       subtitle: "成長加速",
-      image: businessPlanHero,
+      image: listHeroIsometric,
       badge: "事業計画",
     },
   },
@@ -198,7 +190,7 @@ const VISUAL_RULES: Array<{
     visual: {
       title: "設備投資",
       subtitle: "生産性向上",
-      image: equipmentHero,
+      image: listHeroIsometric,
       badge: "設備投資",
     },
   },
@@ -207,7 +199,7 @@ const VISUAL_RULES: Array<{
 const DEFAULT_VISUAL: CardVisual = {
   title: "補助金LP",
   subtitle: "最新制度",
-  image: generalHero,
+  image: listHeroIsometric,
   badge: "公募中",
 };
 
@@ -427,13 +419,13 @@ export default function SubsidiesListClient({
               </div>
             </div>
 
-            <div className="relative flex min-h-[220px] items-center justify-center rounded-2xl bg-[radial-gradient(circle_at_30%_20%,#eff6ff_0%,#dbeafe_45%,#bfdbfe_100%)] lg:min-h-[280px]">
+            <div className="relative flex min-h-[220px] items-center justify-center overflow-hidden rounded-2xl bg-[#060a14] lg:min-h-[280px]">
               <Image
-                src={heroIsometric}
+                src={listHeroIsometric}
                 alt=""
                 width={420}
                 height={280}
-                className="relative z-10 h-auto max-h-[240px] w-full max-w-[320px] object-contain drop-shadow-lg"
+                className="relative z-10 h-auto max-h-[240px] w-full max-w-[320px] object-contain"
                 sizes="(max-width: 1024px) 90vw, 320px"
                 priority
               />
