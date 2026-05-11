@@ -79,7 +79,7 @@ export default function Header() {
               トップへ
             </Link>
             <Link href="/subsidies/top2" className="shrink-0 whitespace-nowrap rounded-full bg-blue-50 px-2.5 py-0.5 text-xs font-bold text-blue-600 ring-1 ring-blue-200 transition-colors hover:bg-blue-100 lg:text-sm">
-              トップへ2
+              トップ
             </Link>
             <Link href="/subsidies/list" className="shrink-0 whitespace-nowrap text-xs font-medium text-[var(--text-secondary)] transition-colors hover:text-[var(--accent-navy)] lg:text-sm">
               補助金一覧

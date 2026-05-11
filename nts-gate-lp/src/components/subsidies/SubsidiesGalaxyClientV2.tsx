@@ -2,7 +2,6 @@
 
 import { useState, useCallback, useEffect } from "react";
 import Link from "next/link";
-import { getPartnerUrl } from "@/lib/partnerUrl";
 import IntroOverlay from "@/components/subsidies/IntroOverlay";
 import SubsidyHeroV2 from "@/components/subsidies/SubsidyHeroV2";
 import { Search, BookOpen, LayoutList, PlaySquare, ArrowRight } from "lucide-react";
@@ -54,7 +53,6 @@ const CATEGORY_CARDS = [
 ] as const;
 
 export default function SubsidiesGalaxyClientV2({ counts, activePrefectureCount }: Props) {
-  const partnerHref = getPartnerUrl();
   const [introComplete, setIntroComplete] = useState(false);
   const handleIntroComplete = useCallback(() => setIntroComplete(true), []);
 
@@ -159,22 +157,6 @@ export default function SubsidiesGalaxyClientV2({ counts, activePrefectureCount 
         </div>
 
         {/* ── パートナー + トップへ戻る ── */}
-        <div className="w-full bg-[#f7f9fc] py-6">
-          <div className="mx-auto flex max-w-[1400px] flex-col items-center justify-between gap-3 px-6 sm:flex-row">
-            <Link
-              href="/"
-              className="text-sm text-slate-400 underline-offset-4 transition hover:text-slate-700 hover:underline"
-            >
-              ← トップへ戻る
-            </Link>
-            <Link
-              href={partnerHref}
-              className="text-sm text-slate-400 underline-offset-4 transition hover:text-slate-700 hover:underline"
-            >
-              提携先ページへ →
-            </Link>
-          </div>
-        </div>
       </div>
     </>
   );
