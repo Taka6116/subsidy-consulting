@@ -418,20 +418,20 @@ export default async function SubsidyDetailPage({ params }: DetailPageProps) {
                 </section>
 
                 {officialPageUrl ? (
-                  <section className="rounded-xl border border-[#d8e7f5] bg-[#f5f9ff] p-6 shadow-sm">
-                    <h2 className="text-xl font-semibold text-[#2f2e2b]">公式ページ</h2>
-                    <p className="mt-2 text-sm text-[#4d5b69]">
-                      最新の公募要領・要件は原典で確認してください。
+                  <div className="rounded-lg border border-[#e2e8f0] bg-[#f8fafc] px-4 py-3">
+                    <p className="text-xs font-semibold text-[#64748b]">出典・原典確認</p>
+                    <p className="mt-1 text-xs leading-relaxed text-[#64748b]">
+                      公募要領・最新要件は必ず原典でご確認ください。
+                      <Link
+                        href={officialPageUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="ml-1 text-[#1f4dab] underline underline-offset-2 hover:text-[#173d8c]"
+                      >
+                        原典を確認する ↗
+                      </Link>
                     </p>
-                    <Link
-                      href={officialPageUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="mt-4 inline-flex items-center rounded-full bg-[#0d2640] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#12365a]"
-                    >
-                      公式ページで確認する ↗
-                    </Link>
-                  </section>
+                  </div>
                 ) : null}
 
                 <section className="rounded-xl border border-neutral-200 bg-white p-6 shadow-sm">

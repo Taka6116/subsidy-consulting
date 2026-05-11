@@ -30,7 +30,7 @@ export type SubsidyCard = {
   syncedAt: string;
   updatedAt: string;
   articleSlug: string | null;
-  jgrantsUrl?: string | null;
+  hasLp?: boolean;
 };
 
 const NATIONWIDE_LABEL = "全国";
@@ -660,6 +660,16 @@ function SubsidyResultCard({ grant }: { grant: SubsidyCard }) {
             NEW
           </span>
         ) : null}
+        {/* 出典種別バッジ */}
+        <span
+          className={`inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-semibold ring-1 ring-inset ${
+            grant.source === "municipality"
+              ? "bg-teal-50 text-teal-700 ring-teal-200"
+              : "bg-slate-50 text-slate-600 ring-slate-200"
+          }`}
+        >
+          {grant.source === "municipality" ? "自治体" : "jGrants"}
+        </span>
         <span className="ml-auto text-[11px] font-semibold text-[#6b7a99]">
           更新 {formatUpdatedAt(grant.updatedAt)}
         </span>
@@ -735,8 +745,9 @@ function SubsidyResultCard({ grant }: { grant: SubsidyCard }) {
         </dl>
         <p className="mt-2 text-[11px] text-[#6b7a99]">締切日：{deadlineLabel}</p>
 
-        {/* アクションボタン */}
+        {/* アクションボタン — 優先順位: 詳細 > 解説記事 > 専門LP > 相談 */}
         <div className="mt-4 flex flex-wrap items-center gap-2 border-t border-[#eef2f8] pt-3">
+          {/* 主CTA: 詳細を見る */}
           <Link
             href={`/subsidies/list/${grant.id}`}
             aria-disabled={isExpired}
@@ -748,6 +759,7 @@ function SubsidyResultCard({ grant }: { grant: SubsidyCard }) {
             詳細を見る
             <ArrowRight className="h-4 w-4" />
           </Link>
+          {/* 補助CTA: 解説記事 */}
           {grant.articleSlug ? (
             <Link
               href={`/subsidies/articles/${grant.articleSlug}`}
@@ -756,21 +768,21 @@ function SubsidyResultCard({ grant }: { grant: SubsidyCard }) {
               解説記事
             </Link>
           ) : null}
-          {grant.jgrantsUrl ? (
-            <a
-              href={grant.jgrantsUrl}
-              target="_blank"
-              rel="noopener noreferrer"
+          {/* 補助CTA: 専門LP（存在する場合のみ） */}
+          {grant.hasLp ? (
+            <Link
+              href={`/subsidies/lp/${grant.id}`}
               className="inline-flex items-center justify-center rounded-xl border border-[#d6e1f4] bg-white px-3 py-2.5 text-xs font-semibold text-[#5b6b8c] transition hover:bg-[#f7faff]"
             >
-              公式 ↗
-            </a>
+              専門LP
+            </Link>
           ) : null}
+          {/* 補助CTA: 相談 */}
           <Link
             href={`/consult?subsidyId=${grant.id}`}
             className="inline-flex items-center justify-center rounded-xl border border-[#d6e1f4] bg-white px-3 py-2.5 text-xs font-semibold text-[#1a7b6f] transition hover:bg-[#f3faf8]"
           >
-            無料相談
+            相談する
           </Link>
         </div>
       </div>
