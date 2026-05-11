@@ -127,7 +127,7 @@ export default function SubsidyHeroV2({
       }}
     >
       {/* ══ HERO SECTION ══ */}
-      <section className="relative z-10 flex w-full flex-col pt-10 pb-4 lg:min-h-[calc(100vh-72px)] lg:pt-10 lg:pb-4">
+      <section className="relative z-10 flex w-full flex-col pt-10 pb-4 lg:min-h-[calc(100vh-72px)] lg:pt-16 lg:pb-4 2xl:pt-10">
 
         {/* ── 左コピー + 右統計カード（このブロックだけ背景画像） ── */}
         <div className="relative grid flex-1 items-center gap-0 overflow-hidden px-4 pb-6 lg:grid-cols-[1fr_auto] lg:px-0 lg:pb-8">
