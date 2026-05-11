@@ -46,7 +46,7 @@ export default memo(function JapanNetworkMap() {
         projection="geoMercator"
         projectionConfig={{
           rotate: [-136, -36, 0],
-          scale: 2000,
+          scale: 1880,
           center: [0, 0],
         }}
         style={{ width: "100%", height: "100%" }}
