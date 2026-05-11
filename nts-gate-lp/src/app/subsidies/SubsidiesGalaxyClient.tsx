@@ -4,7 +4,7 @@ import { useState, useCallback, useEffect } from "react";
 import Link from "next/link";
 import { getPartnerUrl } from "@/lib/partnerUrl";
 import IntroOverlay from "@/components/subsidies/IntroOverlay";
-import SubsidyHero from "@/components/subsidies/SubsidyHero";
+import SubsidyHero from "@/components/subsidies/SubsidyHeroV2";
 
 type Counts = { grants: number; articles: number; videos: number; lps: number };
 type Props  = { counts: Counts; activePrefectureCount: number };
