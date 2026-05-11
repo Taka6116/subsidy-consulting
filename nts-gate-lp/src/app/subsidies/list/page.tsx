@@ -11,9 +11,18 @@ export const metadata: Metadata = {
   description: "補助金制度の一覧・検索をご案内します。公募要領での最終確認をお願いします。",
 };
 
+// 実在する個別補助金データのみを対象とする
+// chusho/maff/meti はニュース記事・カテゴリページであり補助金個別情報ではないため除外
+// manual の中に「同期プレースホルダ」が含まれるため name が null or "(同期" で始まるものも除外
+const TRUSTED_SOURCES = ["jgrants", "municipality"];
+
 export default async function SubsidiesListPage() {
   const raw = await prisma.subsidyGrant.findMany({
-    where: { status: "open" },
+    where: {
+      status: "open",
+      source: { in: TRUSTED_SOURCES },
+      name: { not: null },
+    },
     select: {
       id: true,
       name: true,
@@ -29,6 +38,8 @@ export default async function SubsidiesListPage() {
       source: true,
       syncedAt: true,
       updatedAt: true,
+      externalId: true,
+      rawPayload: true,
       contents: {
         where: { contentType: "article", status: "published", slug: { not: null } },
         orderBy: { publishedAt: "desc" },
@@ -40,26 +51,42 @@ export default async function SubsidiesListPage() {
     take: 500,
   });
 
-  const grants = raw.map((g) => ({
-    id: g.id,
-    name: g.name,
-    description: g.description,
-    cardImagePath: null,
-    maxAmountLabel: g.maxAmountLabel,
-    rawPayload: null,
-    deadlineLabel: g.deadlineLabel,
-    deadline: g.deadline ? g.deadline.toISOString() : null,
-    targetIndustries: g.targetIndustries ?? [],
-    prefecture: g.prefecture,
-    institutionName: g.institutionName,
-    // Prisma.Decimal は JSON シリアライズ不可。Number でプリミティブに揃える。
-    subsidyRate: g.subsidyRate != null ? Number(g.subsidyRate) : null,
-    status: g.status,
-    source: g.source,
-    syncedAt: g.syncedAt.toISOString(),
-    updatedAt: g.updatedAt.toISOString(),
-    articleSlug: g.contents[0]?.slug ?? null,
-  }));
+  const grants = raw.map((g) => {
+    const payload = g.rawPayload as Record<string, unknown> | null;
+    // jGrants は officialPageUrl が null のため rawPayload.id から URL を構築
+    const jgrantsId = payload?.id;
+    const derivedInstitutionName =
+      g.institutionName ??
+      (typeof payload?.institution_name === "string" && payload.institution_name.trim()
+        ? payload.institution_name.trim()
+        : null);
+
+    return {
+      id: g.id,
+      name: g.name,
+      description: g.description,
+      cardImagePath: null,
+      maxAmountLabel: g.maxAmountLabel,
+      rawPayload: null,
+      deadlineLabel: g.deadlineLabel,
+      deadline: g.deadline ? g.deadline.toISOString() : null,
+      targetIndustries: g.targetIndustries ?? [],
+      prefecture: g.prefecture,
+      institutionName: derivedInstitutionName,
+      // Prisma.Decimal は JSON シリアライズ不可。Number でプリミティブに揃える。
+      subsidyRate: g.subsidyRate != null ? Number(g.subsidyRate) : null,
+      status: g.status,
+      source: g.source,
+      syncedAt: g.syncedAt.toISOString(),
+      updatedAt: g.updatedAt.toISOString(),
+      articleSlug: g.contents[0]?.slug ?? null,
+      // jGrants 公式ページURL（一覧カードの「詳細を見る」は /subsidies/list/[id] なので不要だが将来用）
+      jgrantsUrl:
+        g.source === "jgrants" && typeof jgrantsId === "string" && jgrantsId
+          ? `https://jgrants.go.jp/subsidy/${jgrantsId}`
+          : null,
+    };
+  });
 
   return (
     <>

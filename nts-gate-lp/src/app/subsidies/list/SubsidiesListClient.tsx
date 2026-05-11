@@ -30,6 +30,7 @@ export type SubsidyCard = {
   syncedAt: string;
   updatedAt: string;
   articleSlug: string | null;
+  jgrantsUrl?: string | null;
 };
 
 const NATIONWIDE_LABEL = "全国";
@@ -754,6 +755,16 @@ function SubsidyResultCard({ grant }: { grant: SubsidyCard }) {
             >
               解説記事
             </Link>
+          ) : null}
+          {grant.jgrantsUrl ? (
+            <a
+              href={grant.jgrantsUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center rounded-xl border border-[#d6e1f4] bg-white px-3 py-2.5 text-xs font-semibold text-[#5b6b8c] transition hover:bg-[#f7faff]"
+            >
+              公式 ↗
+            </a>
           ) : null}
           <Link
             href={`/consult?subsidyId=${grant.id}`}

@@ -5,7 +5,6 @@ import LpFooter from "@/components/gate-lp/LpFooter";
 import SubsidiesGalaxyBackdrop from "../../SubsidiesGalaxyBackdrop";
 import SubsidyDetailHero from "@/components/subsidies/SubsidyDetailHero";
 import { prisma } from "@/lib/db/prisma";
-import { buildSmeSubsidyWhere } from "@/lib/subsidies/smeFilter";
 
 type DetailPageProps = {
   params: Promise<{ id: string }>;
@@ -184,8 +183,8 @@ const APPLICATION_STEPS: { step: string; text: string; active: boolean }[] = [
 
 export async function generateMetadata({ params }: DetailPageProps): Promise<Metadata> {
   const { id } = await params;
-  const grant = await prisma.subsidyGrant.findFirst({
-    where: buildSmeSubsidyWhere({ id }),
+  const grant = await prisma.subsidyGrant.findUnique({
+    where: { id },
     select: { name: true },
   });
   const title = grant?.name ? `${grant.name} | 補助金詳細` : "補助金詳細 | 日本提携支援";
@@ -198,8 +197,8 @@ export async function generateMetadata({ params }: DetailPageProps): Promise<Met
 export default async function SubsidyDetailPage({ params }: DetailPageProps) {
   const { id } = await params;
   const [grant, relatedArticles, recentSubsidies] = await Promise.all([
-    prisma.subsidyGrant.findFirst({
-      where: buildSmeSubsidyWhere({ id }),
+    prisma.subsidyGrant.findUnique({
+      where: { id },
       select: {
         id: true,
         name: true,
@@ -225,7 +224,7 @@ export default async function SubsidyDetailPage({ params }: DetailPageProps) {
       select: { id: true, title: true, status: true, publishedAt: true, slug: true },
     }),
     prisma.subsidyGrant.findMany({
-      where: buildSmeSubsidyWhere({ status: "open", id: { not: id } }),
+      where: { status: "open", id: { not: id } },
       orderBy: { updatedAt: "desc" },
       take: 4,
       select: { id: true, name: true, updatedAt: true, rawPayload: true },
@@ -260,7 +259,13 @@ export default async function SubsidyDetailPage({ params }: DetailPageProps) {
   const acceptanceStart = formatDateJP(getString(raw, "acceptance_start_datetime"));
   const acceptanceEnd = formatDateJP(getString(raw, "acceptance_end_datetime") ?? grant?.deadlineLabel ?? null);
   const displayName = grant?.name ?? titleFromRaw ?? "名称未設定";
-  const officialPageUrl = grant?.officialPageUrl ?? getString(raw, "official_page_url");
+  // jGrants データは officialPageUrl が null のため、externalId から公式URLを構築
+  const jgrantsExternalId = raw?.id ?? raw?.jgrants_id;
+  const jgrantsPageUrl =
+    grant?.source === "jgrants" && typeof jgrantsExternalId === "string" && jgrantsExternalId
+      ? `https://jgrants.go.jp/subsidy/${jgrantsExternalId}`
+      : null;
+  const officialPageUrl = grant?.officialPageUrl ?? getString(raw, "official_page_url") ?? jgrantsPageUrl;
   const sourceBadge = grant
     ? sourceBadgeLabel(grant.source, {
         municipalityName: municipality?.name ?? null,
