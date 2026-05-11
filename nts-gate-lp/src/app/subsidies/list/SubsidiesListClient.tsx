@@ -6,9 +6,7 @@ import Image from "next/image";
 import type { LucideIcon } from "lucide-react";
 import {
   ArrowRight,
-  BookOpen,
-  ChevronRight,
-  Crown,
+  CalendarClock,
   Cpu,
   FileText,
   GitMerge,
@@ -18,7 +16,6 @@ import {
   Truck,
   Trophy,
   Users,
-  Zap,
 } from "lucide-react";
 import type { StaticImageData } from "next/image";
 import logisticsHero from "../../../../icon-assets/logistics-hero.webp";
@@ -310,13 +307,6 @@ export default function SubsidiesListClient({
           const blob = `${g.name ?? ""} ${g.description ?? ""} ${(g.targetIndustries ?? []).join(" ")}`.toLowerCase();
           return cat.keywords.some((k) => blob.includes(k.toLowerCase()));
         });
-      } else if (activeCategory === "other") {
-        list = list.filter((g) => {
-          const blob = `${g.name ?? ""} ${g.description ?? ""} ${(g.targetIndustries ?? []).join(" ")}`.toLowerCase();
-          return !CATEGORY_ITEMS.some((item) =>
-            item.keywords.some((k) => blob.includes(k.toLowerCase())),
-          );
-        });
       }
     }
 
@@ -355,6 +345,42 @@ export default function SubsidiesListClient({
     [grants],
   );
 
+  const latestUpdated = useMemo(() => {
+    if (grants.length === 0) return "-";
+    const latest = [...grants].sort(
+      (a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime(),
+    )[0];
+    const d = new Date(latest.updatedAt);
+    return `${d.getFullYear()}/${String(d.getMonth() + 1).padStart(2, "0")}/${String(d.getDate()).padStart(2, "0")}`;
+  }, [grants]);
+
+  const categorySummary = useMemo(
+    () => {
+      const imageMap: Record<string, string> = {
+        logistics: articlePictureUrl("運送", "運送系.webp"),
+        construction: articlePictureUrl("建設", "建設系4.webp"),
+        dx: articlePictureUrl("DX・IT", "DX・IT系2.webp"),
+        hr: articlePictureUrl("人材・採用", "人材・採用2.webp"),
+        green: articlePictureUrl(
+          "設備・設備投資",
+          "investors-examine-solar-panel-surface-using-tablet-discussing-design-efficiency.webp",
+        ),
+        mna: articlePictureUrl("事業計画", "hr-managers-interviewing-job-applicant.webp"),
+      };
+
+      return CATEGORY_ITEMS.map((item) => ({
+        ...item,
+        label: item.id === "mna" ? "その他" : item.label,
+        imagePath: imageMap[item.id] ?? null,
+        count: grants.filter((g) => {
+          const text = `${g.name ?? ""} ${g.description ?? ""} ${(g.targetIndustries ?? []).join(" ")}`.toLowerCase();
+          return item.keywords.some((k) => text.includes(k.toLowerCase()));
+        }).length,
+      }));
+    },
+    [grants],
+  );
+
   const deadlineRanking = useMemo(
     () =>
       [...grants]
@@ -367,146 +393,126 @@ export default function SubsidiesListClient({
         .slice(0, 5),
     [grants],
   );
-  const featuredLps = useMemo(
-    () =>
-      [...grants]
-        .filter((g) => !isExpiredDeadline(g.deadline))
-        .sort((a, b) => {
-          const amountDiff = parseAmountYen(b) - parseAmountYen(a);
-          if (amountDiff !== 0) return amountDiff;
-          return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime();
-        })
-        .slice(0, 4),
-    [grants],
-  );
-  const newestLps = useMemo(
+  const tickerItems = useMemo(
     () =>
       [...grants]
         .sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime())
-        .slice(0, 6),
+        .slice(0, 8),
     [grants],
   );
-  const heroCategoryCards = useMemo(() => {
-    const cardMeta: Record<string, { label: string; imagePath: string }> = {
-      logistics: {
-        label: "物流・運送",
-        imagePath: articlePictureUrl("運送", "運送系.webp"),
-      },
-      construction: {
-        label: "建設・設備",
-        imagePath: articlePictureUrl("建設", "建設系4.webp"),
-      },
-      dx: {
-        label: "DX・IT化",
-        imagePath: articlePictureUrl("DX・IT", "DX・IT系2.webp"),
-      },
-      hr: {
-        label: "人材・採用・賃上げ",
-        imagePath: articlePictureUrl("人材・採用", "人材・採用2.webp"),
-      },
-      green: {
-        label: "環境・省エネ",
-        imagePath: articlePictureUrl(
-          "設備・設備投資",
-          "investors-examine-solar-panel-surface-using-tablet-discussing-design-efficiency.webp",
-        ),
-      },
-      mna: {
-        label: "その他",
-        imagePath: articlePictureUrl("事業計画", "hr-managers-interviewing-job-applicant.webp"),
-      },
-    };
-    const cards = CATEGORY_ITEMS.map((item) => {
-      const count = grants.filter((g) => {
-        const text = `${g.name ?? ""} ${g.description ?? ""} ${(g.targetIndustries ?? []).join(" ")}`.toLowerCase();
-        return item.keywords.some((k) => text.includes(k.toLowerCase()));
-      }).length;
-      const meta = cardMeta[item.id];
-      return {
-        id: item.id,
-        label: meta?.label ?? item.label,
-        count,
-        icon: item.icon,
-        chipClass: item.chipClass,
-        imagePath: meta?.imagePath ?? null,
-      };
-    });
-    return cards;
-  }, [grants]);
+  const tickerLoopItems = useMemo(
+    () => (tickerItems.length > 0 ? [...tickerItems, ...tickerItems] : []),
+    [tickerItems],
+  );
 
   return (
     <div className="space-y-8">
       {/* Hero */}
-      <section className="-mx-3 overflow-hidden bg-[#061a3d] md:-mx-5 lg:-mx-6">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_76%_45%,rgba(37,99,235,0.38),transparent_44%)]" />
-        <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(255,255,255,0.06)_0%,transparent_42%)] opacity-40" />
-        <div className="relative mx-auto grid max-w-[1500px] gap-8 px-4 py-8 md:px-8 lg:grid-cols-[0.82fr_1.18fr] lg:items-center lg:py-10">
-          <div className="relative z-10">
-            <div className="inline-flex rounded-full border border-cyan-300/50 bg-white/5 px-4 py-1.5 text-sm font-bold text-cyan-100 backdrop-blur">
-              LPライブラリ
-            </div>
-            <h1 className="mt-6 text-[34px] font-black leading-[1.18] tracking-tight text-white md:text-[44px]">
-              あなたの課題に近い
-              <br />
-              <span className="text-cyan-300">補助金ページ</span>を
-              <br />
-              探せます。
-            </h1>
-            <p className="mt-5 max-w-[560px] text-[15px] leading-7 text-blue-50/90 md:text-[16px] md:leading-8">
-              設備投資・DX・人材採用・省エネなど、
-              <br />
-              経営課題ごとに使える可能性のある補助金をわかりやすく整理しました。
-            </p>
-            <div className="mt-6">
-              <Link
-                href="/subsidies/check"
-                className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-[#0f4db8] px-6 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-[#0d419a]"
-              >
-                対象の補助金を診断する
-                <ArrowRight className="h-4 w-4" />
-              </Link>
-            </div>
-            <div className="mt-6 grid max-w-[720px] grid-cols-2 gap-3 md:grid-cols-4">
-              {[
-                { icon: Zap, title: "最新情報に更新", text: "毎日チェック" },
-                { icon: BookOpen, title: "活用事例も確認", text: "成功事例を紹介" },
-                { icon: FileText, title: "申請の流れも解説", text: "初めてでも安心" },
-                { icon: Crown, title: "専門家が監修", text: "信頼できる情報" },
-              ].map((item) => {
-                const Icon = item.icon;
-                return (
-                  <div
-                    key={item.title}
-                    className="rounded-xl border border-white/15 bg-white/[0.07] px-4 py-3 backdrop-blur"
-                  >
-                    <Icon className="h-5 w-5 text-amber-400" />
-                    <p className="mt-2 text-sm font-bold text-white">{item.title}</p>
-                    <p className="mt-1 text-xs text-blue-100/80">{item.text}</p>
+      <section className="mx-auto w-full max-w-[1500px]">
+        <div className="rounded-[28px] border border-slate-200/70 bg-gradient-to-b from-white to-[#f6f9ff] px-6 py-8 shadow-sm md:px-10 md:py-12 xl:px-12 xl:py-12">
+          <div className="grid items-center gap-8 xl:grid-cols-[0.9fr_1.65fr_0.8fr]">
+            <div>
+              <span className="inline-flex items-center rounded-full bg-blue-50 px-4 py-2 text-sm font-bold text-[#0e357f] ring-1 ring-blue-100">
+                補助金LPライブラリ
+              </span>
+              <h1 className="mt-6 text-[32px] font-black leading-[1.22] tracking-tight text-slate-950 md:text-[40px] xl:text-[42px]">
+                あなたの経営課題に
+                <br />
+                使える<span className="text-[#0e57d8]">補助金</span>があります。
+              </h1>
+              <p className="mt-5 text-[15px] leading-7 text-slate-600 md:text-base">
+                全国の自治体・省庁サイトをAIが24時間クロール。
+                <br />
+                最新の補助金情報を、わかりやすくお届けします。
+              </p>
+              <div className="mt-7">
+                <Link
+                  href="/subsidies/check"
+                  className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-[#0f4db8] px-6 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-[#0d419a]"
+                >
+                  対象の補助金を診断する
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
+              </div>
+              <div className="mt-5 overflow-hidden rounded-xl border border-blue-100 bg-white/80 px-3 py-2">
+                <div className="flex items-center gap-2">
+                  <span className="inline-flex shrink-0 rounded-full bg-primary-700 px-2 py-0.5 text-[10px] font-bold text-white">
+                    最新情報
+                  </span>
+                  <div className="relative min-w-0 flex-1 overflow-hidden">
+                    {tickerLoopItems.length > 0 ? (
+                      <div className="list-ticker-marquee flex w-max items-center gap-3 whitespace-nowrap">
+                        {tickerLoopItems.map((item, index) => (
+                          <Link
+                            key={`${item.id}-${index}`}
+                            href={`/subsidies/list/${item.id}`}
+                            className="inline-flex items-center gap-2 text-xs text-neutral-700 hover:text-primary-700"
+                          >
+                            <span className="rounded bg-pink-500 px-1.5 py-0.5 text-[10px] font-bold text-white">
+                              NEW
+                            </span>
+                            <span className="max-w-[280px] truncate">{item.name ?? "名称未設定"}</span>
+                          </Link>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="text-xs text-neutral-500">現在表示できる最新情報はありません。</p>
+                    )}
                   </div>
-                );
-              })}
+                </div>
+              </div>
+            </div>
+
+            <div className="relative flex min-h-[430px] items-center justify-center overflow-visible xl:min-h-[460px]">
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(59,130,246,0.16),transparent_64%)]" />
+              <Image
+                src="/images/subsidy-hero-isometric.webp"
+                alt="補助金情報を分析するビジネスチームのイラスト"
+                width={920}
+                height={620}
+                priority
+                className="relative z-10 w-[115%] max-w-[860px] object-contain drop-shadow-[0_28px_60px_rgba(15,23,42,0.14)]"
+              />
+            </div>
+
+            <div className="space-y-5">
+              <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+                <div className="flex items-start gap-4">
+                  <span className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-blue-50 text-[#1f54c0]">
+                    <FileText className="h-5 w-5" />
+                  </span>
+                  <div>
+                    <p className="text-sm font-semibold text-slate-500">リアルタイム更新</p>
+                    <p className="mt-1 text-3xl font-black leading-none text-[#1f3c81]">{latestUpdated}</p>
+                    <p className="mt-2 text-xs font-medium text-slate-500">全国の公募情報を自動反映</p>
+                  </div>
+                </div>
+              </div>
+              <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+                <div className="flex items-start gap-4">
+                  <span className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-violet-50 text-violet-600">
+                    <CalendarClock className="h-5 w-5" />
+                  </span>
+                  <div>
+                    <p className="text-sm font-semibold text-slate-500">最終更新</p>
+                    <p className="mt-1 text-3xl font-black leading-none text-[#1f3c81]">{latestUpdated}</p>
+                    <p className="mt-2 text-xs font-medium text-slate-500">最新情報に自動更新</p>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
 
-          <div className="relative h-[250px] overflow-hidden rounded-xl md:h-[315px]">
-            <Image
-              src="/images/lp-library-hero-mosaic.png"
-              alt="業界・課題別の補助金LPライブラリ"
-              width={1100}
-              height={520}
-              priority
-              className="h-full w-full object-cover"
-            />
-            <div className="absolute inset-y-0 left-0 w-36 bg-gradient-to-r from-[#061a3d] to-transparent" />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#061a3d]/30 via-transparent to-transparent" />
-          </div>
         </div>
       </section>
 
       {/* 経営課題から探す */}
-      <section className="rounded-xl border border-[#dbe3f0] bg-white p-5 shadow-sm">
-        <div className="flex items-center justify-between gap-3">
-          <h2 className="text-sm font-black text-slate-900">経営課題から探す</h2>
+      <section className="rounded-2xl border border-[#e4eaf4] bg-white p-5 shadow-sm">
+        <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
+          <div>
+            <h3 className="text-lg font-bold text-[#1b2f66]">経営課題から探す</h3>
+            <p className="mt-1 text-sm text-[#627091]">業種・課題別にLPを絞り込みできます。</p>
+          </div>
           {activeCategory ? (
             <button
               type="button"
@@ -515,14 +521,10 @@ export default function SubsidiesListClient({
             >
               条件をクリア
             </button>
-          ) : (
-            <Link href="/subsidies/lp" className="text-sm font-bold text-[#0e357f]">
-              すべてのカテゴリを見る →
-            </Link>
-          )}
+          ) : null}
         </div>
-        <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-7">
-          {heroCategoryCards.map((category) => {
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
+          {categorySummary.map((category) => {
             const Icon = category.icon;
             const selected = activeCategory === category.id;
             return (
@@ -530,9 +532,9 @@ export default function SubsidiesListClient({
                 key={category.id}
                 type="button"
                 onClick={() => setActiveCategory((c) => (c === category.id ? null : category.id))}
-                className={`group overflow-hidden rounded-xl border text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md ${
-                  selected ? "border-[#1248b7] ring-2 ring-[#1248b7]/20" : "border-slate-200"
-                } bg-white`}
+                className={`group overflow-hidden rounded-2xl border bg-white text-left shadow-sm transition hover:-translate-y-1 hover:shadow-lg ${
+                  selected ? "border-[#1248b7] ring-2 ring-[#1248b7]/25" : "border-[#e8edf7]"
+                }`}
               >
                 <div className="relative aspect-[16/7] w-full overflow-hidden">
                   {category.imagePath ? (
@@ -548,93 +550,21 @@ export default function SubsidiesListClient({
                   )}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-black/10 to-transparent" />
                 </div>
-                <div className="flex items-center justify-between gap-3 px-4 py-3">
-                  <div className="flex items-center gap-2">
-                    <span className={`inline-flex h-8 w-8 items-center justify-center rounded-lg border ${category.chipClass}`}>
-                      <Icon className="h-4 w-4" />
-                    </span>
-                    <div>
-                      <p className="text-sm font-black leading-tight text-[#1f355f]">{category.label}</p>
-                      <p className="mt-0.5 text-xs text-[#5a6d94]">{category.count}件のLP</p>
-                    </div>
-                  </div>
-                  <ChevronRight className="h-4 w-4 text-[#8aa0d1] transition group-hover:translate-x-1" />
+                <div className="flex items-start justify-between gap-2 px-4 py-4">
+                  <span
+                    className={`flex h-11 w-11 items-center justify-center rounded-xl border ${category.chipClass}`}
+                  >
+                    <Icon className="h-5 w-5" aria-hidden />
+                  </span>
+                  <ArrowRight className="h-4 w-4 shrink-0 text-[#8aa0d1] opacity-0 transition group-hover:translate-x-1 group-hover:opacity-100" />
                 </div>
+                <p className="px-4 text-sm font-bold text-[#1f355f]">{category.label}</p>
+                <p className="px-4 pb-4 pt-1 text-xs font-semibold text-[#5a6d94]">
+                  {category.count}件のLP <span className="text-[#1248b7]">→</span>
+                </p>
               </button>
             );
           })}
-        </div>
-      </section>
-
-      {/* 注目LP + 新着LP */}
-      <section className="grid gap-4 lg:grid-cols-[1.3fr_0.7fr]">
-        <div className="rounded-xl border border-[#dbe3f0] bg-white p-5 shadow-sm">
-          <h3 className="text-sm font-black text-[#1b2f66]">注目LP（今見られています）</h3>
-          <div className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-            {featuredLps.map((item) => (
-              <Link
-                key={item.id}
-                href={`/subsidies/list/${item.id}`}
-                className="rounded-xl border border-[#e6ecf8] bg-[#fbfdff] p-3 transition hover:-translate-y-0.5 hover:shadow-md"
-              >
-                <p className="line-clamp-2 text-sm font-bold leading-snug text-[#1f2f57]">{item.name ?? "名称未設定"}</p>
-                <p className="mt-3 text-2xl font-black text-[#2154b8]">
-                  {formatAmountLabel(item).replace(/^最大\s*/, "").replace(/\s*円$/, "")}
-                  <span className="ml-0.5 text-sm font-semibold text-[#5f6f93]">円</span>
-                </p>
-                <p className="mt-1 text-xs font-bold text-[#d12d2d]">{daysLeftLabel(item.deadline)}</p>
-              </Link>
-            ))}
-          </div>
-        </div>
-        <div className="rounded-xl border border-[#dbe3f0] bg-white p-5 shadow-sm">
-          <div className="flex items-center justify-between">
-            <h3 className="text-sm font-black text-[#1b2f66]">新着LP</h3>
-            <Link href="/subsidies/lp" className="text-xs font-bold text-[#0e357f]">
-              すべての新着LPを見る
-            </Link>
-          </div>
-          <div className="mt-3 space-y-2">
-            {newestLps.map((item) => (
-              <Link
-                key={item.id}
-                href={`/subsidies/list/${item.id}`}
-                className="block rounded-lg border border-[#e8edf7] px-3 py-2.5 transition hover:bg-[#f7faff]"
-              >
-                <div className="flex items-center justify-between gap-2">
-                  <span className="rounded bg-pink-500 px-1.5 py-0.5 text-[10px] font-bold text-white">NEW</span>
-                  <span className="text-[11px] text-[#6f7b97]">{new Date(item.updatedAt).toLocaleDateString("ja-JP")}</span>
-                </div>
-                <p className="mt-1 line-clamp-2 text-sm font-semibold text-[#243862]">{item.name ?? "名称未設定"}</p>
-                <p className="mt-1 text-xs text-[#5f7097]">{formatAmountLabel(item)}</p>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* CTA帯 */}
-      <section className="grid gap-4 md:grid-cols-3">
-        <div className="rounded-xl border border-[#dbe3f0] bg-white p-5 shadow-sm">
-          <p className="text-sm font-black text-[#1b2f66]">どの補助金が自社に合うか迷っていませんか？</p>
-          <Link
-            href="/subsidies/check"
-            className="mt-4 inline-flex items-center gap-2 text-sm font-bold text-[#1f4dab]"
-          >
-            無料で診断してみる（1分） <ArrowRight className="h-4 w-4" />
-          </Link>
-        </div>
-        <div className="rounded-xl border border-[#dbe3f0] bg-white p-5 shadow-sm">
-          <p className="text-sm font-black text-[#1b2f66]">LPを比較したい方へ</p>
-          <Link href="/subsidies/check" className="mt-4 inline-flex items-center gap-2 text-sm font-bold text-[#1f4dab]">
-            比較リストを見る <ArrowRight className="h-4 w-4" />
-          </Link>
-        </div>
-        <div className="rounded-xl border border-[#113f9f] bg-[#113f9f] p-5 text-white shadow-sm">
-          <p className="text-sm font-black">専門家に相談したい方へ</p>
-          <Link href="/contact" className="mt-4 inline-flex items-center gap-2 text-sm font-bold text-white">
-            無料相談を予約する <ArrowRight className="h-4 w-4" />
-          </Link>
         </div>
       </section>
 
@@ -853,6 +783,20 @@ export default function SubsidiesListClient({
           </aside>
         </div>
       </section>
+      <style jsx>{`
+        .list-ticker-marquee {
+          animation: listTickerScroll 36s linear infinite;
+        }
+
+        @keyframes listTickerScroll {
+          from {
+            transform: translateX(0);
+          }
+          to {
+            transform: translateX(-50%);
+          }
+        }
+      `}</style>
     </div>
   );
 }
