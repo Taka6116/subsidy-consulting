@@ -3,7 +3,6 @@ import Header from "@/components/shared/Header";
 import LpFooter from "@/components/gate-lp/LpFooter";
 import SubsidiesListClient from "./SubsidiesListClient";
 import { prisma } from "@/lib/db/prisma";
-import { buildSmeSubsidyWhere } from "@/lib/subsidies/smeFilter";
 
 export const revalidate = 3600;
 
@@ -14,7 +13,7 @@ export const metadata: Metadata = {
 
 export default async function SubsidiesListPage() {
   const raw = await prisma.subsidyGrant.findMany({
-    where: buildSmeSubsidyWhere({ status: "open" }),
+    where: { status: "open" },
     select: {
       id: true,
       name: true,
