@@ -27,7 +27,14 @@ export default async function SubsidiesListPage() {
       subsidyRate: true,
       status: true,
       source: true,
+      syncedAt: true,
       updatedAt: true,
+      contents: {
+        where: { contentType: "article", status: "published", slug: { not: null } },
+        orderBy: { publishedAt: "desc" },
+        take: 1,
+        select: { slug: true },
+      },
     },
     orderBy: { updatedAt: "desc" },
     take: 500,
@@ -45,11 +52,13 @@ export default async function SubsidiesListPage() {
     targetIndustries: g.targetIndustries ?? [],
     prefecture: g.prefecture,
     institutionName: g.institutionName,
-    // Prisma.Decimal は JSON シリアライズ不可。Number で 0.5 / 50 などのプリミティブに揃える。
+    // Prisma.Decimal は JSON シリアライズ不可。Number でプリミティブに揃える。
     subsidyRate: g.subsidyRate != null ? Number(g.subsidyRate) : null,
     status: g.status,
     source: g.source,
+    syncedAt: g.syncedAt.toISOString(),
     updatedAt: g.updatedAt.toISOString(),
+    articleSlug: g.contents[0]?.slug ?? null,
   }));
 
   return (

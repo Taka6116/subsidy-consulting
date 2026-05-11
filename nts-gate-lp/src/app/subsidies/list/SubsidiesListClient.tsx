@@ -1,24 +1,8 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import {
-  AlertCircle,
-  ArrowRight,
-  Building2,
-  CalendarClock,
-  Coins,
-  Database,
-  Factory,
-  FileText,
-  Filter,
-  MapPin,
-  MessageSquare,
-  Percent,
-  Search,
-  Sparkles,
-  X,
-} from "lucide-react";
+import { ArrowRight, Search, X } from "lucide-react";
 
 type StatusTab = "all" | "open" | "soon" | "closed";
 type SortKey = "newest" | "deadline" | "amount";
@@ -26,6 +10,7 @@ type SortKey = "newest" | "deadline" | "amount";
 const DEADLINE_MAX = new Date("2050-01-01");
 const NEW_DAYS = 7;
 const SOON_DAYS = 30;
+const PAGE_SIZE = 20;
 
 export type SubsidyCard = {
   id: string;
@@ -42,7 +27,9 @@ export type SubsidyCard = {
   subsidyRate: number | null;
   status: string;
   source: string;
+  syncedAt: string;
   updatedAt: string;
+  articleSlug: string | null;
 };
 
 const NATIONWIDE_LABEL = "全国";
@@ -70,8 +57,10 @@ function isDeadlineSoon(deadline: string | null): boolean {
   return diff !== null && diff >= 0 && diff <= SOON_DAYS;
 }
 
-function isNewGrant(updatedAt: string): boolean {
-  return Date.now() - new Date(updatedAt).getTime() < NEW_DAYS * 86400000;
+// syncedAt（初回登録日）を基準にしてNEW判定する
+// updatedAt は jGrants 同期のたびに更新されるため全件 NEW になってしまう
+function isNewGrant(syncedAt: string): boolean {
+  return Date.now() - new Date(syncedAt).getTime() < NEW_DAYS * 86400000;
 }
 
 function formatDeadlineLabel(grant: SubsidyCard): string {
@@ -193,6 +182,7 @@ export default function SubsidiesListClient({
   const [prefectureFilter, setPrefectureFilter] = useState<string>("");
   const [industryFilter, setIndustryFilter] = useState<string>("");
   const [sortKey, setSortKey] = useState<SortKey>("newest");
+  const [page, setPage] = useState(1);
 
   const prefectureOptions = useMemo(() => {
     const set = new Set<string>();
@@ -290,6 +280,15 @@ export default function SubsidiesListClient({
     return copied;
   }, [grants, statusTab, prefectureFilter, industryFilter, query, sortKey]);
 
+  // フィルター変更時にページをリセット
+  useEffect(() => {
+    setPage(1);
+  }, [filtered]);
+
+  const visibleGrants = filtered.slice(0, page * PAGE_SIZE);
+  const hasMore = filtered.length > page * PAGE_SIZE;
+  const totalPages = Math.ceil(filtered.length / PAGE_SIZE);
+
   const latestUpdated = useMemo(() => {
     if (grants.length === 0) return "-";
     const latest = [...grants].sort(
@@ -328,8 +327,7 @@ export default function SubsidiesListClient({
       <section className="rounded-2xl border border-[#dbe3f0] bg-white px-6 py-7 shadow-sm md:px-8 md:py-8">
         <div className="flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
           <div>
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-[#eef3ff] px-3 py-1 text-xs font-bold text-[#1f3f85] ring-1 ring-[#dbe5fa]">
-              <Database className="h-3.5 w-3.5" />
+            <span className="inline-flex items-center rounded-full bg-[#eef3ff] px-3 py-1 text-xs font-bold text-[#1f3f85] ring-1 ring-[#dbe5fa]">
               補助金データベース
             </span>
             <h1 className="mt-3 text-2xl font-black tracking-tight text-[#0d2640] md:text-3xl">
@@ -354,8 +352,7 @@ export default function SubsidiesListClient({
             </div>
           </div>
         </div>
-        <p className="mt-4 inline-flex items-center gap-1.5 text-[11px] text-[#6b7a99]">
-          <CalendarClock className="h-3.5 w-3.5" />
+        <p className="mt-4 text-[11px] text-[#6b7a99]">
           最終更新 {latestUpdated} / 全国の自治体・省庁ページから自動収集
         </p>
       </section>
@@ -364,7 +361,7 @@ export default function SubsidiesListClient({
       <section className="rounded-2xl border border-[#dbe3f0] bg-white p-4 shadow-sm md:p-5">
         <div className="grid gap-3 md:grid-cols-[1.6fr_1fr_1fr_auto] md:items-center">
           <div className="flex items-center rounded-xl border border-[#d6e1f4] bg-[#f9fbff] px-3 py-2.5 shadow-inner">
-            <Search className="mr-2 h-4 w-4 text-[#8193bc]" />
+            <Search className="mr-2 h-4 w-4 shrink-0 text-[#8193bc]" />
             <input
               value={query}
               onChange={(e) => setQuery(e.target.value)}
@@ -383,53 +380,44 @@ export default function SubsidiesListClient({
               </button>
             ) : null}
           </div>
-          <div className="relative">
-            <MapPin className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8193bc]" />
-            <select
-              value={prefectureFilter}
-              onChange={(e) => setPrefectureFilter(e.target.value)}
-              className="w-full appearance-none rounded-xl border border-[#d6e1f4] bg-white py-2.5 pl-9 pr-8 text-sm text-[#2a3f72] shadow-sm focus:outline-none focus:ring-2 focus:ring-[#1f4dab]/25"
-              aria-label="対象地域で絞り込み"
-            >
-              <option value="">対象地域：すべて</option>
-              {prefectureOptions.map((p) => (
-                <option key={p} value={p}>
-                  {p}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div className="relative">
-            <Factory className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8193bc]" />
-            <select
-              value={industryFilter}
-              onChange={(e) => setIndustryFilter(e.target.value)}
-              className="w-full appearance-none rounded-xl border border-[#d6e1f4] bg-white py-2.5 pl-9 pr-8 text-sm text-[#2a3f72] shadow-sm focus:outline-none focus:ring-2 focus:ring-[#1f4dab]/25"
-              aria-label="業種で絞り込み"
-            >
-              <option value="">業種：すべて</option>
-              {industryOptions.map((i) => (
-                <option key={i} value={i}>
-                  {i}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div className="relative">
-            <Filter className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8193bc]" />
-            <select
-              value={sortKey}
-              onChange={(e) => setSortKey(e.target.value as SortKey)}
-              className="w-full min-w-[180px] appearance-none rounded-xl border border-[#d6e1f4] bg-white py-2.5 pl-9 pr-8 text-sm text-[#2a3f72] shadow-sm focus:outline-none focus:ring-2 focus:ring-[#1f4dab]/25"
-              aria-label="並び替え"
-            >
-              {SORT_OPTIONS.map((o) => (
-                <option key={o.value} value={o.value}>
-                  並び替え：{o.label}
-                </option>
-              ))}
-            </select>
-          </div>
+          <select
+            value={prefectureFilter}
+            onChange={(e) => setPrefectureFilter(e.target.value)}
+            className="w-full appearance-none rounded-xl border border-[#d6e1f4] bg-white px-3 py-2.5 text-sm text-[#2a3f72] shadow-sm focus:outline-none focus:ring-2 focus:ring-[#1f4dab]/25"
+            aria-label="対象地域で絞り込み"
+          >
+            <option value="">対象地域：すべて</option>
+            {prefectureOptions.map((p) => (
+              <option key={p} value={p}>
+                {p}
+              </option>
+            ))}
+          </select>
+          <select
+            value={industryFilter}
+            onChange={(e) => setIndustryFilter(e.target.value)}
+            className="w-full appearance-none rounded-xl border border-[#d6e1f4] bg-white px-3 py-2.5 text-sm text-[#2a3f72] shadow-sm focus:outline-none focus:ring-2 focus:ring-[#1f4dab]/25"
+            aria-label="業種で絞り込み"
+          >
+            <option value="">業種：すべて</option>
+            {industryOptions.map((i) => (
+              <option key={i} value={i}>
+                {i}
+              </option>
+            ))}
+          </select>
+          <select
+            value={sortKey}
+            onChange={(e) => setSortKey(e.target.value as SortKey)}
+            className="w-full min-w-[180px] appearance-none rounded-xl border border-[#d6e1f4] bg-white px-3 py-2.5 text-sm text-[#2a3f72] shadow-sm focus:outline-none focus:ring-2 focus:ring-[#1f4dab]/25"
+            aria-label="並び替え"
+          >
+            {SORT_OPTIONS.map((o) => (
+              <option key={o.value} value={o.value}>
+                並び替え：{o.label}
+              </option>
+            ))}
+          </select>
         </div>
 
         {/* ステータスタブ */}
@@ -495,15 +483,21 @@ export default function SubsidiesListClient({
         ) : null}
       </section>
 
-      {/* 件数 + ピックアップ案内 */}
+      {/* 件数表示 */}
       <div className="flex flex-wrap items-center justify-between gap-2">
         <p className="text-sm text-[#4f5b73]">
           <span className="font-extrabold text-[#0d2640]">{filtered.length.toLocaleString("ja-JP")}</span>
-          <span className="ml-1">件の補助金が条件に一致しました</span>
+          <span className="ml-1">件中</span>
+          <span className="mx-1 font-bold text-[#0d2640]">{Math.min(visibleGrants.length, filtered.length).toLocaleString("ja-JP")}</span>
+          <span>件を表示</span>
+          {totalPages > 1 ? (
+            <span className="ml-2 text-[11px] text-[#6b7a99]">
+              （{page} / {totalPages} ページ）
+            </span>
+          ) : null}
         </p>
         {closingSoon.length > 0 ? (
-          <p className="inline-flex items-center gap-1.5 text-xs font-semibold text-amber-700">
-            <AlertCircle className="h-3.5 w-3.5" />
+          <p className="text-xs font-semibold text-amber-700">
             締切間近 {closingSoon.length}件あり
           </p>
         ) : null}
@@ -526,21 +520,38 @@ export default function SubsidiesListClient({
               </button>
             </div>
           ) : (
-            <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-              {filtered.map((grant) => (
-                <SubsidyResultCard key={grant.id} grant={grant} />
-              ))}
-            </div>
+            <>
+              <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+                {visibleGrants.map((grant) => (
+                  <SubsidyResultCard key={grant.id} grant={grant} />
+                ))}
+              </div>
+
+              {/* Load More */}
+              {hasMore ? (
+                <div className="mt-6 flex flex-col items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setPage((p) => p + 1)}
+                    className="rounded-xl border border-[#d6e1f4] bg-white px-8 py-3 text-sm font-bold text-[#1f4dab] shadow-sm transition hover:bg-[#f1f5fb]"
+                  >
+                    次の{Math.min(PAGE_SIZE, filtered.length - page * PAGE_SIZE)}件を表示する
+                  </button>
+                  <p className="text-[11px] text-[#6b7a99]">
+                    残り {filtered.length - page * PAGE_SIZE} 件
+                  </p>
+                </div>
+              ) : filtered.length > PAGE_SIZE ? (
+                <p className="mt-6 text-center text-xs text-[#6b7a99]">すべての件を表示しました</p>
+              ) : null}
+            </>
           )}
         </div>
 
         {/* 補助サイド */}
         <aside className="space-y-4 xl:sticky xl:top-24 xl:self-start">
           <div className="rounded-2xl border border-[#e2e8f4] bg-white p-4 shadow-sm">
-            <h4 className="flex items-center gap-2 text-sm font-bold text-[#1e3878]">
-              <CalendarClock className="h-4 w-4 text-amber-500" />
-              締切が近い補助金
-            </h4>
+            <h4 className="text-sm font-bold text-[#1e3878]">締切が近い補助金</h4>
             {closingSoon.length === 0 ? (
               <p className="mt-3 text-xs text-[#6b7a99]">締切間近の案件はありません。</p>
             ) : (
@@ -557,10 +568,10 @@ export default function SubsidiesListClient({
                         {item.name ?? "名称未設定"}
                       </p>
                       <p className="mt-1 text-[11px] text-[#6b7a99]">
-                        {formatPrefecture(item.prefecture)} ・ {formatInstitution(item)}
+                        {formatPrefecture(item.prefecture)} · {formatInstitution(item)}
                       </p>
                       <p className="mt-1 text-[11px] font-bold text-amber-700">
-                        {days !== null ? `残り${days}日` : "随時"} / 締切 {formatDeadlineLabel(item)}
+                        {days !== null ? `残り${days}日` : "随時"} / {formatDeadlineLabel(item)}
                       </p>
                     </Link>
                   );
@@ -570,10 +581,7 @@ export default function SubsidiesListClient({
           </div>
 
           <div className="rounded-2xl border border-[#d7e2f7] bg-[#f6f9ff] p-4 shadow-sm">
-            <h4 className="flex items-center gap-2 text-sm font-bold text-[#1f3f85]">
-              <Sparkles className="h-4 w-4 text-[#1f4dab]" />
-              自社に合う制度を診断
-            </h4>
+            <h4 className="text-sm font-bold text-[#1f3f85]">自社に合う制度を診断</h4>
             <p className="mt-2 text-xs leading-relaxed text-[#5e6f95]">
               業種・規模・目的を選ぶだけで、対象の補助金候補を絞り込めます（無料・1分）。
             </p>
@@ -585,7 +593,7 @@ export default function SubsidiesListClient({
               <ArrowRight className="h-4 w-4" />
             </Link>
             <Link
-              href="/contact"
+              href="/consult"
               className="mt-2 inline-flex w-full items-center justify-center rounded-xl border border-[#c7d8f0] bg-white px-4 py-2.5 text-xs font-semibold text-[#1f4dab] transition hover:bg-[#f7faff]"
             >
               専門家に無料で相談する
@@ -639,19 +647,19 @@ function SubsidyResultCard({ grant }: { grant: SubsidyCard }) {
         isExpired ? "opacity-75" : ""
       }`}
     >
+      {/* カードヘッダー */}
       <div className="flex flex-wrap items-center gap-1.5 border-b border-[#eef2f8] bg-[#fafcff] px-4 py-2.5">
         <span
           className={`inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-bold ring-1 ring-inset ${status.className}`}
         >
           {status.label}
         </span>
-        {isNewGrant(grant.updatedAt) ? (
+        {isNewGrant(grant.syncedAt) ? (
           <span className="inline-flex items-center rounded-full bg-rose-500 px-2 py-0.5 text-[10px] font-bold text-white">
             NEW
           </span>
         ) : null}
-        <span className="ml-auto inline-flex items-center gap-1 text-[11px] font-semibold text-[#6b7a99]">
-          <CalendarClock className="h-3 w-3" />
+        <span className="ml-auto text-[11px] font-semibold text-[#6b7a99]">
           更新 {formatUpdatedAt(grant.updatedAt)}
         </span>
       </div>
@@ -662,14 +670,9 @@ function SubsidyResultCard({ grant }: { grant: SubsidyCard }) {
         </h3>
 
         <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-[#5b6b8c]">
-          <span className="inline-flex items-center gap-1">
-            <Building2 className="h-3 w-3 text-[#8193bc]" />
-            {institution}
-          </span>
-          <span className="inline-flex items-center gap-1">
-            <MapPin className="h-3 w-3 text-[#8193bc]" />
-            {prefectureLabel}
-          </span>
+          <span>{institution}</span>
+          <span>·</span>
+          <span>{prefectureLabel}</span>
         </div>
 
         {description ? (
@@ -696,21 +699,16 @@ function SubsidyResultCard({ grant }: { grant: SubsidyCard }) {
           </div>
         ) : null}
 
+        {/* メトリクス */}
         <dl className="mt-4 grid grid-cols-3 gap-2 rounded-xl border border-[#eef2f8] bg-[#fafcff] p-3 text-center">
           <div>
-            <dt className="inline-flex items-center justify-center gap-1 text-[10px] font-medium text-[#6b7a99]">
-              <Coins className="h-3 w-3" />
-              補助上限
-            </dt>
+            <dt className="text-[10px] font-medium text-[#6b7a99]">補助上限</dt>
             <dd className="mt-1 text-sm font-extrabold leading-tight text-[#0d2640]">
               {amount}
             </dd>
           </div>
           <div className="border-x border-[#eef2f8]">
-            <dt className="inline-flex items-center justify-center gap-1 text-[10px] font-medium text-[#6b7a99]">
-              <Percent className="h-3 w-3" />
-              補助率
-            </dt>
+            <dt className="text-[10px] font-medium text-[#6b7a99]">補助率</dt>
             <dd
               className={`mt-1 text-sm font-extrabold leading-tight ${
                 rate === "要確認" ? "text-[#94a3b8]" : "text-[#0d2640]"
@@ -720,10 +718,7 @@ function SubsidyResultCard({ grant }: { grant: SubsidyCard }) {
             </dd>
           </div>
           <div>
-            <dt className="inline-flex items-center justify-center gap-1 text-[10px] font-medium text-[#6b7a99]">
-              <CalendarClock className="h-3 w-3" />
-              締切
-            </dt>
+            <dt className="text-[10px] font-medium text-[#6b7a99]">締切</dt>
             <dd
               className={`mt-1 text-sm font-extrabold leading-tight ${
                 daysInfo.tone === "soon"
@@ -737,10 +732,9 @@ function SubsidyResultCard({ grant }: { grant: SubsidyCard }) {
             </dd>
           </div>
         </dl>
-        <p className="mt-2 text-[11px] text-[#6b7a99]">
-          締切日：{deadlineLabel}
-        </p>
+        <p className="mt-2 text-[11px] text-[#6b7a99]">締切日：{deadlineLabel}</p>
 
+        {/* アクションボタン */}
         <div className="mt-4 flex flex-wrap items-center gap-2 border-t border-[#eef2f8] pt-3">
           <Link
             href={`/subsidies/list/${grant.id}`}
@@ -753,18 +747,18 @@ function SubsidyResultCard({ grant }: { grant: SubsidyCard }) {
             詳細を見る
             <ArrowRight className="h-4 w-4" />
           </Link>
+          {grant.articleSlug ? (
+            <Link
+              href={`/subsidies/articles/${grant.articleSlug}`}
+              className="inline-flex items-center justify-center rounded-xl border border-[#d6e1f4] bg-white px-3 py-2.5 text-xs font-semibold text-[#1f4dab] transition hover:bg-[#f7faff]"
+            >
+              解説記事
+            </Link>
+          ) : null}
           <Link
-            href={`/subsidies/articles?subsidyId=${grant.id}`}
-            className="inline-flex items-center justify-center gap-1 rounded-xl border border-[#d6e1f4] bg-white px-3 py-2.5 text-xs font-semibold text-[#1f4dab] transition hover:bg-[#f7faff]"
+            href={`/consult?subsidyId=${grant.id}`}
+            className="inline-flex items-center justify-center rounded-xl border border-[#d6e1f4] bg-white px-3 py-2.5 text-xs font-semibold text-[#1a7b6f] transition hover:bg-[#f3faf8]"
           >
-            <FileText className="h-3.5 w-3.5" />
-            解説記事
-          </Link>
-          <Link
-            href={`/contact?subsidyId=${grant.id}`}
-            className="inline-flex items-center justify-center gap-1 rounded-xl border border-[#d6e1f4] bg-white px-3 py-2.5 text-xs font-semibold text-[#1a7b6f] transition hover:bg-[#f3faf8]"
-          >
-            <MessageSquare className="h-3.5 w-3.5" />
             無料相談
           </Link>
         </div>
