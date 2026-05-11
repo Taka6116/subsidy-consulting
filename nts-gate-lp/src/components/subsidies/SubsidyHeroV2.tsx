@@ -1,19 +1,10 @@
 "use client";
 
-import dynamic from "next/dynamic";
+import Image from "next/image";
 import Link from "next/link";
 import { AnimatePresence, motion, type Easing } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import { ArrowRight, Search, MessageCircle, FileText } from "lucide-react";
-
-const JapanNetworkMap = dynamic(() => import("./JapanNetworkMap"), {
-  ssr: false,
-  loading: () => (
-    <div className="flex h-full w-full items-center justify-center">
-      <div className="h-12 w-12 animate-spin rounded-full border-2 border-blue-200 border-t-blue-500" />
-    </div>
-  ),
-});
 
 const EASE: Easing = [0.22, 1, 0.36, 1];
 
@@ -228,79 +219,52 @@ export default function SubsidyHeroV2({
             </div>
           </motion.div>
 
-          {/* ── 右：地図 ＋ 右端装飾カード ── */}
+          {/* ── 右：ヒーロー画像 ＋ 統計カードオーバーレイ ── */}
           <motion.div
             initial={{ opacity: 0, scale: 0.97 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.9, ease: EASE, delay: 0.1 }}
-            className="relative hidden md:flex md:items-stretch"
+            className="relative hidden md:block md:h-[380px] lg:h-[420px] xl:h-[460px] 2xl:h-[510px]"
           >
-            {/* 地図エリア（全幅の約70%） */}
-            <div className="relative flex-1 md:h-[380px] lg:h-[420px] xl:h-[460px] 2xl:h-[510px]">
-              {/* 補助金公募中都道府県バッジ */}
-              <div className="absolute left-4 top-6 z-10 rounded-2xl border border-[#dbe4f0] bg-white/90 px-3 py-2 text-xs shadow-sm backdrop-blur">
-                <p className="font-mono text-[#94a3b8]">補助金公募中都道府県</p>
-                <p className="mt-0.5 font-bold text-[#0f172a]">
-                  {activePrefectureCount}<span className="ml-1 font-normal text-[#94a3b8]">/47</span>
-                </p>
-              </div>
-              <div
-                className="absolute inset-0 origin-center map-scale-wrapper-v2"
-                style={{ transform: "scale(1.0) translateX(-2%) translateY(-3%)" }}
-              >
-                <JapanNetworkMap />
-              </div>
-            </div>
+            {/* ヒーロー画像 */}
+            <Image
+              src="/images/hero-digital-platform.png"
+              alt="デジタルプラットフォームイメージ"
+              fill
+              priority
+              className="object-contain object-center"
+            />
 
-            {/* 右端装飾：縦並び統計カード群 */}
-            <div className="flex w-[140px] shrink-0 flex-col justify-center gap-3 pr-4 lg:w-[160px] 2xl:w-[180px] 2xl:pr-8">
-              <div className="rounded-2xl border border-[#dbe4f0] bg-white/90 p-3.5 shadow-sm backdrop-blur">
+            {/* 右端：縦並び統計カード群（画像右上に重ねる） */}
+            <div className="absolute right-2 top-1/2 z-10 flex -translate-y-1/2 flex-col gap-2.5 2xl:right-4">
+              <div className="rounded-2xl border border-[#dbe4f0] bg-white/90 px-3.5 py-3 shadow-sm backdrop-blur">
                 <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">掲載補助金</p>
-                <p className="mt-1 text-2xl font-black text-[#0f172a]">
+                <p className="mt-0.5 text-2xl font-black text-[#0f172a]">
                   {displayCounts.grants.toLocaleString()}
                   <span className="ml-0.5 text-sm font-normal text-slate-400">件</span>
                 </p>
               </div>
-              <div className="rounded-2xl border border-[#dbe4f0] bg-white/90 p-3.5 shadow-sm backdrop-blur">
+              <div className="rounded-2xl border border-[#dbe4f0] bg-white/90 px-3.5 py-3 shadow-sm backdrop-blur">
                 <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">解説記事</p>
-                <p className="mt-1 text-2xl font-black text-[#0f172a]">
+                <p className="mt-0.5 text-2xl font-black text-[#0f172a]">
                   {displayCounts.articles.toLocaleString()}
                   <span className="ml-0.5 text-sm font-normal text-slate-400">本</span>
                 </p>
               </div>
-              <div className="rounded-2xl border border-[#dbe4f0] bg-white/90 p-3.5 shadow-sm backdrop-blur">
+              <div className="rounded-2xl border border-[#dbe4f0] bg-white/90 px-3.5 py-3 shadow-sm backdrop-blur">
                 <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">対応都道府県</p>
-                <p className="mt-1 text-2xl font-black text-[#0f172a]">
+                <p className="mt-0.5 text-2xl font-black text-[#0f172a]">
                   {activePrefectureCount}
                   <span className="ml-0.5 text-sm font-normal text-slate-400">/ 47</span>
                 </p>
               </div>
               <Link
                 href="/subsidies/list?sort=newest"
-                className="mt-1 inline-flex items-center justify-center gap-1 rounded-xl border border-blue-200 bg-blue-50 px-3 py-2 text-xs font-bold text-blue-600 transition hover:bg-blue-100"
+                className="inline-flex items-center justify-center gap-1 rounded-xl border border-blue-200 bg-blue-50 px-3 py-2 text-xs font-bold text-blue-600 transition hover:bg-blue-100"
               >
                 最新を見る <ArrowRight className="h-3 w-3" />
               </Link>
             </div>
-
-            {/* CSS: map transform レスポンシブ */}
-            <style>{`
-              @media (min-width: 1280px) {
-                .map-scale-wrapper-v2 {
-                  transform: scale(0.95) translateX(-2%) translateY(-3%) !important;
-                }
-              }
-              @media (min-width: 1536px) {
-                .map-scale-wrapper-v2 {
-                  transform: scale(0.88) translateX(-1%) translateY(-2%) !important;
-                }
-              }
-              @media (min-width: 1920px) {
-                .map-scale-wrapper-v2 {
-                  transform: scale(0.82) translateX(0%) translateY(-1%) !important;
-                }
-              }
-            `}</style>
           </motion.div>
         </div>
 
