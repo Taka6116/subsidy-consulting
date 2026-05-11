@@ -5,7 +5,6 @@ import Link from "next/link";
 import { getPartnerUrl } from "@/lib/partnerUrl";
 import IntroOverlay from "@/components/subsidies/IntroOverlay";
 import SubsidyHeroV2 from "@/components/subsidies/SubsidyHeroV2";
-import SubsidyLegalDisclaimer from "@/components/shared/SubsidyLegalDisclaimer";
 import { Search, BookOpen, LayoutList, PlaySquare, ArrowRight } from "lucide-react";
 
 type Counts = { grants: number; articles: number; videos: number; lps: number };
@@ -130,19 +129,15 @@ export default function SubsidiesGalaxyClientV2({ counts, activePrefectureCount 
         </section>
 
         {/* ── 下部CTA ── */}
-        <div className="w-full border-t border-slate-200 bg-[#0f172a]">
-          <div className="mx-auto flex max-w-[1400px] flex-col gap-6 px-6 py-12 sm:px-8 lg:flex-row lg:items-start lg:justify-between lg:gap-10">
+        <div className="w-full border-t border-slate-200 bg-[#f0f4fb]">
+          <div className="mx-auto flex max-w-[1400px] flex-col gap-6 px-6 py-12 sm:px-8 lg:flex-row lg:items-center lg:justify-between lg:gap-10">
             <div className="max-w-xl">
-              <p className="text-lg font-bold leading-snug text-white sm:text-xl">
+              <p className="text-lg font-bold leading-snug text-[#0f172a] sm:text-xl">
                 事業内容に合う補助金を、申請前の整理から相談できます。
               </p>
-              <p className="mt-3 text-sm leading-relaxed text-white/70">
+              <p className="mt-3 text-sm leading-relaxed text-[#475569]">
                 業種・投資内容・地域をもとに、活用できる可能性のある補助金や申請前に整理すべきポイントを専門家が無料で確認します。
               </p>
-              <SubsidyLegalDisclaimer
-                variant="short"
-                className="mt-4 border-white/15 bg-white/8 [&_p]:text-white/60 [&_svg]:text-white/40"
-              />
             </div>
             <div className="flex shrink-0 flex-col gap-3 sm:flex-row">
               <Link
@@ -154,7 +149,7 @@ export default function SubsidiesGalaxyClientV2({ counts, activePrefectureCount 
               </Link>
               <Link
                 href="/subsidies/list"
-                className="inline-flex items-center justify-center gap-2 rounded-2xl border border-white/25 px-7 py-3.5 text-sm font-bold text-white/90 transition hover:border-white/50 hover:text-white"
+                className="inline-flex items-center justify-center gap-2 rounded-2xl border border-slate-300 bg-white px-7 py-3.5 text-sm font-bold text-[#0f172a] shadow-sm transition hover:border-blue-300 hover:shadow-md"
               >
                 <SearchIcon />
                 対象補助金を確認する
