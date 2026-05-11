@@ -118,48 +118,45 @@ export default function SubsidyHeroV2({
   const marqueeSpeed = Math.max(20, Math.round(trackWidth / 200));
 
   return (
-    <div className="relative overflow-hidden">
-      {/* ── 全体背景画像 ── */}
-      <div className="absolute inset-0 z-0">
-        <Image
-          src="/images/hero-digital-platform.png"
-          alt=""
-          fill
-          priority
-          aria-hidden
-          className="object-cover object-right"
-        />
-        {/* 左側を明るく・右はそのまま見せるグラデーションオーバーレイ */}
-        <div
-          className="absolute inset-0"
-          style={{
-            background:
-              "linear-gradient(to right, #f7f9fc 0%, #f7f9fc 30%, rgba(247,249,252,0.85) 50%, rgba(247,249,252,0.3) 70%, transparent 100%)",
-          }}
-        />
-        {/* ドットグリッドも薄く残す */}
-        <div
-          className="absolute inset-0"
-          style={{
-            backgroundImage:
-              "radial-gradient(circle, rgba(59,130,246,0.05) 1px, transparent 1px)",
-            backgroundSize: "28px 28px",
-          }}
-        />
-      </div>
-
+    <div
+      className="relative overflow-hidden"
+      style={{
+        background: "#f7f9fc",
+        backgroundImage: "radial-gradient(circle, rgba(59,130,246,0.06) 1px, transparent 1px)",
+        backgroundSize: "28px 28px",
+      }}
+    >
       {/* ══ HERO SECTION ══ */}
       <section className="relative z-10 flex w-full flex-col pt-10 pb-4 lg:min-h-[calc(100vh-72px)] lg:pt-10 lg:pb-4">
 
-        {/* ── 左コピー + 右統計カード ── */}
-        <div className="grid flex-1 items-center gap-0 px-4 lg:grid-cols-[1fr_auto] lg:px-0">
+        {/* ── 左コピー + 右統計カード（このブロックだけ背景画像） ── */}
+        <div className="relative grid flex-1 items-center gap-0 overflow-hidden px-4 pb-6 lg:grid-cols-[1fr_auto] lg:px-0 lg:pb-8">
+          {/* 背景画像（このグリッドの範囲内のみ） */}
+          <div className="pointer-events-none absolute inset-0 z-0">
+            <Image
+              src="/images/hero-digital-platform.png"
+              alt=""
+              fill
+              priority
+              aria-hidden
+              className="object-cover object-right"
+            />
+            {/* 左→右グラデーションオーバーレイ */}
+            <div
+              className="absolute inset-0"
+              style={{
+                background:
+                  "linear-gradient(to right, #f7f9fc 0%, #f7f9fc 28%, rgba(247,249,252,0.82) 48%, rgba(247,249,252,0.25) 68%, transparent 100%)",
+              }}
+            />
+          </div>
 
           {/* ── 左：コピー ── */}
           <motion.div
             initial={{ opacity: 0, y: 28 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.75, ease: EASE }}
-            className="flex flex-col lg:pl-8 2xl:pl-16"
+            className="relative z-10 flex flex-col lg:pl-8 2xl:pl-16"
           >
             <div className="mb-4 inline-flex w-fit items-center gap-2 rounded-full border border-blue-200/80 bg-blue-50 px-4 py-1.5 text-xs font-semibold text-blue-700">
               <span className="relative flex h-2 w-2">
@@ -242,7 +239,7 @@ export default function SubsidyHeroV2({
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.9, ease: EASE, delay: 0.2 }}
-            className="hidden flex-col justify-center gap-2.5 pr-6 md:flex lg:pr-10 2xl:pr-16"
+            className="relative z-10 hidden flex-col justify-center gap-2.5 pr-6 md:flex lg:pr-10 2xl:pr-16"
           >
             <div className="rounded-2xl border border-[#dbe4f0] bg-white/90 px-3.5 py-3 shadow-sm backdrop-blur-md">
               <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">掲載補助金</p>
