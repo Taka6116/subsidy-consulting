@@ -1,17 +1,24 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Header from "@/components/shared/Header";
 import LpFooter from "@/components/gate-lp/LpFooter";
 import { prisma } from "@/lib/db/prisma";
 import SubsidiesLpClient from "./SubsidiesLpClient";
+import {
+  detectLpCategory,
+  pickLpImage,
+  getHeroMosaicImages,
+} from "@/lib/lp-pictures/pickLpCategoryImage";
 
 const FEATURED_LPS = [
   {
     href: "/subsidies/construction-electrification",
-    name: "高用車等の電動化促進事業（建設機械）",
+    name: "商用車等の電動化促進事業（建設機械）",
     copy: "建設機械の電動化で燃料費削減・脱炭素・生産性向上を一気に実現。最大14.3億円の補助が利用できます。",
     amount: "最大14.3億円",
     deadline: "2027年1月29日",
     badge: "令和7年度（補正）",
+    category: "建設" as const,
   },
   {
     href: "/subsidies/dx-support",
@@ -20,6 +27,7 @@ const FEATURED_LPS = [
     amount: "最大300万円",
     deadline: "2026年6月30日",
     badge: "令和8年度",
+    category: "DX" as const,
   },
   {
     href: "/subsidies/equipment-productivity",
@@ -28,6 +36,7 @@ const FEATURED_LPS = [
     amount: "最大4,000万円",
     deadline: "2026年8月31日",
     badge: "令和8年度",
+    category: "設備" as const,
   },
   {
     href: "/subsidies/wage-support",
@@ -36,6 +45,7 @@ const FEATURED_LPS = [
     amount: "最大300万円",
     deadline: "2026年12月31日",
     badge: "令和8年度",
+    category: "人材" as const,
   },
   {
     href: "/subsidies/equipment-investment",
@@ -44,6 +54,7 @@ const FEATURED_LPS = [
     amount: "最大2億円",
     deadline: "2027年3月31日",
     badge: "令和8年度",
+    category: "設備" as const,
   },
   {
     href: "/subsidies/monodukuri-business",
@@ -52,6 +63,7 @@ const FEATURED_LPS = [
     amount: "最大4,000万円",
     deadline: "2027年3月23日",
     badge: "令和8年度（21次）",
+    category: "事業計画" as const,
   },
   {
     href: "/subsidies/logistics-support",
@@ -60,6 +72,7 @@ const FEATURED_LPS = [
     amount: "最大500万円",
     deadline: "2026年5月25日",
     badge: "令和7年度補正",
+    category: "運送" as const,
   },
   {
     href: "/subsidies/human-resources",
@@ -68,11 +81,12 @@ const FEATURED_LPS = [
     amount: "最大300万円",
     deadline: "要確認",
     badge: "令和8年度",
+    category: "人材" as const,
   },
 ] as const;
 
 export const metadata: Metadata = {
-  title: "補助金ページ一覧 | 日本提携支援",
+  title: "補助金LP一覧 | 日本提携支援",
   description:
     "制度ごとに、対象企業のイメージ・申請の流れ・相談前に確認すべきポイントを1ページで整理。あなたの会社が使える補助金を最短で見つけられます。",
 };
@@ -81,22 +95,22 @@ export const revalidate = 300;
 
 // 専用LP が存在する補助金の grant.id（動的カードから除外するため）
 const DEDICATED_LP_GRANT_IDS = new Set([
-  "6a3d0ab9-a809-4175-aa5e-90de437b8931", // 令和7年度（補正）商用車等の電動化促進事業（建設機械）
-  "b4069491-2fca-4be7-9b2f-d78fc2be1650", // 令和6年度補正予算 商用車等の電動化促進事業
-  "88dd0856-9201-45df-ad8b-c8c83472f00c", // 令和7年度補正予算 商用車等の電動化促進事業
-  "7152db8b-561f-4863-a1cf-c9585dbdb5fa", // 中小・小規模企業デジタル技術導入等緊急支援事業費補助金
-  "0be58438-f9b7-4f2c-b268-bdac62206ea3", // 中小・小規模事業者賃上げ環境整備支援補助金
-  "3dc697a6-1100-4832-84d1-81c23b04153d", // 中小・小規模事業者賃上げ環境整備支援補助金（別レコード）
-  "7568bddb-d453-47d9-9dd3-a7f17644a908", // 令和8年_設備投資
-  "78c0b3e8-0e32-455e-aaa2-6742c75deb23", // ものづくり補助金21次
-  "7e0a85e7-a3c5-4ff1-9ee2-4e991cca300f", // ものづくり補助金19次
-  "878c848d-9d00-48ea-8fbd-6a1b55fad214", // ものづくり補助金20次
-  "13a8828e-3646-4bdc-a854-b5f5767fb53b", // ものづくり補助金22次
-  "c79da422-866e-42e1-a37b-c7196db632bc", // 食品等物流合理化緊急対策事業（物流）
-  "280f0902-6d50-45d7-a1fb-b265bb7af971", // 食品等物流合理化緊急対策事業（輸出物流）
-  "4d6cd8a1-c047-4a9c-8d30-1e8dea559681", // 島根県地域物流効率化
-  "99e1d191-fe5e-4cb8-9f66-3a28749fa8d3", // 副業・兼業人材活用促進補助金
-  "34fbaf27-54a0-4396-b386-ec33d054d0e2", // 県外専門人材確保支援補助金
+  "6a3d0ab9-a809-4175-aa5e-90de437b8931",
+  "b4069491-2fca-4be7-9b2f-d78fc2be1650",
+  "88dd0856-9201-45df-ad8b-c8c83472f00c",
+  "7152db8b-561f-4863-a1cf-c9585dbdb5fa",
+  "0be58438-f9b7-4f2c-b268-bdac62206ea3",
+  "3dc697a6-1100-4832-84d1-81c23b04153d",
+  "7568bddb-d453-47d9-9dd3-a7f17644a908",
+  "78c0b3e8-0e32-455e-aaa2-6742c75deb23",
+  "7e0a85e7-a3c5-4ff1-9ee2-4e991cca300f",
+  "878c848d-9d00-48ea-8fbd-6a1b55fad214",
+  "13a8828e-3646-4bdc-a854-b5f5767fb53b",
+  "c79da422-866e-42e1-a37b-c7196db632bc",
+  "280f0902-6d50-45d7-a1fb-b265bb7af971",
+  "4d6cd8a1-c047-4a9c-8d30-1e8dea559681",
+  "99e1d191-fe5e-4cb8-9f66-3a28749fa8d3",
+  "34fbaf27-54a0-4396-b386-ec33d054d0e2",
 ]);
 
 export default async function SubsidiesLpIndexPage() {
@@ -124,67 +138,130 @@ export default async function SubsidiesLpIndexPage() {
     },
   });
 
-  // 専用LPが存在するものは動的カードから除外（重複防止）
   const filtered = raw.filter((r) => !DEDICATED_LP_GRANT_IDS.has(r.grant.id));
 
-  const rows = filtered.map((r) => ({
-    id: r.id,
-    title: r.title,
-    body: r.body,
-    publishedAt: r.publishedAt ? r.publishedAt.toISOString() : null,
-    grant: {
-      id: r.grant.id,
+  const rows = filtered.map((r) => {
+    const category = detectLpCategory({
       name: r.grant.name,
-      maxAmountLabel: r.grant.maxAmountLabel,
-      subsidyAmount: r.grant.subsidyAmount != null ? String(r.grant.subsidyAmount) : null,
-      deadlineLabel: r.grant.deadlineLabel,
-      deadline: r.grant.deadline ? r.grant.deadline.toISOString() : null,
-      prefecture: r.grant.prefecture,
       targetIndustries: r.grant.targetIndustries ?? [],
-      status: r.grant.status,
-    },
+    });
+    const image = pickLpImage(category, r.grant.id);
+    return {
+      id: r.id,
+      title: r.title,
+      body: r.body,
+      publishedAt: r.publishedAt ? r.publishedAt.toISOString() : null,
+      category,
+      imageUrl: image.url,
+      imageAlt: image.alt,
+      grant: {
+        id: r.grant.id,
+        name: r.grant.name,
+        maxAmountLabel: r.grant.maxAmountLabel,
+        subsidyAmount: r.grant.subsidyAmount != null ? String(r.grant.subsidyAmount) : null,
+        deadlineLabel: r.grant.deadlineLabel,
+        deadline: r.grant.deadline ? r.grant.deadline.toISOString() : null,
+        prefecture: r.grant.prefecture,
+        targetIndustries: r.grant.targetIndustries ?? [],
+        status: r.grant.status,
+      },
+    };
+  });
+
+  // 特集LPに画像を付与
+  const featuredWithImages = FEATURED_LPS.map((lp) => ({
+    ...lp,
+    imageUrl: pickLpImage(lp.category, lp.href).url,
+    imageAlt: lp.name,
   }));
+
+  const heroImages = getHeroMosaicImages();
 
   return (
     <>
       <Header />
-      <main className="min-h-[100svh] bg-[#eef4f9] pt-16 font-body sm:pt-20">
-        <section className="relative isolate overflow-hidden bg-[#071525] text-white">
+      <main className="min-h-[100svh] bg-[#f2f5fb] pt-16 font-body sm:pt-20">
+        {/* コンパクトヒーロー：左コピー＋右モザイク */}
+        <section className="relative overflow-hidden bg-[#071525]">
+          {/* グラデーション背景 */}
           <div
             aria-hidden
-            className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_80%_20%,rgba(30,155,219,0.32),transparent_34%),linear-gradient(135deg,#071525_0%,#0e2c47_55%,#133d59_100%)]"
+            className="pointer-events-none absolute inset-0 bg-[linear-gradient(120deg,#071525_0%,#0e2a45_55%,#0d3557_100%)]"
           />
-          <div
-            aria-hidden
-            className="pointer-events-none absolute -left-24 top-0 -z-10 h-full w-[36%] skew-x-[-13deg] bg-[#1e9bdb]/20"
-          />
-          <div className="mx-auto max-w-7xl px-6 py-16 lg:py-20">
-            <div className="max-w-3xl">
-              <h1 className="font-heading text-[clamp(34px,5vw,58px)] font-black leading-tight tracking-[-0.03em] text-white">
-                補助金ページ一覧
+
+          <div className="relative mx-auto grid max-w-7xl grid-cols-1 gap-0 px-6 py-10 md:grid-cols-[1fr_340px] md:gap-8 md:py-12 lg:grid-cols-[1fr_480px]">
+            {/* 左：コピー */}
+            <div className="flex flex-col justify-center">
+              <span className="inline-flex w-fit items-center rounded-full bg-[#1e9bdb]/20 px-3 py-1 text-xs font-bold text-[#7DD3FC] ring-1 ring-[#7DD3FC]/30">
+                専門LPカタログ
+              </span>
+              <h1 className="mt-3 font-heading text-[clamp(26px,4.5vw,48px)] font-black leading-tight tracking-tight text-white">
+                補助金活用ガイド
+                <br className="hidden sm:block" />
+                一覧
               </h1>
-              <p className="mt-5 text-base font-medium leading-8 text-white/80 sm:text-lg">
+              <p className="mt-4 max-w-[520px] text-sm leading-relaxed text-white/75 md:text-[15px]">
                 制度ごとに、対象企業のイメージ・申請の流れ・相談前に確認すべきポイントを1ページで整理。
-                <br className="hidden sm:inline" />
-                あなたの会社が使える補助金を最短で見つけられます。
+                自社に使える補助金を最短で見つけられます。
               </p>
+              <div className="mt-6 flex flex-wrap gap-2">
+                <span className="rounded-full bg-white/10 px-3 py-1.5 text-xs font-bold text-white ring-1 ring-white/15">
+                  公開中 {rows.length + FEATURED_LPS.length}件
+                </span>
+                <span className="rounded-full bg-white/8 px-3 py-1.5 text-xs font-bold text-white/80 ring-1 ring-white/10">
+                  専門LP付き
+                </span>
+                <span className="rounded-full bg-white/8 px-3 py-1.5 text-xs font-bold text-white/80 ring-1 ring-white/10">
+                  随時更新
+                </span>
+              </div>
             </div>
-            <div className="mt-8 flex flex-wrap gap-3">
-              <span className="rounded-full bg-white/10 px-3 py-1 text-xs font-bold text-white ring-1 ring-white/20">
-                公開中 {rows.length}件
-              </span>
-              <span className="rounded-full bg-white/8 px-3 py-1 text-xs font-bold text-white ring-1 ring-white/15">
-                相談導線つき
-              </span>
-              <span className="rounded-full bg-white/8 px-3 py-1 text-xs font-bold text-white ring-1 ring-white/15">
-                自動生成・随時追加
-              </span>
+
+            {/* 右：カテゴリ画像モザイク */}
+            <div className="mt-6 md:mt-0" aria-hidden>
+              <div className="grid grid-cols-3 gap-2">
+                {heroImages.slice(0, 3).map((img, i) => (
+                  <div key={i} className="relative aspect-[4/3] overflow-hidden rounded-xl">
+                    <Image
+                      src={img.url}
+                      alt={img.alt}
+                      fill
+                      className="object-cover opacity-85"
+                      sizes="160px"
+                    />
+                  </div>
+                ))}
+                {heroImages.slice(3).map((img, i) => (
+                  <div
+                    key={i + 3}
+                    className="relative col-span-1 aspect-[4/3] overflow-hidden rounded-xl"
+                  >
+                    <Image
+                      src={img.url}
+                      alt={img.alt}
+                      fill
+                      className="object-cover opacity-85"
+                      sizes="160px"
+                    />
+                  </div>
+                ))}
+                {/* 最後のセルに件数バッジ */}
+                <div className="relative col-span-1 flex aspect-[4/3] items-center justify-center overflow-hidden rounded-xl bg-[#1e9bdb]/25 ring-1 ring-[#7DD3FC]/25">
+                  <div className="text-center">
+                    <p className="text-xl font-black text-white">
+                      {rows.length + FEATURED_LPS.length}
+                    </p>
+                    <p className="text-[10px] font-semibold text-white/70">専門LP</p>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </section>
 
-        <section className="mx-auto max-w-7xl px-6 py-12 lg:py-16">
-          <SubsidiesLpClient rows={rows} featuredLps={FEATURED_LPS} />
+        {/* カード一覧 */}
+        <section className="mx-auto max-w-7xl px-4 py-8 md:px-6 lg:py-10">
+          <SubsidiesLpClient rows={rows} featuredLps={featuredWithImages} />
         </section>
       </main>
       <LpFooter />
