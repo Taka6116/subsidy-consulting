@@ -118,23 +118,41 @@ export default function SubsidyHeroV2({
   const marqueeSpeed = Math.max(20, Math.round(trackWidth / 200));
 
   return (
-    <div
-      className="relative overflow-hidden"
-      style={{
-        background: "#f7f9fc",
-        backgroundImage: "radial-gradient(circle, rgba(59,130,246,0.07) 1px, transparent 1px)",
-        backgroundSize: "28px 28px",
-      }}
-    >
-      {/* Floating blur orbs */}
-      <div className="pointer-events-none absolute -top-28 left-[14%] h-[480px] w-[480px] rounded-full bg-blue-200/25 blur-[120px]" />
-      <div className="pointer-events-none absolute bottom-0 right-[4%] h-[400px] w-[400px] rounded-full bg-cyan-200/20 blur-[120px]" />
+    <div className="relative overflow-hidden">
+      {/* ── 全体背景画像 ── */}
+      <div className="absolute inset-0 z-0">
+        <Image
+          src="/images/hero-digital-platform.png"
+          alt=""
+          fill
+          priority
+          aria-hidden
+          className="object-cover object-right"
+        />
+        {/* 左側を明るく・右はそのまま見せるグラデーションオーバーレイ */}
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              "linear-gradient(to right, #f7f9fc 0%, #f7f9fc 30%, rgba(247,249,252,0.85) 50%, rgba(247,249,252,0.3) 70%, transparent 100%)",
+          }}
+        />
+        {/* ドットグリッドも薄く残す */}
+        <div
+          className="absolute inset-0"
+          style={{
+            backgroundImage:
+              "radial-gradient(circle, rgba(59,130,246,0.05) 1px, transparent 1px)",
+            backgroundSize: "28px 28px",
+          }}
+        />
+      </div>
 
       {/* ══ HERO SECTION ══ */}
       <section className="relative z-10 flex w-full flex-col pt-10 pb-4 lg:min-h-[calc(100vh-72px)] lg:pt-10 lg:pb-4">
 
-        {/* ── 2カラム: 左コピー + 右（地図 + 右端装飾） ── */}
-        <div className="grid flex-1 items-center gap-0 px-4 lg:grid-cols-[1fr_1.2fr] lg:px-0">
+        {/* ── 左コピー + 右統計カード ── */}
+        <div className="grid flex-1 items-center gap-0 px-4 lg:grid-cols-[1fr_auto] lg:px-0">
 
           {/* ── 左：コピー ── */}
           <motion.div
@@ -219,52 +237,40 @@ export default function SubsidyHeroV2({
             </div>
           </motion.div>
 
-          {/* ── 右：ヒーロー画像 ＋ 統計カードオーバーレイ ── */}
+          {/* ── 右：統計カード（背景画像の上に自然配置） ── */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.97 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.9, ease: EASE, delay: 0.1 }}
-            className="relative hidden md:block md:h-[380px] lg:h-[420px] xl:h-[460px] 2xl:h-[510px]"
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.9, ease: EASE, delay: 0.2 }}
+            className="hidden flex-col justify-center gap-2.5 pr-6 md:flex lg:pr-10 2xl:pr-16"
           >
-            {/* ヒーロー画像 */}
-            <Image
-              src="/images/hero-digital-platform.png"
-              alt="デジタルプラットフォームイメージ"
-              fill
-              priority
-              className="object-contain object-center"
-            />
-
-            {/* 右端：縦並び統計カード群（画像右上に重ねる） */}
-            <div className="absolute right-2 top-1/2 z-10 flex -translate-y-1/2 flex-col gap-2.5 2xl:right-4">
-              <div className="rounded-2xl border border-[#dbe4f0] bg-white/90 px-3.5 py-3 shadow-sm backdrop-blur">
-                <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">掲載補助金</p>
-                <p className="mt-0.5 text-2xl font-black text-[#0f172a]">
-                  {displayCounts.grants.toLocaleString()}
-                  <span className="ml-0.5 text-sm font-normal text-slate-400">件</span>
-                </p>
-              </div>
-              <div className="rounded-2xl border border-[#dbe4f0] bg-white/90 px-3.5 py-3 shadow-sm backdrop-blur">
-                <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">解説記事</p>
-                <p className="mt-0.5 text-2xl font-black text-[#0f172a]">
-                  {displayCounts.articles.toLocaleString()}
-                  <span className="ml-0.5 text-sm font-normal text-slate-400">本</span>
-                </p>
-              </div>
-              <div className="rounded-2xl border border-[#dbe4f0] bg-white/90 px-3.5 py-3 shadow-sm backdrop-blur">
-                <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">対応都道府県</p>
-                <p className="mt-0.5 text-2xl font-black text-[#0f172a]">
-                  {activePrefectureCount}
-                  <span className="ml-0.5 text-sm font-normal text-slate-400">/ 47</span>
-                </p>
-              </div>
-              <Link
-                href="/subsidies/list?sort=newest"
-                className="inline-flex items-center justify-center gap-1 rounded-xl border border-blue-200 bg-blue-50 px-3 py-2 text-xs font-bold text-blue-600 transition hover:bg-blue-100"
-              >
-                最新を見る <ArrowRight className="h-3 w-3" />
-              </Link>
+            <div className="rounded-2xl border border-[#dbe4f0] bg-white/90 px-3.5 py-3 shadow-sm backdrop-blur-md">
+              <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">掲載補助金</p>
+              <p className="mt-0.5 text-2xl font-black text-[#0f172a]">
+                {displayCounts.grants.toLocaleString()}
+                <span className="ml-0.5 text-sm font-normal text-slate-400">件</span>
+              </p>
             </div>
+            <div className="rounded-2xl border border-[#dbe4f0] bg-white/90 px-3.5 py-3 shadow-sm backdrop-blur-md">
+              <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">解説記事</p>
+              <p className="mt-0.5 text-2xl font-black text-[#0f172a]">
+                {displayCounts.articles.toLocaleString()}
+                <span className="ml-0.5 text-sm font-normal text-slate-400">本</span>
+              </p>
+            </div>
+            <div className="rounded-2xl border border-[#dbe4f0] bg-white/90 px-3.5 py-3 shadow-sm backdrop-blur-md">
+              <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">対応都道府県</p>
+              <p className="mt-0.5 text-2xl font-black text-[#0f172a]">
+                {activePrefectureCount}
+                <span className="ml-0.5 text-sm font-normal text-slate-400">/ 47</span>
+              </p>
+            </div>
+            <Link
+              href="/subsidies/list?sort=newest"
+              className="inline-flex items-center justify-center gap-1 rounded-xl border border-blue-200 bg-blue-50/90 px-3 py-2 text-xs font-bold text-blue-600 backdrop-blur-md transition hover:bg-blue-100"
+            >
+              最新を見る <ArrowRight className="h-3 w-3" />
+            </Link>
           </motion.div>
         </div>
 
