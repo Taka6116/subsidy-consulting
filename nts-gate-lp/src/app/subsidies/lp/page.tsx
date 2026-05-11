@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 import Header from "@/components/shared/Header";
 import LpFooter from "@/components/gate-lp/LpFooter";
 import { prisma } from "@/lib/db/prisma";
@@ -8,7 +9,6 @@ import SubsidiesLpClient from "./SubsidiesLpClient";
 import {
   detectLpCategory,
   pickLpImage,
-  getHeroMosaicImages,
   detectPurposes,
   detectIndustries,
   parseAmountYen,
@@ -223,84 +223,79 @@ export default async function SubsidiesLpIndexPage() {
   });
 
   const totalLpCount = rows.length + featuredWithImages.length;
-  const heroImages = getHeroMosaicImages();
 
   return (
     <>
       <Header />
       <main className="min-h-[100svh] bg-[#F4F7FB] pt-16 font-body sm:pt-20">
-        {/* ============ ヒーロー ============ */}
-        <section className="relative overflow-hidden bg-[#0B2F4A]">
+        {/* ============ ヒーロー：背景画像 + ネイビーオーバーレイ + 右カテゴリカード ============ */}
+        <section className="relative min-h-[520px] overflow-hidden bg-[#0B2F4A] pb-12 pt-14 lg:min-h-[620px] lg:pb-16 lg:pt-20">
+          {/* 背景画像 */}
+          <Image
+            src="/images/nts_hero_bg.png"
+            alt="補助金活用ガイド一覧 - NTS日本提携支援"
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover object-center"
+          />
+          {/* オーバーレイ（左側を濃く、右側を明るく残す） */}
           <div
             aria-hidden
-            className="pointer-events-none absolute inset-0 bg-[linear-gradient(120deg,#082338_0%,#0B2F4A_55%,#0F4870_100%)]"
+            className="pointer-events-none absolute inset-0 bg-gradient-to-r from-[#082A45] via-[#082A45]/85 to-[#082A45]/20"
           />
-          <div className="relative mx-auto grid max-w-6xl grid-cols-1 items-center gap-8 px-4 py-10 sm:px-6 lg:grid-cols-2 lg:px-8 lg:py-14">
-            {/* 左：コピー */}
-            <div>
-              <span className="inline-flex items-center rounded-full border border-white/15 bg-white/10 px-3 py-1 text-xs font-bold text-cyan-100">
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-[#F4F7FB]/10"
+          />
+
+          <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <div className="max-w-2xl space-y-6 text-white">
+              <span className="inline-flex items-center rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs font-bold text-cyan-100 backdrop-blur-sm">
                 専門LPカタログ
               </span>
-              <h1 className="mt-4 text-3xl font-bold leading-tight text-white sm:text-4xl lg:text-5xl">
+
+              <h1 className="text-4xl font-bold leading-tight tracking-normal text-white sm:text-5xl xl:text-6xl">
                 目的から選べる
                 <br />
                 補助金活用ガイド
               </h1>
-              <p className="mt-4 max-w-[560px] text-sm leading-7 text-blue-50/90 sm:text-base">
+
+              <p className="max-w-xl text-base leading-8 text-blue-50/90 lg:text-lg">
                 設備投資・IT導入・人材確保など、用途別に専門LPを整理。
                 <br className="hidden sm:block" />
                 自社に使える補助金を確認し、申請前のポイントまで把握できます。
               </p>
 
-              {/* 実績チップ */}
-              <div className="mt-5 flex flex-wrap gap-2">
-                <span className="rounded-full bg-white/10 px-3 py-1.5 text-xs font-bold text-white ring-1 ring-white/15">
-                  公開中 {totalLpCount}件
-                </span>
-                <span className="rounded-full bg-white/8 px-3 py-1.5 text-xs font-bold text-white/85 ring-1 ring-white/10">
-                  専門LP付き
-                </span>
-                <span className="rounded-full bg-white/8 px-3 py-1.5 text-xs font-bold text-white/85 ring-1 ring-white/10">
-                  随時更新
-                </span>
-              </div>
-
               {/* CTA */}
-              <div className="mt-7 flex flex-col gap-3 sm:flex-row">
+              <div className="flex flex-col gap-3 pt-2 sm:flex-row sm:gap-4">
                 <Link
                   href="#consult-cta"
-                  className="inline-flex h-11 items-center justify-center rounded-xl bg-white px-5 font-bold text-[#0B2F4A] shadow-sm transition hover:bg-blue-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-300"
+                  className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-white px-6 font-bold text-[#0B2F4A] shadow-lg shadow-black/10 transition hover:bg-blue-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-300 sm:w-auto"
                 >
                   自社に合う補助金を確認する
+                  <ArrowRight className="h-4 w-4" />
                 </Link>
                 <Link
                   href="#lp-list"
-                  className="inline-flex h-11 items-center justify-center rounded-xl border border-white/30 bg-transparent px-5 font-bold text-white transition hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-300"
+                  className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl border border-white/30 bg-white/10 px-6 font-bold text-white backdrop-blur-sm transition hover:bg-white/15 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-300 sm:w-auto"
                 >
                   専門LPを見る
+                  <ArrowRight className="h-4 w-4" />
                 </Link>
               </div>
-            </div>
 
-            {/* 右：画像グリッド（スマホでは簡略） */}
-            <div className="relative hidden sm:block" aria-hidden>
-              <div className="grid grid-cols-3 gap-2.5">
-                {heroImages.slice(0, 6).map((img, i) => (
-                  <div
-                    key={i}
-                    className={`relative overflow-hidden rounded-xl border border-white/10 shadow-sm ${
-                      i === 1 ? "aspect-[4/5]" : "aspect-[4/3]"
-                    }`}
-                  >
-                    <Image
-                      src={img.url}
-                      alt={img.alt}
-                      fill
-                      className="object-cover opacity-90"
-                      sizes="180px"
-                    />
-                  </div>
-                ))}
+              {/* 実績バッジ */}
+              <div className="mt-6 flex flex-wrap gap-2">
+                <span className="inline-flex items-center rounded-full border border-white/15 bg-white/10 px-3 py-1.5 text-xs font-bold text-blue-50 backdrop-blur-sm">
+                  公開中 {totalLpCount}件
+                </span>
+                <span className="inline-flex items-center rounded-full border border-white/15 bg-white/10 px-3 py-1.5 text-xs font-bold text-blue-50 backdrop-blur-sm">
+                  専門LP付き
+                </span>
+                <span className="inline-flex items-center rounded-full border border-white/15 bg-white/10 px-3 py-1.5 text-xs font-bold text-blue-50 backdrop-blur-sm">
+                  随時更新
+                </span>
               </div>
             </div>
           </div>
@@ -350,3 +345,4 @@ export default async function SubsidiesLpIndexPage() {
     </>
   );
 }
+

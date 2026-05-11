@@ -609,7 +609,7 @@ export default function SubsidiesLpClient({
           </button>
         </div>
       ) : (
-        <div className="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-6 grid grid-cols-1 items-stretch gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {filtered.map((card) => (
             <LpResultCard key={card.key} card={card} />
           ))}
@@ -673,7 +673,7 @@ function LpResultCard({ card }: { card: UnifiedCard }) {
         aria-label={`${card.name} の専門LPを見る`}
       >
         {/* 画像 */}
-        <div className="relative aspect-[16/9] overflow-hidden bg-slate-100">
+        <div className="relative aspect-[16/9] shrink-0 overflow-hidden bg-slate-100">
           <Image
             src={card.imageUrl}
             alt={card.imageAlt}
@@ -721,35 +721,35 @@ function LpResultCard({ card }: { card: UnifiedCard }) {
 
         {/* 本文 */}
         <div className="flex flex-1 flex-col p-5">
-          {/* 制度名 */}
-          <h3 className="line-clamp-2 min-h-[2.8rem] text-base font-bold leading-snug text-slate-900 sm:text-lg">
+          {/* 制度名（2行で高さ固定） */}
+          <h3 className="line-clamp-2 min-h-[3.25rem] text-base font-bold leading-snug text-slate-900 sm:text-lg">
             {card.name}
           </h3>
 
-          {/* 対象企業/用途 */}
-          <p className="mt-2 line-clamp-1 text-sm font-semibold text-[#0B4F8A]">
+          {/* 対象企業/用途（1行） */}
+          <p className="mt-2 line-clamp-1 min-h-[1.25rem] text-sm font-semibold text-[#0B4F8A]">
             {card.targetLine}
           </p>
 
-          {/* 説明 */}
-          <p className="mt-2 line-clamp-2 text-sm leading-6 text-slate-600">{card.copy}</p>
+          {/* 説明（2行で高さ固定） */}
+          <p className="mt-2 line-clamp-2 min-h-[3rem] text-sm leading-6 text-slate-600">
+            {card.copy}
+          </p>
 
-          {/* このLPで分かること */}
-          {card.learnPoints.length > 0 ? (
-            <div className="mt-4">
-              <p className="text-[11px] font-bold uppercase tracking-normal text-slate-500">
-                このLPで分かること
-              </p>
-              <ul className="mt-1.5 space-y-1 text-xs text-slate-600">
-                {card.learnPoints.slice(0, 3).map((p) => (
-                  <li key={p} className="flex items-start gap-1.5">
-                    <Check className="mt-0.5 h-3 w-3 shrink-0 text-[#0B4F8A]" />
-                    <span>{p}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ) : null}
+          {/* このLPで分かること（3点固定で高さ揃え） */}
+          <div className="mt-4 min-h-[5rem]">
+            <p className="text-[11px] font-bold uppercase tracking-normal text-slate-500">
+              このLPで分かること
+            </p>
+            <ul className="mt-1.5 space-y-1 text-xs text-slate-600">
+              {card.learnPoints.slice(0, 3).map((p) => (
+                <li key={p} className="flex items-start gap-1.5">
+                  <Check className="mt-0.5 h-3 w-3 shrink-0 text-[#0B4F8A]" />
+                  <span className="line-clamp-1">{p}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
 
           {/* メタ情報（補助上限・公募期限） */}
           <dl className="mt-4 grid grid-cols-2 gap-2">
@@ -773,9 +773,9 @@ function LpResultCard({ card }: { card: UnifiedCard }) {
             </div>
           </dl>
 
-          {/* 主CTA */}
-          <div className="mt-5 flex items-center gap-3 border-t border-slate-100 pt-4">
-            <span className="inline-flex h-11 flex-1 items-center justify-center gap-1.5 rounded-xl bg-[#0B4F8A] px-4 text-sm font-bold text-white transition group-hover:bg-[#083D6D]">
+          {/* 主CTA（mt-autoでカード下部に押し込み、3カラムで位置揃え） */}
+          <div className="mt-auto pt-4">
+            <span className="inline-flex h-11 w-full items-center justify-center gap-1.5 rounded-xl bg-[#0B4F8A] px-4 text-sm font-bold text-white transition group-hover:bg-[#083D6D]">
               専門LPを見る
               <ArrowRight className="h-4 w-4 transition group-hover:translate-x-0.5" />
               {isExternal ? <span className="sr-only">（特集LP）</span> : null}
@@ -785,10 +785,10 @@ function LpResultCard({ card }: { card: UnifiedCard }) {
       </Link>
 
       {/* 副CTA：相談する（カード本体のリンクから独立させる） */}
-      <div className="border-t border-slate-100 px-5 py-3">
+      <div className="mt-auto border-t border-slate-100 px-5 py-3">
         <Link
           href={`/consult?subsidyName=${encodeURIComponent(card.name)}`}
-          className="inline-flex items-center gap-1 text-sm font-bold text-[#0B4F8A] hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0B4F8A]"
+          className="text-sm font-bold text-[#0B4F8A] hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0B4F8A]"
         >
           この補助金について相談する →
         </Link>
