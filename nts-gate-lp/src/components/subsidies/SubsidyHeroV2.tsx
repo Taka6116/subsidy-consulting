@@ -163,7 +163,7 @@ export default function SubsidyHeroV2({
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-blue-400 opacity-75" />
                 <span className="relative inline-flex h-2 w-2 rounded-full bg-blue-500" />
               </span>
-              全国の補助金をAIがリアルタイム解析
+              全国の補助金を最速告知
             </div>
 
             <h1
