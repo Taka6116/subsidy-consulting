@@ -53,6 +53,9 @@ const FEATURES = [
   },
 ];
 
+/** アイテム1個分のチップ幅の概算（px）— marquee 速度計算用 */
+const CHIP_WIDTH_APPROX = 340;
+
 export default function SubsidyHeroV2({
   counts,
   activePrefectureCount,
@@ -60,7 +63,6 @@ export default function SubsidyHeroV2({
   counts: Counts;
   activePrefectureCount: number;
 }) {
-  // ── Live data ──
   const [liveItems, setLiveItems] = useState<LiveItem[]>([]);
   useEffect(() => {
     fetch("/api/subsidies/hero-live")
@@ -75,7 +77,6 @@ export default function SubsidyHeroV2({
     return () => clearInterval(timer);
   }, []);
 
-  // ── カウンターアニメーション ──
   const [displayCounts, setDisplayCounts] = useState({ grants: 0, articles: 0, videos: 0 });
   const countRef = useRef(false);
   const badgeRef = useRef<HTMLDivElement>(null);
@@ -115,6 +116,16 @@ export default function SubsidyHeroV2({
     return remainHours === 0 ? `${days}日前` : `${days}日${remainHours}時間前`;
   };
 
+  // marquee: アイテムを2重にして無限ループ
+  const marqueeItems = liveItems.length > 0 ? [...liveItems, ...liveItems] : null;
+  // 全幅 ≒ アイテム数 × チップ幅 + gap(12px × n)
+  const trackWidth =
+    liveItems.length > 0
+      ? liveItems.length * CHIP_WIDTH_APPROX + liveItems.length * 12
+      : 4000;
+  // 20秒で1周（速度感を速めたい場合はここを下げる）
+  const marqueeSpeed = Math.max(20, Math.round(trackWidth / 200));
+
   return (
     <div
       className="relative overflow-hidden"
@@ -129,10 +140,10 @@ export default function SubsidyHeroV2({
       <div className="pointer-events-none absolute bottom-0 right-[4%] h-[400px] w-[400px] rounded-full bg-cyan-200/20 blur-[120px]" />
 
       {/* ══ HERO SECTION ══ */}
-      <section className="relative z-10 w-full pt-10 pb-4 lg:pt-10 lg:pb-4 lg:min-h-[calc(100vh-72px)] flex flex-col">
+      <section className="relative z-10 flex w-full flex-col pt-10 pb-4 lg:min-h-[calc(100vh-72px)] lg:pt-10 lg:pb-4">
 
-        {/* ── 2カラム: 左コピー + 右地図 ── */}
-        <div className="grid flex-1 items-center gap-6 px-4 lg:grid-cols-[0.92fr_1.35fr] lg:gap-8 lg:px-0 2xl:gap-10">
+        {/* ── 2カラム: 左コピー + 右（地図 + 右端装飾） ── */}
+        <div className="grid flex-1 items-center gap-0 px-4 lg:grid-cols-[1fr_1.2fr] lg:px-0">
 
           {/* ── 左：コピー ── */}
           <motion.div
@@ -141,7 +152,6 @@ export default function SubsidyHeroV2({
             transition={{ duration: 0.75, ease: EASE }}
             className="flex flex-col lg:pl-8 2xl:pl-16"
           >
-            {/* タグ */}
             <div className="mb-4 inline-flex w-fit items-center gap-2 rounded-full border border-blue-200/80 bg-blue-50 px-4 py-1.5 text-xs font-semibold text-blue-700">
               <span className="relative flex h-2 w-2">
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-blue-400 opacity-75" />
@@ -150,7 +160,6 @@ export default function SubsidyHeroV2({
               全国の補助金をAIがリアルタイム解析
             </div>
 
-            {/* キャッチコピー */}
             <h1
               className="font-heading font-black leading-[1.1] tracking-[-0.02em] text-[#0f172a]"
               style={{ fontSize: "clamp(2.1rem, 3.2vw, 3.75rem)" }}
@@ -178,7 +187,6 @@ export default function SubsidyHeroV2({
               受付中の補助金を、業種・地域・締切から探せます。
             </p>
 
-            {/* 主CTA・副CTA */}
             <div className="mt-5 flex w-full flex-col gap-3 sm:flex-row">
               <Link
                 href="/subsidies/list"
@@ -197,7 +205,6 @@ export default function SubsidyHeroV2({
               </Link>
             </div>
 
-            {/* 補助リンク */}
             <div className="mt-2.5">
               <Link
                 href="/subsidies/articles"
@@ -208,7 +215,6 @@ export default function SubsidyHeroV2({
               </Link>
             </div>
 
-            {/* 統計バッジ */}
             <div ref={badgeRef} className="mt-4 flex flex-wrap gap-2">
               <span className="rounded-full border border-amber-200 bg-amber-50 px-3 py-1 text-xs font-medium text-amber-700">
                 掲載補助金 {displayCounts.grants.toLocaleString()} 件
@@ -222,55 +228,91 @@ export default function SubsidyHeroV2({
             </div>
           </motion.div>
 
-          {/* ── 右：日本地図 ── */}
+          {/* ── 右：地図 ＋ 右端装飾カード ── */}
           <motion.div
             initial={{ opacity: 0, scale: 0.97 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.9, ease: EASE, delay: 0.1 }}
-            className="relative hidden overflow-visible md:block md:h-[380px] lg:h-[420px] xl:h-[460px] 2xl:h-[510px]"
+            className="relative hidden md:flex md:items-stretch"
           >
-            {/* 補助金公募中都道府県バッジ */}
-            <div className="absolute left-4 top-6 z-10 rounded-2xl border border-[#dbe4f0] bg-white/90 px-3 py-2 text-xs shadow-sm backdrop-blur">
-              <p className="font-mono text-[#94a3b8]">補助金公募中都道府県</p>
-              <p className="mt-0.5 font-bold text-[#0f172a]">
-                {activePrefectureCount}<span className="ml-1 font-normal text-[#94a3b8]">/47</span>
-              </p>
+            {/* 地図エリア（全幅の約70%） */}
+            <div className="relative flex-1 md:h-[380px] lg:h-[420px] xl:h-[460px] 2xl:h-[510px]">
+              {/* 補助金公募中都道府県バッジ */}
+              <div className="absolute left-4 top-6 z-10 rounded-2xl border border-[#dbe4f0] bg-white/90 px-3 py-2 text-xs shadow-sm backdrop-blur">
+                <p className="font-mono text-[#94a3b8]">補助金公募中都道府県</p>
+                <p className="mt-0.5 font-bold text-[#0f172a]">
+                  {activePrefectureCount}<span className="ml-1 font-normal text-[#94a3b8]">/47</span>
+                </p>
+              </div>
+              <div
+                className="absolute inset-0 origin-center map-scale-wrapper-v2"
+                style={{ transform: "scale(1.0) translateX(-2%) translateY(-3%)" }}
+              >
+                <JapanNetworkMap />
+              </div>
             </div>
-            <div
-              className="absolute inset-0 origin-center map-scale-wrapper-v2"
-              style={{ transform: "scale(1.05) translateX(-4%) translateY(-2%)" }}
-            >
-              <JapanNetworkMap />
+
+            {/* 右端装飾：縦並び統計カード群 */}
+            <div className="flex w-[140px] shrink-0 flex-col justify-center gap-3 pr-4 lg:w-[160px] 2xl:w-[180px] 2xl:pr-8">
+              <div className="rounded-2xl border border-[#dbe4f0] bg-white/90 p-3.5 shadow-sm backdrop-blur">
+                <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">掲載補助金</p>
+                <p className="mt-1 text-2xl font-black text-[#0f172a]">
+                  {displayCounts.grants.toLocaleString()}
+                  <span className="ml-0.5 text-sm font-normal text-slate-400">件</span>
+                </p>
+              </div>
+              <div className="rounded-2xl border border-[#dbe4f0] bg-white/90 p-3.5 shadow-sm backdrop-blur">
+                <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">解説記事</p>
+                <p className="mt-1 text-2xl font-black text-[#0f172a]">
+                  {displayCounts.articles.toLocaleString()}
+                  <span className="ml-0.5 text-sm font-normal text-slate-400">本</span>
+                </p>
+              </div>
+              <div className="rounded-2xl border border-[#dbe4f0] bg-white/90 p-3.5 shadow-sm backdrop-blur">
+                <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">対応都道府県</p>
+                <p className="mt-1 text-2xl font-black text-[#0f172a]">
+                  {activePrefectureCount}
+                  <span className="ml-0.5 text-sm font-normal text-slate-400">/ 47</span>
+                </p>
+              </div>
+              <Link
+                href="/subsidies/list?sort=newest"
+                className="mt-1 inline-flex items-center justify-center gap-1 rounded-xl border border-blue-200 bg-blue-50 px-3 py-2 text-xs font-bold text-blue-600 transition hover:bg-blue-100"
+              >
+                最新を見る <ArrowRight className="h-3 w-3" />
+              </Link>
             </div>
+
+            {/* CSS: map transform レスポンシブ */}
             <style>{`
               @media (min-width: 1280px) {
                 .map-scale-wrapper-v2 {
-                  transform: scale(0.95) translateX(-3%) translateY(-2%) !important;
+                  transform: scale(0.95) translateX(-2%) translateY(-3%) !important;
                 }
               }
               @media (min-width: 1536px) {
                 .map-scale-wrapper-v2 {
-                  transform: scale(0.9) translateX(-2%) translateY(-1%) !important;
+                  transform: scale(0.88) translateX(-1%) translateY(-2%) !important;
                 }
               }
               @media (min-width: 1920px) {
                 .map-scale-wrapper-v2 {
-                  transform: scale(0.86) translateX(-1%) translateY(0%) !important;
+                  transform: scale(0.82) translateX(0%) translateY(-1%) !important;
                 }
               }
             `}</style>
           </motion.div>
         </div>
 
-        {/* ── 横スクロール速報バー ── */}
+        {/* ── 横スクロール速報バー（CSS marquee） ── */}
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: EASE, delay: 0.25 }}
-          className="mx-4 mt-4 flex items-center gap-3 rounded-2xl border border-blue-100 bg-white/80 px-3 py-2.5 shadow-sm backdrop-blur-xl lg:mx-8 2xl:mx-16"
+          className="mx-4 mt-4 flex items-center gap-3 overflow-hidden rounded-2xl border border-blue-100 bg-white/80 px-3 py-2.5 shadow-sm backdrop-blur-xl lg:mx-8 2xl:mx-16"
         >
           {/* ラベル */}
-          <div className="shrink-0 inline-flex items-center gap-1.5 rounded-full bg-[#0B4F8A] px-3 py-1.5 text-xs font-bold text-white">
+          <div className="z-10 shrink-0 inline-flex items-center gap-1.5 rounded-full bg-[#0B4F8A] px-3 py-1.5 text-xs font-bold text-white">
             <span className="relative flex h-1.5 w-1.5">
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-blue-300 opacity-75" />
               <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-blue-200" />
@@ -279,44 +321,49 @@ export default function SubsidyHeroV2({
             <span className="sm:hidden">速報</span>
           </div>
 
-          {/* スクロールエリア */}
-          <div className="flex-1 overflow-x-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+          {/* marquee スクロールエリア */}
+          <div className="relative flex-1 overflow-hidden">
+            {/* 左フェード */}
+            <div className="pointer-events-none absolute left-0 top-0 z-10 h-full w-8 bg-gradient-to-r from-white/80 to-transparent" />
+            {/* 右フェード */}
+            <div className="pointer-events-none absolute right-0 top-0 z-10 h-full w-8 bg-gradient-to-l from-white/80 to-transparent" />
+
             <AnimatePresence mode="wait">
-              {liveItems.length === 0 ? (
-                <div key="skeleton" className="flex min-w-max gap-3 py-0.5">
+              {marqueeItems === null ? (
+                <div key="skeleton" className="flex gap-3 py-0.5">
                   {Array.from({ length: 5 }).map((_, i) => (
-                    <div
-                      key={i}
-                      className="h-7 w-48 animate-pulse rounded-full bg-slate-100"
-                    />
+                    <div key={i} className="h-7 w-48 animate-pulse rounded-full bg-slate-100" />
                   ))}
                 </div>
               ) : (
                 <motion.div
-                  key="items"
+                  key="marquee"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
                   transition={{ duration: 0.4 }}
-                  className="flex min-w-max gap-3 py-0.5"
+                  className="marquee-track flex gap-3 py-0.5"
+                  style={
+                    {
+                      "--marquee-duration": `${marqueeSpeed}s`,
+                      "--marquee-width": `${trackWidth}px`,
+                    } as React.CSSProperties
+                  }
                 >
-                  {liveItems.slice(0, 12).map((item) => (
+                  {marqueeItems.map((item, idx) => (
                     <Link
-                      key={item.id}
+                      key={`${item.id}-${idx}`}
                       href={`/subsidies/list/${item.id}`}
-                      className="group inline-flex max-w-[360px] items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs text-slate-700 shadow-sm transition hover:border-blue-200 hover:shadow-md"
+                      className="group inline-flex shrink-0 max-w-[340px] items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs text-slate-700 shadow-sm transition hover:border-blue-200 hover:shadow-md"
                     >
                       <span className="shrink-0 rounded bg-[#2563eb] px-1.5 py-0.5 text-[10px] font-bold text-white">
                         受付中
                       </span>
                       <span className="shrink-0 text-[11px] text-slate-400">{item.area}</span>
-                      <span className="max-w-[200px] truncate font-semibold text-slate-900 sm:max-w-[220px]">
+                      <span className="max-w-[180px] truncate font-semibold text-slate-900">
                         {item.title}
                       </span>
                       <span className="shrink-0 font-mono text-[11px] text-slate-400">
-                        {item.minutesAgo !== null
-                          ? formatElapsed(item.minutesAgo + tick)
-                          : "—"}
+                        {item.minutesAgo !== null ? formatElapsed(item.minutesAgo + tick) : "—"}
                       </span>
                       <ArrowRight className="h-3 w-3 shrink-0 text-slate-300 transition group-hover:text-blue-400" />
                     </Link>
@@ -329,7 +376,7 @@ export default function SubsidyHeroV2({
           {/* もっと見る */}
           <Link
             href="/subsidies/list?sort=newest"
-            className="shrink-0 text-xs font-bold text-blue-600 hover:underline"
+            className="z-10 shrink-0 text-xs font-bold text-blue-600 hover:underline"
           >
             もっと見る →
           </Link>
@@ -361,6 +408,21 @@ export default function SubsidyHeroV2({
           ))}
         </div>
       </section>
+
+      {/* ── CSS アニメーション (marquee) ── */}
+      <style>{`
+        @keyframes marquee-scroll {
+          0%   { transform: translateX(0); }
+          100% { transform: translateX(calc(-1 * var(--marquee-width) / 2 - 6px)); }
+        }
+        .marquee-track {
+          animation: marquee-scroll var(--marquee-duration, 30s) linear infinite;
+          will-change: transform;
+        }
+        .marquee-track:hover {
+          animation-play-state: paused;
+        }
+      `}</style>
     </div>
   );
 }
