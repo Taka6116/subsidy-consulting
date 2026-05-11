@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useCallback } from "react";
 
 interface IntroOverlayProps {
   onComplete: () => void;
@@ -11,6 +11,18 @@ export default function IntroOverlay({ onComplete }: IntroOverlayProps) {
   const line1Ref = useRef<HTMLParagraphElement>(null);
   const line2Ref = useRef<HTMLParagraphElement>(null);
   const subRef = useRef<HTMLParagraphElement>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const tlRef = useRef<any>(null);
+
+  const skip = useCallback(() => {
+    if (tlRef.current) {
+      tlRef.current.kill();
+    }
+    if (overlayRef.current) {
+      overlayRef.current.style.display = "none";
+    }
+    onComplete();
+  }, [onComplete]);
 
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -25,6 +37,7 @@ export default function IntroOverlay({ onComplete }: IntroOverlayProps) {
             onComplete();
           },
         });
+        tlRef.current = tl;
 
         gsap.set([line1Ref.current, line2Ref.current, subRef.current], {
           opacity: 0,
@@ -138,6 +151,43 @@ export default function IntroOverlay({ onComplete }: IntroOverlayProps) {
           公募開始から最速でお届け。
         </p>
       </div>
+
+      {/* スキップボタン */}
+      <button
+        type="button"
+        onClick={skip}
+        style={{
+          position: "absolute",
+          bottom: "2.5rem",
+          left: "50%",
+          transform: "translateX(-50%)",
+          display: "flex",
+          alignItems: "center",
+          gap: "0.375rem",
+          padding: "0.5rem 1.25rem",
+          border: "1px solid #d1d5db",
+          borderRadius: "9999px",
+          backgroundColor: "transparent",
+          color: "#9ca3af",
+          fontSize: "13px",
+          letterSpacing: "0.04em",
+          cursor: "pointer",
+          transition: "color 0.15s, border-color 0.15s",
+        }}
+        onMouseEnter={(e) => {
+          (e.currentTarget as HTMLButtonElement).style.color = "#374151";
+          (e.currentTarget as HTMLButtonElement).style.borderColor = "#9ca3af";
+        }}
+        onMouseLeave={(e) => {
+          (e.currentTarget as HTMLButtonElement).style.color = "#9ca3af";
+          (e.currentTarget as HTMLButtonElement).style.borderColor = "#d1d5db";
+        }}
+      >
+        スキップ
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <polyline points="13 17 18 12 13 7" /><polyline points="6 17 11 12 6 7" />
+        </svg>
+      </button>
     </div>
   );
 }
