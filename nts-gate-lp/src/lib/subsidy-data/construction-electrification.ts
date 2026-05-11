@@ -98,7 +98,7 @@ export const constructionElectrificationSubsidy: SubsidyLpData =
       {
         step: "03",
         title: "申請サポート",
-        desc: "書類作成から申請まで全面的にサポート",
+        desc: "申請前の情報整理から採択後まで一貫してサポート",
       },
       {
         step: "04",

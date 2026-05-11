@@ -30,7 +30,7 @@ export default function CtaBar() {
             まず、話を聞かせてください。
           </p>
           <p className="text-sm" style={{ color: 'rgba(255,255,255,0.65)', lineHeight: 1.8 }}>
-            相談は無料。採択後の成功報酬のみ。
+            相談は無料。採択後のコンサルティングフィーのみ。
           </p>
         </div>
 

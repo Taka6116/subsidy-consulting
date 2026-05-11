@@ -1,5 +1,6 @@
 import Link from "next/link";
 import FooterPartnerLink from "@/components/shared/FooterPartnerLink";
+import SubsidyLegalDisclaimer from "@/components/shared/SubsidyLegalDisclaimer";
 
 export default function LpFooter() {
   return (
@@ -42,9 +43,12 @@ export default function LpFooter() {
           </Link>
         </div>
 
-        <div className="mt-8 flex flex-col gap-2 border-t border-[var(--border-subtle)] pt-6 md:flex-row md:justify-between">
-          <p className="text-xs text-[var(--text-muted)]">© 2026 株式会社日本提携支援</p>
-          <FooterPartnerLink />
+        <div className="mt-8 border-t border-[var(--border-subtle)] pt-6">
+          <SubsidyLegalDisclaimer variant="full" className="mb-4" />
+          <div className="flex flex-col gap-2 md:flex-row md:justify-between">
+            <p className="text-xs text-[var(--text-muted)]">© 2026 株式会社日本提携支援</p>
+            <FooterPartnerLink />
+          </div>
         </div>
       </div>
     </footer>

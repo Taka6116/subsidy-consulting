@@ -78,7 +78,7 @@ export const logisticsSubsidy: SubsidyLpData = {
   flow: [
     { step: "01", title: "無料相談・課題整理", desc: "物流課題・2024年問題への対応状況をヒアリング" },
     { step: "02", title: "補助金選定・戦略立案", desc: "最適な補助金と活用戦略をご提案" },
-    { step: "03", title: "申請書類作成", desc: "採択率を高める事業計画書を専門家が作成" },
+    { step: "03", title: "申請準備サポート", desc: "事業計画・投資内容の整理を専門家が支援します" },
     { step: "04", title: "申請・採択", desc: "申請提出から採択通知まで伴走サポート" },
     { step: "05", title: "システム導入・報告", desc: "導入後の実績報告・補助金受給まで支援" },
   ],

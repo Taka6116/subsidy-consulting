@@ -20,19 +20,19 @@ const STEPS = [
   {
     step: "STEP 2",
     timing: "採択が決まった時点",
-    amount: "成功報酬 5%",
-    body: "採択が決まったことを確認してから、初回の成功報酬",
+    amount: "コンサルティングフィー 5%",
+    body: "採択が決まったことを確認してから、初回のフィーが発生します",
   },
   {
     step: "STEP 3",
     timing: "実績報告・精算完了時点",
-    amount: "成功報酬 5%",
+    amount: "コンサルティングフィー 5%",
     body: "補助金を実際に使い切った段階で",
   },
   {
     step: "STEP 4（最終）",
     timing: "1年後の効果検証",
-    amount: "成功報酬 5%",
+    amount: "コンサルティングフィー 5%",
     body: "導入した設備・取り組みの効果を一緒に確認してから",
   },
 ] as const;
@@ -58,11 +58,11 @@ export default function FeeStructureSection() {
           <div className="two-col img-right mb-16 lg:mb-20">
             <div className="col-text space-y-5">
               <p className="text-center font-heading text-lg font-bold leading-snug text-[var(--text-primary)] md:text-xl lg:text-left">
-                採択の瞬間に成功報酬を一括請求しない——それがNTSのスタンスです。
+                採択の瞬間にコンサルティングフィーを一括請求しない——それがNTSのスタンスです。
               </p>
               <ul className="list-disc space-y-3 pl-5 text-sm leading-relaxed text-[var(--text-secondary)] md:text-base">
                 <li>
-                  多くの支援では「採択＝高額請求」になりがちですが、NTSは成功報酬を段階設計し、実際に補助金を使い切り・効果を確認するまで伴走します。
+                  多くの支援では「採択＝高額請求」になりがちですが、NTSはコンサルティングフィーを段階設計し、実際に補助金を使い切り・効果を確認するまで伴走します。
                 </li>
                 <li>
                   着手金は戦略設計のコミットメントとして明確に提示し、以降は採択・実績報告・1年後の効果検証というマイルストーンに沿って発生します。
@@ -139,9 +139,9 @@ export default function FeeStructureSection() {
           </div>
 
           <div className="mt-10 rounded-xl bg-[var(--accent-teal)]/10 px-5 py-4 text-sm leading-relaxed text-[var(--text-primary)] md:text-base">
-            合計の成功報酬は補助金額の15%。
+            合計のコンサルティングフィーは補助金額の15%。
             <br />
-            「採択されなければ成功報酬は発生しません」——
+            「採択されなければコンサルティングフィーは発生しません」——
             <br />
             この設計は、NTSがお客様の結果まで責任を持つという意思表示です。
           </div>

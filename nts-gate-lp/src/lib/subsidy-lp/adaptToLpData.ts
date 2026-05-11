@@ -12,7 +12,7 @@ import type { SubsidyLpData as OldLpData } from "@/lib/subsidy-lp/buildSubsidyLp
 const DEFAULT_FLOW = [
   { step: "01", title: "無料相談・診断", desc: "貴社に最適な補助金活用方針をヒアリングします" },
   { step: "02", title: "要件確認・提案", desc: "専門家が要件を確認し、採択戦略をご提案" },
-  { step: "03", title: "申請サポート", desc: "書類作成から申請まで全面的にサポート" },
+  { step: "03", title: "申請準備サポート", desc: "申請前の情報整理から採択後まで一貫してサポート" },
   { step: "04", title: "採択・交付決定", desc: "採択後の手続きもサポートします" },
   { step: "05", title: "実績報告・受給", desc: "受給まで伴走し、次の補助金もご提案" },
 ] as const;
@@ -49,7 +49,7 @@ export function adaptToLpData(
   const after = [
     "補助金の活用で自己負担を大幅に削減",
     "専門家のサポートで申請をスムーズに完了",
-    "採択率を高める戦略設計でリスクを低減",
+    "申請前の方針設計でリスクを低減",
     "採択後も伴走支援で確実に受給まで到達",
   ];
 
@@ -105,7 +105,7 @@ export function adaptToLpData(
     subheadline: old.subCopy,
     benefits: [
       { icon: "chart", label: "経営課題を解決" },
-      { icon: "shield", label: "採択率を高めるサポート" },
+      { icon: "shield", label: "申請準備を整えるサポート" },
       { icon: "users", label: "全国対応" },
     ],
     dates: {

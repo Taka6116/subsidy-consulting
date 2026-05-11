@@ -54,7 +54,7 @@ export default function TargetIndustriesSection({
                 予算がなくなり次第終了のため、早めの検討がおすすめです
               </p>
               <p className="text-xs leading-relaxed text-gray-500">
-                本補助金は予算上限に達し次第、受付終了となります。早めのご相談で採択率も高まります。
+                本補助金は予算上限に達し次第、受付終了となります。早めのご相談で、申請前の整理をしっかり進められます。
               </p>
             </div>
           </div>

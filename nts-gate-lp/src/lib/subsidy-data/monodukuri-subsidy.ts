@@ -78,7 +78,7 @@ export const monodukuriSubsidy: SubsidyLpData = {
   flow: [
     { step: "01", title: "無料相談・ヒアリング", desc: "事業計画・課題・投資内容をヒアリングします" },
     { step: "02", title: "補助金スキーム確認", desc: "申請枠・加点要素・採択戦略をご提案" },
-    { step: "03", title: "事業計画書作成", desc: "採択率の高い計画書を専門家が共同作成" },
+    { step: "03", title: "事業計画の整理", desc: "申請に向けた計画整理を専門家と一緒に進めます" },
     { step: "04", title: "申請・審査対応", desc: "申請書類の提出・追加質問にも対応" },
     { step: "05", title: "採択後の実施・報告", desc: "事業実施から実績報告・補助金受給まで伴走" },
   ],

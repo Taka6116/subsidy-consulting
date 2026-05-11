@@ -95,7 +95,7 @@ export default function PartnerMeritSection() {
               </h3>
               <p className="mt-4 text-base leading-relaxed text-[var(--text-secondary)]">
                 顧客を紹介いただいた場合、紹介フィーをお支払いします。
-                ヒアリングから採択後の対応まで、すべてNTSが担当します。
+                ヒアリングから採択後の伴走まで、NTSが一貫してサポートします。
                 御社の手間はご紹介の一言だけです。
               </p>
               <div className="mt-6 rounded-lg bg-[#F5F8FF] px-4 py-3">
@@ -105,7 +105,7 @@ export default function PartnerMeritSection() {
                 <p className="text-sm leading-relaxed text-[var(--text-secondary)]">
                   「補助金が使えるか相談してみては」と一言お伝えいただくだけ。
                   <br />
-                  ヒアリング・申請・採択後の伴走まで、すべてNTSが対応します。
+                  ヒアリング・申請準備・採択後の伴走まで、NTSがサポートします。
                 </p>
               </div>
             </div>
@@ -125,14 +125,14 @@ export default function PartnerMeritSection() {
               </h3>
               <p className="mt-4 text-base leading-relaxed text-[var(--text-secondary)]">
                 補助金を超えた、その先にある経営課題や長年解決できていない課題まで、専門コンサルタントがコンサルティングします。
-                御社はご紹介だけ。面倒な手続きから課題解決まですべてNTSが引き受けます。
+                御社はご紹介だけ。補助金活用の方針整理から採択後の伴走まで、NTSがサポートします。
               </p>
               <div className="mt-6 rounded-lg bg-[#F5F8FF] px-4 py-3">
                 <p className="mb-2 text-[11px] font-bold uppercase tracking-wider text-[var(--text-muted)]">
                   サポート範囲
                 </p>
                 <p className="text-sm leading-relaxed text-[var(--text-secondary)]">
-                  対象制度の選定・申請書類の作成・審査機関とのやり取り・採択後の実績報告まで、一気通貫でNTSが対応します。
+                  対象制度の選定・申請前の情報整理・採択後の実績報告まで、NTSが一貫してサポートします。申請書類の作成・提出等、資格者が行うべき業務は提携行政書士法人等が対応します。
                 </p>
               </div>
             </div>

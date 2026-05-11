@@ -74,7 +74,7 @@ export const dxSubsidy: SubsidyLpData = {
   flow: [
     { step: "01", title: "無料相談・診断", desc: "貴社の業務課題とDXニーズをヒアリングします" },
     { step: "02", title: "導入ツール選定", desc: "最適なITツール・システムをご提案します" },
-    { step: "03", title: "申請サポート", desc: "申請書類の作成から提出まで全面サポート" },
+    { step: "03", title: "申請準備サポート", desc: "申請前の情報整理から採択後まで一貫してサポート" },
     { step: "04", title: "採択・導入", desc: "採択後のシステム導入・設定もサポート" },
     { step: "05", title: "定着・活用支援", desc: "導入後の活用定着まで伴走します" },
   ],

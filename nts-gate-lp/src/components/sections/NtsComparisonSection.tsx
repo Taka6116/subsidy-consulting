@@ -40,7 +40,7 @@ const AXES: readonly Axis[] = [
     axis: "費用",
     other: { label: "数十万〜数百万円", value: "bad" },
     platform: { label: "数万〜数十万円", value: "partial" },
-    nts: { label: "成功報酬型で明快", value: "good" },
+    nts: { label: "成果連動フィーで明快", value: "good" },
   },
   {
     axis: "書類作成",
@@ -52,7 +52,7 @@ const AXES: readonly Axis[] = [
     axis: "各種対応サポート",
     other: { label: "別途費用が発生することが多い", value: "bad" },
     platform: { label: "対応不可／経営者本人が対応", value: "bad" },
-    nts: { label: "NTSが代わりに対応。経営者の時間を守る", value: "good" },
+    nts: { label: "申請準備・各種整理をNTSがサポート。経営者の手間を最小化", value: "good" },
   },
   {
     axis: "採択後フォロー",
@@ -115,8 +115,8 @@ const PLATFORM_ITEMS: { label: string; status: ItemStatus; text: string }[] = [
 
 const NTS_ITEMS: { label: string; text: string }[] = [
   { label: "パートナーとしての姿勢", text: "採択の「活用」まで責任を持つ" },
-  { label: "コストの透明性",         text: "成功報酬型で明快。採択まで費用なし" },
-  { label: "申請以外の負担",          text: "NTSが代わりに対応。経営者の時間を守る" },
+  { label: "コストの透明性",         text: "成果連動フィーで明快。採択まで追加費用なし" },
+  { label: "申請以外の負担",          text: "申請準備・各種整理をNTSがサポート。経営者の手間を最小化" },
   { label: "採択後の伴走",            text: "1年間伴走。実績報告・精算・効果検証まで" },
   { label: "担当者の専門性",          text: "補助金専門コンサルタントが担当" },
   { label: "申請書類の品質",          text: "審査側視点＋提携行政書士で設計" },
@@ -289,7 +289,7 @@ export default function NtsComparisonSection() {
                 無料相談する →
               </a>
               <p className="mt-2 text-center text-[11px] text-slate-400">
-                NTSへの相談は無料。採択後の成功報酬のみ
+                NTSへの相談は無料。採択後のコンサルティングフィーのみ
               </p>
             </div>
           </div>
@@ -297,8 +297,8 @@ export default function NtsComparisonSection() {
 
         {/* 注記 */}
         <p className="mt-8 border-l-2 border-slate-200 pl-4 text-xs leading-relaxed text-[var(--text-secondary)]">
-          ※ NTSへの相談は無料です。採択後の成功報酬については個別にご案内いたします。
-          書類作成や各種対応は、別途費用なくNTSが一括して対応します。
+          ※ NTSへの相談は無料です。採択後のコンサルティングフィーについては個別にご案内いたします。
+          申請準備の整理・情報収集は別途費用なくNTSがサポートします。申請書類の作成・提出等は提携行政書士法人等が対応します。
         </p>
       </div>
     </section>

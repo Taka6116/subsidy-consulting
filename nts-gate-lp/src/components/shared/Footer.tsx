@@ -1,5 +1,6 @@
 import Link from "next/link";
 import FooterPartnerLink from "./FooterPartnerLink";
+import SubsidyLegalDisclaimer from "./SubsidyLegalDisclaimer";
 
 const NAV_COLUMNS: {
   heading: string;
@@ -148,7 +149,14 @@ export default function Footer() {
           </nav>
         </div>
 
-        <div className="mt-14 flex flex-col gap-4 border-t border-white/15 pt-8 sm:flex-row sm:items-center sm:justify-between">
+        <div className="mt-10 border-t border-white/15 pt-8">
+          <SubsidyLegalDisclaimer
+            variant="full"
+            className="border-white/15 bg-white/5 text-white/70 [&_p]:text-white/70 [&_svg]:text-white/40"
+          />
+        </div>
+
+        <div className="mt-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-caption text-white/70">
             &copy; 2026 株式会社日本提携支援
           </p>

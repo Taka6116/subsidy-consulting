@@ -23,7 +23,7 @@ const STEPS = [
     num: "03",
     title: "採択発表",
     duration: "約2〜3ヶ月後",
-    body: "審査結果が公表されます。採択率は制度・回によって異なり、事前の計画書品質が重要です。",
+            body: "審査結果が公表されます。採択結果は制度・回によって異なり、事前の計画整理が重要です。",
     accent: false,
   },
   {
@@ -275,14 +275,12 @@ export default function SubsidyLpHowSection() {
             className="text-base font-black"
             style={{ color: "var(--nts-text-primary-dark)" }}
           >
-            {/* NTSは「申請代行」ではなく「戦略設計と伴走支援」です ← 旧 */}
-            私たちは「申請代行」ではありません。
+            私たちは、補助金活用の方針設計と申請準備支援を行います。
           </p>
           <p
             className="mt-2 text-sm font-medium leading-7"
             style={{ color: "var(--nts-text-secondary-dark)" }}
           >
-            {/* どの補助金をどう活用するかという設計から、採択後の実行管理までを一緒に整理します。制度の最終確認は公募要領に基づいて行います。 ← 旧 */}
             あなたの事業判断を一緒に整理し、補助金を「使えるなら使う」という選択肢として置く。そういう関係から始めます。
           </p>
           <Link

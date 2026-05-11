@@ -21,7 +21,7 @@ const HIGHLIGHTS = [
 
 const BENEFIT_IMAGES = [
   { src: imgIsometric13, alt: "着手金・戦略設計のイメージ" },
-  { src: imgIsometric10, alt: "採択時の成功報酬のイメージ" },
+  { src: imgIsometric10, alt: "採択時のコンサルティングフィーのイメージ" },
   { src: imgIsometric14, alt: "実績報告・1年後の効果検証のイメージ" },
 ] as const;
 
@@ -37,7 +37,7 @@ const BENEFITS = [
     ),
   },
   {
-    title: "成功報酬（採択時）",
+    title: "コンサルティングフィー（採択時）",
     body: (
       <>
         採択が決まった時点でいただきます。
@@ -47,7 +47,7 @@ const BENEFITS = [
     ),
   },
   {
-    title: "成功報酬（報告完了・1年後）",
+    title: "コンサルティングフィー（報告完了・1年後）",
     body: (
       <>
         実績報告・精算完了時と、1年後の効果検証時にそれぞれ5%。
@@ -75,7 +75,7 @@ export default function BenefitSection() {
               id="home-benefit-heading"
               className="font-heading text-[1.75rem] font-bold leading-snug text-[var(--text-primary)] md:text-[2.25rem]"
             >
-              段階的な成功報酬で、
+              段階的なコンサルティングフィーで、
               <br />
               最後まで責任を共有します。
             </h2>

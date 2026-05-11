@@ -2,6 +2,7 @@
 
 import { useState, type FormEvent } from "react";
 import Link from "next/link";
+import SubsidyLegalDisclaimer from "@/components/shared/SubsidyLegalDisclaimer";
 
 const INPUT_CLASSES =
   "mt-2 w-full rounded-lg border border-[var(--border-subtle)] bg-white px-4 py-3 text-base text-[var(--text-primary)] outline-none transition-colors placeholder:text-[var(--text-muted)] focus:border-[var(--accent-navy)] focus:ring-2 focus:ring-[rgba(26,76,142,0.15)]";
@@ -36,6 +37,17 @@ export default function ConsultForm() {
   }
 
   return (
+    <>
+      {/* 相談範囲の注意書き */}
+      <div className="mb-6 rounded-xl border border-slate-200 bg-slate-50 p-4">
+        <p className="mb-2 text-sm font-bold text-slate-800">ご相談範囲について</p>
+        <p className="text-sm leading-relaxed text-slate-600">
+          初回相談では、補助金の対象可能性、活用方針、申請前に整理すべき情報を確認します。
+          申請書類の作成・提出等、資格者が行うべき業務が必要な場合は、提携行政書士法人等をご案内します。
+          補助金の採択を保証するものではありません。
+        </p>
+      </div>
+
     <form
       onSubmit={handleSubmit}
       className="space-y-6 rounded-2xl border border-[var(--border-subtle)] bg-white p-6 shadow-[var(--shadow-card)] sm:p-8"
@@ -94,8 +106,11 @@ export default function ConsultForm() {
         type="submit"
         className="w-full rounded-full bg-[var(--accent-navy)] px-6 py-4 text-base font-bold text-white shadow-sm transition-all hover:bg-[#1557a8] hover:shadow-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent-navy)] sm:w-auto sm:min-w-[220px]"
       >
-        送信する
+        補助金活用について相談する
       </button>
     </form>
+
+      <SubsidyLegalDisclaimer variant="short" className="mt-4" />
+    </>
   );
 }

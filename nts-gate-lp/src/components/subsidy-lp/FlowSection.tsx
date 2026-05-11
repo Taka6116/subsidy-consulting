@@ -43,7 +43,7 @@ export default function FlowSection({
           {[
             { label: "相談無料", Icon: MessageSquareMore },
             { label: "全国対応", Icon: Globe2 },
-            { label: "採択率を高めるサポート", Icon: BadgeCheck },
+            { label: "申請準備を整えるサポート", Icon: BadgeCheck },
             { label: "申請後も伴走支援", Icon: FileCheck2 },
           ].map(({ label, Icon }) => (
             <div key={label} className="flex items-center justify-center gap-2">

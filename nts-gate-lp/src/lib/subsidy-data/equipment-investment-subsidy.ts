@@ -78,7 +78,7 @@ export const equipmentInvestmentSubsidy: SubsidyLpData = {
   flow: [
     { step: "01", title: "無料相談・診断", desc: "設備投資の課題・目標をヒアリングします" },
     { step: "02", title: "補助金選定・要件確認", desc: "最適な補助金スキームをご提案します" },
-    { step: "03", title: "事業計画書作成", desc: "採択率を高める計画書を専門家が作成" },
+    { step: "03", title: "事業計画の整理", desc: "投資内容・活用方針の整理を専門家が支援します" },
     { step: "04", title: "申請・採択", desc: "申請から採択通知まで全面サポート" },
     { step: "05", title: "設備導入・報告", desc: "交付後の設備導入・実績報告も伴走" },
   ],

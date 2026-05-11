@@ -22,7 +22,7 @@ const FRAMES = [
   },
   {
     lines: [
-      { text: "書類の質も、採択率を分けます。", large: true },
+      { text: "申請前の準備が、結果を分けます。", large: true },
     ],
   },
   {

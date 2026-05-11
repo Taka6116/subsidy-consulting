@@ -289,8 +289,8 @@ export default async function SubsidyVideoPage({ params }: PageProps) {
               補助金活用の戦略設計は、NTS にご相談ください
             </h2>
             <p className="mt-3 text-sm leading-relaxed text-white/90 sm:text-base">
-              申請代行ではなく、採択後 1 年間の伴走まで含めた補助金活用戦略を設計します。
-              着手金 15 万円と段階的な成功報酬で、最後まで責任を共有します。
+              補助金活用の方針設計から、採択後 1 年間の伴走まで一貫して支援します。
+              着手金 15 万円と段階的なコンサルティングフィーで、最後まで責任を共有します。
             </p>
             <Link
               href="/consult"

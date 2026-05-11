@@ -48,7 +48,7 @@ export default function PartnerFeeSection() {
             variants={itemVariants}
             className="mx-auto max-w-2xl text-base leading-relaxed text-[var(--text-secondary)] md:text-lg"
           >
-            申請・採択から採択後の1年間まで、すべてNTSが対応します。
+            申請準備支援・採択後の伴走まで、NTSが一貫してサポートします。
             <br className="hidden sm:block" />
             採択が決まったとき、御社に紹介フィーをお支払いします。
           </motion.p>
@@ -57,7 +57,7 @@ export default function PartnerFeeSection() {
         <p className="mt-4 text-center text-sm text-[var(--text-secondary)]">
           採択されなければ、御社への費用請求も紹介フィーの義務も一切発生しません。
           <br className="hidden sm:block" />
-          完全成功報酬型だから、紹介することにリスクはありません。
+            成果連動フィー型だから、紹介することにリスクはありません。
         </p>
 
         <motion.div

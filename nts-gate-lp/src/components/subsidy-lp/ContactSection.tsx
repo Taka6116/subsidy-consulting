@@ -73,7 +73,7 @@ export default function ContactSection({ source, grantName }: Props) {
                 "相談・診断は完全無料",
                 "全国の中小企業・小規模事業者に対応",
                 "申請から受給まで専門家が伴走",
-                "採択率を高める戦略を一緒に設計",
+                "申請前の方針を一緒に整理",
               ].map((item) => (
                 <li key={item} className="flex items-center gap-2.5 text-sm text-gray-700">
                   <CheckCircle2 className="h-4 w-4 flex-shrink-0 text-[#008894]" />

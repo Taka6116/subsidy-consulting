@@ -78,7 +78,7 @@ export const humanResourcesSubsidy: SubsidyLpData = {
   flow: [
     { step: "01", title: "無料相談・課題ヒアリング", desc: "人材課題・賃上げ計画をヒアリングします" },
     { step: "02", title: "補助金スキーム選定", desc: "最適な補助金・助成金の組み合わせをご提案" },
-    { step: "03", title: "申請書類・計画書作成", desc: "採択率の高い申請書類を専門家が作成" },
+    { step: "03", title: "申請準備・計画整理", desc: "採択に向けた事業計画の整理を専門家が支援します" },
     { step: "04", title: "申請・採択", desc: "申請提出から採択まで全面サポート" },
     { step: "05", title: "実施・報告支援", desc: "取り組み実施から補助金受給まで伴走します" },
   ],
