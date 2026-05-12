@@ -40,11 +40,11 @@ export default function Home() {
         <NtsAiGapSection />
         <NtsWarmIntroSection />
         <AwarenessSection />
+        <CtaBar />
         <WhatIsNtsSection />
         <SubsidyExamplesSection />
         <SubsidyMatchCtaSection />
         <ComparisonDiagram />
-        <CtaBar />
         <SubsidyKindsSection />
         <PartnerNarrowSection />
         <FaqSection />
