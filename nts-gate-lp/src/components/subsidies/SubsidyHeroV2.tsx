@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { AnimatePresence, motion, type Easing } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
@@ -110,9 +111,29 @@ export default function SubsidyHeroV2({
           "radial-gradient(circle at 63% 44%, rgba(85,164,244,0.26), transparent 34%), linear-gradient(90deg, #f8fbff 0%, #f5fbff 38%, #e9f5ff 100%)",
       }}
     >
+      {/* 背景画像（最背面） */}
+      <div className="pointer-events-none absolute inset-0 z-0">
+        <Image
+          src="/images/hero-digital-platform.png"
+          alt=""
+          fill
+          priority
+          aria-hidden
+          className="object-cover object-right"
+        />
+        {/* 左→右グラデーションオーバーレイ（画像を馴染ませる） */}
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              "linear-gradient(to right, rgba(248,251,255,0.97) 0%, rgba(248,251,255,0.88) 30%, rgba(248,251,255,0.55) 55%, rgba(248,251,255,0.18) 78%, transparent 100%)",
+          }}
+        />
+      </div>
+
       {/* dot grid overlay */}
       <div
-        className="pointer-events-none absolute inset-0"
+        className="pointer-events-none absolute inset-0 z-[1]"
         style={{
           backgroundImage: "radial-gradient(#bad8f2 1px, transparent 1px)",
           backgroundSize: "22px 22px",
@@ -140,7 +161,8 @@ export default function SubsidyHeroV2({
             initial={{ opacity: 0, y: 28 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.75, ease: EASE }}
-            className="max-w-[540px] pb-6"
+            className="relative z-10 max-w-[540px] pb-6"
+            style={{ background: "linear-gradient(to right, #f8fbff 60%, rgba(248,251,255,0.0) 100%)" }}
           >
             {/* eyebrow */}
             <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-blue-200 bg-blue-50/86 px-[18px] py-0 text-sm font-black tracking-wide text-blue-700"
@@ -319,7 +341,7 @@ export default function SubsidyHeroV2({
             ].map((s) => (
               <div
                 key={s.label}
-                className="flex flex-col justify-center gap-2 rounded-2xl border border-[rgba(195,219,244,0.86)] bg-white/88 px-[18px] backdrop-blur-[10px]"
+                className="flex flex-col justify-center gap-2 rounded-2xl border border-[rgba(195,219,244,0.86)] bg-white px-[18px]"
                 style={{ minHeight: "96px", padding: "18px", boxShadow: "0 20px 45px rgba(15,49,96,0.12),0 4px 14px rgba(15,49,96,0.06)" }}
               >
                 <p className="text-xs font-black text-[#8ba1b8]">{s.label}</p>
@@ -431,7 +453,7 @@ export default function SubsidyHeroV2({
               initial={{ opacity: 0, y: 14 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.35 + i * 0.07, ease: EASE }}
-              className="grid min-h-[126px] rounded-[18px] border border-[rgba(222,232,244,0.9)] bg-white/82 p-6"
+              className="grid min-h-[126px] rounded-[18px] border border-[rgba(222,232,244,0.9)] bg-white p-6"
               style={{
                 gridTemplateColumns: "50px 1fr",
                 gap: "16px",
