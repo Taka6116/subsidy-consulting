@@ -274,29 +274,13 @@ export default function SubsidyHeroV2({
               />
             </div>
 
-            {/* mini pills */}
-            <div
-              className="absolute inline-flex items-center gap-2 rounded-full border border-[rgba(195,219,244,0.8)] bg-white/76 px-3.5 text-xs font-black text-[#30609f] backdrop-blur-md"
-              style={{ height: "38px", top: "18px", right: "232px", boxShadow: "0 10px 24px rgba(15,49,96,0.08)" }}
-            >
-              <span className="h-2 w-2 rounded-full bg-[#10b981]" />
-              24時間クロール
-            </div>
-            <div
-              className="absolute inline-flex items-center gap-2 rounded-full border border-[rgba(195,219,244,0.8)] bg-white/76 px-3.5 text-xs font-black text-[#30609f] backdrop-blur-md"
-              style={{ height: "38px", bottom: "20px", right: "198px", boxShadow: "0 10px 24px rgba(15,49,96,0.08)" }}
-            >
-              <span className="h-2 w-2 rounded-full bg-[#10b981]" />
-              最新情報を整理
-            </div>
-
             {/* data-card A：公開直後に検知 */}
             <div
               className="absolute flex flex-col gap-2 rounded-[18px] border border-[rgba(195,219,244,0.8)] bg-white p-4"
               style={{ top: "42px", left: "22px", width: "260px", boxShadow: "0 20px 45px rgba(15,49,96,0.12),0 4px 14px rgba(15,49,96,0.06)" }}
             >
               <div className="flex items-center gap-2">
-                <span className="inline-flex items-center rounded-md bg-[#dbeafe] px-2 py-0.5 text-[11px] font-black text-[#1d4ed8]"></span>
+                <span className="inline-flex items-center rounded-md bg-[#dbeafe] px-2 py-0.5 text-[11px] font-black text-[#1d4ed8]">NEW</span>
               </div>
               <strong className="text-[15px] leading-snug text-[#1a2a44]">公開直後に検知</strong>
               <p className="m-0 text-xs leading-relaxed text-[#66758a]">自治体・省庁サイトを24時間チェック。</p>
@@ -311,7 +295,7 @@ export default function SubsidyHeroV2({
               style={{ top: "168px", right: "86px", width: "285px", boxShadow: "0 20px 45px rgba(15,49,96,0.12),0 4px 14px rgba(15,49,96,0.06)" }}
             >
               <div className="flex items-center gap-2">
-                <span className="inline-flex items-center rounded-md bg-[#e0f2fe] px-2 py-0.5 text-[11px] font-black text-[#0369a1]"></span>
+                <span className="inline-flex items-center rounded-md bg-[#e0f2fe] px-2 py-0.5 text-[11px] font-black text-[#0369a1]">OPEN</span>
               </div>
               <strong className="text-[15px] leading-snug text-[#1a2a44]">受付中だけを整理</strong>
               <p className="m-0 text-xs leading-relaxed text-[#66758a]">終了案件を除き、今見られる情報へ。</p>
@@ -326,7 +310,7 @@ export default function SubsidyHeroV2({
               style={{ left: "172px", bottom: "66px", width: "460px", boxShadow: "0 20px 45px rgba(15,49,96,0.12),0 4px 14px rgba(15,49,96,0.06)" }}
             >
               <div className="flex items-center gap-2">
-                <span className="inline-flex items-center rounded-md bg-[#d1fae5] px-2 py-0.5 text-[11px] font-black text-[#065f46]"></span>
+                <span className="inline-flex items-center rounded-md bg-[#d1fae5] px-2 py-0.5 text-[11px] font-black text-[#065f46]">MATCH</span>
               </div>
               <strong className="text-[15px] leading-snug text-[#1a2a44]">使える制度を届ける</strong>
               <p className="m-0 text-xs leading-relaxed text-[#66758a]">業種・地域・締切から確認できる形に。</p>
