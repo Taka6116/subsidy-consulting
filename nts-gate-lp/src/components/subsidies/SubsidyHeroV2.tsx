@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { AnimatePresence, motion, type Easing } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
-import { ArrowRight, Search, MessageCircle, FileText, Bell, Zap, Target } from "lucide-react";
+import { ArrowRight, Search, MessageCircle, FileText } from "lucide-react";
 
 const EASE: Easing = [0.22, 1, 0.36, 1];
 
@@ -16,19 +16,16 @@ const FEATURES = [
     title: "公開直後に検知",
     desc: "全国補助金をAIが24h収集。最新情報を即座に確認。",
     href: "/subsidies/list?sort=newest",
-    icon: <Bell className="h-6 w-6" />,
   },
   {
     title: "即座にコンテンツ化",
     desc: "解説記事・活用ガイドで申請前の情報収集をまとめて。",
     href: "/subsidies/articles",
-    icon: <Zap className="h-6 w-6" />,
   },
   {
     title: "最速でユーザーへ",
     desc: "気になる補助金は専門家へ無料相談。申請前に整理。",
     href: "/consult",
-    icon: <Target className="h-6 w-6" />,
   },
 ];
 
@@ -200,7 +197,7 @@ export default function SubsidyHeroV2({
               className="font-semibold leading-[1.95] text-[#536174]"
               style={{ maxWidth: "570px", marginBottom: "34px", fontSize: "clamp(1rem, 1.1vw, 1.1875rem)" }}
             >
-              全国の自治体・省庁サイトをAIが24時間クロール。受付中の補助金を、業種・地域・締切から確認できます。
+              全国の自治体・省庁サイトの補助金情報をここに集約。受付中の補助金を、業種・地域・締切から確認できます。
             </p>
 
             {/* CTAs */}
@@ -293,36 +290,49 @@ export default function SubsidyHeroV2({
               最新情報を整理
             </div>
 
-            {/* data-card A */}
+            {/* data-card A：公開直後に検知 */}
             <div
-              className="absolute grid gap-2.5 rounded-[18px] border border-[rgba(195,219,244,0.8)] bg-white/84 p-4 backdrop-blur-md"
-              style={{ top: "42px", left: "22px", width: "250px", boxShadow: "0 20px 45px rgba(15,49,96,0.12),0 4px 14px rgba(15,49,96,0.06)" }}
+              className="absolute flex flex-col gap-2 rounded-[18px] border border-[rgba(195,219,244,0.8)] bg-white p-4"
+              style={{ top: "42px", left: "22px", width: "260px", boxShadow: "0 20px 45px rgba(15,49,96,0.12),0 4px 14px rgba(15,49,96,0.06)" }}
             >
-              <strong className="text-[15px] text-[#1a2a44]">新着通知</strong>
-              <span className="block h-2.5 w-[170px] rounded-full" style={{ background: "linear-gradient(90deg,#c8dbf4,#eef5ff)" }} />
-              <span className="block h-2.5 w-[112px] rounded-full" style={{ background: "linear-gradient(90deg,#c8dbf4,#eef5ff)" }} />
+              <div className="flex items-center gap-2">
+                <span className="inline-flex items-center rounded-md bg-[#dbeafe] px-2 py-0.5 text-[11px] font-black text-[#1d4ed8]"></span>
+              </div>
+              <strong className="text-[15px] leading-snug text-[#1a2a44]">公開直後に検知</strong>
+              <p className="m-0 text-xs leading-relaxed text-[#66758a]">自治体・省庁サイトを24時間チェック。</p>
+              <div className="mt-1 h-1.5 w-full overflow-hidden rounded-full bg-[#e0eaff]">
+                <div className="h-full rounded-full bg-[#2563eb]" style={{ width: "72%" }} />
+              </div>
             </div>
 
-            {/* data-card B */}
+            {/* data-card B：受付中だけを整理 */}
             <div
-              className="absolute grid gap-2.5 rounded-[18px] border border-[rgba(195,219,244,0.8)] bg-white/84 p-4 backdrop-blur-md"
+              className="absolute flex flex-col gap-2 rounded-[18px] border border-[rgba(195,219,244,0.8)] bg-white p-4"
               style={{ top: "168px", right: "86px", width: "285px", boxShadow: "0 20px 45px rgba(15,49,96,0.12),0 4px 14px rgba(15,49,96,0.06)" }}
             >
-              <strong className="text-[15px] text-[#1a2a44]">受付中の補助金</strong>
-              <span className="block h-4 w-[52px] rounded-md bg-[#d9f8f3]" />
-              <span className="block h-2.5 w-[170px] rounded-full" style={{ background: "linear-gradient(90deg,#c8dbf4,#eef5ff)" }} />
-              <span className="block h-2.5 w-[112px] rounded-full" style={{ background: "linear-gradient(90deg,#c8dbf4,#eef5ff)" }} />
+              <div className="flex items-center gap-2">
+                <span className="inline-flex items-center rounded-md bg-[#e0f2fe] px-2 py-0.5 text-[11px] font-black text-[#0369a1]"></span>
+              </div>
+              <strong className="text-[15px] leading-snug text-[#1a2a44]">受付中だけを整理</strong>
+              <p className="m-0 text-xs leading-relaxed text-[#66758a]">終了案件を除き、今見られる情報へ。</p>
+              <div className="mt-1 h-1.5 w-full overflow-hidden rounded-full bg-[#e0eaff]">
+                <div className="h-full rounded-full bg-[#22d3ee]" style={{ width: "55%" }} />
+              </div>
             </div>
 
-            {/* data-card C */}
+            {/* data-card C：使える制度を届ける */}
             <div
-              className="absolute grid min-h-[138px] gap-2.5 rounded-[18px] border border-[rgba(195,219,244,0.8)] bg-white/84 p-4 backdrop-blur-md"
-              style={{ left: "172px", bottom: "66px", width: "500px", boxShadow: "0 20px 45px rgba(15,49,96,0.12),0 4px 14px rgba(15,49,96,0.06)" }}
+              className="absolute flex flex-col gap-2 rounded-[18px] border border-[rgba(195,219,244,0.8)] bg-white p-4"
+              style={{ left: "172px", bottom: "66px", width: "460px", boxShadow: "0 20px 45px rgba(15,49,96,0.12),0 4px 14px rgba(15,49,96,0.06)" }}
             >
-              <strong className="text-[15px] text-[#1a2a44]">制度情報を、ユーザーが探せる形へ</strong>
-              <span className="block h-2.5 w-[360px] rounded-full" style={{ background: "linear-gradient(90deg,#c8dbf4,#eef5ff)" }} />
-              <span className="block h-2.5 w-[210px] rounded-full" style={{ background: "linear-gradient(90deg,#8dbcf6 0 42%,#eef5ff 42% 100%)" }} />
-              <span className="block h-2.5 w-[112px] rounded-full" style={{ background: "linear-gradient(90deg,#c8dbf4,#eef5ff)" }} />
+              <div className="flex items-center gap-2">
+                <span className="inline-flex items-center rounded-md bg-[#d1fae5] px-2 py-0.5 text-[11px] font-black text-[#065f46]"></span>
+              </div>
+              <strong className="text-[15px] leading-snug text-[#1a2a44]">使える制度を届ける</strong>
+              <p className="m-0 text-xs leading-relaxed text-[#66758a]">業種・地域・締切から確認できる形に。</p>
+              <div className="mt-1 h-1.5 w-full overflow-hidden rounded-full bg-[#d1fae5]">
+                <div className="h-full rounded-full bg-[#10b981]" style={{ width: "88%" }} />
+              </div>
             </div>
           </motion.div>
 
@@ -455,16 +465,9 @@ export default function SubsidyHeroV2({
               transition={{ duration: 0.5, delay: 0.35 + i * 0.07, ease: EASE }}
               className="grid min-h-[126px] rounded-[18px] border border-[rgba(222,232,244,0.9)] bg-white p-6"
               style={{
-                gridTemplateColumns: "50px 1fr",
-                gap: "16px",
                 boxShadow: "0 10px 26px rgba(15,49,96,0.06)",
               }}
             >
-              <div
-                className="grid h-[50px] w-[50px] place-items-center rounded-[14px] bg-[#e8f1ff] text-[#2563eb]"
-              >
-                {f.icon}
-              </div>
               <div>
                 <h3 className="mb-2.5 text-lg font-black leading-[1.4] text-[#101827]">{f.title}</h3>
                 <p className="m-0 text-sm font-semibold leading-[1.8] text-[#66758a]">{f.desc}</p>
