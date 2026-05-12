@@ -1,46 +1,49 @@
 'use client'
 
+import Image from 'next/image'
 import Link from 'next/link'
 import { motion, type Easing } from 'framer-motion'
+import iso11 from '../../../icon-assets/isometric_11.webp'
+import iso09 from '../../../icon-assets/isometric_09.webp'
+import iso10 from '../../../icon-assets/isometric_10.webp'
+import iso12 from '../../../icon-assets/isometric_12.webp'
+import iso13 from '../../../icon-assets/isometric_13.webp'
 
 const EASE_OUT: Easing = [0.22, 1, 0.36, 1]
 
 const ROADMAP_STEPS = [
   {
-    num: 1,
     title: '採択後の計画設計',
     desc: '制度要件と事業計画を整理し、実行順序を明確にします。',
+    img: iso09,
   },
   {
-    num: 2,
     title: '設備導入・実行支援',
     desc: '導入時期、見積、社内準備の抜け漏れを確認します。',
+    img: iso10,
   },
   {
-    num: 3,
     title: '実績報告の準備',
     desc: '報告に必要な資料や証跡を、早い段階から整理します。',
+    img: iso12,
   },
   {
-    num: 4,
     title: '次年度の戦略',
     desc: '次の補助金や投資計画まで見据えて、継続活用を支援します。',
+    img: iso13,
   },
 ]
 
 const PROOF_ITEMS = [
   {
-    abbr: '計',
     title: '迷わない計画設計',
     desc: '対象制度から採択後の動きまで、必要な順番を整理。',
   },
   {
-    abbr: '専',
     title: '専門家と連携',
     desc: '必要に応じて士業・専門家との確認につなぎます。',
   },
   {
-    abbr: '次',
     title: '次の成長戦略へ',
     desc: '単発の申請ではなく、事業投資の流れとして活用。',
   },
@@ -93,16 +96,21 @@ export default function ComparisonDiagram() {
         </motion.div>
 
         {/* ── 比較グリッド ── */}
-        <div className="grid items-stretch gap-6 lg:grid-cols-[0.78fr_1.22fr]">
+        {/* items-stretch で両カラム等高にし、矢印を自分で self-center */}
+        <div className="grid items-stretch gap-6 lg:grid-cols-[0.78fr_auto_1.22fr]">
+
           {/* 左：これまでの支援 */}
           <motion.article
             initial={{ opacity: 0, y: 18 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.2 }}
             transition={{ duration: 0.55, ease: EASE_OUT }}
-            className="relative min-h-[320px] rounded-xl border border-[#d8e8f3] bg-[rgba(245,249,252,0.9)] p-8 shadow-[rgba(16,42,76,0.08)_0_18px_44px,rgba(16,42,76,0.04)_0_4px_12px]"
+            className="flex flex-col rounded-xl border border-[#d8e8f3] bg-[rgba(245,249,252,0.9)] p-8 shadow-[rgba(16,42,76,0.08)_0_18px_44px,rgba(16,42,76,0.04)_0_4px_12px]"
           >
-            <span className="inline-flex items-center rounded px-2.5 py-1 text-[13px] font-bold text-[#60798f] ring-1 ring-[#d8e8f3]" style={{ background: '#eef5fa' }}>
+            <span
+              className="inline-flex w-fit items-center rounded px-2.5 py-1 text-[13px] font-bold text-[#60798f] ring-1 ring-[#d8e8f3]"
+              style={{ background: '#eef5fa' }}
+            >
               これまでの支援
             </span>
             <h3 className="font-heading mb-5 mt-5 text-[1.75rem] font-bold text-[#3c5063]">
@@ -122,23 +130,20 @@ export default function ComparisonDiagram() {
                 </li>
               ))}
             </ul>
-            {/* 右下：ドキュメントアイコン風装飾 */}
-            <div
-              className="absolute bottom-6 right-7 flex h-[104px] w-[104px] items-center justify-center rounded-lg border border-[#dce9f2] bg-white"
-              aria-hidden
-            >
-              <svg width="42" height="58" viewBox="0 0 42 58" fill="none">
-                <rect x="1" y="1" width="40" height="56" rx="4" fill="url(#docGrad)" stroke="#86a7c4" strokeWidth="2"/>
-                <circle cx="21" cy="34" r="10" stroke="#0fc8aa" strokeWidth="3" strokeDasharray="22 44" strokeLinecap="round"/>
-                <defs>
-                  <linearGradient id="docGrad" x1="0" y1="0" x2="0" y2="1">
-                    <stop stopColor="#eff7ff"/>
-                    <stop offset="1" stopColor="#ffffff"/>
-                  </linearGradient>
-                </defs>
-              </svg>
+            {/* アイソメトリック画像：中央寄せ */}
+            <div className="mt-auto flex justify-center pt-6">
+              <div className="relative h-[130px] w-[130px]">
+                <Image src={iso11} alt="申請書類イメージ" fill className="object-contain" />
+              </div>
             </div>
           </motion.article>
+
+          {/* 矢印：上下中央（self-center） */}
+          <div className="hidden self-center lg:flex lg:items-center lg:justify-center">
+            <span className="flex h-11 w-11 items-center justify-center rounded-full border border-[#d8e8f3] bg-white text-[24px] font-bold text-[#1f5f9f] shadow-[rgba(16,42,76,0.12)_0_12px_26px]">
+              ›
+            </span>
+          </div>
 
           {/* 右：ロードマップ */}
           <motion.article
@@ -148,51 +153,45 @@ export default function ComparisonDiagram() {
             transition={{ duration: 0.55, ease: EASE_OUT, delay: 0.08 }}
             className="rounded-xl border border-[#bfeee4] bg-gradient-to-br from-white to-[rgba(238,255,250,0.9)] p-8 shadow-[rgba(16,42,76,0.08)_0_18px_44px,rgba(16,42,76,0.04)_0_4px_12px]"
           >
-            <span className="inline-flex items-center rounded px-2.5 py-1 text-[13px] font-bold text-[#087f72] ring-1 ring-[#bfeee4]" style={{ background: '#e1fbf5' }}>
+            <span
+              className="inline-flex w-fit items-center rounded px-2.5 py-1 text-[13px] font-bold text-[#087f72] ring-1 ring-[#bfeee4]"
+              style={{ background: '#e1fbf5' }}
+            >
               NTSが目指す支援
             </span>
             <h3 className="font-heading mb-6 mt-5 max-w-[560px] text-[1.75rem] font-bold leading-snug text-[#102a4c]">
               成果につながる、<br />次の一歩まで。
             </h3>
 
-            {/* 4ステップタイムライン */}
+            {/* 4ステップ：番号バッジなし・各ステップにisometric画像 */}
             <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
               {ROADMAP_STEPS.map((step, i) => (
                 <div
-                  key={step.num}
-                  className="relative min-h-[160px] rounded-lg border border-[#d8efe9] bg-white p-4"
+                  key={step.title}
+                  className="relative flex flex-col items-center rounded-lg border border-[#d8efe9] bg-white p-4 text-center"
                 >
-                  {/* ステップ間矢印 */}
+                  {/* ステップ間横矢印（md以上） */}
                   {i < ROADMAP_STEPS.length - 1 && (
-                    <div className="absolute -right-[7px] top-1/2 z-10 hidden h-0.5 w-3.5 -translate-y-1/2 bg-[#9dded3] md:block" aria-hidden />
+                    <div
+                      className="absolute -right-[7px] top-1/2 z-10 hidden h-0.5 w-3.5 -translate-y-1/2 bg-[#9dded3] md:block"
+                      aria-hidden
+                    />
                   )}
-                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#0fc8aa] text-[13px] font-extrabold text-white">
-                    {step.num}
+                  {/* アイソメトリック画像 */}
+                  <div className="relative mb-3 h-[68px] w-[68px]">
+                    <Image src={step.img} alt={step.title} fill className="object-contain" />
                   </div>
-                  <h4 className="font-heading mt-3 mb-2 text-[1.0625rem] font-bold leading-snug text-[#102a4c]">
+                  <h4 className="font-heading mb-1.5 text-[0.9375rem] font-bold leading-snug text-[#102a4c]">
                     {step.title}
                   </h4>
-                  <p className="text-[13px] leading-relaxed text-[#657b8f]">{step.desc}</p>
+                  <p className="text-[12px] leading-relaxed text-[#657b8f]">{step.desc}</p>
                 </div>
               ))}
             </div>
           </motion.article>
         </div>
 
-        {/* 矢印ブリッジ（lg以上） */}
-        <div className="relative h-0 lg:block">
-          <div
-            className="absolute hidden -translate-y-1/2 lg:flex"
-            style={{ left: 'calc(39% - 22px)', top: '-30px' }}
-            aria-hidden
-          >
-            <span className="flex h-11 w-11 items-center justify-center rounded-full border border-[#d8e8f3] bg-white text-[24px] font-bold text-[#1f5f9f] shadow-[rgba(16,42,76,0.12)_0_12px_26px]">
-              ›
-            </span>
-          </div>
-        </div>
-
-        {/* ── 3つのポイント ── */}
+        {/* ── 3つのポイント（漢字アイコン削除） ── */}
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -203,15 +202,10 @@ export default function ComparisonDiagram() {
           {PROOF_ITEMS.map((item) => (
             <div
               key={item.title}
-              className="flex items-center gap-3 rounded-lg border border-[#d8e8f3] bg-[rgba(255,255,255,0.86)] p-[18px] shadow-sm"
+              className="rounded-lg border border-[#d8e8f3] bg-[rgba(255,255,255,0.86)] p-5 shadow-sm"
             >
-              <div className="flex h-[42px] w-[42px] shrink-0 items-center justify-center rounded-lg border border-[#bfeee4] bg-[#e7fbf7] text-[17px] font-black text-[#0fc8aa]">
-                {item.abbr}
-              </div>
-              <div>
-                <p className="mb-1 text-[15px] font-bold text-[#102a4c]">{item.title}</p>
-                <p className="text-[12px] leading-relaxed text-[#657b8f]">{item.desc}</p>
-              </div>
+              <p className="mb-1.5 text-[15px] font-bold text-[#102a4c]">{item.title}</p>
+              <p className="text-[13px] leading-relaxed text-[#657b8f]">{item.desc}</p>
             </div>
           ))}
         </motion.div>
