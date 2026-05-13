@@ -1,11 +1,34 @@
 import Image from "next/image";
-import caseImage1 from "../../../icon-assets/isometric_15.png";
-import caseImage2 from "../../../icon-assets/isometric_20.png";
-import caseImage3 from "../../../icon-assets/isometric_07.png";
-import caseImage4 from "../../../icon-assets/isometric_09.png";
 import type { SubsidyLpData } from "@/lib/subsidy-data/types";
 
-const caseImages = [caseImage1, caseImage2, caseImage3, caseImage4];
+/** 業種ラベルに含まれるキーワード → 画像パス（TargetIndustriesSectionと共通ルール） */
+const CASE_IMAGE_MAP: { keywords: string[]; src: string }[] = [
+  { keywords: ["食品加工", "食品・物流", "食品工場"], src: "/images/industries/food-processing.png" },
+  { keywords: ["建設", "土木", "建築", "重機", "電動化", "脱炭素", "GX", "リース", "レンタル", "重機保有"], src: "/images/industries/construction.webp" },
+  { keywords: ["運送", "配送", "輸送"], src: "/images/industries/transport.png" },
+  { keywords: ["製造", "加工業", "機械"], src: "/images/industries/manufacturing.png" },
+  { keywords: ["印刷"], src: "/images/industries/printing.png" },
+  { keywords: ["物流", "倉庫", "3PL", "マテハン"], src: "/images/industries/logistics.png" },
+  { keywords: ["介護", "福祉"], src: "/images/industries/care-welfare.png" },
+  { keywords: ["医療", "クリニック", "病院", "診療所"], src: "/images/industries/medical.png" },
+  { keywords: ["飲食", "レストラン"], src: "/images/industries/restaurant.png" },
+  { keywords: ["小売", "卸売"], src: "/images/industries/retail-food.png" },
+  { keywords: ["農業", "林業", "漁業"], src: "/images/industries/agriculture.png" },
+];
+
+const CASE_FALLBACK = [
+  "/images/industries/manufacturing.png",
+  "/images/industries/logistics.png",
+  "/images/industries/food-processing.png",
+  "/images/industries/construction.webp",
+];
+
+function resolveCaseImage(industry: string, index: number): string {
+  for (const rule of CASE_IMAGE_MAP) {
+    if (rule.keywords.some((kw) => industry.includes(kw))) return rule.src;
+  }
+  return CASE_FALLBACK[index % CASE_FALLBACK.length];
+}
 
 export default function CaseStudiesSection({
   data,
@@ -28,11 +51,13 @@ export default function CaseStudiesSection({
               key={`${item.industry}-${index}`}
               className="flex flex-col overflow-hidden rounded-xl border border-gray-100 transition-shadow hover:shadow-md"
             >
-              <div className="flex aspect-[5/3] items-center justify-center bg-[#F3F6FA]">
+              <div className="aspect-[5/3] overflow-hidden">
                 <Image
-                  src={caseImages[index % caseImages.length]}
+                  src={resolveCaseImage(item.industry, index)}
                   alt={item.industry}
-                  className="h-24 w-auto object-contain"
+                  width={400}
+                  height={240}
+                  className="h-full w-full object-cover"
                 />
               </div>
               <div className="flex flex-1 flex-col p-5">

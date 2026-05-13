@@ -1,12 +1,35 @@
 import Image from "next/image";
 import { Clock3 } from "lucide-react";
-import industryA from "../../../icon-assets/isometric_10.png";
-import industryB from "../../../icon-assets/isometric_15.png";
-import industryC from "../../../icon-assets/isometric_11.png";
-import industryD from "../../../icon-assets/isometric_20.png";
 import type { SubsidyLpData } from "@/lib/subsidy-data/types";
 
-const industryImages = [industryA, industryB, industryC, industryD];
+/** 業種ラベルに含まれるキーワード → 画像パス のマッピング（優先度順・上が優先） */
+const INDUSTRY_IMAGE_MAP: { keywords: string[]; src: string }[] = [
+  { keywords: ["食品加工", "食品・物流", "食品工場"], src: "/images/industries/food-processing.png" },
+  { keywords: ["建設", "土木", "建築", "重機", "電動化", "脱炭素", "GX", "リース", "レンタル", "重機保有"], src: "/images/industries/construction.webp" },
+  { keywords: ["運送", "配送", "輸送"], src: "/images/industries/transport.png" },
+  { keywords: ["製造", "加工業", "機械"], src: "/images/industries/manufacturing.png" },
+  { keywords: ["印刷"], src: "/images/industries/printing.png" },
+  { keywords: ["物流", "倉庫", "3PL", "マテハン"], src: "/images/industries/logistics.png" },
+  { keywords: ["介護", "福祉"], src: "/images/industries/care-welfare.png" },
+  { keywords: ["医療", "クリニック", "病院", "診療所"], src: "/images/industries/medical.png" },
+  { keywords: ["飲食", "レストラン"], src: "/images/industries/restaurant.png" },
+  { keywords: ["小売", "卸売"], src: "/images/industries/retail-food.png" },
+  { keywords: ["農業", "林業", "漁業"], src: "/images/industries/agriculture.png" },
+];
+
+const FALLBACK_IMAGES = [
+  "/images/industries/manufacturing.png",
+  "/images/industries/logistics.png",
+  "/images/industries/retail-food.png",
+  "/images/industries/food-processing.png",
+];
+
+function resolveIndustryImage(label: string, index: number): string {
+  for (const rule of INDUSTRY_IMAGE_MAP) {
+    if (rule.keywords.some((kw) => label.includes(kw))) return rule.src;
+  }
+  return FALLBACK_IMAGES[index % FALLBACK_IMAGES.length];
+}
 
 export default function TargetIndustriesSection({
   data,
@@ -32,11 +55,13 @@ export default function TargetIndustriesSection({
               <p className="mb-3 text-xs font-bold tracking-wide text-[#008894]">
                 {industry.label}
               </p>
-              <div className="mb-3 flex aspect-[4/3] w-full items-center justify-center">
+              <div className="mb-3 overflow-hidden rounded-lg aspect-[4/3] w-full">
                 <Image
-                  src={industryImages[index % industryImages.length]}
+                  src={resolveIndustryImage(industry.label, index)}
                   alt={industry.label}
-                  className="h-28 w-28 object-contain"
+                  width={400}
+                  height={300}
+                  className="h-full w-full object-cover"
                 />
               </div>
               <p className="text-sm leading-relaxed text-gray-600">{industry.desc}</p>
