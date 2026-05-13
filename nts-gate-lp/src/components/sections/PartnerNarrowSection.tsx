@@ -3,7 +3,6 @@
 import Image from "next/image";
 import { motion, useReducedMotion } from "framer-motion";
 import CTAButton from "@/components/shared/CTAButton";
-import isometric08 from "../../../icon-assets/isometric_08.webp";
 import { getPartnerUrl } from "@/lib/partnerUrl";
 import { trackPartnerLinkClick } from "@/lib/analytics";
 import {
@@ -29,13 +28,12 @@ export default function PartnerNarrowSection() {
           className="two-col img-left"
         >
           <div className="col-img w-full max-w-md justify-self-center lg:max-w-lg">
-            <div className="relative min-h-[280px] overflow-hidden max-md:h-[200px]">
+            <div className="relative min-h-[280px] overflow-hidden rounded-2xl max-md:h-[200px]">
               <Image
-                src={isometric08}
-                alt="パートナー企業と顧客をつなぐイラスト"
-                width={640}
-                height={640}
-                className="absolute bottom-0 left-1/2 h-[85%] w-auto -translate-x-1/2 object-contain"
+                src="/images/NTS everybody-picture.webp"
+                alt="NTSチームの集合写真"
+                fill
+                className="object-cover object-center"
               />
             </div>
           </div>
@@ -57,7 +55,7 @@ export default function PartnerNarrowSection() {
             <div className="flex justify-center lg:justify-start">
               <div className="w-full max-w-sm sm:w-auto">
                 <CTAButton
-                  text="提携プログラムの詳細を見る"
+                  text="提携パートナーの詳細を見る"
                   href={partnerHref}
                   variant="secondary"
                   size="large"
