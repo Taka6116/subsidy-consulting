@@ -13,14 +13,62 @@ import WhatIsNtsSection from "@/components/sections/WhatIsNtsSection";
 import NtsAiGapSection from "@/components/sections/NtsAiGapSection";
 import ComparisonDiagram from "@/components/sections/ComparisonDiagram";
 import CtaBar from "@/components/sections/CtaBar";
+import ArticlesCtaBar from "@/components/sections/ArticlesCtaBar";
 import PartnerNarrowSection from "@/components/sections/PartnerNarrowSection";
 import FaqSection from "@/components/sections/FaqSection";
 import FinalCtaSection from "@/components/sections/FinalCtaSection";
+import { prisma } from "@/lib/db/prisma";
+import { pickHeroImage } from "@/lib/content/imagePool";
 // import CheckLeadSection from "@/components/sections/CheckLeadSection";
 // import NewSubsidySection from "@/components/sections/NewSubsidySection";
 // import NtsAboutSection from "@/components/sections/NtsAboutSection";
 
-export default function Home() {
+export const revalidate = 300;
+
+async function getPreviewArticles() {
+  try {
+    const rows = await prisma.generatedContent.findMany({
+      where: {
+        contentType: "article",
+        status: "published",
+        slug: { not: undefined },
+        grant: { is: { status: "open" } },
+      },
+      orderBy: { publishedAt: "desc" },
+      take: 9,
+      include: {
+        grant: {
+          select: {
+            name: true,
+            targetIndustries: true,
+          },
+        },
+      },
+    });
+    return rows
+      .filter((r) => r.slug && r.title)
+      .map((r) => ({
+        id: r.id,
+        slug: r.slug as string,
+        title: r.title as string,
+        excerpt: r.excerpt ?? "",
+        subsidyName: r.grant?.name ?? "",
+        tags: r.tags ?? [],
+        heroImagePath: pickHeroImage({
+          subsidyId: r.subsidyId,
+          seedKey: r.id,
+          tags: r.tags ?? [],
+          targetIndustries: r.grant?.targetIndustries ?? [],
+        }),
+      }));
+  } catch {
+    return [];
+  }
+}
+
+export default async function Home() {
+  const previewArticles = await getPreviewArticles();
+
   return (
     <HomeEntrance>
       <ScrollDepthTracker />
@@ -44,6 +92,7 @@ export default function Home() {
         <WhatIsNtsSection />
         <SubsidyExamplesSection />
         <SubsidyMatchCtaSection />
+        <ArticlesCtaBar articles={previewArticles} />
         <ComparisonDiagram />
         <SubsidyKindsSection />
         <PartnerNarrowSection />

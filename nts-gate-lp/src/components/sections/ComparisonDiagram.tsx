@@ -90,7 +90,7 @@ export default function ComparisonDiagram() {
             1年後の成果まで、計画と実行を整えます。
           </h2>
           <p className="mx-auto mt-5 max-w-[680px] text-[1.0625rem] leading-[2] text-[#58718a]">
-            AIで見つけた制度を、専門家とともに事業で使える計画へ。<br />
+            補助金制度を専門家とともに事業で使える計画へ。<br />
             採択後の設備導入、実績報告、次年度の補助金戦略まで、迷いやすいポイントを整理します。
           </p>
         </motion.div>
@@ -160,7 +160,7 @@ export default function ComparisonDiagram() {
               NTSが目指す支援
             </span>
             <h3 className="font-heading mb-6 mt-5 max-w-[560px] text-[1.75rem] font-bold leading-snug text-[#102a4c]">
-              成果につながる、<br />次の一歩まで。
+              成果につながる、次の一歩まで。
             </h3>
 
             {/* 4ステップ：番号バッジなし・各ステップにisometric画像 */}
