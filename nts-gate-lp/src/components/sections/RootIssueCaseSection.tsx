@@ -7,7 +7,6 @@ import {
   ChevronRight,
   Target,
   ClipboardList,
-  Calculator,
   Search,
   Monitor,
   Users,
