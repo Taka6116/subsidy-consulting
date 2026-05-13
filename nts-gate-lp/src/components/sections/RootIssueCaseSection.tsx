@@ -895,7 +895,7 @@ function ActivationCard({
             className="font-heading mt-0.5"
             style={{
               fontSize: isRight
-                ? "clamp(1.9rem, 3.2vw, 2.4rem)"
+                ? "clamp(2.5rem, 4.2vw, 3.1rem)"
                 : "clamp(1.45rem, 2.5vw, 1.75rem)",
               fontWeight: 700,
               color: isRight ? "var(--accent-navy)" : "var(--text-primary)",
