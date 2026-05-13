@@ -13,6 +13,7 @@ import WhatIsNtsSection from "@/components/sections/WhatIsNtsSection";
 import NtsAiGapSection from "@/components/sections/NtsAiGapSection";
 import ComparisonDiagram from "@/components/sections/ComparisonDiagram";
 import CtaBar from "@/components/sections/CtaBar";
+import RootIssueCaseSection from "@/components/sections/RootIssueCaseSection";
 import ArticlesCtaBar from "@/components/sections/ArticlesCtaBar";
 import PartnerNarrowSection from "@/components/sections/PartnerNarrowSection";
 import FaqSection from "@/components/sections/FaqSection";
@@ -85,6 +86,7 @@ export default async function Home() {
             <HeroPartnerStrip />
           </div>
         </div>
+        <RootIssueCaseSection />
         <NtsAiGapSection />
         <NtsWarmIntroSection />
         <AwarenessSection />
