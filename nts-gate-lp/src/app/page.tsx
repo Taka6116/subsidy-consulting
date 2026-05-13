@@ -13,6 +13,7 @@ import WhatIsNtsSection from "@/components/sections/WhatIsNtsSection";
 import NtsAiGapSection from "@/components/sections/NtsAiGapSection";
 import ComparisonDiagram from "@/components/sections/ComparisonDiagram";
 import CtaBar from "@/components/sections/CtaBar";
+import SubsidyCaseStudySection from "@/components/sections/SubsidyCaseStudySection";
 import RootIssueCaseSection from "@/components/sections/RootIssueCaseSection";
 import ArticlesCtaBar from "@/components/sections/ArticlesCtaBar";
 import PartnerNarrowSection from "@/components/sections/PartnerNarrowSection";
@@ -93,6 +94,7 @@ export default async function Home() {
         <CtaBar />
         <WhatIsNtsSection />
         <SubsidyExamplesSection />
+        <SubsidyCaseStudySection />
         <SubsidyMatchCtaSection />
         <ArticlesCtaBar articles={previewArticles} />
         <ComparisonDiagram />
