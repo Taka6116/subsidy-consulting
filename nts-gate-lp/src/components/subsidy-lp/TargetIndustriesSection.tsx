@@ -2,33 +2,48 @@ import Image from "next/image";
 import { Clock3 } from "lucide-react";
 import type { SubsidyLpData } from "@/lib/subsidy-data/types";
 
-/** 業種ラベルに含まれるキーワード → 画像パス のマッピング（優先度順・上が優先） */
-const INDUSTRY_IMAGE_MAP: { keywords: string[]; src: string }[] = [
-  { keywords: ["食品加工", "食品・物流", "食品工場"], src: "/images/industries/food-processing.png" },
-  { keywords: ["建設", "土木", "建築", "重機", "電動化", "脱炭素", "GX", "リース", "レンタル", "重機保有"], src: "/images/industries/construction.webp" },
-  { keywords: ["運送", "配送", "輸送"], src: "/images/industries/transport.png" },
-  { keywords: ["製造", "加工業", "機械"], src: "/images/industries/manufacturing.png" },
-  { keywords: ["印刷"], src: "/images/industries/printing.png" },
-  { keywords: ["物流", "倉庫", "3PL", "マテハン"], src: "/images/industries/logistics.png" },
-  { keywords: ["介護", "福祉"], src: "/images/industries/care-welfare.png" },
-  { keywords: ["医療", "クリニック", "病院", "診療所"], src: "/images/industries/medical.png" },
-  { keywords: ["飲食", "レストラン"], src: "/images/industries/restaurant.png" },
-  { keywords: ["小売", "卸売"], src: "/images/industries/retail-food.png" },
-  { keywords: ["農業", "林業", "漁業"], src: "/images/industries/agriculture.png" },
+/** 業種ラベルに含まれるキーワード → 候補画像リスト（優先度順・複数枚で重複防止） */
+const INDUSTRY_IMAGE_MAP: { keywords: string[]; srcs: string[] }[] = [
+  { keywords: ["食品加工", "食品工場"], srcs: ["/images/industries/food-processing.png"] },
+  {
+    keywords: ["建設", "土木", "建築", "重機", "電動建機"],
+    srcs: ["/images/industries/construction.webp", "/images/industries/construction2.webp", "/images/industries/construction3.webp"],
+  },
+  {
+    keywords: ["リース", "レンタル", "脱炭素", "GX", "重機保有"],
+    srcs: ["/images/industries/construction2.webp", "/images/industries/construction3.webp", "/images/industries/transport2.webp"],
+  },
+  { keywords: ["運送", "配送", "輸送", "トラック"], srcs: ["/images/industries/transport.png", "/images/industries/transport2.webp", "/images/industries/transport3.webp"] },
+  { keywords: ["物流", "倉庫", "3PL", "マテハン"], srcs: ["/images/industries/logistics.png", "/images/industries/transport3.webp"] },
+  { keywords: ["製造", "加工業", "機械"], srcs: ["/images/industries/manufacturing.png", "/images/industries/manufacturing2.webp", "/images/industries/manufacturing3.webp"] },
+  { keywords: ["印刷"], srcs: ["/images/industries/printing.png"] },
+  { keywords: ["介護", "福祉"], srcs: ["/images/industries/care-welfare.png"] },
+  { keywords: ["医療", "クリニック", "病院", "診療所"], srcs: ["/images/industries/medical.png"] },
+  { keywords: ["飲食", "レストラン"], srcs: ["/images/industries/restaurant.png", "/images/industries/retail-food.png"] },
+  { keywords: ["小売", "卸売"], srcs: ["/images/industries/retail-food.png"] },
+  { keywords: ["IT", "DX", "デジタル", "システム"], srcs: ["/images/industries/dx-it.webp", "/images/industries/dx-it2.webp"] },
+  { keywords: ["人材", "採用", "雇用", "育成", "賃上げ"], srcs: ["/images/industries/human-resources2.webp", "/images/industries/human-resources3.webp"] },
+  { keywords: ["農業", "林業", "漁業"], srcs: ["/images/industries/agriculture.png"] },
 ];
 
-const FALLBACK_IMAGES = [
+const FALLBACK_POOL = [
   "/images/industries/manufacturing.png",
   "/images/industries/logistics.png",
   "/images/industries/retail-food.png",
   "/images/industries/food-processing.png",
+  "/images/industries/manufacturing2.webp",
+  "/images/industries/transport2.webp",
 ];
 
-function resolveIndustryImage(label: string, index: number): string {
+function resolveIndustryImage(label: string, usedSrcs: Set<string>): string {
   for (const rule of INDUSTRY_IMAGE_MAP) {
-    if (rule.keywords.some((kw) => label.includes(kw))) return rule.src;
+    if (rule.keywords.some((kw) => label.includes(kw))) {
+      const unused = rule.srcs.find((s) => !usedSrcs.has(s));
+      return unused ?? rule.srcs[0];
+    }
   }
-  return FALLBACK_IMAGES[index % FALLBACK_IMAGES.length];
+  const unusedFallback = FALLBACK_POOL.find((s) => !usedSrcs.has(s));
+  return unusedFallback ?? FALLBACK_POOL[0];
 }
 
 export default function TargetIndustriesSection({
@@ -47,26 +62,33 @@ export default function TargetIndustriesSection({
         </p>
 
         <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-4">
-          {data.targetIndustries.map((industry, index) => (
-            <div
-              key={industry.label}
-              className="flex h-full flex-col rounded-xl bg-[#F3F6FA] p-5 transition-shadow hover:shadow-md"
-            >
-              <p className="mb-3 text-xs font-bold tracking-wide text-[#008894]">
-                {industry.label}
-              </p>
-              <div className="mb-3 overflow-hidden rounded-lg aspect-[4/3] w-full">
-                <Image
-                  src={resolveIndustryImage(industry.label, index)}
-                  alt={industry.label}
-                  width={400}
-                  height={300}
-                  className="h-full w-full object-cover"
-                />
-              </div>
-              <p className="text-sm leading-relaxed text-gray-600">{industry.desc}</p>
-            </div>
-          ))}
+          {(() => {
+            const usedSrcs = new Set<string>();
+            return data.targetIndustries.map((industry) => {
+              const imgSrc = resolveIndustryImage(industry.label, usedSrcs);
+              usedSrcs.add(imgSrc);
+              return (
+                <div
+                  key={industry.label}
+                  className="flex h-full flex-col rounded-xl bg-[#F3F6FA] p-5 transition-shadow hover:shadow-md"
+                >
+                  <p className="mb-3 text-xs font-bold tracking-wide text-[#008894]">
+                    {industry.label}
+                  </p>
+                  <div className="mb-3 overflow-hidden rounded-lg aspect-[4/3] w-full">
+                    <Image
+                      src={imgSrc}
+                      alt={industry.label}
+                      width={400}
+                      height={300}
+                      className="h-full w-full object-cover"
+                    />
+                  </div>
+                  <p className="text-sm leading-relaxed text-gray-600">{industry.desc}</p>
+                </div>
+              );
+            });
+          })()}
         </div>
 
         <div className="mt-10 flex flex-col items-center justify-between gap-4 rounded-xl bg-[#F3F6FA] p-5 md:flex-row md:p-6">
