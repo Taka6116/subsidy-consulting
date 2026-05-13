@@ -40,14 +40,14 @@ const RIGHT_STEPS = [
     num: "01",
     title: "本質課題を整理",
     body: "人手不足・在庫確認・作業の属人化まで確認",
-    image: "/images/PANA3362.webp",
+    image: "/images/PANA3362.jpg",
     alt: "課題を整理するイメージ",
   },
   {
     num: "02",
     title: "根本解決に近い制度も比較",
     body: "省力化・IT導入・業務改善系の制度も確認",
-    image: "/images/PANA3955.webp",
+    image: "/images/PANA3955.jpg",
     alt: "複数制度を比較するイメージ",
   },
 ] as const;
