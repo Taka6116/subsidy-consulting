@@ -120,12 +120,12 @@ export default function AwarenessSection() {
               id="home-awareness-heading"
               className="font-heading text-[1.75rem] font-bold leading-snug text-[var(--text-primary)] md:text-[2.25rem]"
             >
-              「申請できればいい」だけでは、
+              その経営課題
               <br />
-              もったいない。
+              補助金で動かせるかもしれません
             </h2>
             <div className="mx-auto mt-4 max-w-2xl space-y-3 text-base leading-loose text-[var(--text-secondary)] md:mt-4 md:text-lg">
-              <p>採択後の1年間をどう動くかで、会社の未来が変わります。</p>
+              <p>設備投資・人材育成・DX——多くの課題に、活用できる制度があります。</p>
             </div>
           </div>
 
