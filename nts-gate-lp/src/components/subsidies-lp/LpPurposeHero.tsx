@@ -26,7 +26,7 @@ const purposeCards = [
     href: "#lp-list",
     image: "/images/industries/human-resources3.webp",
     alt: "人材確保のイメージ",
-    className: "lg:left-[48%] lg:top-[12px] xl:top-[10px]",
+    className: "lg:left-[48%] lg:top-[8px] xl:top-[6px]",
   },
   {
     label: "物流・運送",
@@ -40,7 +40,7 @@ const purposeCards = [
     href: "#lp-list",
     image: "/images/industries/construction.webp",
     alt: "建設・施工のイメージ",
-    className: "lg:left-[4%] lg:top-[170px] xl:top-[216px] 2xl:top-[264px]",
+    className: "lg:left-[4%] lg:top-[170px] xl:top-[210px] 2xl:top-[256px]",
   },
   {
     label: "省エネ",
