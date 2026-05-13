@@ -8,7 +8,6 @@ import {
   Target,
   ClipboardList,
   Calculator,
-  BarChart3,
   Search,
   Monitor,
   Users,
@@ -880,57 +879,40 @@ function ActivationCard({
           minHeight: "190px",
         }}
       >
-        <div className="flex items-center gap-3">
-          <span
-            className="flex shrink-0 items-center justify-center rounded-full"
+        <div className="flex-1">
+          <p
+            className="font-heading"
             style={{
-              background: isRight ? "var(--accent-navy)" : "#F1F4F9",
-              width: isRight ? "56px" : "52px",
-              height: isRight ? "56px" : "52px",
+              fontSize: "0.72rem",
+              fontWeight: 700,
+              letterSpacing: "0.08em",
+              color: isRight ? "var(--accent-navy)" : "var(--text-muted)",
             }}
-            aria-hidden
           >
-            <BarChart3
-              size={isRight ? 26 : 24}
-              strokeWidth={isRight ? 2 : 1.8}
-              style={{ color: isRight ? "#fff" : "#6B7B92" }}
-            />
-          </span>
-          <div className="flex-1">
-            <p
-              className="font-heading"
+            活用余地
+          </p>
+          <p
+            className="font-heading mt-0.5"
+            style={{
+              fontSize: isRight
+                ? "clamp(1.9rem, 3.2vw, 2.4rem)"
+                : "clamp(1.45rem, 2.5vw, 1.75rem)",
+              fontWeight: 700,
+              color: isRight ? "var(--accent-navy)" : "var(--text-primary)",
+              lineHeight: 1.15,
+            }}
+          >
+            {amount}
+            <span
               style={{
-                fontSize: "0.72rem",
+                fontSize: "0.85rem",
                 fontWeight: 700,
-                letterSpacing: "0.08em",
-                color: isRight ? "var(--accent-navy)" : "var(--text-muted)",
+                marginLeft: "3px",
               }}
             >
-              活用余地
-            </p>
-            <p
-              className="font-heading mt-0.5"
-              style={{
-                fontSize: isRight
-                  ? "clamp(1.75rem, 3vw, 2.2rem)"
-                  : "clamp(1.6rem, 2.8vw, 2rem)",
-                fontWeight: 700,
-                color: isRight ? "var(--accent-navy)" : "var(--text-primary)",
-                lineHeight: 1.15,
-              }}
-            >
-              {amount}
-              <span
-                style={{
-                  fontSize: "0.85rem",
-                  fontWeight: 700,
-                  marginLeft: "3px",
-                }}
-              >
-                {amountUnit}
-              </span>
-            </p>
-          </div>
+              {amountUnit}
+            </span>
+          </p>
         </div>
         <p
           className="font-body mt-4"
