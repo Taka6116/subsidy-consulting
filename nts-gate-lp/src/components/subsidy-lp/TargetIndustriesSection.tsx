@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { Clock3 } from "lucide-react";
 import type { SubsidyLpData } from "@/lib/subsidy-data/types";
+import { resolveLpCardGridImage } from "@/lib/lp-cardgrid-pictures/resolveLpCardGridImage";
 
 /** 業種ラベルに含まれるキーワード → 候補画像リスト（優先度順・複数枚で重複防止） */
 const INDUSTRY_IMAGE_MAP: { keywords: string[]; srcs: string[] }[] = [
@@ -36,6 +37,9 @@ const FALLBACK_POOL = [
 ];
 
 function resolveIndustryImage(label: string, usedSrcs: Set<string>): string {
+  const cardGridImage = resolveLpCardGridImage(label);
+  if (cardGridImage && !usedSrcs.has(cardGridImage)) return cardGridImage;
+
   for (const rule of INDUSTRY_IMAGE_MAP) {
     if (rule.keywords.some((kw) => label.includes(kw))) {
       const unused = rule.srcs.find((s) => !usedSrcs.has(s));

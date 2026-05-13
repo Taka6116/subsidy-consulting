@@ -1,5 +1,6 @@
 import Image from "next/image";
 import type { SubsidyLpData } from "@/lib/subsidy-data/types";
+import { resolveLpCardGridImage } from "@/lib/lp-cardgrid-pictures/resolveLpCardGridImage";
 
 /**
  * 業種キーワード → 候補画像リスト（複数枚持つことで同一LP内での重複を防ぐ）
@@ -110,8 +111,11 @@ function getCandidates(industry: string): string[] {
  * 使用済み画像セットを考慮しながら画像を選ぶ。
  * 候補の中で未使用のものを優先し、全て使用済みなら候補先頭を返す。
  */
-function resolveCaseImage(industry: string, usedSrcs: Set<string>): string {
-  const candidates = getCandidates(industry);
+function resolveCaseImage(text: string, usedSrcs: Set<string>): string {
+  const cardGridImage = resolveLpCardGridImage(text);
+  if (cardGridImage && !usedSrcs.has(cardGridImage)) return cardGridImage;
+
+  const candidates = getCandidates(text);
   const unused = candidates.find((src) => !usedSrcs.has(src));
   return unused ?? candidates[0];
 }
@@ -135,7 +139,8 @@ export default function CaseStudiesSection({
           {(() => {
             const usedSrcs = new Set<string>();
             return data.caseStudies.map((item, index) => {
-              const imgSrc = resolveCaseImage(item.industry, usedSrcs);
+              const matchText = `${item.industry} ${item.result} ${item.detail}`;
+              const imgSrc = resolveCaseImage(matchText, usedSrcs);
               usedSrcs.add(imgSrc);
               return (
               <div

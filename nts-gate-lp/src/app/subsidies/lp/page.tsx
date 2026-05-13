@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
 import Header from "@/components/shared/Header";
 import LpFooter from "@/components/gate-lp/LpFooter";
+import LpPurposeHero from "@/components/subsidies-lp/LpPurposeHero";
 import { prisma } from "@/lib/db/prisma";
 import SubsidiesLpClient from "./SubsidiesLpClient";
 import {
@@ -94,9 +93,9 @@ const FEATURED_LPS = [
 ] as const;
 
 export const metadata: Metadata = {
-  title: "目的から選べる補助金活用ガイド | 日本提携支援",
+  title: "業種・目的から使える補助金を見つける | 日本提携支援",
   description:
-    "設備投資・IT導入・人材確保など、用途別に専門LPを整理。自社に使える補助金を確認し、申請前のポイントまで把握できます。",
+    "設備投資・IT導入・人材確保・物流改善まで、自社に関係する補助金制度を目的別にわかりやすく整理しています。",
 };
 
 export const revalidate = 300;
@@ -146,7 +145,37 @@ export default async function SubsidiesLpIndexPage() {
     },
   });
 
-  const filteredRaw = raw.filter((r) => !DEDICATED_LP_GRANT_IDS.has(r.grant.id));
+  const lpGrantIds = new Set(raw.map((r) => r.grant.id));
+
+  const articleRaw = await prisma.generatedContent.findMany({
+    where: {
+      contentType: "article",
+      status: "published",
+    },
+    orderBy: { publishedAt: "desc" },
+    take: 400,
+    include: {
+      grant: {
+        select: {
+          id: true,
+          name: true,
+          maxAmountLabel: true,
+          subsidyAmount: true,
+          deadlineLabel: true,
+          deadline: true,
+          prefecture: true,
+          targetIndustries: true,
+          status: true,
+          description: true,
+        },
+      },
+    },
+  });
+
+  const articleBackfilledRaw = articleRaw.filter((r) => !lpGrantIds.has(r.grant.id));
+  const combinedRaw = [...raw, ...articleBackfilledRaw];
+
+  const filteredRaw = combinedRaw.filter((r) => !DEDICATED_LP_GRANT_IDS.has(r.grant.id));
 
   const rows = filteredRaw.map((r) => {
     const category = detectLpCategory({
@@ -228,78 +257,7 @@ export default async function SubsidiesLpIndexPage() {
     <>
       <Header />
       <main className="min-h-[100svh] bg-[#F4F7FB] pt-16 font-body sm:pt-20">
-        {/* ============ ヒーロー：背景画像 + ネイビーオーバーレイ + 右カテゴリカード ============ */}
-        <section className="relative min-h-[520px] overflow-hidden bg-[#0B2F4A] pb-12 pt-14 lg:min-h-[620px] lg:pb-16 lg:pt-20">
-          {/* 背景画像 */}
-          <Image
-            src="/images/nts_hero_bg.png"
-            alt="補助金活用ガイド一覧 - NTS日本提携支援"
-            fill
-            priority
-            sizes="100vw"
-            className="object-cover object-center"
-          />
-          {/* オーバーレイ（左側を濃く、右側を明るく残す） */}
-          <div
-            aria-hidden
-            className="pointer-events-none absolute inset-0 bg-gradient-to-r from-[#082A45] via-[#082A45]/85 to-[#082A45]/20"
-          />
-          <div
-            aria-hidden
-            className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-[#F4F7FB]/10"
-          />
-
-          <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <div className="max-w-2xl space-y-6 text-white">
-              <span className="inline-flex items-center rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs font-bold text-cyan-100 backdrop-blur-sm">
-                専門LPカタログ
-              </span>
-
-              <h1 className="text-4xl font-bold leading-tight tracking-normal text-white sm:text-5xl xl:text-6xl">
-                目的から選べる
-                <br />
-                補助金活用ガイド
-              </h1>
-
-              <p className="max-w-xl text-base leading-8 text-blue-50/90 lg:text-lg">
-                設備投資・IT導入・人材確保など、用途別に専門LPを整理。
-                <br className="hidden sm:block" />
-                自社に使える補助金を確認し、申請前のポイントまで把握できます。
-              </p>
-
-              {/* CTA */}
-              <div className="flex flex-col gap-3 pt-2 sm:flex-row sm:gap-4">
-                <Link
-                  href="#consult-cta"
-                  className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-white px-6 font-bold text-[#0B2F4A] shadow-lg shadow-black/10 transition hover:bg-blue-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-300 sm:w-auto"
-                >
-                  自社に合う補助金を確認する
-                  <ArrowRight className="h-4 w-4" />
-                </Link>
-                <Link
-                  href="#lp-list"
-                  className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl border border-white/30 bg-white/10 px-6 font-bold text-white backdrop-blur-sm transition hover:bg-white/15 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-300 sm:w-auto"
-                >
-                  専門LPを見る
-                  <ArrowRight className="h-4 w-4" />
-                </Link>
-              </div>
-
-              {/* 実績バッジ */}
-              <div className="mt-6 flex flex-wrap gap-2">
-                <span className="inline-flex items-center rounded-full border border-white/15 bg-white/10 px-3 py-1.5 text-xs font-bold text-blue-50 backdrop-blur-sm">
-                  公開中 {totalLpCount}件
-                </span>
-                <span className="inline-flex items-center rounded-full border border-white/15 bg-white/10 px-3 py-1.5 text-xs font-bold text-blue-50 backdrop-blur-sm">
-                  専門LP付き
-                </span>
-                <span className="inline-flex items-center rounded-full border border-white/15 bg-white/10 px-3 py-1.5 text-xs font-bold text-blue-50 backdrop-blur-sm">
-                  随時更新
-                </span>
-              </div>
-            </div>
-          </div>
-        </section>
+        <LpPurposeHero totalLpCount={totalLpCount} />
 
         {/* ============ 検索・フィルター + 相談ミニバナー + カード一覧 ============ */}
         <section id="lp-list" className="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8 lg:py-12">
