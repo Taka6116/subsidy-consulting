@@ -30,7 +30,7 @@ const steps = [
   },
   {
     image: isometric04,
-    title: "最適なご提案・マッチング",
+    title: "最適なご提案",
     body: "課題解決に最適なソリューションをご提案し、実行まで丁寧に伴走サポートします。",
   },
 ];
@@ -44,25 +44,6 @@ export default function PartnerConsultValueSection() {
       }}
     >
       <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
-        {/* ラベル */}
-        <div style={{ textAlign: "center", marginBottom: "24px" }}>
-          <span
-            style={{
-              display: "inline-block",
-              fontSize: "0.75rem",
-              fontWeight: 700,
-              letterSpacing: "0.08em",
-              color: "var(--color-primary, #1a56db)",
-              border: "1px solid rgba(26, 86, 219, 0.3)",
-              borderRadius: "999px",
-              padding: "6px 18px",
-              background: "#ffffff",
-            }}
-          >
-            NTSの伴走スタイル
-          </span>
-        </div>
-
         {/* 見出し */}
         <div className="mb-14">
           <h2
@@ -190,40 +171,6 @@ export default function PartnerConsultValueSection() {
           </div>
         </div>
 
-        {/* 下部バナー */}
-        <div
-          style={{
-            marginTop: "56px",
-            background: "linear-gradient(135deg, #eff6ff 0%, #f0f9ff 100%)",
-            border: "1px solid #bfdbfe",
-            borderRadius: "16px",
-            padding: "32px 40px",
-            display: "flex",
-            flexWrap: "wrap",
-            alignItems: "center",
-            justifyContent: "space-between",
-            gap: "16px",
-          }}
-        >
-          <p
-            className="font-heading"
-            style={{
-              fontSize: "clamp(1rem, 2vw, 1.2rem)",
-              fontWeight: 700,
-              color: "var(--color-primary, #1a56db)",
-              lineHeight: 1.6,
-              margin: 0,
-            }}
-          >
-            私たちは、課題の
-            <span style={{ textDecoration: "underline", textDecorationColor: "#93c5fd" }}>
-              &quot;本質&quot;
-            </span>
-            に向き合うことで、
-            <br />
-            御社の意思決定と変革を力強くサポートします。
-          </p>
-        </div>
       </div>
     </section>
   );
