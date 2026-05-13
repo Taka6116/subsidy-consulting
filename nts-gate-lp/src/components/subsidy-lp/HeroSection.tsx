@@ -104,12 +104,11 @@ export default function HeroSection({
         </div>
 
         {/* メインコピー */}
-        <h1 className="mb-2 max-w-2xl text-3xl font-bold leading-tight text-white md:text-4xl lg:text-5xl">
+        <h1 className="mb-4 max-w-2xl text-3xl font-bold leading-snug text-white md:text-4xl lg:text-5xl">
           {data.headline}
+          <br />
+          <span className="text-[#FEA00D]">{data.headlineAccent}</span>
         </h1>
-        <p className="mb-4 max-w-2xl text-3xl font-bold text-[#FEA00D] md:text-4xl lg:text-5xl">
-          {data.headlineAccent}
-        </p>
         <p className="mb-10 max-w-2xl text-sm leading-relaxed text-white/80 md:text-base">
           {data.subheadline}
         </p>
