@@ -121,11 +121,7 @@ export default function LpPurposeHero({ totalLpCount }: Props) {
 
       <div className="relative z-10 mx-auto grid max-w-[1780px] items-center gap-8 px-5 sm:px-8 lg:grid-cols-[0.42fr_0.58fr] lg:px-12 xl:px-14 2xl:px-16">
         <div className="max-w-[720px] lg:pl-2">
-          <span className="inline-flex items-center rounded-full bg-gradient-to-r from-[#0B63CE] to-[#51D6FF] px-5 py-2.5 text-sm font-black text-white shadow-[0_16px_38px_rgba(11,99,206,.28)] xl:px-6 xl:py-3 xl:text-base">
-            補助金ナビ
-          </span>
-
-          <h1 className="mt-7 text-[clamp(2.875rem,4.1vw,4.5rem)] font-black leading-[1.14] tracking-tight text-[#081C44] xl:mt-8">
+          <h1 className="mt-0 text-[clamp(2.875rem,4.1vw,4.5rem)] font-black leading-[1.14] tracking-tight text-[#081C44] xl:mt-8">
             業種・目的から
             <br />
             <span className="bg-gradient-to-r from-[#0EA5E9] to-[#006FE6] bg-clip-text text-transparent">

@@ -38,27 +38,77 @@ const LP_IMAGES: Record<string, ImageEntry[]> = {
   ],
 };
 
-// article_pictures内の補助的な画像インデックス
+// article_pictures内の全画像インデックス（カテゴリ別）
 const ARTICLE_IMAGES: Record<string, ImageEntry[]> = {
+  DX_IT: [
+    { url: "/api/article-pictures/DX%E3%83%BBIT/businessman-with-digital-interface-data-growth.webp", alt: "デジタルデータ活用" },
+    { url: "/api/article-pictures/DX%E3%83%BBIT/business-restructuring-transition-structure-company-digital-transformation-technology-strategy-digitization-digitalization-business-product-process-production-innovation.webp", alt: "DXトランスフォーメーション" },
+    { url: "/api/article-pictures/DX%E3%83%BBIT/call-center-worker-using-ai-tech-laptop-reply-customers-closeup.webp", alt: "AIツール活用" },
+    { url: "/api/article-pictures/DX%E3%83%BBIT/close-up-office-desktop-with-laptop-computer-glowing-blurry-ai-hologram-with-binary-coding-blurry-background-artificial-intelligence-technology-programming-concept-double-exposure.webp", alt: "AI・プログラミング" },
+    { url: "/api/article-pictures/DX%E3%83%BBIT/creative-digital-marketing-concept-featuring-colorful-visuals-modern-technology-effective-online-advertising-campaigns.webp", alt: "デジタルマーケティング" },
+    { url: "/api/article-pictures/DX%E3%83%BBIT/digital-assets-business-management-system-concept.webp", alt: "デジタル資産管理" },
+    { url: "/api/article-pictures/DX%E3%83%BBIT/DX%E3%83%BBIT3.webp", alt: "DX・IT活用" },
+    { url: "/api/article-pictures/DX%E3%83%BBIT/DX%E3%83%BBIT%E7%B3%BB2.webp", alt: "DX推進" },
+    { url: "/api/article-pictures/DX%E3%83%BBIT/wooden-blocks-with-dx-text-concept-pen-sketchbook-cup.webp", alt: "DXコンセプト" },
+    { url: "/api/article-pictures/DX%E3%83%BBIT/asia-businesswoman-entrepreneur-wearing-face-mask-social-distancing-new-normal-situation-virus-prevention-while-using-laptop-phone-back-work-office.webp", alt: "テレワーク・DX" },
+  ],
   事業計画: [
-    {
-      url: "/api/article-pictures/%E4%BA%8B%E6%A5%AD%E8%A8%88%E7%94%BB/business-corporate-people-working-concept.webp",
-      alt: "事業計画",
-    },
-    {
-      url: "/api/article-pictures/%E4%BA%8B%E6%A5%AD%E8%A8%88%E7%94%BB/business-meeting-conference-concept.webp",
-      alt: "事業戦略",
-    },
+    { url: "/api/article-pictures/%E4%BA%8B%E6%A5%AD%E8%A8%88%E7%94%BB/business-corporate-people-working-concept.webp", alt: "事業計画" },
+    { url: "/api/article-pictures/%E4%BA%8B%E6%A5%AD%E8%A8%88%E7%94%BB/business-meeting-conference-concept.webp", alt: "事業戦略会議" },
+    { url: "/api/article-pictures/%E4%BA%8B%E6%A5%AD%E8%A8%88%E7%94%BB/business-share-planing-strategy-brainstroming-concept.webp", alt: "事業計画立案" },
+    { url: "/api/article-pictures/%E4%BA%8B%E6%A5%AD%E8%A8%88%E7%94%BB/hr-managers-interviewing-job-applicant.webp", alt: "経営面談" },
+    { url: "/api/article-pictures/%E4%BA%8B%E6%A5%AD%E8%A8%88%E7%94%BB/two-cropped-startuppers-developing-business-plan.webp", alt: "スタートアップ事業計画" },
+    { url: "/api/article-pictures/%E4%BA%8B%E6%A5%AD%E8%A8%88%E7%94%BB/working-process-startup-businessman-working-wood-table-with-new-finance-project-modern-notebook-table-pen-holding-hand.webp", alt: "新規事業プロジェクト" },
+  ],
+  人材: [
+    { url: "/api/article-pictures/%E4%BA%BA%E6%9D%90%E3%83%BB%E6%8E%A1%E7%94%A8/business-job-interview-concept.webp", alt: "採用面接" },
+    { url: "/api/article-pictures/%E4%BA%BA%E6%9D%90%E3%83%BB%E6%8E%A1%E7%94%A8/business-team-discussing-report-digital-tablet.webp", alt: "チームミーティング" },
+    { url: "/api/article-pictures/%E4%BA%BA%E6%9D%90%E3%83%BB%E6%8E%A1%E7%94%A8/business-teamwork-meeting-discuss.webp", alt: "人材育成" },
+    { url: "/api/article-pictures/%E4%BA%BA%E6%9D%90%E3%83%BB%E6%8E%A1%E7%94%A8/handshake-close-up-executives.webp", alt: "採用契約" },
+    { url: "/api/article-pictures/%E4%BA%BA%E6%9D%90%E3%83%BB%E6%8E%A1%E7%94%A8/hr-human-resources-recruitment-organisation-structure-social-network-concept.webp", alt: "HR・組織構築" },
+    { url: "/api/article-pictures/%E4%BA%BA%E6%9D%90%E3%83%BB%E6%8E%A1%E7%94%A8/male-candidate-interviewed-by-diverse-hr-team.webp", alt: "多様な採用チーム" },
+    { url: "/api/article-pictures/%E4%BA%BA%E6%9D%90%E3%83%BB%E6%8E%A1%E7%94%A8/nice-meet-you.webp", alt: "人材マッチング" },
+    { url: "/api/article-pictures/%E4%BA%BA%E6%9D%90%E3%83%BB%E6%8E%A1%E7%94%A8/portrait-asian-businesswoman-presenting-her-plan-meeting.webp", alt: "プレゼンテーション" },
+    { url: "/api/article-pictures/%E4%BA%BA%E6%9D%90%E3%83%BB%E6%8E%A1%E7%94%A8/recruitment-wallpaper-conference-presentation.webp", alt: "採用プレゼン" },
+    { url: "/api/article-pictures/%E4%BA%BA%E6%9D%90%E3%83%BB%E6%8E%A1%E7%94%A8/unrecognizable-man-woman-business-suits-looking-laptop-screen-together.webp", alt: "協業・人材連携" },
+    { url: "/api/article-pictures/%E4%BA%BA%E6%9D%90%E3%83%BB%E6%8E%A1%E7%94%A8/workers-talking.webp", alt: "職場コミュニケーション" },
+    { url: "/api/article-pictures/%E4%BA%BA%E6%9D%90%E3%83%BB%E6%8E%A1%E7%94%A8/%E4%BA%BA%E6%9D%90%E3%83%BB%E6%8E%A1%E7%94%A82.webp", alt: "人材・採用支援" },
+  ],
+  建設: [
+    { url: "/api/article-pictures/%E5%BB%BA%E8%A8%AD/construction-silhouette.webp", alt: "建設シルエット" },
+    { url: "/api/article-pictures/%E5%BB%BA%E8%A8%AD/construction-site-working-japan.webp", alt: "建設現場" },
+    { url: "/api/article-pictures/%E5%BB%BA%E8%A8%AD/construction-worker-engineer-working-together-construction-site.webp", alt: "建設エンジニア" },
+    { url: "/api/article-pictures/%E5%BB%BA%E8%A8%AD/engineers-analyzing-data-digital-tablet.webp", alt: "建設データ分析" },
+    { url: "/api/article-pictures/%E5%BB%BA%E8%A8%AD/singapore-nobody-urban-modern-high.webp", alt: "都市建設" },
+    { url: "/api/article-pictures/%E5%BB%BA%E8%A8%AD/working-construction-site.webp", alt: "施工現場" },
+    { url: "/api/article-pictures/%E5%BB%BA%E8%A8%AD/young-asian-engineers-teamwork-site-inspector-discuss-together-using-notebook-computer-paper-blueprint-building-construction-sitehome-renovation-ideas-concept.webp", alt: "現場チームワーク" },
+    { url: "/api/article-pictures/%E5%BB%BA%E8%A8%AD/%E5%BB%BA%E8%A8%AD%E7%B3%BB2.webp", alt: "建設業務" },
+    { url: "/api/article-pictures/%E5%BB%BA%E8%A8%AD/%E5%BB%BA%E8%A8%AD%E7%B3%BB3.webp", alt: "建設プロジェクト" },
+    { url: "/api/article-pictures/%E5%BB%BA%E8%A8%AD/%E5%BB%BA%E8%A8%AD%E7%B3%BB4.webp", alt: "建設施工" },
   ],
   設備: [
-    {
-      url: "/api/article-pictures/%E8%A8%AD%E5%82%99%E3%83%BB%E8%A8%AD%E5%82%99%E6%8A%95%E8%B3%87/factory-workshop-interior-machines-glass-production-background.webp",
-      alt: "設備投資",
-    },
-    {
-      url: "/api/article-pictures/%E8%A8%AD%E5%82%99%E3%83%BB%E8%A8%AD%E5%82%99%E6%8A%95%E8%B3%87/plant-picture-clean-room-equipment-stainless-steel-machines.webp",
-      alt: "生産設備",
-    },
+    { url: "/api/article-pictures/%E8%A8%AD%E5%82%99%E3%83%BB%E8%A8%AD%E5%82%99%E6%8A%95%E8%B3%87/factory-workshop-interior-machines-glass-production-background.webp", alt: "工場設備" },
+    { url: "/api/article-pictures/%E8%A8%AD%E5%82%99%E3%83%BB%E8%A8%AD%E5%82%99%E6%8A%95%E8%B3%87/plant-picture-clean-room-equipment-stainless-steel-machines.webp", alt: "生産設備" },
+    { url: "/api/article-pictures/%E8%A8%AD%E5%82%99%E3%83%BB%E8%A8%AD%E5%82%99%E6%8A%95%E8%B3%87/display-empty-photovoltaics-factory-monitoring-system-performance.webp", alt: "省エネ設備監視" },
+    { url: "/api/article-pictures/%E8%A8%AD%E5%82%99%E3%83%BB%E8%A8%AD%E5%82%99%E6%8A%95%E8%B3%87/empty-high-end-office-workspace-with-advanced-technology-enhance-efficiency.webp", alt: "先進設備" },
+    { url: "/api/article-pictures/%E8%A8%AD%E5%82%99%E3%83%BB%E8%A8%AD%E5%82%99%E6%8A%95%E8%B3%87/investors-examine-solar-panel-surface-using-tablet-discussing-design-efficiency.webp", alt: "省エネ投資" },
+    { url: "/api/article-pictures/%E8%A8%AD%E5%82%99%E3%83%BB%E8%A8%AD%E5%82%99%E6%8A%95%E8%B3%87/monitor-green-energy-solar-panels-plant-with-software-used-optimize-layouts.webp", alt: "グリーンエネルギー設備" },
+    { url: "/api/article-pictures/%E8%A8%AD%E5%82%99%E3%83%BB%E8%A8%AD%E5%82%99%E6%8A%95%E8%B3%87/production-line-printed-circuit-board-manufacturing-mounted-workshop.webp", alt: "製造ライン" },
+    { url: "/api/article-pictures/%E8%A8%AD%E5%82%99%E3%83%BB%E8%A8%AD%E5%82%99%E6%8A%95%E8%B3%87/steel-pipelines-cables-plant.webp", alt: "プラント設備" },
+    { url: "/api/article-pictures/%E8%A8%AD%E5%82%99%E3%83%BB%E8%A8%AD%E5%82%99%E6%8A%95%E8%B3%87/technologist-with-grey-tablet-his-hands-make-set-up-production-line-while-standing-department-dairy-factory.webp", alt: "生産ライン設備調整" },
+    { url: "/api/article-pictures/%E8%A8%AD%E5%82%99%E3%83%BB%E8%A8%AD%E5%82%99%E6%8A%95%E8%B3%87/%E8%A8%AD%E5%82%99%E6%8A%95%E8%B3%87%E7%B3%BB2.webp", alt: "設備投資" },
+  ],
+  運送: [
+    { url: "/api/article-pictures/%E9%81%8B%E9%80%81/asian-delivery-man-delivery-men-unloading-cardboard-boxes-from-truck.webp", alt: "トラック荷降ろし" },
+    { url: "/api/article-pictures/%E9%81%8B%E9%80%81/asian-delivery-man-work-truck-checking-product-truck-concept-ecommerce.webp", alt: "配送チェック" },
+    { url: "/api/article-pictures/%E9%81%8B%E9%80%81/close-up-hands-carrying-box.webp", alt: "荷物配送" },
+    { url: "/api/article-pictures/%E9%81%8B%E9%80%81/courier-doing-jobs-logistics.webp", alt: "物流業務" },
+    { url: "/api/article-pictures/%E9%81%8B%E9%80%81/delivery-man-smiling-holding-cardboard-box.webp", alt: "宅配サービス" },
+    { url: "/api/article-pictures/%E9%81%8B%E9%80%81/delivery-service-send-customer-receiving-package.webp", alt: "配送サービス" },
+    { url: "/api/article-pictures/%E9%81%8B%E9%80%81/entrepreneurs-small-business-sme-independent-men-work-home-use-smartphones-laptops-commercial-checking-online-marketing-packing-boxes-sme-sellers-concept-ecommerce-team-online-sales.webp", alt: "EC物流" },
+    { url: "/api/article-pictures/%E9%81%8B%E9%80%81/midsection-woman-receiving-boxes-from-delivery-man.webp", alt: "受取配送" },
+    { url: "/api/article-pictures/%E9%81%8B%E9%80%81/%E9%81%8B%E9%80%81%E7%B3%BB.webp", alt: "運送業" },
+    { url: "/api/article-pictures/%E9%81%8B%E9%80%81/%E9%81%8B%E9%80%81%E7%B3%BB2.webp", alt: "運送サービス" },
   ],
 };
 
@@ -106,26 +156,30 @@ export function pickLpImage(category: LpCategory, seed: string): ImageEntry {
 function getLpImagePool(category: LpCategory): ImageEntry[] {
   switch (category) {
     case "DX":
-      return LP_IMAGES.DX;
+      return [...LP_IMAGES.DX, ...ARTICLE_IMAGES.DX_IT];
     case "IT":
-      return LP_IMAGES.IT;
+      return [...LP_IMAGES.IT, ...ARTICLE_IMAGES.DX_IT];
     case "人材":
-      return LP_IMAGES.人材;
+      return [...LP_IMAGES.人材, ...ARTICLE_IMAGES.人材];
     case "建設":
-      return LP_IMAGES.建設;
+      return [...LP_IMAGES.建設, ...ARTICLE_IMAGES.建設];
     case "運送":
-      return LP_IMAGES.運送;
+      return [...LP_IMAGES.運送, ...ARTICLE_IMAGES.運送];
     case "事業計画":
       return ARTICLE_IMAGES.事業計画;
     case "設備":
       return ARTICLE_IMAGES.設備;
     default:
-      // その他はDX・IT・人材・設備のプールから選択
+      // その他は全カテゴリからバランスよく選択
       return [
         LP_IMAGES.DX[0],
         LP_IMAGES.IT[0],
         LP_IMAGES.人材[0],
         ARTICLE_IMAGES.設備[0],
+        ARTICLE_IMAGES.DX_IT[2],
+        ARTICLE_IMAGES.事業計画[0],
+        ARTICLE_IMAGES.建設[0],
+        ARTICLE_IMAGES.運送[0],
       ];
   }
 }

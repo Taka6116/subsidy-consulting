@@ -1,9 +1,11 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Search, X, ArrowRight, Check } from "lucide-react";
+import { Search, X, ArrowRight, Check, ChevronLeft, ChevronRight } from "lucide-react";
+
+const PAGE_SIZE = 20;
 import type {
   LpCategory,
   PurposeKey,
@@ -308,6 +310,7 @@ export default function SubsidiesLpClient({
   const [industries, setIndustries] = useState<Set<IndustryKey>>(new Set());
   const [amountBucket, setAmountBucket] = useState<AmountBucket | null>(null);
   const [sortKey, setSortKey] = useState<SortKey>("recommend");
+  const [currentPage, setCurrentPage] = useState(1);
 
   // 全カードを統一形式に変換
   const allCards: UnifiedCard[] = useMemo(() => {
@@ -390,6 +393,17 @@ export default function SubsidiesLpClient({
     }
     return { all: allCards.length, open, soon, closed };
   }, [allCards]);
+
+  // フィルター変更時はページを1にリセット
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [query, tab, purposes, industries, amountBucket, sortKey]);
+
+  const totalPages = Math.ceil(filtered.length / PAGE_SIZE);
+  const pagedCards = useMemo(
+    () => filtered.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE),
+    [filtered, currentPage],
+  );
 
   const hasAnyFilter =
     !!query.trim() ||
@@ -609,11 +623,27 @@ export default function SubsidiesLpClient({
           </button>
         </div>
       ) : (
-        <div className="mt-6 grid grid-cols-1 items-stretch gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {filtered.map((card) => (
-            <LpResultCard key={card.key} card={card} />
-          ))}
-        </div>
+        <>
+          <div className="mt-6 grid grid-cols-1 items-stretch gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {pagedCards.map((card) => (
+              <LpResultCard key={card.key} card={card} />
+            ))}
+          </div>
+
+          {/* ============ ページネーション ============ */}
+          {totalPages > 1 && (
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              totalItems={filtered.length}
+              pageSize={PAGE_SIZE}
+              onPageChange={(p) => {
+                setCurrentPage(p);
+                window.scrollTo({ top: 0, behavior: "smooth" });
+              }}
+            />
+          )}
+        </>
       )}
     </div>
   );
@@ -795,4 +825,90 @@ function LpResultCard({ card }: { card: UnifiedCard }) {
       </div>
     </article>
   );
+}
+
+// =============================================================
+// ページネーション
+// =============================================================
+
+function Pagination({
+  currentPage,
+  totalPages,
+  totalItems,
+  pageSize,
+  onPageChange,
+}: {
+  currentPage: number;
+  totalPages: number;
+  totalItems: number;
+  pageSize: number;
+  onPageChange: (page: number) => void;
+}) {
+  const start = (currentPage - 1) * pageSize + 1;
+  const end = Math.min(currentPage * pageSize, totalItems);
+
+  const pages = buildPageRange(currentPage, totalPages);
+
+  return (
+    <div className="mt-10 flex flex-col items-center gap-4">
+      <p className="text-sm text-slate-500">
+        <span className="font-bold text-slate-800">{start}–{end}</span> 件を表示
+        （全 <span className="font-bold text-slate-800">{totalItems}</span> 件）
+      </p>
+      <nav aria-label="ページネーション" className="flex items-center gap-1.5">
+        <button
+          type="button"
+          onClick={() => onPageChange(currentPage - 1)}
+          disabled={currentPage === 1}
+          className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-600 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
+          aria-label="前のページ"
+        >
+          <ChevronLeft className="h-4 w-4" />
+        </button>
+
+        {pages.map((p, i) =>
+          p === "…" ? (
+            <span key={`ellipsis-${i}`} className="px-1 text-slate-400">…</span>
+          ) : (
+            <button
+              key={p}
+              type="button"
+              onClick={() => onPageChange(p as number)}
+              aria-current={p === currentPage ? "page" : undefined}
+              className={`inline-flex h-10 min-w-[2.5rem] items-center justify-center rounded-xl border px-3 text-sm font-bold transition ${
+                p === currentPage
+                  ? "border-[#0B4F8A] bg-[#0B4F8A] text-white"
+                  : "border-slate-200 bg-white text-slate-700 hover:bg-slate-50"
+              }`}
+            >
+              {p}
+            </button>
+          ),
+        )}
+
+        <button
+          type="button"
+          onClick={() => onPageChange(currentPage + 1)}
+          disabled={currentPage === totalPages}
+          className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-600 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
+          aria-label="次のページ"
+        >
+          <ChevronRight className="h-4 w-4" />
+        </button>
+      </nav>
+    </div>
+  );
+}
+
+function buildPageRange(current: number, total: number): (number | "…")[] {
+  if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1);
+  const pages: (number | "…")[] = [];
+  pages.push(1);
+  if (current > 3) pages.push("…");
+  for (let p = Math.max(2, current - 1); p <= Math.min(total - 1, current + 1); p++) {
+    pages.push(p);
+  }
+  if (current < total - 2) pages.push("…");
+  pages.push(total);
+  return pages;
 }
