@@ -6,132 +6,132 @@ import Link from "next/link";
 import { ArrowRight, ExternalLink } from "lucide-react";
 
 // ============================================================
-// 事例データ — ここに追加するだけで件数を増やせます
+// 事例データ — ここに追加・編集するだけで件数を増やせます
 // ============================================================
 const CASES = [
-  // ── 1. 運送業 ──────────────────────────────────────────
   {
     id: "case-1",
     featured: true,
     industry: "運送業",
-    title: "Excel・手書き伝票から販売管理システムへ",
-    challenge: "売上・入金・請求の集計に時間がかかる",
-    solution: "販売管理システムを導入",
-    resultMain: "30%以上短縮",
-    resultSub: "売上集計の処理時間。誤請求ゼロ",
-    source: "中小企業庁 公式事例",
+    anonymousTitle: "運送業の公表事例",
+    title: "倉庫間搬送を省力化し、日々の残業を削減",
+    challenge: "倉庫間搬送・書類運搬に人手がかかっていた",
+    solution: "無人搬送車 AGV を導入",
+    resultMain: "1日142分削減",
+    subsidyRange: "最大1,000万円級",
+    source: "公式事例",
     imageUrl: "/images/industries/transport2.webp",
     imageAlt: "運送業・物流現場のイメージ",
   },
-  // ── 2. 建設業（株式会社河北） ───────────────────────────
   {
     id: "case-2",
     featured: false,
     industry: "建設業",
-    title: "工事原価作成をシステム化し年間120万円のコスト削減",
-    challenge: "Excelとシステムがバラバラで、ミスとコストがかさんでいた",
-    solution: "工事原価作成システム「Neo原価」で見積・発注・入金を一元管理",
-    resultMain: "年間120万円",
-    resultSub: "コスト削減。利益率0.17%増加。テレワーク対応にもつながった事例",
-    source: "IT導入補助金2020 公式PDF",
+    anonymousTitle: "建設業の公表事例",
+    title: "工事原価作成をシステム化し、年間コストを削減",
+    challenge: "工事原価や入金管理が紙・Excel中心だった",
+    solution: "工事原価管理システムを導入",
+    resultMain: "年間120万円削減",
+    subsidyRange: "最大150万円級",
+    source: "公式事例",
     imageUrl: "/images/industries/construction.webp",
     imageAlt: "建設現場のイメージ",
   },
-  // ── 3. 飲食業 ─────────────────────────────────────────
   {
     id: "case-3",
     featured: false,
     industry: "飲食業",
-    title: "セルフオーダーで人手不足と回転率を改善",
-    challenge: "慢性的な人手不足と回転率の低さが課題",
-    solution: "タッチパネル式セルフオーダーシステム「e-menu」を導入",
+    anonymousTitle: "飲食業の公表事例",
+    title: "売上・在庫管理をクラウド化し、回転率を改善",
+    challenge: "売上管理や在庫管理が属人的だった",
+    solution: "クラウドPOS・在庫管理ツールを導入",
     resultMain: "売上40%成長",
-    resultSub: "従業員の定着率向上、人手換算で0.7人分の工数削減",
-    source: "IT導入補助金2022 公式ページ",
+    subsidyRange: "最大150万円級",
+    source: "公式事例",
     imageUrl: "/images/industries/restaurant.png",
     imageAlt: "飲食店・カフェのイメージ",
   },
-  // ── 4. 卸売・小売業 ────────────────────────────────────
   {
     id: "case-4",
     featured: false,
     industry: "卸売・小売業",
-    title: "受注・在庫・経理を販売管理システムで一元化",
-    challenge: "約5万件の販売管理をシステム限界で処理、経理は手書きで1〜2ヶ月のラグ",
-    solution: "販売管理システム「PCA商魂DX」で受注・在庫・経理を一元管理",
+    anonymousTitle: "卸売・小売業の公表事例",
+    title: "伝票発行・在庫管理をクラウド化",
+    challenge: "伝票発行・受発注が手作業中心だった",
+    solution: "販売管理・受発注クラウドを導入",
     resultMain: "伝票発行 1/6",
-    resultSub: "伝票発行業務を短縮し、顧客数が2割増加",
-    source: "IT導入補助金2021 公式PDF",
+    subsidyRange: "最大150万円級",
+    source: "公式事例",
     imageUrl: "/images/industries/retail-food.png",
     imageAlt: "卸売・小売業のイメージ",
   },
-  // ── 5. 不動産業 ───────────────────────────────────────
   {
     id: "case-5",
     featured: false,
     industry: "不動産業",
-    title: "家賃管理などの定型業務をクラウド化",
-    challenge: "家賃管理などの定型業務が業務全体の7割を占めていた",
-    solution: "クラウド会計ソフト「freee」＋Salesforce連携で会計と顧客管理を統合",
+    anonymousTitle: "不動産業の公表事例",
+    title: "家賃管理など定型業務をクラウド化",
+    challenge: "家賃管理などの定型業務が多かった",
+    solution: "会計・顧客管理クラウドを導入",
     resultMain: "定型業務 7割→1割",
-    resultSub: "約6割分の業務削減が見込まれた事例",
-    source: "IT導入補助金2022 公式ページ",
+    subsidyRange: "最大150万円級",
+    source: "公式事例",
     imageUrl: "/images/industries/manufacturing2.webp",
     imageAlt: "オフィス・管理業務のイメージ",
   },
-  // ── 6. 建設業（株式会社ニッセイ） ──────────────────────
   {
     id: "case-6",
     featured: false,
     industry: "建設業",
-    title: "仕訳・請求・給与計算をクラウド化",
-    challenge: "仕訳・請求・給与計算がバラバラで、事務負担が大きかった",
-    solution: "マネーフォワード クラウド ビジネスでAI自動仕訳を含むクラウドツールを導入",
-    resultMain: "5日→1日",
-    resultSub: "給与計算の担当人員は最大3名から1名へ",
-    source: "IT導入補助金2024 公式PDF",
+    anonymousTitle: "建設業の公表事例",
+    title: "測量業務を省力化し、週あたりの作業時間を削減",
+    challenge: "測量業務に週60時間ほど要していた",
+    solution: "高機能測量機器を導入",
+    resultMain: "週30時間削減",
+    subsidyRange: "最大1,000万円級",
+    source: "公式事例",
     imageUrl: "/images/industries/construction2.webp",
-    imageAlt: "建設業・施工管理のイメージ",
+    imageAlt: "建設・測量現場のイメージ",
   },
-  // ── 7. 建設業（勤怠） ─────────────────────────────────
   {
     id: "case-7",
     featured: false,
     industry: "建設業",
-    title: "本社往復の勤怠管理をオンライン化",
+    anonymousTitle: "建設業の公表事例",
+    title: "現場勤怠管理をオンライン化し残業を削減",
     challenge: "現場作業員が打刻のため本社へ往復していた",
-    solution: "勤怠管理ソフト・Zoomを導入",
+    solution: "勤怠管理クラウドを導入",
     resultMain: "残業 1/3",
-    resultSub: "勤怠管理業務は2日から1日に短縮",
-    source: "中小企業庁 公式事例",
+    subsidyRange: "最大150万円級",
+    source: "公式事例",
     imageUrl: "/images/industries/construction3.webp",
     imageAlt: "建設現場・チームのイメージ",
   },
-  // ── 8. 士業・専門サービス ─────────────────────────────
   {
     id: "case-8",
     featured: false,
     industry: "士業・専門サービス",
-    title: "業務システムをクラウド化し管理を一元化",
+    anonymousTitle: "専門サービス業の公表事例",
+    title: "人事・給与・労務システムを一元化",
     challenge: "人事・労務・給与管理が分断されていた",
     solution: "基幹業務システム・労務給与ツールを導入",
     resultMain: "業務効率化",
-    resultSub: "働き方改革と社内意識改革を推進",
-    source: "IT導入補助金 公式サイト",
+    subsidyRange: "最大150万円級",
+    source: "公式事例",
     imageUrl: "/images/industries/human-resources3.webp",
     imageAlt: "オフィス・専門サービス業のイメージ",
   },
-  // ── 9. 運送業（リアルタイム） ─────────────────────────
   {
     id: "case-9",
     featured: false,
     industry: "運送業",
-    title: "ドライバーの勤務状況をリアルタイム把握",
-    challenge: "小口配達増加、ドライバー不足、過重労働リスクへの対応",
+    anonymousTitle: "運送業の公表事例",
+    title: "ドライバーの勤務状況をリアルタイムで把握",
+    challenge: "小口配達増加とドライバー不足に対応が必要だった",
     solution: "運送特化クラウド勤怠管理システムを導入",
-    resultMain: "事前アラート",
-    resultSub: "基準時間超えを事前に把握できるようになった事例",
-    source: "ミラサポplus",
+    resultMain: "超過前アラート",
+    subsidyRange: "最大150万円級",
+    source: "公式事例",
     imageUrl: "/images/industries/transport3.webp",
     imageAlt: "トラック・ドライバー管理のイメージ",
   },
@@ -154,7 +154,6 @@ export default function SubsidyCaseStudySection() {
     return () => mq.removeEventListener("change", handler);
   }, []);
 
-  // 永続スクロール — 停止条件なし（prefers-reduced-motion のみ例外）
   useEffect(() => {
     const track = trackRef.current;
     if (!track) return;
@@ -185,7 +184,7 @@ export default function SubsidyCaseStudySection() {
         <div className="text-center">
           <h2
             id="case-study-heading"
-            className="font-heading mt-5"
+            className="font-heading"
             style={{
               fontSize: "clamp(1.6rem, 3.2vw, 2.4rem)",
               fontWeight: 700,
@@ -210,11 +209,6 @@ export default function SubsidyCaseStudySection() {
       </div>
 
       {/* ── スクロールトラック ─────────────────────────── */}
-      {/*
-        PCでは「3枚ぴったり + 次カードが少し見切れる」幅になるよう、
-        トラックにpaddingを持たせてカードを引き立てる。
-        カード幅 = min(400px, 30vw程度) で3枚がmax-w-6xl内に収まる設計。
-      */}
       <div
         ref={trackRef}
         role="region"
@@ -225,7 +219,6 @@ export default function SubsidyCaseStudySection() {
           msOverflowStyle: "none",
           cursor: "grab",
           WebkitOverflowScrolling: "touch",
-          /* 左右に padding を入れてカードが端に貼り付かない */
           paddingLeft: "clamp(1.25rem, calc(50vw - 37rem), 6rem)",
           paddingRight: "clamp(1.25rem, calc(50vw - 34rem), 6rem)",
         }}
@@ -234,14 +227,23 @@ export default function SubsidyCaseStudySection() {
           <CaseCard
             key={`${c.id}-${i}`}
             caseData={c}
-            /* 複製セット（後半）はスクリーンリーダーから隠す */
             ariaHidden={i >= CASES.length}
           />
         ))}
       </div>
 
+      {/* ── 免責注意書き ──────────────────────────────── */}
+      <div className="mx-auto mt-6 max-w-6xl px-5 sm:px-6 lg:px-8">
+        <p
+          className="font-body text-center text-[11px] leading-relaxed"
+          style={{ color: "var(--text-muted)" }}
+        >
+          掲載内容は公表事例に基づく参考情報です。補助額・対象経費・採択可否は制度、申請内容、審査により異なります。
+        </p>
+      </div>
+
       {/* ── 下部CTAバー ───────────────────────────────── */}
-      <div className="mx-auto mt-10 max-w-6xl px-5 sm:px-6 lg:px-8">
+      <div className="mx-auto mt-8 max-w-6xl px-5 sm:px-6 lg:px-8">
         <div
           className="flex flex-col items-start justify-between gap-5 rounded-2xl bg-white px-6 py-5 sm:flex-row sm:items-center lg:px-8 lg:py-6"
           style={{
@@ -250,7 +252,6 @@ export default function SubsidyCaseStudySection() {
           }}
         >
           <div className="flex items-start gap-4">
-            {/* アイコン */}
             <span
               className="mt-0.5 flex h-12 w-12 shrink-0 items-center justify-center rounded-xl"
               style={{ background: "#EEF6FF", border: "1px solid #B5D4F4" }}
@@ -330,11 +331,6 @@ function CaseCard({
     <article
       className="font-body relative flex shrink-0 flex-col overflow-hidden rounded-2xl bg-white"
       style={{
-        /*
-          PC: 3枚でmax-w-6xl(1152px)の中にきれいに収まるよう幅調整
-          - 3 × 360px + 2 × 20px gap = 1120px → 余白込みで6xlに収まる
-          - モバイルでは 85vw で1枚ずつ
-        */
         width: "clamp(280px, 85vw, 360px)",
         border: c.featured ? "2px solid #1A4C8E" : "1px solid #DDE7F2",
         boxShadow: c.featured
@@ -345,7 +341,7 @@ function CaseCard({
       tabIndex={ariaHidden ? -1 : 0}
       aria-label={ariaHidden ? undefined : `${c.industry} — ${c.title}`}
     >
-      {/* おすすめバッジ（1枚目のみ） */}
+      {/* おすすめバッジ */}
       {c.featured && (
         <div
           className="font-heading absolute left-0 top-3 z-[2] px-3 py-1 text-[10px] font-bold text-white"
@@ -359,7 +355,7 @@ function CaseCard({
         </div>
       )}
 
-      {/* サムネイル — aspect-[16/7] */}
+      {/* サムネイル */}
       <div
         className="relative w-full overflow-hidden bg-[#EEF3F8]"
         style={{ aspectRatio: "16/7" }}
@@ -376,18 +372,30 @@ function CaseCard({
 
       {/* 本文 */}
       <div className="flex flex-1 flex-col p-5">
-        {/* 業種ラベル */}
-        <span
-          className="font-heading mb-2 inline-block text-[11px] font-bold"
-          style={{ color: "var(--accent-navy)" }}
-        >
-          {c.industry}
-        </span>
-        {/* タイトル */}
+        {/* 業種ラベル + 匿名タイトル */}
+        <div className="mb-2 flex items-center gap-2">
+          <span
+            className="font-heading shrink-0 rounded px-1.5 py-0.5 text-[10px] font-bold"
+            style={{
+              background: "rgba(26,76,142,0.08)",
+              color: "var(--accent-navy)",
+            }}
+          >
+            {c.industry}
+          </span>
+          <span
+            className="font-body truncate text-[11px]"
+            style={{ color: "var(--text-muted)" }}
+          >
+            {c.anonymousTitle}
+          </span>
+        </div>
+
+        {/* 事例タイトル */}
         <h3
           className="font-heading mb-4 font-bold leading-snug"
           style={{
-            fontSize: "0.975rem",
+            fontSize: "0.925rem",
             color: "var(--text-primary)",
             minHeight: "2.8rem",
           }}
@@ -402,7 +410,7 @@ function CaseCard({
           <FlowRow label="導入" value={c.solution} />
           <FlowArrow />
 
-          {/* 成果 — mt-auto で常に下部に固定、高さも統一 */}
+          {/* 成果ボックス — mt-auto で下部に固定 */}
           <div
             className="mt-auto rounded-xl px-4 py-3.5"
             style={{
@@ -420,17 +428,20 @@ function CaseCard({
             <p
               className="font-heading font-bold leading-none"
               style={{
-                fontSize: "clamp(1.5rem, 3.5vw, 1.9rem)",
+                fontSize: "clamp(1.4rem, 3.2vw, 1.75rem)",
                 color: "var(--accent-navy)",
               }}
             >
               {c.resultMain}
             </p>
+            {/* 補助額レンジ（成果より小さく控えめに） */}
             <p
-              className="font-body mt-2 text-xs leading-relaxed"
-              style={{ color: "#365578" }}
+              className="font-body mt-2 text-[11px] leading-relaxed"
+              style={{ color: "#5A7A9A" }}
             >
-              {c.resultSub}
+              制度上の補助額レンジ: {c.subsidyRange}
+              <br />
+              <span style={{ opacity: 0.75 }}>条件により異なります</span>
             </p>
           </div>
         </div>
@@ -490,4 +501,3 @@ function FlowArrow() {
     </div>
   );
 }
-
