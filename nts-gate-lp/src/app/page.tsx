@@ -97,7 +97,7 @@ export default async function Home() {
         </div>
         {/* ③ その経営課題、補助金で動かせるかもしれません */}
         <AwarenessSection />
-        {/* ④ 同じ相談でも、課題の見方で選ぶ制度が変わります */}
+        {/* ④ しかし、より最適な補助金制度があるかもしれません */}
         <RootIssueCaseSection />
         {/* ⑤ 例えばこんな補助金もあります。 */}
         <SubsidyExamplesSection />

@@ -92,7 +92,7 @@ export default function RootIssueCaseSection() {
               letterSpacing: "0.01em",
             }}
           >
-            同じ相談でも、課題の見方で選ぶ制度が変わります
+            しかし、より最適な補助金制度があるかもしれません
           </h2>
           <p
             className="font-body mx-auto mt-5"
