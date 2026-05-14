@@ -18,6 +18,15 @@ import { RelatedArticles } from "@/components/articles/RelatedArticles";
 // ========== [NEW 2026-04-30] 締切カウントダウン ==========
 import { ArticleDeadlineCountdown } from "@/components/articles/ArticleDeadlineCountdown";
 // ========== /NEW ==========
+// ========== 図解ブロック ==========
+import {
+  SummaryCards,
+  UsageFlow,
+  SubsidySpecCard,
+  ApplicationSteps,
+  type ArticleVisualData,
+} from "@/components/articles/ArticleVisualBlocks";
+// ========== /図解ブロック ==========
 
 // 5 分 ISR（新規生成時は再ビルド不要で切り替わる）
 export const revalidate = 300;
@@ -249,6 +258,22 @@ export default async function SubsidyArticlePage({ params }: PageProps) {
   });
   // ========== /UPDATED ==========
 
+  // ── 図解ブロック用データを組み立て ──────────────────────
+  const rawObj = article.grant ? toObj(article.grant.rawPayload) : null;
+  const visualData: ArticleVisualData = {
+    title: article.title ?? "",
+    subsidyName: article.grant?.name ?? null,
+    maxAmount: grantAmount,
+    deadline: grantDeadline,
+    region:
+      (rawObj?.prefecture as string | undefined) ??
+      (rawObj?.region as string | undefined) ??
+      null,
+    categories: article.tags ?? [],
+    targetIndustries: article.grant?.targetIndustries ?? [],
+  };
+  // ─────────────────────────────────────────────────────────
+
   const currentUrl =
     typeof process !== "undefined"
       ? `https://nihon-teikei.co.jp/subsidies/articles/${slug}`
@@ -370,6 +395,9 @@ export default async function SubsidyArticlePage({ params }: PageProps) {
             />
           </div>
 
+          {/* ── 図解ブロック①: SummaryCards ── */}
+          <SummaryCards data={visualData} />
+
           {/* 目次 */}
           <ArticleToc contentContainerId="article-body" />
 
@@ -392,6 +420,15 @@ export default async function SubsidyArticlePage({ params }: PageProps) {
           >
             <ReactMarkdown remarkPlugins={[remarkGfm]}>{article.body}</ReactMarkdown>
           </div>
+
+          {/* ── 図解ブロック②: UsageFlow ── */}
+          <UsageFlow data={visualData} />
+
+          {/* ── 図解ブロック③: SubsidySpecCard ── */}
+          <SubsidySpecCard data={visualData} />
+
+          {/* ── 図解ブロック④: ApplicationSteps ── */}
+          <ApplicationSteps />
 
           {/* コンサルタントコメント */}
           <ConsultantComment />
