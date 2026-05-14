@@ -143,14 +143,7 @@ export default function SubsidiesGalaxyClientV2({ counts, activePrefectureCount 
                 className="inline-flex items-center justify-center gap-2 rounded-2xl bg-[#2563eb] px-7 py-3.5 text-sm font-bold text-white shadow-md transition hover:bg-blue-500"
               >
                 <MessageCircleIcon />
-                無料相談する
-              </Link>
-              <Link
-                href="/subsidies/list"
-                className="inline-flex items-center justify-center gap-2 rounded-2xl border border-slate-300 bg-white px-7 py-3.5 text-sm font-bold text-[#0f172a] shadow-sm transition hover:border-blue-300 hover:shadow-md"
-              >
-                <SearchIcon />
-                対象補助金を確認する
+                無料相談予約する
               </Link>
             </div>
           </div>
@@ -166,14 +159,6 @@ function MessageCircleIcon() {
   return (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4">
       <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-    </svg>
-  );
-}
-
-function SearchIcon() {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4">
-      <circle cx="11" cy="11" r="8" /><path d="m21 21-4.35-4.35" />
     </svg>
   );
 }

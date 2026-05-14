@@ -583,10 +583,10 @@ export default function SubsidiesLpClient({
             無料相談する
           </Link>
           <Link
-            href="/subsidies/check"
+            href="/consult"
             className="inline-flex h-11 items-center justify-center rounded-xl px-3 text-sm font-bold text-[#0B4F8A] transition hover:underline"
           >
-            対象補助金を確認する →
+            無料相談予約する →
           </Link>
         </div>
       </div>

@@ -9,7 +9,6 @@ import {
   ClipboardList,
   Search,
   Monitor,
-  Users,
 } from "lucide-react";
 
 // ============================================================
@@ -616,32 +615,19 @@ export default function RootIssueCaseSection() {
                 border: "1px solid #B5D4F4",
               }}
             >
-              <div className="flex items-center gap-3">
-                <span
-                  className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-white"
-                  style={{ border: "1px solid #DDE7F2" }}
-                  aria-hidden
-                >
-                  <Users
-                    size={20}
-                    strokeWidth={1.8}
-                    style={{ color: "var(--accent-navy)" }}
-                  />
-                </span>
-                <p
-                  className="font-heading"
-                  style={{
-                    fontSize: "0.95rem",
-                    fontWeight: 700,
-                    color: "var(--text-primary)",
-                    lineHeight: 1.55,
-                  }}
-                >
-                  自社の場合、どの制度まで確認すべきか相談できます
-                </p>
-              </div>
+              <p
+                className="font-heading text-center sm:text-left"
+                style={{
+                  fontSize: "0.95rem",
+                  fontWeight: 700,
+                  color: "var(--text-primary)",
+                  lineHeight: 1.55,
+                }}
+              >
+                本当に最適でベストな補助金制度は何か、経営課題と一緒に提案させていただきます。
+              </p>
               <Link
-                href="/check"
+                href="/consult"
                 className="font-body inline-flex w-full shrink-0 items-center justify-center gap-2 rounded-[10px] px-7 py-3.5 text-sm font-bold text-white transition-opacity hover:opacity-90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1a4c8e] sm:w-auto"
                 style={{
                   background: "var(--accent-navy)",
@@ -650,7 +636,7 @@ export default function RootIssueCaseSection() {
                   boxShadow: "0 6px 14px rgba(26,76,142,0.18)",
                 }}
               >
-                対象補助金を確認する
+                無料相談予約する
                 <ArrowRight size={16} aria-hidden />
               </Link>
             </div>

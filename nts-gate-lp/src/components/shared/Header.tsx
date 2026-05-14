@@ -16,18 +16,11 @@ function HeaderCtaGroup() {
   return (
     <div className="flex shrink-0 flex-wrap items-center justify-end gap-2 sm:gap-2.5">
       <Link
-        href="/check"
-        onClick={() => trackCTAClick("header_subsidy_lookup")}
-        className="header-cta header-cta--secondary sm:min-w-[11rem] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent-navy)]"
-      >
-        対象補助金を確認する
-      </Link>
-      <Link
         href="/consult"
         onClick={() => trackCTAClick("header_consult")}
         className="header-cta header-cta--primary sm:min-w-[11rem] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent-navy)]"
       >
-        無料相談する
+        無料相談予約する
       </Link>
     </div>
   );
