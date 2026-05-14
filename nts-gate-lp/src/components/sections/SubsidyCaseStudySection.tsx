@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useEffect, useCallback } from "react";
+import { useRef, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, ExternalLink } from "lucide-react";
@@ -138,13 +138,10 @@ const CASES = [
 ];
 
 const SCROLL_SPEED = 0.5; // px/frame
-const RESUME_DELAY = 2000; // ms
 
 export default function SubsidyCaseStudySection() {
   const trackRef = useRef<HTMLDivElement>(null);
   const animRef = useRef<number | null>(null);
-  const isPausedRef = useRef(false);
-  const resumeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const prefersReducedRef = useRef(false);
 
   useEffect(() => {
@@ -157,23 +154,12 @@ export default function SubsidyCaseStudySection() {
     return () => mq.removeEventListener("change", handler);
   }, []);
 
-  const pause = useCallback(() => {
-    isPausedRef.current = true;
-    if (resumeTimerRef.current) clearTimeout(resumeTimerRef.current);
-  }, []);
-
-  const scheduleResume = useCallback(() => {
-    if (resumeTimerRef.current) clearTimeout(resumeTimerRef.current);
-    resumeTimerRef.current = setTimeout(() => {
-      isPausedRef.current = false;
-    }, RESUME_DELAY);
-  }, []);
-
+  // 永続スクロール — 停止条件なし（prefers-reduced-motion のみ例外）
   useEffect(() => {
     const track = trackRef.current;
     if (!track) return;
     const tick = () => {
-      if (!isPausedRef.current && !prefersReducedRef.current) {
+      if (!prefersReducedRef.current) {
         const half = track.scrollWidth / 2;
         track.scrollLeft += SCROLL_SPEED;
         if (track.scrollLeft >= half) track.scrollLeft = 0;
@@ -183,12 +169,8 @@ export default function SubsidyCaseStudySection() {
     animRef.current = requestAnimationFrame(tick);
     return () => {
       if (animRef.current) cancelAnimationFrame(animRef.current);
-      if (resumeTimerRef.current) clearTimeout(resumeTimerRef.current);
     };
   }, []);
-
-  const handlePause = useCallback(() => pause(), [pause]);
-  const handleResume = useCallback(() => scheduleResume(), [scheduleResume]);
 
   const doubled = [...CASES, ...CASES];
 
@@ -201,19 +183,6 @@ export default function SubsidyCaseStudySection() {
       {/* ── ヘッダー ───────────────────────────────────── */}
       <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
         <div className="text-center">
-          <span
-            className="font-body inline-flex items-center rounded-full px-4 py-1.5"
-            style={{
-              fontSize: "0.72rem",
-              fontWeight: 700,
-              letterSpacing: "0.1em",
-              color: "var(--accent-navy)",
-              background: "rgba(26,76,142,0.08)",
-              border: "1px solid rgba(26,76,142,0.18)",
-            }}
-          >
-            公式事例から見る活用イメージ
-          </span>
           <h2
             id="case-study-heading"
             className="font-heading mt-5"
@@ -260,13 +229,6 @@ export default function SubsidyCaseStudySection() {
           paddingLeft: "clamp(1.25rem, calc(50vw - 37rem), 6rem)",
           paddingRight: "clamp(1.25rem, calc(50vw - 34rem), 6rem)",
         }}
-      onFocus={handlePause}
-      onBlur={handleResume}
-      onTouchStart={handlePause}
-      onTouchEnd={handleResume}
-      onMouseDown={handlePause}
-      onMouseUp={handleResume}
-      onKeyDown={handlePause}
       >
         {doubled.map((c, i) => (
           <CaseCard
@@ -434,15 +396,15 @@ function CaseCard({
         </h3>
 
         {/* 課題 → 導入 → 成果 */}
-        <div className="flex-1">
+        <div className="flex flex-1 flex-col">
           <FlowRow label="課題" value={c.challenge} />
           <FlowArrow />
           <FlowRow label="導入" value={c.solution} />
           <FlowArrow />
 
-          {/* 成果 — 高さを統一するため min-height 固定 */}
+          {/* 成果 — mt-auto で常に下部に固定、高さも統一 */}
           <div
-            className="mt-0.5 rounded-xl px-4 py-3.5"
+            className="mt-auto rounded-xl px-4 py-3.5"
             style={{
               background: "linear-gradient(135deg, #EEF6FF 0%, #E4EFFC 100%)",
               border: "1px solid #B5D4F4",
