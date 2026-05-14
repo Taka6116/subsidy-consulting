@@ -82,22 +82,9 @@ export default function RootIssueCaseSection() {
       <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* ─── ヘッダー ──────────────────────────────────── */}
         <div className="text-center">
-          <span
-            className="font-body inline-flex items-center rounded-full px-4 py-1.5"
-            style={{
-              fontSize: "0.72rem",
-              fontWeight: 700,
-              letterSpacing: "0.1em",
-              color: "var(--accent-navy)",
-              background: "rgba(26,76,142,0.08)",
-              border: "1px solid rgba(26,76,142,0.18)",
-            }}
-          >
-            補助金活用の分岐点
-          </span>
           <h2
             id="root-issue-heading"
-            className="font-heading mt-5"
+            className="font-heading mt-0"
             style={{
               fontSize: "clamp(1.6rem, 3.2vw, 2.4rem)",
               fontWeight: 700,
