@@ -452,7 +452,10 @@ function CaseCard({
 
 function FlowRow({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex items-start gap-2.5 py-2.5">
+    <div
+      className="flex items-start gap-2.5 py-2.5"
+      style={{ minHeight: "3.6rem" }}
+    >
       <span
         className="font-heading mt-[1px] shrink-0 rounded px-1.5 py-0.5 text-[10px] font-bold"
         style={{
