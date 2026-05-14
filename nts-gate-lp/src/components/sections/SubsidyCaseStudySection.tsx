@@ -1,13 +1,12 @@
 "use client";
 
-import { useRef, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, ExternalLink } from "lucide-react";
 
 // ============================================================
-// 事例データ — ここに追加・編集するだけで件数を増やせます
-// schemeName: 活用された補助金制度名（公式ソースに基づく）
+// 事例データ
+// schemeName: 公式ソースに基づく活用補助金制度名
 // ============================================================
 const CASES = [
   {
@@ -20,7 +19,6 @@ const CASES = [
     solution: "無人搬送車 AGV を導入",
     resultMain: "1日142分削減",
     subsidyRange: "最大1,000万円級",
-    // 省力化投資補助金（中小企業省力化投資補助事業）- 経済産業省 公式
     schemeName: "省力化投資補助金",
     source: "公式事例",
     imageUrl: "/images/industries/transport2.webp",
@@ -36,8 +34,7 @@ const CASES = [
     solution: "工事原価管理システムを導入",
     resultMain: "年間120万円削減",
     subsidyRange: "最大150万円級",
-    // IT導入補助金2020 - 中小企業庁 公式PDF掲載事例
-    schemeName: "IT導入補助金",
+    schemeName: "IT導入補助金2020",
     source: "公式事例",
     imageUrl: "/images/industries/construction.webp",
     imageAlt: "建設現場のイメージ",
@@ -52,8 +49,7 @@ const CASES = [
     solution: "クラウドPOS・在庫管理ツールを導入",
     resultMain: "売上40%成長",
     subsidyRange: "最大150万円級",
-    // IT導入補助金2022 - IT導入補助金 公式ページ掲載事例
-    schemeName: "IT導入補助金",
+    schemeName: "IT導入補助金2022",
     source: "公式事例",
     imageUrl: "/images/industries/restaurant.png",
     imageAlt: "飲食店・カフェのイメージ",
@@ -68,8 +64,7 @@ const CASES = [
     solution: "販売管理・受発注クラウドを導入",
     resultMain: "伝票発行 1/6",
     subsidyRange: "最大150万円級",
-    // IT導入補助金2021 - IT導入補助金 公式PDF掲載事例
-    schemeName: "IT導入補助金",
+    schemeName: "IT導入補助金2021",
     source: "公式事例",
     imageUrl: "/images/industries/retail-food.png",
     imageAlt: "卸売・小売業のイメージ",
@@ -84,7 +79,6 @@ const CASES = [
     solution: "会計・顧客管理クラウドを導入",
     resultMain: "定型業務 7割→1割",
     subsidyRange: "最大150万円級",
-    // IT導入補助金2022 - IT導入補助金 公式ページ掲載事例
     schemeName: "IT導入補助金",
     source: "公式事例",
     imageUrl: "/images/industries/manufacturing2.webp",
@@ -100,7 +94,6 @@ const CASES = [
     solution: "高機能測量機器を導入",
     resultMain: "週30時間削減",
     subsidyRange: "最大1,000万円級",
-    // ものづくり補助金（設備投資型）- 中小企業庁 ものづくり補助金公式
     schemeName: "ものづくり補助金",
     source: "公式事例",
     imageUrl: "/images/industries/construction2.webp",
@@ -116,7 +109,6 @@ const CASES = [
     solution: "勤怠管理クラウドを導入",
     resultMain: "残業 1/3",
     subsidyRange: "最大150万円級",
-    // IT導入補助金 - 中小企業庁 公式事例
     schemeName: "IT導入補助金",
     source: "公式事例",
     imageUrl: "/images/industries/construction3.webp",
@@ -132,7 +124,6 @@ const CASES = [
     solution: "基幹業務システム・労務給与ツールを導入",
     resultMain: "業務効率化",
     subsidyRange: "最大150万円級",
-    // IT導入補助金 - IT導入補助金 公式サイト掲載事例
     schemeName: "IT導入補助金",
     source: "公式事例",
     imageUrl: "/images/industries/human-resources3.webp",
@@ -148,7 +139,6 @@ const CASES = [
     solution: "運送特化クラウド勤怠管理システムを導入",
     resultMain: "超過前アラート",
     subsidyRange: "最大150万円級",
-    // IT導入補助金 - ミラサポplus掲載事例
     schemeName: "IT導入補助金",
     source: "公式事例",
     imageUrl: "/images/industries/transport3.webp",
@@ -156,62 +146,11 @@ const CASES = [
   },
 ];
 
-// ── スクロール設定 ─────────────────────────────────────────
-// scrollLeft を直接操作する方式ではなく、translateX アニメーションで
-// 永続スクロールを実現することでブラウザの「スクロール位置リセット」問題を回避。
-const CARD_WIDTH = 360 + 20; // カード幅 + gap(20px)
-const TOTAL_CARDS = CASES.length;
-
 export default function SubsidyCaseStudySection() {
-  const trackRef = useRef<HTMLDivElement>(null);
-  const animRef = useRef<number | null>(null);
-  const offsetRef = useRef(0);
-  const prefersReducedRef = useRef(false);
-
-  useEffect(() => {
-    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
-    prefersReducedRef.current = mq.matches;
-    const handler = (e: MediaQueryListEvent) => {
-      prefersReducedRef.current = e.matches;
-    };
-    mq.addEventListener("change", handler);
-    return () => mq.removeEventListener("change", handler);
-  }, []);
-
-  // translateX ベースの永続スクロール
-  // scrollLeft 方式は一定条件でブラウザがリセットするため置き換え
-  useEffect(() => {
-    const track = trackRef.current;
-    if (!track) return;
-
-    // 1セット分の合計幅（px）= カード枚数 × (カード幅 + gap)
-    const loopWidth = CARD_WIDTH * TOTAL_CARDS;
-
-    const tick = () => {
-      if (!prefersReducedRef.current) {
-        offsetRef.current += 0.5;
-        // loopWidth を超えたら先頭に戻す（シームレスループ）
-        if (offsetRef.current >= loopWidth) {
-          offsetRef.current = 0;
-        }
-        track.style.transform = `translateX(-${offsetRef.current}px)`;
-      }
-      animRef.current = requestAnimationFrame(tick);
-    };
-    animRef.current = requestAnimationFrame(tick);
-
-    return () => {
-      if (animRef.current) cancelAnimationFrame(animRef.current);
-    };
-  }, []);
-
-  // データを3セット複製してループが途切れないようにする
-  const tripled = [...CASES, ...CASES, ...CASES];
-
   return (
     <section
       aria-labelledby="case-study-heading"
-      className="w-full overflow-hidden py-20 md:py-24 lg:py-28"
+      className="w-full py-20 md:py-24 lg:py-28"
       style={{ background: "#F3F7FC" }}
     >
       {/* ── ヘッダー ───────────────────────────────────── */}
@@ -243,38 +182,34 @@ export default function SubsidyCaseStudySection() {
         </div>
       </div>
 
-      {/* ── スクロールトラック ─────────────────────────── */}
-      {/*
-        overflow-hidden の親の中で translateX で動かすことで
-        「ブラウザがスクロール位置をリセットする」問題を回避。
-        タッチ操作でのスワイプは利かなくなるが、永続スクロールが確実に動く。
-      */}
+      {/* ── 横スクロールトラック（ユーザー操作のみ・自動スクロールなし） ── */}
       <div
-        className="mt-10 overflow-hidden pb-2"
-        aria-label="補助金活用事例のカード一覧（自動スクロール）"
+        className="mt-10 overflow-x-auto pb-4"
+        style={{
+          scrollbarWidth: "none",
+          msOverflowStyle: "none",
+          WebkitOverflowScrolling: "touch",
+          scrollBehavior: "smooth",
+        }}
+        aria-label="補助金活用事例のカード一覧（横スクロール）"
         role="region"
       >
         <div
-          ref={trackRef}
-          className="flex gap-5 will-change-transform"
+          className="flex gap-5"
           style={{
             paddingLeft: "clamp(1.25rem, calc(50vw - 37rem), 6rem)",
-            // transform は JS で直接操作
+            paddingRight: "clamp(1.25rem, calc(50vw - 34rem), 6rem)",
+            width: "max-content",
           }}
         >
-          {tripled.map((c, i) => (
-            <CaseCard
-              key={`${c.id}-${i}`}
-              caseData={c}
-              // 最初の1セットのみスクリーンリーダー対象
-              ariaHidden={i >= CASES.length}
-            />
+          {CASES.map((c) => (
+            <CaseCard key={c.id} caseData={c} />
           ))}
         </div>
       </div>
 
       {/* ── 免責注意書き ──────────────────────────────── */}
-      <div className="mx-auto mt-6 max-w-6xl px-5 sm:px-6 lg:px-8">
+      <div className="mx-auto mt-5 max-w-6xl px-5 sm:px-6 lg:px-8">
         <p
           className="font-body text-center text-[11px] leading-relaxed"
           style={{ color: "var(--text-muted)" }}
@@ -361,26 +296,18 @@ export default function SubsidyCaseStudySection() {
 // ============================================================
 type CaseData = (typeof CASES)[number];
 
-function CaseCard({
-  caseData: c,
-  ariaHidden,
-}: {
-  caseData: CaseData;
-  ariaHidden: boolean;
-}) {
+function CaseCard({ caseData: c }: { caseData: CaseData }) {
   return (
     <article
       className="font-body relative flex shrink-0 flex-col overflow-hidden rounded-2xl bg-white"
       style={{
-        width: "360px",
+        width: "clamp(280px, 82vw, 350px)",
         border: c.featured ? "2px solid #1A4C8E" : "1px solid #DDE7F2",
         boxShadow: c.featured
           ? "0 8px 28px rgba(26,76,142,0.18)"
           : "0 4px 16px rgba(26,76,142,0.07)",
       }}
-      aria-hidden={ariaHidden}
-      tabIndex={ariaHidden ? -1 : 0}
-      aria-label={ariaHidden ? undefined : `${c.industry} — ${c.title}`}
+      aria-label={`${c.industry} — ${c.title}`}
     >
       {/* おすすめバッジ */}
       {c.featured && (
@@ -396,16 +323,16 @@ function CaseCard({
         </div>
       )}
 
-      {/* サムネイル */}
+      {/* サムネイル — 高さ固定 */}
       <div
         className="relative w-full shrink-0 overflow-hidden bg-[#EEF3F8]"
-        style={{ height: "160px" }}
+        style={{ height: "155px" }}
       >
         <Image
           src={c.imageUrl}
           alt={c.imageAlt}
           fill
-          sizes="360px"
+          sizes="(max-width: 640px) 82vw, 350px"
           className="object-cover"
           draggable={false}
         />
@@ -432,14 +359,13 @@ function CaseCard({
           </span>
         </div>
 
-        {/* 事例タイトル — 高さ固定で全カード揃える */}
+        {/* 事例タイトル — 2行固定 */}
         <h3
-          className="font-heading mb-3 font-bold leading-snug"
+          className="font-heading mb-3 line-clamp-2 font-bold leading-snug"
           style={{
             fontSize: "0.925rem",
             color: "var(--text-primary)",
-            height: "2.9rem",
-            overflow: "hidden",
+            minHeight: "2.6rem",
           }}
         >
           {c.title}
@@ -452,44 +378,69 @@ function CaseCard({
           <FlowRow label="導入" value={c.solution} />
           <FlowArrow />
 
-          {/* 成果ボックス — 高さ固定で全カード揃える */}
+          {/* 成果ボックス — mt-auto で下部固定、高さ統一 */}
           <div
             className="mt-auto rounded-xl px-4 py-3.5"
             style={{
               background: "linear-gradient(135deg, #EEF6FF 0%, #E4EFFC 100%)",
               border: "1px solid #B5D4F4",
-              height: "142px",
+              minHeight: "152px",
             }}
           >
             <span
-              className="font-heading mb-1.5 block text-[10px] font-bold uppercase tracking-widest"
-              style={{ color: "var(--accent-navy)", opacity: 0.75 }}
+              className="font-heading mb-1 block text-[10px] font-bold uppercase tracking-widest"
+              style={{ color: "var(--accent-navy)", opacity: 0.7 }}
             >
               成果
             </span>
+            {/* 成果数値 */}
             <p
               className="font-heading font-bold leading-none"
               style={{
-                fontSize: "clamp(1.35rem, 3vw, 1.7rem)",
+                fontSize: "clamp(1.3rem, 2.8vw, 1.65rem)",
                 color: "var(--accent-navy)",
               }}
             >
               {c.resultMain}
             </p>
-            {/* 活用された制度名 */}
+
+            {/* 区切り線 */}
+            <div
+              className="my-2"
+              style={{ borderTop: "1px solid rgba(26,76,142,0.12)" }}
+            />
+
+            {/* 活用制度名 */}
+            <div className="flex items-center gap-1.5">
+              <span
+                className="font-heading shrink-0 rounded px-1 py-0.5 text-[9px] font-bold uppercase tracking-wider"
+                style={{
+                  background: "rgba(26,76,142,0.08)",
+                  color: "var(--accent-navy)",
+                }}
+              >
+                活用制度
+              </span>
+              <span
+                className="font-body text-[12px] font-semibold"
+                style={{ color: "var(--accent-navy)" }}
+              >
+                {c.schemeName}
+              </span>
+            </div>
+
+            {/* 補助額レンジ + 注意書き */}
             <p
-              className="font-body mt-2 text-[11px]"
+              className="font-body mt-1.5 text-[11px] leading-relaxed"
               style={{ color: "#5A7A9A" }}
             >
-              活用制度の例：{c.schemeName}
+              補助額レンジ: {c.subsidyRange}
             </p>
-            {/* 補助額レンジ */}
             <p
-              className="font-body mt-0.5 text-[11px]"
-              style={{ color: "#5A7A9A", opacity: 0.85 }}
+              className="font-body text-[10px]"
+              style={{ color: "#5A7A9A", opacity: 0.75 }}
             >
-              制度上の補助額レンジ: {c.subsidyRange}
-              　<span style={{ opacity: 0.7 }}>※条件により異なります</span>
+              ※条件により異なります
             </p>
           </div>
         </div>
@@ -513,7 +464,7 @@ function FlowRow({ label, value }: { label: string; value: string }) {
   return (
     <div
       className="flex items-start gap-2.5 py-2"
-      style={{ height: "3.4rem", overflow: "hidden" }}
+      style={{ minHeight: "3.4rem" }}
     >
       <span
         className="font-heading mt-[1px] shrink-0 rounded px-1.5 py-0.5 text-[10px] font-bold"
