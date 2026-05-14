@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
 
 import Header from "@/components/shared/Header";
 import LpFooter from "@/components/gate-lp/LpFooter";
@@ -15,18 +13,12 @@ import { ArticleToc } from "@/components/articles/ArticleToc";
 import { ConsultantComment } from "@/components/articles/ConsultantComment";
 import { ArticleCTA } from "@/components/articles/ArticleCTA";
 import { RelatedArticles } from "@/components/articles/RelatedArticles";
+import { ArticleMarkdownBody } from "@/components/articles/ArticleMarkdownBody";
 // ========== [NEW 2026-04-30] 締切カウントダウン ==========
 import { ArticleDeadlineCountdown } from "@/components/articles/ArticleDeadlineCountdown";
 // ========== /NEW ==========
-// ========== 図解ブロック ==========
-import {
-  SummaryCards,
-  UsageFlow,
-  SubsidySpecCard,
-  ApplicationSteps,
-  type ArticleVisualData,
-} from "@/components/articles/ArticleVisualBlocks";
-// ========== /図解ブロック ==========
+// ========== 図解ブロック（本文内 H2 連動は ArticleMarkdownBody） ==========
+import { SummaryCards, type ArticleVisualData } from "@/components/articles/ArticleVisualBlocks";
 
 // 5 分 ISR（新規生成時は再ビルド不要で切り替わる）
 export const revalidate = 300;
@@ -418,17 +410,8 @@ export default async function SubsidyArticlePage({ params }: PageProps) {
             ].join(" ")}
             style={{ fontFamily: "'Noto Sans JP', sans-serif" }}
           >
-            <ReactMarkdown remarkPlugins={[remarkGfm]}>{article.body}</ReactMarkdown>
+            <ArticleMarkdownBody body={article.body} visualData={visualData} />
           </div>
-
-          {/* ── 図解ブロック②: UsageFlow ── */}
-          <UsageFlow data={visualData} />
-
-          {/* ── 図解ブロック③: SubsidySpecCard ── */}
-          <SubsidySpecCard data={visualData} />
-
-          {/* ── 図解ブロック④: ApplicationSteps ── */}
-          <ApplicationSteps />
 
           {/* コンサルタントコメント */}
           <ConsultantComment />
