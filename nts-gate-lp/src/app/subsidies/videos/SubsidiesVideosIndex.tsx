@@ -4,6 +4,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { useMemo, useState } from "react";
 import FilterBar, { type StatusTab } from "@/components/subsidies/FilterBar";
+import VideosHero from "./VideosHero";
+import VideosTicker from "./VideosTicker";
 
 const ALL = "__all__";
 const PAGE_SIZE = 12;
@@ -123,20 +125,15 @@ export default function SubsidiesVideosIndex({
   }
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:py-14">
-      {/* ページヘッド */}
-      <div className="mb-8">
-        <p className="text-xs font-semibold uppercase tracking-widest text-accent-600 sm:text-sm">
-          Videos
-        </p>
-        <h1 className="font-heading mt-2 text-2xl font-bold text-primary-900 sm:text-3xl lg:text-4xl">
-          補助金解説動画
-        </h1>
-        <p className="mt-3 text-sm leading-relaxed text-neutral-600 sm:text-base">
-          補助金の概要・活用例・申請ポイントをわかりやすく解説した音声付き動画です。
-        </p>
-      </div>
+    <>
+      {/* FVヒーロー */}
+      <VideosHero />
 
+      {/* ティッカー帯 */}
+      <VideosTicker videos={videos.slice(0, 10)} />
+
+      {/* 一覧本体 */}
+    <div id="video-list" className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:py-14">
       {/* タブ・検索バー */}
       <div className="mb-8">
         <FilterBar
@@ -267,6 +264,7 @@ export default function SubsidiesVideosIndex({
         </aside>
       </div>
     </div>
+    </>
   );
 }
 
