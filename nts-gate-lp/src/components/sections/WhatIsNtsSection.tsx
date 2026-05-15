@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import Image from "next/image";
 import { ArrowDown, ArrowLeft, ArrowRight } from "lucide-react";

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { unstable_noStore as noStore } from "next/cache";
 import { notFound } from "next/navigation";
 
 import Header from "@/components/shared/Header";
@@ -13,11 +14,11 @@ import { ArticleToc } from "@/components/articles/ArticleToc";
 import { ConsultantComment } from "@/components/articles/ConsultantComment";
 import { ArticleCTA } from "@/components/articles/ArticleCTA";
 import { RelatedArticles } from "@/components/articles/RelatedArticles";
-import { ArticleMarkdownBody } from "@/components/articles/ArticleMarkdownBody";
+import { ArticleSegmentedBody } from "@/components/articles/ArticleSegmentedBody";
 // ========== [NEW 2026-04-30] 締切カウントダウン ==========
 import { ArticleDeadlineCountdown } from "@/components/articles/ArticleDeadlineCountdown";
 // ========== /NEW ==========
-// ========== 図解ブロック（本文内 H2 連動は ArticleMarkdownBody） ==========
+// ========== 図解ブロック（本文内 H2 連動は ArticleSegmentedBody） ==========
 import { SummaryCards, type ArticleVisualData } from "@/components/articles/ArticleVisualBlocks";
 
 // 5 分 ISR（新規生成時は再ビルド不要で切り替わる）
@@ -204,6 +205,7 @@ async function getRelatedArticles({
 // ========== /UPDATED ==========
 
 export default async function SubsidyArticlePage({ params }: PageProps) {
+  noStore();
   const { slug } = await params;
 
   const article = await prisma.generatedContent.findFirst({
@@ -410,7 +412,7 @@ export default async function SubsidyArticlePage({ params }: PageProps) {
             ].join(" ")}
             style={{ fontFamily: "'Noto Sans JP', sans-serif" }}
           >
-            <ArticleMarkdownBody body={article.body} visualData={visualData} />
+            <ArticleSegmentedBody body={article.body} visualData={visualData} />
           </div>
 
           {/* コンサルタントコメント */}

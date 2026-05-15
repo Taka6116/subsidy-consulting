@@ -1,5 +1,7 @@
 import { Fragment } from "react";
 
+import { splitArticleBodyByH2 } from "@/lib/articles/splitArticleBodyByH2";
+
 /**
  * ArticleVisualBlocks.tsx
  * 補助金記事詳細ページ用の共通図解ブロック群。
@@ -166,27 +168,49 @@ function classifyArticleCategory(data: ArticleVisualData): ArticleCategory {
   return "general";
 }
 
-/** 記事セクション2から【活用例】ブロックをざっくり抽出 */
-function extractUseCasesFromMarkdown(body: string): UseCaseCardModel[] {
-  const split3 = body.split(/##\s*3\.\s*補助額/i);
-  const before3 = split3[0] ?? "";
-  const parts2 = before3.split(
-    /##\s*2\.\s*活用できる企業のイメージ【活用例】\s*/i,
-  );
-  const section2 = (parts2[1] ?? "").trim();
-  if (!section2) return [];
+/** セクション2本文のみから【活用例】ブロックを抽出（** の有無・全角括弧差を許容） */
+function extractUseCasesFromSection2Body(section2: string): UseCaseCardModel[] {
+  const s = section2.trim();
+  if (!s) return [];
 
-  const chunks = section2
-    .split(/\*\*【活用例】\*\*/i)
+  const chunks = s
+    .split(/(?:\*\*)?【活用例】(?:\*\*)?/g)
     .map((c) => c.trim())
     .filter(Boolean);
 
   const out: UseCaseCardModel[] = [];
-  for (const raw of chunks.slice(0, 3)) {
+  for (const raw of chunks) {
+    const bulletLines = raw
+      .split("\n")
+      .filter((l) => /^\s*[-*]\s/.test(l)).length;
+    if (bulletLines === 0 && raw.length > 320) continue;
+
     const card = parseUseCaseChunk(raw);
-    if (card) out.push(card);
+    if (!card) continue;
+    const hasContent =
+      card.before.length + card.systems.length + card.effects.length > 0 ||
+      card.persona.length >= 8;
+    if (!hasContent) continue;
+    out.push(card);
+    if (out.length >= 3) break;
   }
   return out;
+}
+
+/** 全文からセクション2を推定して抽出（後方互換・フォールバック） */
+function extractUseCasesFromMarkdown(body: string): UseCaseCardModel[] {
+  const secs = splitArticleBodyByH2(body);
+  const sec2 = secs.find((s) => s.order === 2);
+  if (sec2?.body?.trim()) return extractUseCasesFromSection2Body(sec2.body);
+
+  const split3 = body.split(/##\s*3\.\s*補助額/i);
+  const before3 = split3[0] ?? "";
+  const parts2 = before3.split(
+    /##\s*2\.\s*活用できる企業のイメージ[【[]活用例[】\]]\s*/i,
+  );
+  const legacySection2 = (parts2[1] ?? "").trim();
+  if (!legacySection2) return [];
+  return extractUseCasesFromSection2Body(legacySection2);
 }
 
 function stripMd(s: string): string {
@@ -515,11 +539,18 @@ function mergeUseCases(
 export function UseCaseDiagram({
   data,
   bodyMarkdown,
+  section2Markdown,
 }: {
   data: ArticleVisualData;
-  bodyMarkdown: string;
+  /** セクション2本文のみ（H2 分割挿入時はこちらを優先） */
+  section2Markdown?: string;
+  /** 全文（section2 が空のときのフォールバック） */
+  bodyMarkdown?: string;
 }) {
-  const parsed = extractUseCasesFromMarkdown(bodyMarkdown);
+  const section2 = section2Markdown?.trim();
+  const parsed = section2
+    ? extractUseCasesFromSection2Body(section2)
+    : extractUseCasesFromMarkdown(bodyMarkdown ?? "");
   const fallback = buildFallbackUseCases(data);
   const cards = mergeUseCases(parsed, fallback);
 
