@@ -58,9 +58,9 @@ export default function PartnerUseCasesSection() {
             className="font-heading text-3xl font-bold leading-tight text-[var(--text-primary)] md:text-4xl lg:text-5xl"
             {...fadeUp(0.05)}
           >
-            こんな方が
+            こんな企業様と
             <br />
-            提携パートナーになっています。
+            提携しています。
           </motion.h2>
           <motion.p
             className="mt-8 text-lg leading-relaxed text-[var(--text-secondary)] md:text-xl"

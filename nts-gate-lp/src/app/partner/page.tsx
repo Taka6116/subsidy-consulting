@@ -32,7 +32,7 @@ export default function PartnerPage() {
       <main className="relative z-[2] pt-20">
         {/*
           パートナーLP セクション順（ナラティブ調整版）
-          ①FV ②見送り/補助金 ③提携パートナー像 ④営業メリット（3本柱）
+          ①FV ②見送り/補助金 ③提携企業像 ④営業メリット（3本柱）
           ⑤補助金事例カード ⑥制度選定の差別化（RootIssue）⑦課題深掘り価値
           ⑧AI限界 ⑨紹介後フロー ⑩チーム・伴走 ⑪FAQ ⑫CTA
         */}
