@@ -42,7 +42,6 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       slug,
       status: "published",
       contentType: "article",
-      grant: { is: { status: "open" } },
     },
     select: { title: true, metaDescription: true, excerpt: true },
   });
@@ -133,7 +132,6 @@ async function getRelatedArticles({
       status: "published",
       slug: { not: currentSlug },
       contentType: "article",
-      grant: { is: { status: "open" } },
     },
     select: {
       id: true,
@@ -213,7 +211,6 @@ export default async function SubsidyArticlePage({ params }: PageProps) {
       slug,
       status: "published",
       contentType: "article",
-      grant: { is: { status: "open" } },
     },
     include: {
       grant: {
