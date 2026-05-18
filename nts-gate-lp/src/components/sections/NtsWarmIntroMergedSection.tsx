@@ -141,7 +141,7 @@ export default function NtsWarmIntroMergedSection() {
           >
             {/* 図解タイトル */}
             <p className="mb-7 shrink-0 text-center text-[13px] font-bold tracking-[0.1em] text-[#5a7fa0]">
-              "申請して終わり"ではない支援範囲
+              &ldquo;申請して終わり&rdquo;ではない支援範囲
             </p>
 
             <div className="flex min-h-0 flex-1 flex-col justify-between gap-5">
@@ -269,7 +269,7 @@ export default function NtsWarmIntroMergedSection() {
             {/* 下部メッセージ */}
             <div className="shrink-0 rounded-xl bg-[#e4f0fb] px-5 py-3.5">
               <p className="text-[13px] font-semibold leading-relaxed text-[#0c3360] sm:text-[14px]">
-                補助金を<strong>"採択"</strong>だけでなく、<strong>事業にどう活かすか</strong>まで一緒に考えます。ーだから伴走なんです
+                補助金を<strong>&ldquo;採択&rdquo;</strong>だけでなく、<strong>事業にどう活かすか</strong>まで一緒に考えます。ーだから伴走なんです
               </p>
             </div>
             </div>
