@@ -99,20 +99,8 @@ export default function NtsWarmIntroMergedSection() {
   return (
     <section
       aria-labelledby="warm-merged-heading"
-      className="relative overflow-hidden py-20 md:py-28"
-      style={{ background: "#f2f8fd" }}
+      className="relative overflow-hidden bg-[#f0f4fa] py-20 md:py-28"
     >
-      {/* 薄いグリッド背景 */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0"
-        style={{
-          backgroundImage:
-            "linear-gradient(rgba(18,60,120,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(18,60,120,0.03) 1px,transparent 1px)",
-          backgroundSize: "44px 44px",
-        }}
-      />
-
       <div className="relative z-10 mx-auto w-full max-w-[1640px] px-5 sm:px-8 xl:px-10 2xl:px-12">
 
         {/* ── 見出し ── */}
