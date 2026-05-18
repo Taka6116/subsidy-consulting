@@ -27,13 +27,14 @@ export default function PartnerNarrowSection() {
           transition={fadeInUpTransition}
           className="two-col img-left"
         >
-          <div className="col-img w-full max-w-md justify-self-center lg:max-w-lg">
-            <div className="relative min-h-[280px] overflow-hidden rounded-2xl max-md:h-[200px]">
+          <div className="col-img w-full justify-self-center">
+            <div className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl">
               <Image
                 src="/images/NTS everybody-picture.webp"
                 alt="NTSチームの集合写真"
                 fill
                 className="object-cover object-center"
+                sizes="(max-width: 1024px) 92vw, 560px"
               />
             </div>
           </div>

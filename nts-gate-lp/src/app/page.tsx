@@ -6,7 +6,6 @@ import HeroSection from "@/components/gate-lp/hero-three/HeroSection";
 import HeroPartnerStrip from "@/components/gate-lp/HeroPartnerStrip";
 import AwarenessSection from "@/components/sections/AwarenessSection";
 import NtsWarmIntroMergedSection from "@/components/sections/NtsWarmIntroMergedSection";
-import SubsidyKindsSection from "@/components/sections/SubsidyKindsSection";
 import SubsidyMatchCtaSection from "@/components/sections/SubsidyMatchCtaSection";
 import SubsidyExamplesSection from "@/components/sections/SubsidyExamplesSection";
 import WhatIsNtsSection from "@/components/sections/WhatIsNtsSection";
@@ -41,6 +40,9 @@ async function getPreviewArticles() {
           select: {
             name: true,
             targetIndustries: true,
+            maxAmountLabel: true,
+            deadlineLabel: true,
+            prefecture: true,
           },
         },
       },
@@ -60,6 +62,35 @@ async function getPreviewArticles() {
           tags: r.tags ?? [],
           targetIndustries: r.grant?.targetIndustries ?? [],
         }),
+        maxAmountLabel: r.grant?.maxAmountLabel ?? null,
+        deadlineLabel: r.grant?.deadlineLabel ?? null,
+        publishedAt: r.publishedAt
+          ? r.publishedAt.toLocaleDateString("ja-JP", { year: "numeric", month: "numeric", day: "numeric" })
+          : null,
+        prefecture: r.grant?.prefecture ?? null,
+      }));
+  } catch {
+    return [];
+  }
+}
+
+async function getFeaturedVideosHub() {
+  try {
+    const rows = await prisma.generatedContent.findMany({
+      where: {
+        contentType: "video",
+        status: "published",
+      },
+      orderBy: { publishedAt: "desc" },
+      take: 3,
+      select: { slug: true, thumbnailPath: true, title: true },
+    });
+    return rows
+      .filter((r) => r.slug)
+      .map((r) => ({
+        slug: r.slug as string,
+        thumbnailPath: r.thumbnailPath,
+        title: r.title,
       }));
   } catch {
     return [];
@@ -68,6 +99,7 @@ async function getPreviewArticles() {
 
 export default async function Home() {
   const previewArticles = await getPreviewArticles();
+  const featuredVideos = await getFeaturedVideosHub();
 
   return (
     <HomeEntrance>
@@ -76,8 +108,8 @@ export default async function Home() {
       <main className="relative z-[2]">
         {/*
           トップ LP セクション順
-          ①FV ②ロゴ帯 ③課題共感 ④視点の違い ⑤制度例 ⑥事例
-          ⑦AIギャップ ⑧フロー・料金 ⑨伴走統合 ⑩建設運送 ⑪パートナー ⑫診断CTA ⑬記事 ⑭FAQ ⑮最終CTA
+          ①FV ②ロゴ帯 ③情報ハブ ④課題共感 ⑤視点の違い ⑥制度例 ⑦事例
+          ⑧AIギャップ ⑨フロー・料金 ⑩伴走統合 ⑪パートナー ⑫診断CTA ⑬FAQ ⑭最終CTA
         */}
         {/* ① FV（変更なし） */}
         <div>
@@ -92,31 +124,29 @@ export default async function Home() {
             <HeroPartnerStrip />
           </div>
         </div>
-        {/* ③ その経営課題、補助金で動かせるかもしれません */}
+        {/* ③ 補助金情報ハブ（記事・LP・動画） */}
+        <ArticlesCtaBar articles={previewArticles} featuredVideos={featuredVideos} />
+        {/* ④ あなたの経営課題、補助金で動かせるかもしれません */}
         <AwarenessSection />
-        {/* ④ しかし、より最適な補助金制度があるかもしれません */}
+        {/* ⑤ しかし、より最適な補助金制度があるかもしれません */}
         <RootIssueCaseSection />
-        {/* ⑤ 例えばこんな補助金もあります。 */}
+        {/* ⑥ 例えばこんな補助金もあります。 */}
         <SubsidyExamplesSection />
-        {/* ⑥ 実際の事例で見る、補助金の使い方 */}
+        {/* ⑦ 実際の事例で見る、補助金の使い方 */}
         <SubsidyCaseStudySection />
-        {/* ⑦ AIで書類は作れる時代。それでも、採択には届きません。 */}
+        {/* ⑧ AIで書類は作れる時代。それでも、採択には届きません。 */}
         <NtsAiGapSection />
-        {/* ⑧ 申請が、ゴールではありません。（フロー説明） */}
+        {/* ⑨ 申請が、ゴールではありません。（フロー説明） */}
         <WhatIsNtsSection />
-        {/* ⑨ 「補助金が使えます」。その先に、1年間の伴走があります。（統合セクション） */}
+        {/* ⑩ 「補助金が使えます」。その先に、1年間の伴走があります。（統合セクション） */}
         <NtsWarmIntroMergedSection />
-        {/* ⑩ 建設業・運送業の経営者に、特化してサポートしています。 */}
-        <SubsidyKindsSection />
         {/* ⑪ パートナー企業の方へ。補助金を、御社の営業の武器に。 */}
         <PartnerNarrowSection />
         {/* ⑫ まず、自社に使える制度を確認してみてください。（診断CTA） */}
         <SubsidyMatchCtaSection />
-        {/* ⑬ 補助金の活用方法を、記事で最速で確認できます。 */}
-        <ArticlesCtaBar articles={previewArticles} />
-        {/* ⑭ よくあるご質問 */}
+        {/* ⑬ よくあるご質問 */}
         <FaqSection />
-        {/* ⑮ まず、話を聞かせてください。（最終CTA） */}
+        {/* ⑭ まず、話を聞かせてください。（最終CTA） */}
         <FinalCtaSection />
       </main>
       <LpFooter />
