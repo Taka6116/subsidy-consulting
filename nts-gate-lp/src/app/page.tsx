@@ -5,13 +5,12 @@ import HomeEntrance from "@/components/gate-lp/HomeEntrance";
 import HeroSection from "@/components/gate-lp/hero-three/HeroSection";
 import HeroPartnerStrip from "@/components/gate-lp/HeroPartnerStrip";
 import AwarenessSection from "@/components/sections/AwarenessSection";
-import NtsWarmIntroSection from "@/components/sections/NtsWarmIntroSection";
+import NtsWarmIntroMergedSection from "@/components/sections/NtsWarmIntroMergedSection";
 import SubsidyKindsSection from "@/components/sections/SubsidyKindsSection";
 import SubsidyMatchCtaSection from "@/components/sections/SubsidyMatchCtaSection";
 import SubsidyExamplesSection from "@/components/sections/SubsidyExamplesSection";
 import WhatIsNtsSection from "@/components/sections/WhatIsNtsSection";
 import NtsAiGapSection from "@/components/sections/NtsAiGapSection";
-import ComparisonDiagram from "@/components/sections/ComparisonDiagram";
 import CtaBar from "@/components/sections/CtaBar";
 import SubsidyCaseStudySection from "@/components/sections/SubsidyCaseStudySection";
 import RootIssueCaseSection from "@/components/sections/RootIssueCaseSection";
@@ -107,11 +106,9 @@ export default async function Home() {
         <NtsAiGapSection />
         {/* ⑧ 申請が、ゴールではありません。（フロー説明） */}
         <WhatIsNtsSection />
-        {/* ⑨ 「補助金が使えます」。その先に、1年間の伴走があります。 */}
-        <NtsWarmIntroSection />
-        {/* ⑩ 採択後の伴走支援（NTSが目指す支援） */}
-        <ComparisonDiagram />
-        {/* ⑪ CTA（まず、話を聞かせてください。） */}
+        {/* ⑨ 「補助金が使えます」。その先に、1年間の伴走があります。（統合セクション） */}
+        <NtsWarmIntroMergedSection />
+        {/* ⑩ CTA（まず、話を聞かせてください。） */}
         <CtaBar />
         {/* ⑫ 建設業・運送業の経営者に、特化してサポートしています。 */}
         <SubsidyKindsSection />
