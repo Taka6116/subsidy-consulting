@@ -44,10 +44,24 @@ const RIGHT_STEPS = [
   },
   {
     num: "02",
-    title: "根本解決に近い制度も比較",
+    title: "根本解決に近い制度を比較",
     body: "省力化・IT導入・業務改善系の制度も確認",
     image: "/images/PANA3955.jpg",
     alt: "複数制度を比較するイメージ",
+  },
+  {
+    num: "03",
+    title: "採択後の活用計画を設計",
+    body: "導入内容、スケジュール、必要資料を整理",
+    image: "/api/article-pictures/%E4%BA%8B%E6%A5%AD%E8%A8%88%E7%94%BB/business-corporate-people-working-concept.webp",
+    alt: "活用計画を設計するイメージ",
+  },
+  {
+    num: "04",
+    title: "実績報告・年次報告まで伴走",
+    body: "採択後の報告準備や定点確認、必要に応じた年次報告の準備支援（提携専門家と連携）まで継続支援",
+    image: "/api/article-pictures/%E4%BA%8B%E6%A5%AD%E8%A8%88%E7%94%BB/working-process-startup-businessman-working-wood-table-with-new-finance-project-modern-notebook-table-pen-holding-hand.webp",
+    alt: "報告・伴走支援のイメージ",
   },
 ] as const;
 
@@ -103,7 +117,7 @@ export default function RootIssueCaseSection() {
               color: "var(--text-secondary)",
             }}
           >
-            制度名から選ぶだけでなく、事業課題を整理することで、より適した活用余地を確認できます。
+            制度名だけで選ぶのではなく、事業課題と採択後の運用まで整理することで、より活用しやすい制度や支援の進め方が見えてきます。
           </p>
         </div>
 
@@ -243,22 +257,20 @@ export default function RootIssueCaseSection() {
             </div>
 
             {/* ====================================================== */}
-            {/* 比較本体（PC）                                          */}
+            {/* 比較本体（PC）— 5行：左2+100万 / 右01〜05（04は活用余地）      */}
             {/* ====================================================== */}
             <div className="relative mt-6 hidden md:block md:mt-8">
-              {/* 中央スプリット線 — 上から差額イメージまで貫通 */}
               <div
                 aria-hidden
                 className="pointer-events-none absolute left-1/2 top-0 z-0 hidden md:block"
                 style={{
                   width: "2px",
                   height: "100%",
-                  background: `linear-gradient(to bottom, ${LINE_COLOR} 0%, ${LINE_COLOR} 85%, ${LINE_COLOR_SOFT} 100%)`,
+                  background: `linear-gradient(to bottom, ${LINE_COLOR} 0%, ${LINE_COLOR} 88%, ${LINE_COLOR_SOFT} 100%)`,
                   transform: "translateX(-1px)",
                 }}
               />
 
-              {/* 統合グリッド：01, 02, 03 を同一グリッドで管理（縦線が行をまたいで連続する） */}
               <div
                 className="relative z-[1] grid"
                 style={{
@@ -267,30 +279,35 @@ export default function RootIssueCaseSection() {
                   rowGap: "16px",
                 }}
               >
-                {/* 左 01 */}
-                <BadgeColumn side="left" position="top">
+                {/* row 1 */}
+                <BadgeColumn side="left" slot="start">
                   <StepCard step={LEFT_STEPS[0]} tone="left" />
                 </BadgeColumn>
-                {/* 中央 01 行スペーサー */}
                 <div aria-hidden />
-                {/* 右 01 */}
-                <BadgeColumn side="right" position="top">
+                <BadgeColumn side="right" slot="start">
                   <StepCard step={RIGHT_STEPS[0]} tone="right" />
                 </BadgeColumn>
 
-                {/* 左 02 */}
-                <BadgeColumn side="left" position="middle">
+                {/* row 2 */}
+                <BadgeColumn side="left" slot="between">
                   <StepCard step={LEFT_STEPS[1]} tone="left" />
                 </BadgeColumn>
-                {/* 中央 02 行スペーサー */}
                 <div aria-hidden />
-                {/* 右 02 */}
-                <BadgeColumn side="right" position="middle">
+                <BadgeColumn side="right" slot="between">
                   <StepCard step={RIGHT_STEPS[1]} tone="right" />
                 </BadgeColumn>
 
-                {/* 左 03 活用余地 100万円 */}
-                <BadgeColumn side="left" position="bottom">
+                {/* row 3 — 左は揃え用スペーサー、右は03 */}
+                <BadgeColumn side="left" slot="between">
+                  <div className="h-[108px] min-h-[92px] md:h-[118px]" aria-hidden />
+                </BadgeColumn>
+                <div aria-hidden />
+                <BadgeColumn side="right" slot="between">
+                  <StepCard step={RIGHT_STEPS[2]} tone="right" />
+                </BadgeColumn>
+
+                {/* row 4 — 100万 / 差分 / 150万 */}
+                <BadgeColumn side="left" slot="end">
                   <ActivationCard
                     amount="100"
                     amountUnit="万円規模"
@@ -298,13 +315,10 @@ export default function RootIssueCaseSection() {
                     tone="left"
                   />
                 </BadgeColumn>
-
-                {/* 中央：差額イメージ + 左右接続線（03行と同じ行に配置） */}
-                <div className="relative" style={{ alignSelf: "center" }}>
-                  {/* 左側接続線（左の活用余地カードへ） */}
+                <div className="relative flex items-center justify-center" style={{ alignSelf: "center" }}>
                   <span
                     aria-hidden
-                    className="pointer-events-none absolute right-full top-1/2"
+                    className="pointer-events-none absolute right-full top-1/2 hidden md:block"
                     style={{
                       width: "clamp(28px, 4vw, 56px)",
                       height: "0",
@@ -312,10 +326,9 @@ export default function RootIssueCaseSection() {
                       transform: "translateY(-1px)",
                     }}
                   />
-                  {/* 右側接続線（右の活用余地カードへ） */}
                   <span
                     aria-hidden
-                    className="pointer-events-none absolute left-full top-1/2"
+                    className="pointer-events-none absolute left-full top-1/2 hidden md:block"
                     style={{
                       width: "clamp(28px, 4vw, 56px)",
                       height: "0",
@@ -324,55 +337,74 @@ export default function RootIssueCaseSection() {
                     }}
                   />
                   <div
-                    className="font-body relative z-[2] flex flex-col items-center rounded-[14px] bg-white px-5 py-4"
+                    className="font-body relative z-[2] flex max-w-[200px] flex-col items-center rounded-[14px] bg-white px-4 py-3.5 sm:px-5 sm:py-4"
                     style={{
                       border: `1.5px dashed ${LINE_COLOR}`,
                       boxShadow: "0 8px 22px rgba(26,76,142,0.12)",
-                      minWidth: "150px",
+                      minWidth: "148px",
                     }}
                   >
                     <p
-                      className="font-heading"
+                      className="font-heading text-center"
                       style={{
-                        fontSize: "0.7rem",
+                        fontSize: "0.68rem",
                         fontWeight: 700,
-                        letterSpacing: "0.1em",
+                        letterSpacing: "0.06em",
                         color: "var(--text-muted)",
-                      }}
-                    >
-                      差額イメージ
-                    </p>
-                    <p
-                      className="font-heading mt-1.5 text-center"
-                      style={{
-                        fontSize: "1.2rem",
-                        fontWeight: 700,
-                        color: "var(--accent-navy)",
                         lineHeight: 1.35,
                       }}
                     >
+                      活用余地の差
+                    </p>
+                    <p
+                      className="font-body mt-1 text-center"
+                      style={{
+                        fontSize: "0.72rem",
+                        fontWeight: 600,
+                        color: "var(--text-secondary)",
+                        lineHeight: 1.45,
+                      }}
+                    >
+                      追加で確認できる可能性
+                    </p>
+                    <p
+                      className="font-heading mt-2 text-center"
+                      style={{
+                        fontSize: "1.15rem",
+                        fontWeight: 800,
+                        color: "var(--accent-navy)",
+                        lineHeight: 1.25,
+                      }}
+                    >
                       +50万円規模
-                      <br />
-                      <span
-                        style={{
-                          fontSize: "0.78rem",
-                          fontWeight: 600,
-                        }}
-                      >
-                        の活用余地
-                      </span>
+                    </p>
+                    <p
+                      className="font-body mt-2 text-center"
+                      style={{
+                        fontSize: "0.68rem",
+                        lineHeight: 1.5,
+                        color: "var(--text-muted)",
+                      }}
+                    >
+                      ※条件により異なります
                     </p>
                   </div>
                 </div>
-
-                {/* 右 03 活用余地 150万円 */}
-                <BadgeColumn side="right" position="bottom">
+                <BadgeColumn side="right" slot="between">
                   <ActivationCard
                     amount="150"
                     amountUnit="万円規模"
                     caption="条件が合えば、追加の活用余地が見つかる場合があります"
                     tone="right"
+                    emphasized
                   />
+                </BadgeColumn>
+
+                {/* row 5 — 右のみ05 */}
+                <div aria-hidden />
+                <div aria-hidden />
+                <BadgeColumn side="right" slot="end">
+                  <StepCard step={RIGHT_STEPS[3]} tone="right" />
                 </BadgeColumn>
               </div>
             </div>
@@ -406,41 +438,52 @@ export default function RootIssueCaseSection() {
                   amountUnit="万円規模"
                   caption="制度単体で確認した場合の目安"
                   tone="left"
-                  mobile
                 />
               </div>
 
               {/* 差額 */}
               <div className="flex justify-center">
                 <div
-                  className="font-body flex flex-col items-center rounded-[14px] bg-white px-5 py-4"
+                  className="font-body flex max-w-[280px] flex-col items-center rounded-[14px] bg-white px-4 py-3.5"
                   style={{ border: `1.5px dashed ${LINE_COLOR}` }}
                 >
                   <p
-                    className="font-heading"
+                    className="font-heading text-center"
                     style={{
-                      fontSize: "0.7rem",
+                      fontSize: "0.68rem",
                       fontWeight: 700,
-                      letterSpacing: "0.1em",
+                      letterSpacing: "0.06em",
                       color: "var(--text-muted)",
                     }}
                   >
-                    差額イメージ
+                    活用余地の差
                   </p>
                   <p
-                    className="font-heading mt-1.5 text-center"
+                    className="font-body mt-1 text-center"
                     style={{
-                      fontSize: "1.15rem",
-                      fontWeight: 700,
+                      fontSize: "0.72rem",
+                      fontWeight: 600,
+                      color: "var(--text-secondary)",
+                      lineHeight: 1.45,
+                    }}
+                  >
+                    追加で確認できる可能性
+                  </p>
+                  <p
+                    className="font-heading mt-2 text-center"
+                    style={{
+                      fontSize: "1.1rem",
+                      fontWeight: 800,
                       color: "var(--accent-navy)",
-                      lineHeight: 1.35,
                     }}
                   >
                     +50万円規模
-                    <br />
-                    <span style={{ fontSize: "0.78rem", fontWeight: 600 }}>
-                      の活用余地
-                    </span>
+                  </p>
+                  <p
+                    className="font-body mt-2 text-center"
+                    style={{ fontSize: "0.68rem", color: "var(--text-muted)", lineHeight: 1.5 }}
+                  >
+                    ※条件により異なります
                   </p>
                 </div>
               </div>
@@ -459,7 +502,7 @@ export default function RootIssueCaseSection() {
                   NTSに相談した場合
                 </span>
               </div>
-              {RIGHT_STEPS.map((step) => (
+              {RIGHT_STEPS.slice(0, 3).map((step) => (
                 <div key={`mob-R-${step.num}`} className="relative pl-5">
                   <StepCard step={step} tone="right" />
                 </div>
@@ -470,8 +513,11 @@ export default function RootIssueCaseSection() {
                   amountUnit="万円規模"
                   caption="条件が合えば、追加の活用余地が見つかる場合があります"
                   tone="right"
-                  mobile
+                  emphasized
                 />
+              </div>
+              <div className="relative pl-5">
+                <StepCard step={RIGHT_STEPS[3]} tone="right" />
               </div>
             </div>
 
@@ -615,17 +661,27 @@ export default function RootIssueCaseSection() {
                 border: "1px solid #B5D4F4",
               }}
             >
-              <p
-                className="font-heading text-center sm:text-left"
-                style={{
-                  fontSize: "0.95rem",
-                  fontWeight: 700,
-                  color: "var(--text-primary)",
-                  lineHeight: 1.55,
-                }}
-              >
-                本当に最適でベストな補助金制度は何か、経営課題と一緒に提案させていただきます。
-              </p>
+              <div className="flex min-w-0 flex-1 flex-col gap-2 text-center sm:text-left">
+                <p
+                  className="font-heading"
+                  style={{
+                    fontSize: "0.95rem",
+                    fontWeight: 700,
+                    color: "var(--text-primary)",
+                    lineHeight: 1.55,
+                  }}
+                >
+                  本当に見るべき制度だけでなく、採択後の実績報告や年次報告の準備まで見据えて、
+                  <br />
+                  経営課題と一緒に整理します。
+                </p>
+                <p
+                  className="font-body max-w-xl text-[0.72rem] leading-relaxed"
+                  style={{ color: "var(--text-secondary)" }}
+                >
+                  ※ NTSは補助金活用支援・申請準備支援を行います。実績報告や年次報告に関する準備支援・必要資料の整理が必要な場合は、提携専門家と連携します。
+                </p>
+              </div>
               <Link
                 href="/consult"
                 className="font-body inline-flex w-full shrink-0 items-center justify-center gap-2 rounded-[10px] px-7 py-3.5 text-sm font-bold text-white transition-opacity hover:opacity-90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1a4c8e] sm:w-auto"
@@ -652,12 +708,12 @@ export default function RootIssueCaseSection() {
 // ============================================================
 function BadgeColumn({
   side,
-  position,
+  slot,
   children,
 }: {
   side: "left" | "right";
-  /** top: 01の位置（バッジ上は線なし） / middle: 02 / bottom: 03 */
-  position: "top" | "middle" | "bottom";
+  /** start: 先頭 / between: 中間 / end: 末尾（下方向の線なし） */
+  slot: "start" | "between" | "end";
   children: React.ReactNode;
 }) {
   const isRight = side === "right";
@@ -665,8 +721,7 @@ function BadgeColumn({
 
   return (
     <div className="relative pl-5 md:pl-6">
-      {/* バッジ上方の縦線（02と03に表示）— rowGap を十分にカバー */}
-      {position !== "top" && (
+      {slot !== "start" && (
         <span
           aria-hidden
           className="pointer-events-none absolute"
@@ -679,8 +734,7 @@ function BadgeColumn({
           }}
         />
       )}
-      {/* バッジ下方の縦線（01と02に表示）— 次の行のバッジ上端まで十分に伸ばす */}
-      {position !== "bottom" && (
+      {slot !== "end" && (
         <span
           aria-hidden
           className="pointer-events-none absolute"
@@ -792,63 +846,35 @@ function ActivationCard({
   amountUnit,
   caption,
   tone,
-  mobile = false,
+  emphasized = false,
 }: {
   amount: string;
   amountUnit: string;
   caption: string;
   tone: "left" | "right";
-  mobile?: boolean;
+  emphasized?: boolean;
 }) {
   const isRight = tone === "right";
-  const num = "03";
   return (
-    <>
-      {/* SP用バッジ */}
-      {mobile && (
-        <span
-          className="font-heading absolute left-0 top-3 z-[3] flex h-8 w-8 items-center justify-center rounded-full"
-          style={{
-            background: isRight ? "var(--accent-navy)" : "#F1F4F9",
-            color: isRight ? "#fff" : "#5A6B82",
-            fontSize: "0.72rem",
-            fontWeight: 700,
-            boxShadow: "0 2px 6px rgba(0,0,0,0.10)",
-          }}
-          aria-hidden
-        >
-          {num}
-        </span>
-      )}
-      {/* PC用バッジは BadgeColumn 内で背景線として担当、バッジ自体はここに描画 */}
-      {!mobile && (
-        <span
-          className="font-heading absolute left-0 top-5 z-[3] flex h-8 w-8 items-center justify-center rounded-full md:h-9 md:w-9"
-          style={{
-            background: isRight ? "var(--accent-navy)" : "#F1F4F9",
-            color: isRight ? "#fff" : "#5A6B82",
-            fontSize: "0.72rem",
-            fontWeight: 700,
-            letterSpacing: "0.04em",
-            boxShadow: "0 2px 6px rgba(0,0,0,0.10)",
-          }}
-          aria-hidden
-        >
-          {num}
-        </span>
-      )}
-
-      <div
-        className="relative z-[2] flex flex-col justify-center rounded-[14px] p-5 md:p-6"
+    <div
+      className="relative z-[2] flex flex-col justify-center rounded-[14px] p-5 md:p-6"
         style={{
           background: isRight
-            ? "linear-gradient(135deg, #F0F6FE 0%, #E4EFFC 100%)"
+            ? emphasized
+              ? "linear-gradient(160deg, #E8F2FC 0%, #DCEBFA 55%, #D0E4F8 100%)"
+              : "linear-gradient(135deg, #F0F6FE 0%, #E4EFFC 100%)"
             : "#fff",
-          border: isRight ? "1.5px solid #B5D4F4" : "1px solid #E5EBF3",
+          border: isRight
+            ? emphasized
+              ? "2px solid var(--accent-navy)"
+              : "1.5px solid #B5D4F4"
+            : "1px solid #E5EBF3",
           boxShadow: isRight
-            ? "0 8px 22px rgba(26,76,142,0.14)"
+            ? emphasized
+              ? "0 10px 28px rgba(26,76,142,0.16)"
+              : "0 8px 22px rgba(26,76,142,0.14)"
             : "0 2px 8px rgba(0,0,0,0.04)",
-          minHeight: "190px",
+          minHeight: emphasized ? "200px" : "190px",
         }}
       >
         <div className="flex-1">
@@ -867,17 +893,19 @@ function ActivationCard({
             className="font-heading mt-0.5"
             style={{
               fontSize: isRight
-                ? "clamp(2.5rem, 4.2vw, 3.1rem)"
+                ? emphasized
+                  ? "clamp(2.65rem, 4.5vw, 3.35rem)"
+                  : "clamp(2.5rem, 4.2vw, 3.1rem)"
                 : "clamp(1.45rem, 2.5vw, 1.75rem)",
-              fontWeight: 700,
+              fontWeight: 800,
               color: isRight ? "var(--accent-navy)" : "var(--text-primary)",
-              lineHeight: 1.15,
+              lineHeight: 1.12,
             }}
           >
             {amount}
             <span
               style={{
-                fontSize: "0.85rem",
+                fontSize: emphasized ? "0.92rem" : "0.85rem",
                 fontWeight: 700,
                 marginLeft: "3px",
               }}
@@ -897,7 +925,6 @@ function ActivationCard({
           {caption}
         </p>
       </div>
-    </>
   );
 }
 
