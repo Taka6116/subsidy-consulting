@@ -11,7 +11,6 @@ import SubsidyMatchCtaSection from "@/components/sections/SubsidyMatchCtaSection
 import SubsidyExamplesSection from "@/components/sections/SubsidyExamplesSection";
 import WhatIsNtsSection from "@/components/sections/WhatIsNtsSection";
 import NtsAiGapSection from "@/components/sections/NtsAiGapSection";
-import CtaBar from "@/components/sections/CtaBar";
 import SubsidyCaseStudySection from "@/components/sections/SubsidyCaseStudySection";
 import RootIssueCaseSection from "@/components/sections/RootIssueCaseSection";
 import ArticlesCtaBar from "@/components/sections/ArticlesCtaBar";
@@ -78,8 +77,7 @@ export default async function Home() {
         {/*
           トップ LP セクション順
           ①FV ②ロゴ帯 ③課題共感 ④視点の違い ⑤制度例 ⑥事例
-          ⑦AIギャップ ⑧フロー・料金 ⑨伴走1年 ⑩伴走図 ⑪CTAバー
-          ⑫建設運送 ⑬パートナー ⑭診断CTA ⑮記事 ⑯FAQ ⑰最終CTA
+          ⑦AIギャップ ⑧フロー・料金 ⑨伴走統合 ⑩建設運送 ⑪パートナー ⑫診断CTA ⑬記事 ⑭FAQ ⑮最終CTA
         */}
         {/* ① FV（変更なし） */}
         <div>
@@ -108,19 +106,17 @@ export default async function Home() {
         <WhatIsNtsSection />
         {/* ⑨ 「補助金が使えます」。その先に、1年間の伴走があります。（統合セクション） */}
         <NtsWarmIntroMergedSection />
-        {/* ⑩ CTA（まず、話を聞かせてください。） */}
-        <CtaBar />
-        {/* ⑫ 建設業・運送業の経営者に、特化してサポートしています。 */}
+        {/* ⑩ 建設業・運送業の経営者に、特化してサポートしています。 */}
         <SubsidyKindsSection />
-        {/* ⑬ パートナー企業の方へ。補助金を、御社の営業の武器に。 */}
+        {/* ⑪ パートナー企業の方へ。補助金を、御社の営業の武器に。 */}
         <PartnerNarrowSection />
-        {/* ⑭ まず、自社に使える制度を確認してみてください。（診断CTA） */}
+        {/* ⑫ まず、自社に使える制度を確認してみてください。（診断CTA） */}
         <SubsidyMatchCtaSection />
-        {/* ⑮ 補助金の活用方法を、記事で最速で確認できます。 */}
+        {/* ⑬ 補助金の活用方法を、記事で最速で確認できます。 */}
         <ArticlesCtaBar articles={previewArticles} />
-        {/* ⑯ よくあるご質問 */}
+        {/* ⑭ よくあるご質問 */}
         <FaqSection />
-        {/* ⑰ まず、話を聞かせてください。（最終CTA） */}
+        {/* ⑮ まず、話を聞かせてください。（最終CTA） */}
         <FinalCtaSection />
       </main>
       <LpFooter />

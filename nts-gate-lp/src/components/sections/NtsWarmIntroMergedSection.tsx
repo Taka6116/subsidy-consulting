@@ -4,6 +4,8 @@ import { Fragment } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { motion, useReducedMotion } from "framer-motion";
+import sakurabaPhoto from "../../../icon-assets/PANA2727.webp";
+import seinoPhoto from "../../../icon-assets/PANA2741.webp";
 
 const ease = [0.22, 1, 0.36, 1] as const;
 function fadeUp(delay = 0) {
@@ -19,72 +21,49 @@ const CONSULTANTS = [
   {
     name: "櫻庭真之介",
     title: "中小企業診断士",
-    photo: "/images/PANA3362.jpg",
-    tags: ["事業計画", "資金繰り", "実行支援", "改善検証"],
-    href: "/about",
+    photo: sakurabaPhoto,
+    bio: "20○○に日本提携支援にジョイン。○○の業界で○○年に従事し○○の経験や実績があります。",
+    /** 顔が小さく見えないよう object-position（%） */
+    photoObjectPosition: "50% 12%" as const,
+    photoScale: 1.32,
   },
   {
     name: "清野洋司",
     title: "中小企業診断士",
-    photo: "/images/PANA3955.jpg",
-    tags: ["事業計画", "資金繰り", "実行支援", "改善検証"],
-    href: "/about",
+    photo: seinoPhoto,
+    bio: "20○○に日本提携支援にジョイン。○○の業界で○○年に従事し○○の経験や実績があります。",
+    photoObjectPosition: "48% 6%" as const,
+    photoScale: 1.48,
   },
 ];
-
-const TAG_ICONS: Record<string, React.ReactNode> = {
-  事業計画: (
-    <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden>
-      <rect x="1.5" y="1.5" width="10" height="10" rx="2" stroke="#1d5fa8" strokeWidth="1.3" />
-      <path d="M4 5h5M4 7.5h3" stroke="#1d5fa8" strokeWidth="1.2" strokeLinecap="round" />
-    </svg>
-  ),
-  資金繰り: (
-    <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden>
-      <circle cx="6.5" cy="6.5" r="5" stroke="#1d5fa8" strokeWidth="1.3" />
-      <path d="M6.5 3.5v6M4.5 5.5h3.5" stroke="#1d5fa8" strokeWidth="1.2" strokeLinecap="round" />
-    </svg>
-  ),
-  実行支援: (
-    <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden>
-      <path d="M2 10.5l3.5-3.5 2.5 2 4-5" stroke="#1d5fa8" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  ),
-  改善検証: (
-    <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden>
-      <circle cx="6.5" cy="6.5" r="5" stroke="#1d5fa8" strokeWidth="1.3" />
-      <path d="M4 6.5l2 2 3.5-3.5" stroke="#1d5fa8" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  ),
-};
 
 function ConsultantCard({ c, delay }: { c: (typeof CONSULTANTS)[0]; delay: number }) {
   const reduce = useReducedMotion();
   return (
     <motion.div
       {...(reduce ? {} : fadeUp(delay))}
-      className="group flex items-start gap-5 rounded-2xl border border-[#d4e8f6] bg-white p-5 shadow-[0_2px_16px_rgba(18,56,110,0.08)] transition-all duration-200 hover:border-[#7ebde8] hover:shadow-[0_6px_28px_rgba(18,56,110,0.13)] sm:p-6"
+      className="group flex items-stretch gap-6 rounded-2xl border border-[#d4e8f6] bg-white p-6 shadow-[0_2px_16px_rgba(18,56,110,0.08)] transition-all duration-200 hover:border-[#7ebde8] hover:shadow-[0_6px_28px_rgba(18,56,110,0.13)] sm:gap-7 sm:p-8"
     >
-      <div className="relative h-[100px] w-[100px] shrink-0 overflow-hidden rounded-2xl border border-[#d4e8f6] bg-[#edf5fb] sm:h-[112px] sm:w-[112px]">
-        <Image src={c.photo} alt={c.name} fill className="object-cover object-[50%_8%]" sizes="112px" />
+      {/* 縦長の楕円（カプセル）フレーム — 前回比 約1.2倍＋拡大で顔アップ */}
+      <div className="relative h-[202px] w-[125px] shrink-0 overflow-hidden rounded-full border border-[#d4e8f6] bg-[#edf5fb] sm:h-[226px] sm:w-[142px]">
+        <Image
+          src={c.photo}
+          alt={c.name}
+          fill
+          className="object-cover"
+          style={{
+            objectPosition: c.photoObjectPosition,
+            transform: `scale(${c.photoScale})`,
+            transformOrigin: c.photoObjectPosition.replace(/\s+/, " "),
+          }}
+          sizes="(min-width: 640px) 284px, 250px"
+          quality={92}
+        />
       </div>
-      <div className="min-w-0 flex-1 pt-1">
-        <p className="text-[11px] font-bold uppercase tracking-widest text-[#5a80a0]">{c.title}</p>
-        <p className="mt-1 text-[20px] font-black leading-snug text-[#0c2a48]">{c.name}</p>
-        <div className="mt-3 grid grid-cols-2 gap-1.5">
-          {c.tags.map((tag) => (
-            <span key={tag} className="flex items-center gap-1.5 rounded-lg border border-[#cde3f4] bg-[#eaf4fb] px-2.5 py-1 text-[12px] font-semibold text-[#1d5fa8]">
-              {TAG_ICONS[tag]}
-              {tag}
-            </span>
-          ))}
-        </div>
-        <Link href={c.href} className="mt-4 inline-flex items-center gap-1 text-[13px] font-bold text-[#1d5fa8] transition hover:underline">
-          プロフィールを見る
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden>
-            <path d="M3 7h8M8 4l3 3-3 3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-        </Link>
+      <div className="flex min-w-0 flex-1 flex-col justify-center pt-0.5">
+        <p className="text-[12px] font-bold uppercase tracking-widest text-[#5a80a0] sm:text-[13px]">{c.title}</p>
+        <p className="mt-1.5 text-[22px] font-black leading-snug text-[#0c2a48] sm:text-[24px]">{c.name}</p>
+        <p className="mt-4 text-[14px] leading-relaxed text-[#4a6a82] sm:text-[15px]">{c.bio}</p>
       </div>
     </motion.div>
   );
@@ -152,19 +131,21 @@ export default function NtsWarmIntroMergedSection() {
           </p>
         </motion.div>
 
-        {/* ── 2カラムグリッド（items-center で縦中央揃え） ── */}
-        <div className="grid grid-cols-1 items-center gap-8 lg:grid-cols-[minmax(0,1.55fr)_minmax(390px,0.7fr)] lg:gap-10 xl:gap-12">
+        {/* ── 2カラム（lg: 同じ高さに伸長。脚注はグリッド下で全幅） ── */}
+        <div className="grid grid-cols-1 items-stretch gap-8 lg:grid-cols-[minmax(0,1.32fr)_minmax(480px,1fr)] lg:gap-10 xl:gap-12">
 
-          {/* ─── 左: 図解カード ─── */}
+          {/* ─── 左: 図解カード（右の2枚のカード列と底を揃える） ─── */}
           <motion.div
             {...(reduce ? {} : fadeUp(0.06))}
-            className="rounded-2xl border border-[#cde3f5] bg-white p-6 shadow-[0_2px_20px_rgba(18,56,110,0.08)] sm:p-8 xl:p-10 2xl:p-12"
+            className="flex h-full min-h-0 flex-col rounded-2xl border border-[#cde3f5] bg-white p-6 shadow-[0_2px_20px_rgba(18,56,110,0.08)] sm:p-8 xl:p-10 2xl:p-12"
           >
             {/* 図解タイトル */}
-            <p className="mb-7 text-center text-[13px] font-bold tracking-[0.1em] text-[#5a7fa0]">
+            <p className="mb-7 shrink-0 text-center text-[13px] font-bold tracking-[0.1em] text-[#5a7fa0]">
               "申請して終わり"ではない支援範囲
             </p>
 
+            <div className="flex min-h-0 flex-1 flex-col justify-between gap-5">
+              <div className="shrink-0 space-y-4">
             {/* ======== 上段レーン: よくある補助金支援 ======== */}
             <div className="overflow-hidden rounded-2xl border border-[#d8e8f2]">
               <div className="grid grid-cols-[120px_minmax(0,1fr)] sm:grid-cols-[140px_minmax(0,1fr)]">
@@ -217,13 +198,13 @@ export default function NtsWarmIntroMergedSection() {
             </div>
 
             {/* 区切りマーカー */}
-            <div className="relative my-4 flex items-center gap-3">
+            <div className="relative flex items-center gap-3">
               <div className="h-px flex-1 bg-[#d0e5f5]" />
               <div className="flex items-center gap-1.5 rounded-full border border-[#b0d4ef] bg-[#e6f2fb] px-3.5 py-1.5">
                 <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden>
                   <path d="M6.5 1v11M3.5 9l3 3 3-3" stroke="#1d6fe8" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
-                <span className="text-[11px] font-bold text-[#1d6fe8]">NTSはここが違います</span>
+                <span className="text-[11px] font-bold text-[#1d6fe8]">日本提携支援なら・・・</span>
               </div>
               <div className="h-px flex-1 bg-[#d0e5f5]" />
             </div>
@@ -283,59 +264,40 @@ export default function NtsWarmIntroMergedSection() {
                 </div>
               </div>
             </div>
+            </div>
 
             {/* 下部メッセージ */}
-            <div className="mt-5 flex items-center gap-2.5 rounded-xl bg-[#e4f0fb] px-5 py-3.5">
-              <svg width="18" height="18" viewBox="0 0 18 18" fill="none" className="shrink-0" aria-hidden>
-                <circle cx="9" cy="9" r="8" fill="#1d6fe8" />
-                <path d="M5.5 9l2.5 2.5 4.5-5" stroke="white" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
+            <div className="shrink-0 rounded-xl bg-[#e4f0fb] px-5 py-3.5">
               <p className="text-[13px] font-semibold leading-relaxed text-[#0c3360] sm:text-[14px]">
-                補助金を<strong>"もらう"</strong>だけでなく、<strong>事業にどう活かすか</strong>まで一緒に考えます。
+                補助金を<strong>"採択"</strong>だけでなく、<strong>事業にどう活かすか</strong>まで一緒に考えます。ーだから伴走なんです
               </p>
+            </div>
             </div>
           </motion.div>
 
-          {/* ─── 右: コンサルタントカード群 ─── */}
-          <div className="flex flex-col justify-center gap-5">
+          {/* ─── 右: コンサルタントカードのみ（高さはここで左列と揃える） ─── */}
+          <div className="flex h-full min-h-0 flex-col gap-6 lg:gap-7">
             {CONSULTANTS.map((c, i) => (
               <ConsultantCard key={c.name} c={c} delay={0.1 + i * 0.09} />
             ))}
-            <motion.p
-              {...(reduce ? {} : fadeUp(0.28))}
-              className="rounded-xl border border-[#cce0f0] bg-white px-4 py-3 text-[11px] leading-relaxed text-[#6a8aa0]"
-            >
-              ※ NTSは補助金活用支援・申請準備支援を行います。官公署提出書類作成等が必要な場合は、提携専門家と連携します。
-            </motion.p>
           </div>
         </div>
 
-        {/* ── CTA（2カラム外、左寄せ） ── */}
-        <motion.div
-          {...(reduce ? {} : fadeUp(0.18))}
-          className="mt-8 flex flex-wrap items-center gap-4 lg:max-w-[60%]"
+        <motion.p
+          {...(reduce ? {} : fadeUp(0.24))}
+          className="mx-auto mt-6 max-w-[1640px] rounded-xl border border-[#cce0f0] bg-white px-4 py-3 text-[11px] leading-relaxed text-[#6a8aa0] sm:px-5"
         >
+          ※ NTSは補助金活用支援・申請準備支援を行います。官公署提出書類作成等が必要な場合は、提携専門家と連携します。
+        </motion.p>
+
+        {/* ── CTA（セクション内 左右中央） ── */}
+        <motion.div {...(reduce ? {} : fadeUp(0.18))} className="mt-8 flex justify-center">
           <Link
             href="/consult"
-            className="inline-flex items-center gap-2.5 rounded-xl bg-[#1d6fe8] px-8 py-4 text-[16px] font-black text-white shadow-[0_4px_22px_rgba(29,111,232,0.32)] transition hover:-translate-y-0.5 hover:bg-[#1a60d0] hover:shadow-[0_8px_30px_rgba(29,111,232,0.38)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1d6fe8]"
+            className="inline-flex items-center justify-center rounded-xl bg-[#1d6fe8] px-8 py-4 text-[16px] font-black text-white shadow-[0_4px_22px_rgba(29,111,232,0.32)] transition hover:-translate-y-0.5 hover:bg-[#1a60d0] hover:shadow-[0_8px_30px_rgba(29,111,232,0.38)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1d6fe8]"
           >
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden>
-              <rect x="2" y="4" width="16" height="12" rx="2.5" stroke="white" strokeWidth="1.6" />
-              <path d="M2 8h16" stroke="white" strokeWidth="1.5" strokeLinecap="round" />
-              <path d="M6 13h4" stroke="white" strokeWidth="1.5" strokeLinecap="round" />
-            </svg>
             無料相談で確認する
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden>
-              <path d="M3 8h10M9 4l4 4-4 4" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
           </Link>
-          <p className="flex items-center gap-1.5 text-[13px] text-[#527090]">
-            <svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden>
-              <circle cx="7.5" cy="7.5" r="6.5" stroke="#527090" strokeWidth="1.3" />
-              <path d="M7.5 4.5v4l2.5 1.5" stroke="#527090" strokeWidth="1.2" strokeLinecap="round" />
-            </svg>
-            初回は、対象制度と活用目的を整理します。
-          </p>
         </motion.div>
 
       </div>
