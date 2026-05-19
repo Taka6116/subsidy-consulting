@@ -2,11 +2,6 @@
 
 import { useRef, useEffect, useCallback, useState } from "react";
 import { useReducedMotion } from "framer-motion";
-import {
-  Building2, Utensils, Factory, Wrench, HardHat, Boxes,
-  ShieldCheck, Stethoscope, LineChart,
-} from "lucide-react";
-import type { LucideIcon } from "lucide-react";
 
 // ============================================================
 // 採択事例データ（桜庭さん提供の実データ 12件）
@@ -15,8 +10,7 @@ import type { LucideIcon } from "lucide-react";
 const CASES: CaseData[] = [
   {
     id: "case-1", industry: "宿泊業",
-    icon: Building2, iconBg: "#DBEAFE", iconColor: "#1D6FE8",
-    photo: "/api/article-pictures/%E7%B5%8C%E5%96%B6%E8%A8%88%E7%94%BB/business-meeting-conference-concept.webp",
+    photo: "/api/article-pictures/%E4%BA%8B%E6%A5%AD%E8%A8%88%E7%94%BB/business-meeting-conference-concept.webp",
     schemeName: "新事業進出補助金",
     business: "ホテルの経営",
     issue: "単一事業への経営依存",
@@ -28,8 +22,7 @@ const CASES: CaseData[] = [
   },
   {
     id: "case-2", industry: "飲食業",
-    icon: Utensils, iconBg: "#D1FAE5", iconColor: "#059669",
-    photo: "/api/article-pictures/%E7%B5%8C%E5%96%B6%E8%A8%88%E7%94%BB/business-share-planing-strategy-brainstroming-concept.webp",
+    photo: "/api/article-pictures/%E4%BA%8B%E6%A5%AD%E8%A8%88%E7%94%BB/business-share-planing-strategy-brainstroming-concept.webp",
     schemeName: "事業再構築補助金",
     business: "麻婆豆腐店の運営",
     issue: "他ジャンルの飲食店の開業",
@@ -41,8 +34,7 @@ const CASES: CaseData[] = [
   },
   {
     id: "case-3", industry: "金属製品製造業",
-    icon: Factory, iconBg: "#E0E7FF", iconColor: "#4F46E5",
-    photo: "/api/article-pictures/%E8%A3%BD%E9%80%A0%E3%83%BB%E8%A3%BD%E9%80%A0%E6%A5%AD/factory-workshop-interior-machines-glass-production-background.webp",
+    photo: "/api/article-pictures/%E8%A8%AD%E5%82%99%E3%83%BB%E8%A8%AD%E5%82%99%E6%8A%95%E8%B3%87/factory-workshop-interior-machines-glass-production-background.webp",
     schemeName: "事業再構築補助金",
     business: "各種洗浄機の部品製造",
     issue: "主要取引先への過度な依存",
@@ -54,7 +46,6 @@ const CASES: CaseData[] = [
   },
   {
     id: "case-4", industry: "建設機械製造業",
-    icon: Wrench, iconBg: "#FEF3C7", iconColor: "#D97706",
     photo: "/api/article-pictures/%E5%BB%BA%E8%A8%AD/construction-worker-engineer-working-together-construction-site.webp",
     schemeName: "事業再構築補助金",
     business: "産廃の仕分け・ふるい機の製造販売",
@@ -67,7 +58,6 @@ const CASES: CaseData[] = [
   },
   {
     id: "case-5", industry: "建設業",
-    icon: HardHat, iconBg: "#DBEAFE", iconColor: "#1D6FE8",
     photo: "/api/article-pictures/%E5%BB%BA%E8%A8%AD/working-construction-site.webp",
     schemeName: "省力化投資補助金",
     business: "土木工事業",
@@ -80,7 +70,6 @@ const CASES: CaseData[] = [
   },
   {
     id: "case-6", industry: "建設業",
-    icon: HardHat, iconBg: "#EDE9FE", iconColor: "#7C3AED",
     photo: "/api/article-pictures/%E5%BB%BA%E8%A8%AD/construction-site-working-japan.webp",
     schemeName: "事業再構築補助金",
     business: "養生・クリーニング業",
@@ -93,8 +82,7 @@ const CASES: CaseData[] = [
   },
   {
     id: "case-7", industry: "プラスチック製品製造業",
-    icon: Boxes, iconBg: "#FCE7F3", iconColor: "#DB2777",
-    photo: "/api/article-pictures/%E8%A3%BD%E9%80%A0%E3%83%BB%E8%A3%BD%E9%80%A0%E6%A5%AD/plant-picture-clean-room-equipment-stainless-steel-machines.webp",
+    photo: "/api/article-pictures/%E8%A8%AD%E5%82%99%E3%83%BB%E8%A8%AD%E5%82%99%E6%8A%95%E8%B3%87/plant-picture-clean-room-equipment-stainless-steel-machines.webp",
     schemeName: "事業再構築補助金",
     business: "不織布の再生ペレット製造",
     issue: "海外売上依存による貿易停止リスク",
@@ -106,7 +94,6 @@ const CASES: CaseData[] = [
   },
   {
     id: "case-8", industry: "建設業",
-    icon: HardHat, iconBg: "#D1FAE5", iconColor: "#059669",
     photo: "/api/article-pictures/%E5%BB%BA%E8%A8%AD/engineers-analyzing-data-digital-tablet.webp",
     schemeName: "省力化投資補助金",
     business: "宅地造成業",
@@ -119,7 +106,6 @@ const CASES: CaseData[] = [
   },
   {
     id: "case-9", industry: "損害保険代理業",
-    icon: ShieldCheck, iconBg: "#DBEAFE", iconColor: "#1D6FE8",
     photo: "/api/article-pictures/%E4%BA%BA%E6%9D%90%E3%83%BB%E6%8E%A1%E7%94%A8/handshake-close-up-executives.webp",
     schemeName: "事業再構築補助金",
     business: "保険代理店業務",
@@ -132,7 +118,6 @@ const CASES: CaseData[] = [
   },
   {
     id: "case-10", industry: "歯科診療所",
-    icon: Stethoscope, iconBg: "#FEE2E2", iconColor: "#DC2626",
     photo: "/api/article-pictures/%E4%BA%BA%E6%9D%90%E3%83%BB%E6%8E%A1%E7%94%A8/portrait-asian-businesswoman-presenting-her-plan-meeting.webp",
     schemeName: "事業再構築補助金",
     business: "歯科医院",
@@ -145,8 +130,7 @@ const CASES: CaseData[] = [
   },
   {
     id: "case-11", industry: "飲食業＋産廃業",
-    icon: Utensils, iconBg: "#D1FAE5", iconColor: "#059669",
-    photo: "/api/article-pictures/%E7%B5%8C%E5%96%B6%E8%A8%88%E7%94%BB/two-cropped-startuppers-developing-business-plan.webp",
+    photo: "/api/article-pictures/%E4%BA%8B%E6%A5%AD%E8%A8%88%E7%94%BB/two-cropped-startuppers-developing-business-plan.webp",
     schemeName: "事業再構築補助金",
     business: "居酒屋の運営＋空きビン回収・リサイクル",
     issue: "経営リスク分散",
@@ -158,7 +142,6 @@ const CASES: CaseData[] = [
   },
   {
     id: "case-12", industry: "経営コンサルタント業",
-    icon: LineChart, iconBg: "#E0E7FF", iconColor: "#4F46E5",
     photo: "/api/article-pictures/DX%E3%83%BBIT/businessman-with-digital-interface-data-growth.webp",
     schemeName: "事業再構築補助金",
     business: "集客コンサル",
@@ -174,9 +157,6 @@ const CASES: CaseData[] = [
 type CaseData = {
   id: string;
   industry: string;
-  icon: LucideIcon;
-  iconBg: string;
-  iconColor: string;
   photo: string;
   schemeName: string;
   business: string;
@@ -404,8 +384,6 @@ export default function SubsidyCaseStudySection() {
 // CaseCard — ミニ事例レポート風
 // ============================================================
 function CaseCard({ c }: { c: CaseData }) {
-  const Icon = c.icon;
-
   return (
     <article
       className="flex shrink-0 flex-col overflow-hidden rounded-2xl bg-white"
@@ -432,14 +410,6 @@ function CaseCard({ c }: { c: CaseData }) {
           style={{ background: "linear-gradient(to bottom, rgba(8,42,94,0.15) 0%, rgba(8,42,94,0.58) 100%)" }}
           aria-hidden
         />
-
-        {/* アイコン（右上） */}
-        <div
-          className="absolute right-3 top-3 flex h-9 w-9 items-center justify-center rounded-xl bg-white shadow-sm"
-          style={{ border: `1.5px solid ${c.iconBg}` }}
-        >
-          <Icon size={18} color={c.iconColor} strokeWidth={1.8} aria-hidden />
-        </div>
 
         {/* 補助金額バッジ（左下） */}
         <div
