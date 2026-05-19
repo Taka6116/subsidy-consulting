@@ -1,10 +1,8 @@
 "use client";
 
-import Image from "next/image";
 import { useRef, useEffect, useCallback, useState } from "react";
 import { useReducedMotion } from "framer-motion";
 import {
-  ChevronDown,
   Building2, Utensils, Factory, Wrench, HardHat, Boxes,
   ShieldCheck, Stethoscope, LineChart,
 } from "lucide-react";
@@ -16,7 +14,7 @@ import type { LucideIcon } from "lucide-react";
 // ============================================================
 const CASES: CaseData[] = [
   {
-    id: "case-1", no: "01", industry: "宿泊業",
+    id: "case-1", industry: "宿泊業",
     icon: Building2, iconBg: "#DBEAFE", iconColor: "#1D6FE8",
     photo: "/api/article-pictures/%E7%B5%8C%E5%96%B6%E8%A8%88%E7%94%BB/business-meeting-conference-concept.webp",
     schemeName: "新事業進出補助金",
@@ -29,7 +27,7 @@ const CASES: CaseData[] = [
     result: "売上22%増",
   },
   {
-    id: "case-2", no: "02", industry: "飲食業",
+    id: "case-2", industry: "飲食業",
     icon: Utensils, iconBg: "#D1FAE5", iconColor: "#059669",
     photo: "/api/article-pictures/%E7%B5%8C%E5%96%B6%E8%A8%88%E7%94%BB/business-share-planing-strategy-brainstroming-concept.webp",
     schemeName: "事業再構築補助金",
@@ -42,7 +40,7 @@ const CASES: CaseData[] = [
     result: "売上33%増",
   },
   {
-    id: "case-3", no: "03", industry: "金属製品製造業",
+    id: "case-3", industry: "金属製品製造業",
     icon: Factory, iconBg: "#E0E7FF", iconColor: "#4F46E5",
     photo: "/api/article-pictures/%E8%A3%BD%E9%80%A0%E3%83%BB%E8%A3%BD%E9%80%A0%E6%A5%AD/factory-workshop-interior-machines-glass-production-background.webp",
     schemeName: "事業再構築補助金",
@@ -55,7 +53,7 @@ const CASES: CaseData[] = [
     result: "売上43%増",
   },
   {
-    id: "case-4", no: "04", industry: "建設機械製造業",
+    id: "case-4", industry: "建設機械製造業",
     icon: Wrench, iconBg: "#FEF3C7", iconColor: "#D97706",
     photo: "/api/article-pictures/%E5%BB%BA%E8%A8%AD/construction-worker-engineer-working-together-construction-site.webp",
     schemeName: "事業再構築補助金",
@@ -68,7 +66,7 @@ const CASES: CaseData[] = [
     result: "売上116%増",
   },
   {
-    id: "case-5", no: "05", industry: "建設業",
+    id: "case-5", industry: "建設業",
     icon: HardHat, iconBg: "#DBEAFE", iconColor: "#1D6FE8",
     photo: "/api/article-pictures/%E5%BB%BA%E8%A8%AD/working-construction-site.webp",
     schemeName: "省力化投資補助金",
@@ -81,7 +79,7 @@ const CASES: CaseData[] = [
     result: "掘削作業時間を1/5に短縮",
   },
   {
-    id: "case-6", no: "06", industry: "建設業",
+    id: "case-6", industry: "建設業",
     icon: HardHat, iconBg: "#EDE9FE", iconColor: "#7C3AED",
     photo: "/api/article-pictures/%E5%BB%BA%E8%A8%AD/construction-site-working-japan.webp",
     schemeName: "事業再構築補助金",
@@ -94,7 +92,7 @@ const CASES: CaseData[] = [
     result: "売上27%増",
   },
   {
-    id: "case-7", no: "07", industry: "プラスチック製品製造業",
+    id: "case-7", industry: "プラスチック製品製造業",
     icon: Boxes, iconBg: "#FCE7F3", iconColor: "#DB2777",
     photo: "/api/article-pictures/%E8%A3%BD%E9%80%A0%E3%83%BB%E8%A3%BD%E9%80%A0%E6%A5%AD/plant-picture-clean-room-equipment-stainless-steel-machines.webp",
     schemeName: "事業再構築補助金",
@@ -107,7 +105,7 @@ const CASES: CaseData[] = [
     result: "売上19%増",
   },
   {
-    id: "case-8", no: "08", industry: "建設業",
+    id: "case-8", industry: "建設業",
     icon: HardHat, iconBg: "#D1FAE5", iconColor: "#059669",
     photo: "/api/article-pictures/%E5%BB%BA%E8%A8%AD/engineers-analyzing-data-digital-tablet.webp",
     schemeName: "省力化投資補助金",
@@ -120,7 +118,7 @@ const CASES: CaseData[] = [
     result: "作業時間を47.6h→27.8h/日に削減",
   },
   {
-    id: "case-9", no: "09", industry: "損害保険代理業",
+    id: "case-9", industry: "損害保険代理業",
     icon: ShieldCheck, iconBg: "#DBEAFE", iconColor: "#1D6FE8",
     photo: "/api/article-pictures/%E4%BA%BA%E6%9D%90%E3%83%BB%E6%8E%A1%E7%94%A8/handshake-close-up-executives.webp",
     schemeName: "事業再構築補助金",
@@ -133,7 +131,7 @@ const CASES: CaseData[] = [
     result: "売上131%増",
   },
   {
-    id: "case-10", no: "10", industry: "歯科診療所",
+    id: "case-10", industry: "歯科診療所",
     icon: Stethoscope, iconBg: "#FEE2E2", iconColor: "#DC2626",
     photo: "/api/article-pictures/%E4%BA%BA%E6%9D%90%E3%83%BB%E6%8E%A1%E7%94%A8/portrait-asian-businesswoman-presenting-her-plan-meeting.webp",
     schemeName: "事業再構築補助金",
@@ -146,7 +144,7 @@ const CASES: CaseData[] = [
     result: "売上170%増",
   },
   {
-    id: "case-11", no: "11", industry: "飲食業＋産廃業",
+    id: "case-11", industry: "飲食業＋産廃業",
     icon: Utensils, iconBg: "#D1FAE5", iconColor: "#059669",
     photo: "/api/article-pictures/%E7%B5%8C%E5%96%B6%E8%A8%88%E7%94%BB/two-cropped-startuppers-developing-business-plan.webp",
     schemeName: "事業再構築補助金",
@@ -159,7 +157,7 @@ const CASES: CaseData[] = [
     result: "売上28%増",
   },
   {
-    id: "case-12", no: "12", industry: "経営コンサルタント業",
+    id: "case-12", industry: "経営コンサルタント業",
     icon: LineChart, iconBg: "#E0E7FF", iconColor: "#4F46E5",
     photo: "/api/article-pictures/DX%E3%83%BBIT/businessman-with-digital-interface-data-growth.webp",
     schemeName: "事業再構築補助金",
@@ -175,7 +173,6 @@ const CASES: CaseData[] = [
 
 type CaseData = {
   id: string;
-  no: string;
   industry: string;
   icon: LucideIcon;
   iconBg: string;
@@ -196,6 +193,9 @@ const STATS = [
   { label: "最高投資金額", value: "8,120万円", primary: false },
   { label: "平均補助金額", value: "約1,241万円", primary: false },
 ] as const;
+
+// サマリーは3件なので中央揃えで表示するためのラッパークラス
+const STATS_GRID_CLASS = "mt-8 grid grid-cols-3 gap-3 sm:gap-4 mx-auto max-w-[680px]";
 
 const CARD_W = 320;
 const CARD_GAP = 20;
@@ -314,8 +314,8 @@ export default function SubsidyCaseStudySection() {
           </p>
         </div>
 
-        {/* 実績サマリー */}
-        <div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4">
+        {/* 実績サマリー — 3件を中央揃え */}
+        <div className={STATS_GRID_CLASS}>
           {STATS.map((s) => (
             <div
               key={s.label}
@@ -405,7 +405,6 @@ export default function SubsidyCaseStudySection() {
 // ============================================================
 function CaseCard({ c }: { c: CaseData }) {
   const Icon = c.icon;
-  const [open, setOpen] = useState(false);
 
   return (
     <article
@@ -416,38 +415,45 @@ function CaseCard({ c }: { c: CaseData }) {
         border: "1px solid #DCE7F3",
         boxShadow: "0 3px 14px rgba(8,42,94,0.07)",
       }}
-      aria-label={`No.${c.no} ${c.industry} — ${c.schemeName}`}
+      aria-label={`${c.industry} — ${c.schemeName}`}
     >
       {/* ── ビジュアルヘッダー（写真） ── */}
       <div className="relative h-[160px] w-full shrink-0 overflow-hidden">
-        <Image
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
           src={c.photo}
           alt={`${c.industry}の事例イメージ`}
-          fill
-          sizes={`${CARD_W}px`}
-          className="object-cover"
-          unoptimized
+          className="absolute inset-0 h-full w-full object-cover"
+          loading="lazy"
         />
-        {/* オーバーレイ：下から暗くして文字を見やすく */}
-        <div className="pointer-events-none absolute inset-0" style={{ background: "linear-gradient(to bottom, rgba(8,42,94,0.18) 0%, rgba(8,42,94,0.55) 100%)" }} aria-hidden />
+        {/* オーバーレイ */}
+        <div
+          className="pointer-events-none absolute inset-0"
+          style={{ background: "linear-gradient(to bottom, rgba(8,42,94,0.15) 0%, rgba(8,42,94,0.58) 100%)" }}
+          aria-hidden
+        />
 
-        {/* No. + 業種タグ（左上） */}
-        <div className="absolute left-3 top-3 flex items-center gap-1.5">
-          <span className="rounded px-2 py-0.5 text-[10px] font-bold" style={{ background: "rgba(255,255,255,0.92)", color: "#082A5E" }}>
-            No.{c.no}
-          </span>
-          <span className="rounded px-2 py-0.5 text-[10px] font-bold" style={{ background: c.iconColor, color: "#fff" }}>
-            {c.industry}
-          </span>
-        </div>
+        {/* 業種タグ（左上） */}
+        <span
+          className="absolute left-3 top-3 rounded px-2 py-0.5 text-[10px] font-bold"
+          style={{ background: c.iconColor, color: "#fff" }}
+        >
+          {c.industry}
+        </span>
 
         {/* アイコン（右上） */}
-        <div className="absolute right-3 top-3 flex h-9 w-9 items-center justify-center rounded-xl bg-white shadow-sm" style={{ border: `1.5px solid ${c.iconBg}` }}>
+        <div
+          className="absolute right-3 top-3 flex h-9 w-9 items-center justify-center rounded-xl bg-white shadow-sm"
+          style={{ border: `1.5px solid ${c.iconBg}` }}
+        >
           <Icon size={18} color={c.iconColor} strokeWidth={1.8} aria-hidden />
         </div>
 
         {/* 補助金額バッジ（左下） */}
-        <div className="absolute bottom-3 left-3 rounded-full px-3 py-1 text-[12px] font-black" style={{ background: "rgba(255,255,255,0.95)", color: "#0068B7" }}>
+        <div
+          className="absolute bottom-3 left-3 rounded-full px-3 py-1 text-[12px] font-black"
+          style={{ background: "rgba(255,255,255,0.95)", color: "#0068B7" }}
+        >
           {c.subsidyAmount}
         </div>
       </div>
@@ -461,26 +467,23 @@ function CaseCard({ c }: { c: CaseData }) {
 
         {/* ── 金額比較ブロック ── */}
         <div className="mt-3 overflow-hidden rounded-xl" style={{ border: "1px solid #C8DFF5" }}>
-          {/* 総投資額 */}
           <div className="flex items-center justify-between px-4 py-2.5" style={{ background: "#F8FBFF" }}>
             <span className="text-[10px] font-semibold" style={{ color: "#6B7A90" }}>総投資額</span>
             <span className="font-heading text-[15px] font-bold" style={{ color: "#082A5E" }}>{c.investmentAmount}</span>
           </div>
           <div style={{ borderTop: "1px solid #E4EDF7" }} />
-          {/* 補助金額 */}
           <div className="flex items-center justify-between px-4 py-3" style={{ background: "#EEF6FF" }}>
             <span className="text-[10px] font-bold" style={{ color: "#0068B7" }}>補助金額</span>
             <span className="font-heading text-[1.3rem] font-black leading-none" style={{ color: "#0068B7" }}>{c.subsidyAmount}</span>
           </div>
           <div style={{ borderTop: "1px solid #C8DFF5" }} />
-          {/* 補助率 */}
           <div className="flex items-center justify-between px-4 py-2" style={{ background: "#F8FBFF" }}>
             <span className="text-[10px] font-semibold" style={{ color: "#6B7A90" }}>補助率</span>
             <span className="rounded-full px-2.5 py-0.5 text-[11px] font-bold" style={{ background: "#0068B7", color: "#fff" }}>{c.subsidyRate}</span>
           </div>
         </div>
 
-        {/* ── 課題 → 投資 → 効果 ミニテーブル ── */}
+        {/* ── 課題 → 投資 → 効果 ── */}
         <div className="mt-3 flex flex-col gap-0 overflow-hidden rounded-xl" style={{ border: "1px solid #E4EDF7" }}>
           <MiniRow label="課題" value={c.issue} bg="#F8FAFC" />
           <div style={{ borderTop: "1px solid #E4EDF7" }} />
@@ -488,34 +491,6 @@ function CaseCard({ c }: { c: CaseData }) {
           <div style={{ borderTop: "1px solid #E4EDF7" }} />
           <MiniRow label="効果" value={c.result} bg="#EEF6FF" accent />
         </div>
-
-        {/* ── 詳細を見る（アコーディオン） ── */}
-        <button
-          type="button"
-          onClick={() => setOpen((v) => !v)}
-          className="mt-3 flex w-full items-center justify-center gap-1 rounded-lg py-2 text-[12px] font-semibold transition hover:bg-[#F4F8FC]"
-          style={{ color: "#0068B7" }}
-          aria-expanded={open}
-        >
-          {open ? "閉じる" : "詳細を見る"}
-          <ChevronDown
-            size={14}
-            className={`transition-transform duration-200 ${open ? "rotate-180" : ""}`}
-            aria-hidden
-          />
-        </button>
-
-        {open && (
-          <div className="mt-1 space-y-2 border-t border-[#E4EDF7] pt-3 text-[11px]" style={{ color: "#4A5E78" }}>
-            <DetailRow label="事業内容" value={c.business} />
-            <DetailRow label="課題" value={c.issue} />
-            <DetailRow label="投資内容" value={c.investment} />
-            <DetailRow label="投資金額" value={c.investmentAmount} />
-            <DetailRow label="補助率" value={c.subsidyRate} />
-            <DetailRow label="補助金額" value={c.subsidyAmount} />
-            <DetailRow label="効果" value={c.result} accent />
-          </div>
-        )}
       </div>
     </article>
   );
@@ -543,16 +518,3 @@ function MiniRow({ label, value, bg, accent }: { label: string; value: string; b
   );
 }
 
-// ── 詳細展開行 ────────────────────────────────────────────
-function DetailRow({ label, value, accent }: { label: string; value: string; accent?: boolean }) {
-  return (
-    <div className="flex items-start gap-2">
-      <span className="mt-[1px] shrink-0 text-[10px] font-bold" style={{ color: "#6B7A90", width: "56px" }}>
-        {label}
-      </span>
-      <span style={accent ? { color: "#0068B7", fontWeight: 700 } : undefined}>
-        {value}
-      </span>
-    </div>
-  );
-}
