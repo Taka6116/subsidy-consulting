@@ -115,7 +115,7 @@ export default function NtsWarmIntroMergedSection() {
             その先に、1年間の伴走があります。
           </h2>
           <p className="mx-auto mt-4 max-w-2xl text-[0.97rem] leading-relaxed text-[#4a6a82] md:text-[1.05rem]">
-            申請して終わりではなく、活用計画から実行後の振り返りまで伴走します。
+            目的は事業成長。　補助金はあくまで手段です。
           </p>
         </motion.div>
 
