@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useEffect, useCallback, useState } from "react";
+import { useRef, useEffect, useCallback } from "react";
 import { useReducedMotion } from "framer-motion";
 
 // ============================================================
@@ -169,82 +169,72 @@ export default function SubsidyCaseStudySection() {
   const scrollLeftStart = useRef(0);
   const sectionRef = useRef<HTMLElement>(null);
   const reduce = useReducedMotion();
-  const autoTimer = useRef<ReturnType<typeof setInterval> | null>(null);
-  const isJumping = useRef(false); // ループジャンプ中フラグ（onScroll無視用）
+  // rAFベース自動スクロール
+  const rafId = useRef<number | null>(null);
+  const autoActive = useRef(false);
+  // 小数精度のスクロール位置（rAFで加算）
+  const scrollPos = useRef(0);
+  const isJumping = useRef(false);
 
-  const [progress, setProgress] = useState(0);
+  const ONE_SET = CASES.length * STRIDE;
+  const BODY_START = CLONES_BEFORE * ONE_SET;
+  const initialOffset = BODY_START;
 
-  // 初期スクロール位置：前コピー末尾（= 本体先頭）
-  const initialOffset = CLONES_BEFORE * CASES.length * STRIDE;
-
-  // ループ判定・位置リセット
-  const handleScroll = useCallback(() => {
-    const el = trackRef.current;
-    if (!el || isJumping.current) return;
-
-    const totalCards = CASES.length;
-    const oneSet = totalCards * STRIDE;
-    // 何セット目にいるか
-    // 本体は CLONES_BEFORE 番目のセット
-    const bodyStart = CLONES_BEFORE * oneSet;
-    const bodyEnd   = bodyStart + oneSet;
-
-    let jumped = false;
-    if (el.scrollLeft < bodyStart - oneSet) {
-      // 先頭より左にはみ出した → 末尾相当にジャンプ
+  // ループ補正：本体の外に出たら瞬時に戻す
+  const correctLoop = useCallback((el: HTMLDivElement) => {
+    if (isJumping.current) return;
+    const sl = el.scrollLeft;
+    if (sl < BODY_START - ONE_SET) {
+      const delta = ONE_SET * 2;
       isJumping.current = true;
-      el.scrollLeft += oneSet * 2;
-      jumped = true;
-    } else if (el.scrollLeft >= bodyEnd + oneSet) {
-      // 末尾より右にはみ出した → 先頭相当にジャンプ
+      el.scrollLeft = sl + delta;
+      scrollPos.current += delta;
+      requestAnimationFrame(() => { isJumping.current = false; });
+    } else if (sl >= BODY_START + ONE_SET * 2) {
+      const delta = ONE_SET * 2;
       isJumping.current = true;
-      el.scrollLeft -= oneSet * 2;
-      jumped = true;
-    }
-
-    if (jumped) {
-      // 1フレーム後にフラグ解除
+      el.scrollLeft = sl - delta;
+      scrollPos.current -= delta;
       requestAnimationFrame(() => { isJumping.current = false; });
     }
+  }, [BODY_START, ONE_SET]);
 
-    // プログレスバー（本体セット内の位置）
-    const pos = ((el.scrollLeft - bodyStart) % oneSet + oneSet) % oneSet;
-    setProgress(pos / (oneSet - el.clientWidth));
+  // rAF自動スクロールループ（0.6px/frame ≈ 36px/s @60fps）
+  const AUTO_SPEED = 0.6;
+  const rafLoop = useCallback(() => {
+    const el = trackRef.current;
+    if (!el || !autoActive.current) return;
+    scrollPos.current += AUTO_SPEED;
+    el.scrollLeft = scrollPos.current;
+    correctLoop(el);
+    rafId.current = requestAnimationFrame(rafLoop);
+  }, [correctLoop]);
+
+  const stopAuto = useCallback(() => {
+    autoActive.current = false;
+    if (rafId.current !== null) {
+      cancelAnimationFrame(rafId.current);
+      rafId.current = null;
+    }
   }, []);
 
-  // 初期位置セット
+  const startAuto = useCallback(() => {
+    if (reduce || autoActive.current) return;
+    autoActive.current = true;
+    rafId.current = requestAnimationFrame(rafLoop);
+  }, [reduce, rafLoop]);
+
+  // 初期位置セット & 自動開始
   useEffect(() => {
     const el = trackRef.current;
     if (!el) return;
     el.scrollLeft = initialOffset;
-  }, [initialOffset]);
+    scrollPos.current = initialOffset;
+    const t = setTimeout(startAuto, 1500);
+    return () => clearTimeout(t);
+  }, [initialOffset, startAuto]);
 
-  // 自動スクロール（ゆっくり右へ流す）
-  useEffect(() => {
-    if (reduce) return;
-    const delay = setTimeout(() => {
-      const el = trackRef.current;
-      if (!el) return;
-      autoTimer.current = setInterval(() => {
-        if (!trackRef.current) return;
-        trackRef.current.scrollLeft += 1;
-      }, 20); // 50fps × 1px = 約50px/s
-    }, 1500);
-    return () => {
-      clearTimeout(delay);
-      if (autoTimer.current) clearInterval(autoTimer.current);
-    };
-  }, [reduce]);
-
-  // ユーザー操作で自動スクロール停止
-  const stopAuto = useCallback(() => {
-    if (autoTimer.current) {
-      clearInterval(autoTimer.current);
-      autoTimer.current = null;
-    }
-  }, []);
-
-  // セクション外に出たら自動停止
+  // セクション外 → 停止
   useEffect(() => {
     const section = sectionRef.current;
     if (!section) return;
@@ -256,16 +246,22 @@ export default function SubsidyCaseStudySection() {
     return () => obs.disconnect();
   }, [stopAuto]);
 
-  // タッチパッド・ホイール → 横スクロールに変換
+  // クリーンアップ
+  useEffect(() => () => stopAuto(), [stopAuto]);
+
+  // タッチパッド・ホイール → 横スクロール
   const handleWheel = useCallback((e: React.WheelEvent<HTMLDivElement>) => {
     const el = trackRef.current;
     if (!el) return;
     if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
       e.preventDefault();
-      el.scrollLeft += e.deltaY * 1.2;
+      const next = el.scrollLeft + e.deltaY * 1.2;
+      el.scrollLeft = next;
+      scrollPos.current = next;
+      correctLoop(el);
     }
     stopAuto();
-  }, [stopAuto]);
+  }, [stopAuto, correctLoop]);
 
   // ドラッグ
   const handlePointerDown = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
@@ -274,6 +270,7 @@ export default function SubsidyCaseStudySection() {
     isDragging.current = true;
     startX.current = e.clientX;
     scrollLeftStart.current = el.scrollLeft;
+    scrollPos.current = el.scrollLeft;
     el.setPointerCapture(e.pointerId);
     stopAuto();
   }, [stopAuto]);
@@ -282,18 +279,21 @@ export default function SubsidyCaseStudySection() {
     if (!isDragging.current) return;
     const el = trackRef.current;
     if (!el) return;
-    el.scrollLeft = scrollLeftStart.current - (e.clientX - startX.current);
-  }, []);
+    const next = scrollLeftStart.current - (e.clientX - startX.current);
+    el.scrollLeft = next;
+    scrollPos.current = next;
+    correctLoop(el);
+  }, [correctLoop]);
 
   const handlePointerUp = useCallback(() => { isDragging.current = false; }, []);
 
-  // 前後ボタン
-  const scrollByCards = (dir: -1 | 1) => {
+  // スクロールイベントでもループ補正（スマホタッチ用）
+  const handleScroll = useCallback(() => {
     const el = trackRef.current;
-    if (!el) return;
-    stopAuto();
-    el.scrollBy({ left: dir * STRIDE, behavior: "smooth" });
-  };
+    if (!el || autoActive.current) return;
+    scrollPos.current = el.scrollLeft;
+    correctLoop(el);
+  }, [correctLoop]);
 
   // 表示するカードリスト（前後コピー込み）
   // コピー数を多めに（前後 CLONES_BEFORE セット）
@@ -377,9 +377,11 @@ export default function SubsidyCaseStudySection() {
             paddingTop: "8px",
             paddingBottom: "8px",
             overflowX: "scroll",
-            scrollbarWidth: "none",        // Firefox
-            msOverflowStyle: "none",       // IE
-            cursor: isDragging.current ? "grabbing" : "grab",
+            scrollbarWidth: "none",
+            msOverflowStyle: "none",
+            cursor: "grab",
+            willChange: "scroll-position",
+            touchAction: "pan-x",
           }}
           onWheel={handleWheel}
           onPointerDown={handlePointerDown}
@@ -391,27 +393,10 @@ export default function SubsidyCaseStudySection() {
           role="region"
           aria-label="補助金採択事例カルーセル（横スワイプで操作・ループ）"
         >
-          {/* webkit用スクロールバー非表示はインラインでは効かないのでstyleタグで対応 */}
-          <style>{`
-            [data-carousel-track]::-webkit-scrollbar { display: none; }
-          `}</style>
           {displayCards.map((c) => (
             <CaseCard key={c._key} c={c} />
           ))}
         </div>
-      </div>
-
-      {/* ── プログレス + 矢印 ── */}
-      <div className="mx-auto mt-4 flex max-w-[1160px] items-center gap-4 px-5 sm:px-8">
-        <button type="button" onClick={() => scrollByCards(-1)} aria-label="前のカードへ" className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white transition hover:bg-[#EEF6FF]" style={{ border: "1px solid #DCE7F3" }}>
-          <svg width="12" height="12" viewBox="0 0 14 14" fill="none" aria-hidden><path d="M9 2L4 7l5 5" stroke="#0068B7" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
-        </button>
-        <div className="h-[3px] flex-1 overflow-hidden rounded-full" style={{ background: "#DCE7F3" }}>
-          <div className="h-full rounded-full transition-all duration-150" style={{ width: `${Math.max(4, Math.min(96, progress * 100))}%`, background: "#0068B7" }} />
-        </div>
-        <button type="button" onClick={() => scrollByCards(1)} aria-label="次のカードへ" className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white transition hover:bg-[#EEF6FF]" style={{ border: "1px solid #DCE7F3" }}>
-          <svg width="12" height="12" viewBox="0 0 14 14" fill="none" aria-hidden><path d="M5 2l5 5-5 5" stroke="#0068B7" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
-        </button>
       </div>
 
       {/* ── 免責 ── */}

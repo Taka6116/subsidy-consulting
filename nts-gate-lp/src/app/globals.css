@@ -883,6 +883,10 @@ hr,
 .carousel-track:active {
   cursor: grabbing;
 }
+/* 無限ループカルーセル用 */
+[data-carousel-track]::-webkit-scrollbar {
+  display: none;
+}
 
 .nts-card {
   background: #ffffff;
