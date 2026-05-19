@@ -1,10 +1,10 @@
 "use client";
 
-import Link from "next/link";
+import Image from "next/image";
 import { useRef, useEffect, useCallback, useState } from "react";
 import { useReducedMotion } from "framer-motion";
 import {
-  ArrowRight, ChevronDown,
+  ChevronDown,
   Building2, Utensils, Factory, Wrench, HardHat, Boxes,
   ShieldCheck, Stethoscope, LineChart,
 } from "lucide-react";
@@ -12,11 +12,13 @@ import type { LucideIcon } from "lucide-react";
 
 // ============================================================
 // 採択事例データ（桜庭さん提供の実データ 12件）
+// photo: /api/article-pictures/[folder]/[file] 形式
 // ============================================================
 const CASES: CaseData[] = [
   {
     id: "case-1", no: "01", industry: "宿泊業",
     icon: Building2, iconBg: "#DBEAFE", iconColor: "#1D6FE8",
+    photo: "/api/article-pictures/%E7%B5%8C%E5%96%B6%E8%A8%88%E7%94%BB/business-meeting-conference-concept.webp",
     schemeName: "新事業進出補助金",
     business: "ホテルの経営",
     issue: "単一事業への経営依存",
@@ -29,6 +31,7 @@ const CASES: CaseData[] = [
   {
     id: "case-2", no: "02", industry: "飲食業",
     icon: Utensils, iconBg: "#D1FAE5", iconColor: "#059669",
+    photo: "/api/article-pictures/%E7%B5%8C%E5%96%B6%E8%A8%88%E7%94%BB/business-share-planing-strategy-brainstroming-concept.webp",
     schemeName: "事業再構築補助金",
     business: "麻婆豆腐店の運営",
     issue: "他ジャンルの飲食店の開業",
@@ -41,6 +44,7 @@ const CASES: CaseData[] = [
   {
     id: "case-3", no: "03", industry: "金属製品製造業",
     icon: Factory, iconBg: "#E0E7FF", iconColor: "#4F46E5",
+    photo: "/api/article-pictures/%E8%A3%BD%E9%80%A0%E3%83%BB%E8%A3%BD%E9%80%A0%E6%A5%AD/factory-workshop-interior-machines-glass-production-background.webp",
     schemeName: "事業再構築補助金",
     business: "各種洗浄機の部品製造",
     issue: "主要取引先への過度な依存",
@@ -53,6 +57,7 @@ const CASES: CaseData[] = [
   {
     id: "case-4", no: "04", industry: "建設機械製造業",
     icon: Wrench, iconBg: "#FEF3C7", iconColor: "#D97706",
+    photo: "/api/article-pictures/%E5%BB%BA%E8%A8%AD/construction-worker-engineer-working-together-construction-site.webp",
     schemeName: "事業再構築補助金",
     business: "産廃の仕分け・ふるい機の製造販売",
     issue: "主要取引先への過度な依存",
@@ -65,6 +70,7 @@ const CASES: CaseData[] = [
   {
     id: "case-5", no: "05", industry: "建設業",
     icon: HardHat, iconBg: "#DBEAFE", iconColor: "#1D6FE8",
+    photo: "/api/article-pictures/%E5%BB%BA%E8%A8%AD/working-construction-site.webp",
     schemeName: "省力化投資補助金",
     business: "土木工事業",
     issue: "人手不足",
@@ -77,6 +83,7 @@ const CASES: CaseData[] = [
   {
     id: "case-6", no: "06", industry: "建設業",
     icon: HardHat, iconBg: "#EDE9FE", iconColor: "#7C3AED",
+    photo: "/api/article-pictures/%E5%BB%BA%E8%A8%AD/construction-site-working-japan.webp",
     schemeName: "事業再構築補助金",
     business: "養生・クリーニング業",
     issue: "外国人労働者の活用",
@@ -89,6 +96,7 @@ const CASES: CaseData[] = [
   {
     id: "case-7", no: "07", industry: "プラスチック製品製造業",
     icon: Boxes, iconBg: "#FCE7F3", iconColor: "#DB2777",
+    photo: "/api/article-pictures/%E8%A3%BD%E9%80%A0%E3%83%BB%E8%A3%BD%E9%80%A0%E6%A5%AD/plant-picture-clean-room-equipment-stainless-steel-machines.webp",
     schemeName: "事業再構築補助金",
     business: "不織布の再生ペレット製造",
     issue: "海外売上依存による貿易停止リスク",
@@ -101,6 +109,7 @@ const CASES: CaseData[] = [
   {
     id: "case-8", no: "08", industry: "建設業",
     icon: HardHat, iconBg: "#D1FAE5", iconColor: "#059669",
+    photo: "/api/article-pictures/%E5%BB%BA%E8%A8%AD/engineers-analyzing-data-digital-tablet.webp",
     schemeName: "省力化投資補助金",
     business: "宅地造成業",
     issue: "人手不足",
@@ -113,6 +122,7 @@ const CASES: CaseData[] = [
   {
     id: "case-9", no: "09", industry: "損害保険代理業",
     icon: ShieldCheck, iconBg: "#DBEAFE", iconColor: "#1D6FE8",
+    photo: "/api/article-pictures/%E4%BA%BA%E6%9D%90%E3%83%BB%E6%8E%A1%E7%94%A8/handshake-close-up-executives.webp",
     schemeName: "事業再構築補助金",
     business: "保険代理店業務",
     issue: "単一事業への経営依存",
@@ -125,6 +135,7 @@ const CASES: CaseData[] = [
   {
     id: "case-10", no: "10", industry: "歯科診療所",
     icon: Stethoscope, iconBg: "#FEE2E2", iconColor: "#DC2626",
+    photo: "/api/article-pictures/%E4%BA%BA%E6%9D%90%E3%83%BB%E6%8E%A1%E7%94%A8/portrait-asian-businesswoman-presenting-her-plan-meeting.webp",
     schemeName: "事業再構築補助金",
     business: "歯科医院",
     issue: "新規事業への方向転換",
@@ -137,6 +148,7 @@ const CASES: CaseData[] = [
   {
     id: "case-11", no: "11", industry: "飲食業＋産廃業",
     icon: Utensils, iconBg: "#D1FAE5", iconColor: "#059669",
+    photo: "/api/article-pictures/%E7%B5%8C%E5%96%B6%E8%A8%88%E7%94%BB/two-cropped-startuppers-developing-business-plan.webp",
     schemeName: "事業再構築補助金",
     business: "居酒屋の運営＋空きビン回収・リサイクル",
     issue: "経営リスク分散",
@@ -149,6 +161,7 @@ const CASES: CaseData[] = [
   {
     id: "case-12", no: "12", industry: "経営コンサルタント業",
     icon: LineChart, iconBg: "#E0E7FF", iconColor: "#4F46E5",
+    photo: "/api/article-pictures/DX%E3%83%BBIT/businessman-with-digital-interface-data-growth.webp",
     schemeName: "事業再構築補助金",
     business: "集客コンサル",
     issue: "単一事業への経営依存",
@@ -167,6 +180,7 @@ type CaseData = {
   icon: LucideIcon;
   iconBg: string;
   iconColor: string;
+  photo: string;
   schemeName: string;
   business: string;
   issue: string;
@@ -178,7 +192,6 @@ type CaseData = {
 };
 
 const STATS = [
-  { label: "過去支援事例", value: "60件", primary: true },
   { label: "最大補助金額", value: "4,000万円", primary: true },
   { label: "最高投資金額", value: "8,120万円", primary: false },
   { label: "平均補助金額", value: "約1,241万円", primary: false },
@@ -377,21 +390,9 @@ export default function SubsidyCaseStudySection() {
         </button>
       </div>
 
-      {/* ── CTA ── */}
-      <div className="mx-auto mt-10 max-w-[1160px] px-5 sm:px-8">
-        <div className="flex flex-col items-center gap-4 rounded-2xl bg-white px-6 py-7 text-center sm:flex-row sm:justify-between sm:text-left lg:px-10 lg:py-8" style={{ border: "1px solid #DCE7F3", boxShadow: "0 4px 18px rgba(8,42,94,0.07)" }}>
-          <div>
-            <p className="font-heading text-base font-bold leading-snug md:text-lg" style={{ color: "#082A5E" }}>自社に近い活用例を相談する</p>
-            <p className="mt-1.5 text-sm leading-relaxed" style={{ color: "#4A5E78" }}>近い事例をもとに、対象になりうる制度を一緒に確認します。</p>
-          </div>
-          <div className="flex flex-col items-center gap-2 sm:items-end">
-            <Link href="/consult" className="inline-flex items-center gap-2 rounded-xl px-7 py-3 text-sm font-bold text-white transition-opacity hover:opacity-90" style={{ background: "#0068B7", boxShadow: "0 4px 14px rgba(0,104,183,0.22)", whiteSpace: "nowrap" }}>
-              自社に近い活用例を相談する <ArrowRight size={15} aria-hidden />
-            </Link>
-            <Link href="/subsidies/lp" className="text-[13px] font-semibold transition hover:underline" style={{ color: "#0068B7" }}>補助金の対象を確認する →</Link>
-          </div>
-        </div>
-        <p className="mt-4 text-center text-[11px] leading-relaxed" style={{ color: "#6B7A90" }}>
+      {/* ── 免責 ── */}
+      <div className="mx-auto mt-6 max-w-[1160px] px-5 sm:px-8">
+        <p className="text-center text-[11px] leading-relaxed" style={{ color: "#6B7A90" }}>
           ※過去支援事例であり、採択・補助金額を保証するものではありません。制度・対象経費・審査結果により異なります。
         </p>
       </div>
@@ -417,28 +418,36 @@ function CaseCard({ c }: { c: CaseData }) {
       }}
       aria-label={`No.${c.no} ${c.industry} — ${c.schemeName}`}
     >
-      {/* ── ビジュアルヘッダー ── */}
-      <div
-        className="relative flex h-[96px] w-full shrink-0 items-center justify-center overflow-hidden"
-        style={{ background: `linear-gradient(135deg, ${c.iconBg} 0%, #F0F7FF 100%)` }}
-      >
-        <div className="pointer-events-none absolute -right-6 -top-6 h-24 w-24 rounded-full opacity-20" style={{ background: c.iconColor }} aria-hidden />
-        <div className="pointer-events-none absolute -bottom-3 -left-3 h-14 w-14 rounded-full opacity-10" style={{ background: c.iconColor }} aria-hidden />
+      {/* ── ビジュアルヘッダー（写真） ── */}
+      <div className="relative h-[160px] w-full shrink-0 overflow-hidden">
+        <Image
+          src={c.photo}
+          alt={`${c.industry}の事例イメージ`}
+          fill
+          sizes={`${CARD_W}px`}
+          className="object-cover"
+          unoptimized
+        />
+        {/* オーバーレイ：下から暗くして文字を見やすく */}
+        <div className="pointer-events-none absolute inset-0" style={{ background: "linear-gradient(to bottom, rgba(8,42,94,0.18) 0%, rgba(8,42,94,0.55) 100%)" }} aria-hidden />
 
-        <div className="relative z-10 flex h-12 w-12 items-center justify-center rounded-2xl bg-white shadow-sm" style={{ border: `1.5px solid ${c.iconBg}` }}>
-          <Icon size={24} color={c.iconColor} strokeWidth={1.8} aria-hidden />
+        {/* No. + 業種タグ（左上） */}
+        <div className="absolute left-3 top-3 flex items-center gap-1.5">
+          <span className="rounded px-2 py-0.5 text-[10px] font-bold" style={{ background: "rgba(255,255,255,0.92)", color: "#082A5E" }}>
+            No.{c.no}
+          </span>
+          <span className="rounded px-2 py-0.5 text-[10px] font-bold" style={{ background: c.iconColor, color: "#fff" }}>
+            {c.industry}
+          </span>
         </div>
 
-        {/* No. */}
-        <span className="absolute left-3 top-2.5 rounded px-2 py-0.5 text-[10px] font-bold" style={{ background: "rgba(255,255,255,0.88)", color: "#082A5E" }}>
-          No.{c.no}
-        </span>
-        {/* 業種タグ */}
-        <span className="absolute left-3 bottom-2.5 rounded px-2 py-0.5 text-[10px] font-bold" style={{ background: "rgba(255,255,255,0.88)", color: c.iconColor }}>
-          {c.industry}
-        </span>
-        {/* 補助金額ミニバッジ */}
-        <div className="absolute bottom-2.5 right-3 rounded-full px-2.5 py-1 text-[11px] font-bold" style={{ background: "rgba(255,255,255,0.92)", color: "#0068B7", border: "1px solid #C8DFF5" }}>
+        {/* アイコン（右上） */}
+        <div className="absolute right-3 top-3 flex h-9 w-9 items-center justify-center rounded-xl bg-white shadow-sm" style={{ border: `1.5px solid ${c.iconBg}` }}>
+          <Icon size={18} color={c.iconColor} strokeWidth={1.8} aria-hidden />
+        </div>
+
+        {/* 補助金額バッジ（左下） */}
+        <div className="absolute bottom-3 left-3 rounded-full px-3 py-1 text-[12px] font-black" style={{ background: "rgba(255,255,255,0.95)", color: "#0068B7" }}>
           {c.subsidyAmount}
         </div>
       </div>
