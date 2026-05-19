@@ -433,14 +433,6 @@ function CaseCard({ c }: { c: CaseData }) {
           aria-hidden
         />
 
-        {/* 業種タグ（左上） */}
-        <span
-          className="absolute left-3 top-3 rounded px-2 py-0.5 text-[10px] font-bold"
-          style={{ background: c.iconColor, color: "#fff" }}
-        >
-          {c.industry}
-        </span>
-
         {/* アイコン（右上） */}
         <div
           className="absolute right-3 top-3 flex h-9 w-9 items-center justify-center rounded-xl bg-white shadow-sm"
