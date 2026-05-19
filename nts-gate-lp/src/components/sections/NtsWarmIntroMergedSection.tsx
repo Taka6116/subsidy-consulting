@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 import Image from "next/image";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import sakurabaPhoto from "../../../icon-assets/PANA2727.webp";
@@ -123,23 +122,6 @@ export default function NtsWarmIntroMergedSection() {
           })}
         </div>
 
-        {/* ── 注釈 ── */}
-        <motion.p
-          {...(reduce ? {} : fadeUp(0.24))}
-          className="mx-auto mt-8 max-w-[1100px] rounded-xl border border-[#cce0f0] bg-white px-4 py-3 text-[11px] leading-relaxed text-[#6a8aa0] sm:px-5"
-        >
-          ※ NTSは補助金活用支援・申請準備支援を行います。官公署提出書類作成等が必要な場合は、提携専門家と連携します。
-        </motion.p>
-
-        {/* ── CTA ── */}
-        <motion.div {...(reduce ? {} : fadeUp(0.18))} className="mt-8 flex justify-center">
-          <Link
-            href="/consult"
-            className="inline-flex items-center justify-center rounded-xl bg-[#1d6fe8] px-8 py-4 text-[16px] font-black text-white shadow-[0_4px_22px_rgba(29,111,232,0.32)] transition hover:-translate-y-0.5 hover:bg-[#1a60d0] hover:shadow-[0_8px_30px_rgba(29,111,232,0.38)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1d6fe8]"
-          >
-            無料相談で確認する
-          </Link>
-        </motion.div>
       </div>
     </section>
   );
