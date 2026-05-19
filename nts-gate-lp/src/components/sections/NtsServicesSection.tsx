@@ -69,7 +69,10 @@ export default function NtsServicesSection() {
           >
             申請が、ゴールではありません。
           </h2>
-          <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-[var(--text-secondary)] md:text-lg">
+          <p className="mt-3 font-heading text-[1.05rem] font-bold leading-snug text-[var(--text-secondary)] md:text-[1.2rem]">
+            相談から採択、発展と成長まで。私たちが一緒に動きます。
+          </p>
+          <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-[var(--text-secondary)] md:text-lg">
             従来の補助金コンサルとの違い——私たちが提供するのは、書類ではなく「伴走」です。
           </p>
         </motion.div>
