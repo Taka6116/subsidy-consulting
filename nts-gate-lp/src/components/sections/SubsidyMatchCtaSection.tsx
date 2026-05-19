@@ -15,13 +15,13 @@ export default function SubsidyMatchCtaSection() {
 
   return (
     <section className="section-block bg-section-white" aria-labelledby="home-subsidy-match-heading">
-      <div className="section-inner">
+      <div className="mx-auto w-full max-w-[1640px] px-5 sm:px-8 xl:px-10 2xl:px-12">
         <motion.div
           initial={reduce ? fadeInUpReduced : fadeInUpInitial}
           whileInView={reduce ? fadeInUpReduced : fadeInUpInView}
           viewport={fadeInUpViewport}
           transition={fadeInUpTransition}
-          className="two-col img-right"
+          className="two-col img-right lg:gap-[96px]"
         >
           <div className="col-text space-y-6 text-center lg:text-left">
             <h2
@@ -48,7 +48,7 @@ export default function SubsidyMatchCtaSection() {
             </p>
           </div>
 
-          <div className="col-img w-full max-w-[32.2rem] justify-self-center lg:max-w-[36.8rem]">
+          <div className="col-img w-full justify-self-center">
             <div className="relative overflow-hidden rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-section-alt)] shadow-[0_12px_40px_rgba(10,34,64,0.12)]">
               <video
                 className="block h-auto w-full"

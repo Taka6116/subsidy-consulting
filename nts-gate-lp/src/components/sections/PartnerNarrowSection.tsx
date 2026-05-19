@@ -19,13 +19,13 @@ export default function PartnerNarrowSection() {
 
   return (
     <section className="section-block bg-section-gray" aria-labelledby="home-partner-heading">
-      <div className="section-inner">
+      <div className="mx-auto w-full max-w-[1640px] px-5 sm:px-8 xl:px-10 2xl:px-12">
         <motion.div
           initial={reduce ? fadeInUpReduced : fadeInUpInitial}
           whileInView={reduce ? fadeInUpReduced : fadeInUpInView}
           viewport={fadeInUpViewport}
           transition={fadeInUpTransition}
-          className="two-col img-left"
+          className="two-col img-left lg:gap-[96px]"
         >
           <div className="col-img w-full justify-self-center">
             <div className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl">
