@@ -6,6 +6,7 @@ import PartnerAgitationSection from "@/components/gate-lp/partner/PartnerAgitati
 import PartnerMeritSection from "@/components/gate-lp/partner/PartnerMeritSection";
 import PartnerUseCasesSection from "@/components/gate-lp/partner/PartnerUseCasesSection";
 import PartnerSubsidySection from "@/components/gate-lp/partner/PartnerSubsidySection";
+import SubsidyCaseStudySection from "@/components/sections/SubsidyCaseStudySection";
 import PartnerFlowSection from "@/components/gate-lp/partner/PartnerFlowSection";
 import PartnerConsultValueSection from "@/components/gate-lp/partner/PartnerConsultValueSection";
 import PartnerFaqSection from "@/components/gate-lp/partner/PartnerFaqSection";
@@ -33,14 +34,15 @@ export default function PartnerPage() {
         {/*
           パートナーLP セクション順（ナラティブ調整版）
           ①FV ②見送り/補助金 ③提携企業像 ④営業メリット（3本柱）
-          ⑤補助金事例カード ⑥制度選定の差別化（RootIssue）⑦課題深掘り価値
-          ⑧AI限界 ⑨紹介後フロー ⑩チーム・伴走 ⑪FAQ ⑫CTA
+          ⑤補助金事例カード ⑥NTS支援事例の実績 ⑦制度選定の差別化（RootIssue）⑧課題深掘り価値
+          ⑨AI限界 ⑩紹介後フロー ⑪チーム・伴走 ⑫FAQ ⑬CTA
         */}
         <HeroSection />
         <PartnerAgitationSection />
         <PartnerUseCasesSection />
         <PartnerMeritSection />
         <PartnerSubsidySection />
+        <SubsidyCaseStudySection />
         <RootIssueCaseSection />
         <PartnerConsultValueSection />
         <NtsAiGapSection />

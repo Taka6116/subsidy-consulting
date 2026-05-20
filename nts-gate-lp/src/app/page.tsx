@@ -132,7 +132,7 @@ export default async function Home() {
         <RootIssueCaseSection />
         {/* ⑥ 例えばこんな補助金もあります。 */}
         <SubsidyExamplesSection />
-        {/* ⑦ 実際の事例で見る、補助金の使い方 */}
+        {/* ⑦ NTS 支援事例の実績 */}
         <SubsidyCaseStudySection />
         {/* ⑧ AIで書類は作れる時代。それでも、採択には届きません。 */}
         <NtsAiGapSection />

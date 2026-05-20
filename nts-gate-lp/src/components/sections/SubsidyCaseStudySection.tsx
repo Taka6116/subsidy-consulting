@@ -317,12 +317,10 @@ export default function SubsidyCaseStudySection() {
             className="font-heading text-[1.7rem] font-bold leading-snug md:text-[2.2rem]"
             style={{ color: "#082A5E" }}
           >
-            実際の採択事例で見る、補助金活用の金額感
+            NTS 支援事例の実績
           </h2>
-          <p className="mx-auto mt-4 max-w-[580px] text-sm leading-relaxed md:text-base" style={{ color: "#4A5E78" }}>
-            業種・課題・投資内容・補助金額・成果まで、過去支援事例をもとに一覧化。
-            <br className="hidden sm:block" />
-            自社に近い活用イメージを確認できます。
+          <p className="mx-auto mt-4 max-w-[640px] text-sm leading-relaxed md:text-base" style={{ color: "#4A5E78" }}>
+            制度の名前だけでは見えない、実際の活用の姿。業種・課題・投資内容・採択金額・その後の成果
           </p>
         </div>
 
