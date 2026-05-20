@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
+import { createPortal } from "react-dom";
 import Image from "next/image";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import sakurabaPhoto from "../../../icon-assets/PANA2727.webp";
@@ -43,7 +44,6 @@ const CONSULTANTS: Consultant[] = [
     photoObjectPosition: "50% 20%",
     photoScale: 1.08,
     panelSide: "right",
-    cardTagline: "事業成長・資金戦略に強い補助金活用支援",
     message:
       "補助金を「使える制度」で終わらせず、事業計画・資金戦略・採択後の活用まで見据えて支援します。",
     supports: [
@@ -134,92 +134,111 @@ export default function NtsWarmIntroMergedSection() {
           </p>
         </motion.div>
 
-        {/* ── カードエリア（PC: md以上） ── */}
-        <div className="hidden md:block">
-          {activeId === null ? (
-            /* ===== 通常時: 2枚横並び ===== */
-            <div className="grid grid-cols-2 gap-6 lg:gap-8">
-              {CONSULTANTS.map((c, i) => (
-                <motion.div
-                  key={c.id}
-                  {...(reduce ? {} : fadeUp(0.07 + i * 0.07))}
-                >
-                  <NormalCard c={c} onOpen={() => handleOpen(c.id)} />
-                </motion.div>
-              ))}
-            </div>
-          ) : (
-            /* ===== 展開時 ===== */
-            (() => {
-              const active = CONSULTANTS.find((c) => c.id === activeId)!;
-              const isLeft = active.panelSide === "left"; // 清野さん → パネルが左
-
-              return (
-                <div className={`flex items-stretch gap-0 overflow-hidden rounded-2xl border border-[#cce0f0] bg-white shadow-[0_4px_24px_rgba(18,56,110,0.10)] ${isLeft ? "flex-row-reverse" : "flex-row"}`}>
-                  {/* 写真カード — 元の位置・サイズを維持 */}
-                  <div className="w-1/2 shrink-0">
-                    <PhotoCard c={active} onClose={handleClose} isActive />
-                  </div>
-
-                  {/* プロフィールパネル — 横に広がる */}
-                  <AnimatePresence initial={false}>
-                    <motion.div
-                      key={`panel-${active.id}`}
-                      initial={reduce ? {} : { opacity: 0, width: 0, x: isLeft ? -16 : 16 }}
-                      animate={{ opacity: 1, width: "50%", x: 0 }}
-                      exit={reduce ? {} : { opacity: 0, width: 0, x: isLeft ? -16 : 16 }}
-                      transition={{ duration: reduce ? 0 : 0.32, ease: EASE }}
-                      className="overflow-hidden border-l border-[#dce9f5]"
-                      style={isLeft ? { borderLeft: "none", borderRight: "1px solid #dce9f5" } : {}}
-                    >
-                      <ProfilePanel c={active} onClose={handleClose} />
-                    </motion.div>
-                  </AnimatePresence>
-                </div>
-              );
-            })()
-          )}
+        {/* ── 担当者カード（常時2枚表示） ── */}
+        <div className="grid grid-cols-1 gap-5 md:grid-cols-2 md:gap-6 lg:gap-8">
+          {CONSULTANTS.map((c, i) => (
+            <motion.div key={c.id} {...(reduce ? {} : fadeUp(0.07 + i * 0.07))}>
+              <NormalCard c={c} onOpen={() => handleOpen(c.id)} />
+            </motion.div>
+          ))}
         </div>
 
-        {/* ── カードエリア（SP: md未満） ── */}
-        <div className="flex flex-col gap-5 md:hidden">
-          {activeId === null ? (
-            /* 通常時: 縦積み */
-            CONSULTANTS.map((c, i) => (
-              <motion.div
-                key={c.id}
-                {...(reduce ? {} : fadeUp(0.07 + i * 0.07))}
-              >
-                <NormalCard c={c} onOpen={() => handleOpen(c.id)} />
-              </motion.div>
-            ))
-          ) : (
-            /* 展開時: 選択者のみ表示 */
-            (() => {
-              const active = CONSULTANTS.find((c) => c.id === activeId)!;
-              return (
-                <div className="overflow-hidden rounded-2xl border border-[#cce0f0] bg-white shadow-[0_4px_20px_rgba(18,56,110,0.09)]">
-                  <PhotoCard c={active} onClose={handleClose} isActive spMode />
-                  <AnimatePresence initial={false}>
-                    <motion.div
-                      key={`sp-panel-${active.id}`}
-                      initial={reduce ? {} : { opacity: 0, height: 0, y: 12 }}
-                      animate={{ opacity: 1, height: "auto", y: 0 }}
-                      exit={reduce ? {} : { opacity: 0, height: 0, y: 12 }}
-                      transition={{ duration: reduce ? 0 : 0.3, ease: EASE }}
-                      className="overflow-hidden border-t border-[#dce9f5]"
-                    >
-                      <ProfilePanel c={active} onClose={handleClose} />
-                    </motion.div>
-                  </AnimatePresence>
-                </div>
-              );
-            })()
-          )}
-        </div>
+        <ConsultantProfileModal
+          consultant={CONSULTANTS.find((c) => c.id === activeId) ?? null}
+          reduceMotion={!!reduce}
+          onClose={handleClose}
+        />
 
       </div>
     </section>
+  );
+}
+
+// ============================================================
+// ConsultantProfileModal — フローティングモーダル
+// ============================================================
+function ConsultantProfileModal({
+  consultant,
+  reduceMotion,
+  onClose,
+}: {
+  consultant: Consultant | null;
+  reduceMotion: boolean;
+  onClose: () => void;
+}) {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const handleEscape = useCallback(
+    (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    },
+    [onClose],
+  );
+
+  useEffect(() => {
+    if (!consultant) return;
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    document.addEventListener("keydown", handleEscape);
+    return () => {
+      document.body.style.overflow = prevOverflow;
+      document.removeEventListener("keydown", handleEscape);
+    };
+  }, [consultant, handleEscape]);
+
+  if (!mounted) return null;
+
+  const isLeft = consultant?.panelSide === "left";
+
+  return createPortal(
+    <AnimatePresence>
+      {consultant ? (
+        <motion.div
+          key={consultant.id}
+          className="fixed inset-0 z-[200] flex items-center justify-center p-4 sm:p-6"
+          role="presentation"
+        >
+          <motion.button
+            type="button"
+            aria-label="プロフィールを閉じる"
+            className="absolute inset-0 bg-[#0c2a48]/55 backdrop-blur-[2px]"
+            initial={reduceMotion ? undefined : { opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={reduceMotion ? undefined : { opacity: 0 }}
+            transition={{ duration: reduceMotion ? 0 : 0.22 }}
+            onClick={onClose}
+          />
+          <motion.div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="consultant-modal-title"
+            className={`relative flex max-h-[min(90vh,920px)] w-full max-w-[1080px] flex-col overflow-hidden rounded-2xl border border-[#cce0f0] bg-white shadow-[0_24px_64px_rgba(8,42,94,0.22)] md:max-h-[90vh] ${isLeft ? "md:flex-row-reverse" : "md:flex-row"}`}
+            initial={reduceMotion ? undefined : { opacity: 0, scale: 0.94, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={reduceMotion ? undefined : { opacity: 0, scale: 0.94, y: 20 }}
+            transition={{ duration: reduceMotion ? 0 : 0.3, ease: EASE }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <p id="consultant-modal-title" className="sr-only">
+              {consultant.name}のプロフィール
+            </p>
+            <div className="shrink-0 md:w-1/2">
+              <PhotoCard c={consultant} onClose={onClose} isActive modalMode />
+            </div>
+            <div
+              className={`min-h-0 flex-1 overflow-hidden md:w-1/2 md:border-[#dce9f5] ${isLeft ? "md:border-r" : "md:border-l"}`}
+            >
+              <ProfilePanel c={consultant} onClose={onClose} />
+            </div>
+          </motion.div>
+        </motion.div>
+      ) : null}
+    </AnimatePresence>,
+    document.body,
   );
 }
 
@@ -282,17 +301,23 @@ function PhotoCard({
   onClose,
   isActive,
   spMode = false,
+  modalMode = false,
 }: {
   c: Consultant;
   onClose: () => void;
   isActive: boolean;
   spMode?: boolean;
+  modalMode?: boolean;
 }) {
+  const sizeClass = modalMode
+    ? "aspect-[4/3] md:aspect-auto md:h-full md:min-h-[380px]"
+    : spMode
+      ? "aspect-[4/3]"
+      : "h-full min-h-[420px]";
+
   return (
     <div className="relative h-full">
-      <div
-        className={`relative w-full overflow-hidden bg-[#edf5fb] ${spMode ? "aspect-[4/3]" : "h-full min-h-[420px]"}`}
-      >
+      <div className={`relative w-full overflow-hidden bg-[#edf5fb] ${sizeClass}`}>
         <Image
           src={c.photo}
           alt={`${c.name}（${c.title}）の写真`}
@@ -370,7 +395,7 @@ function ProfilePanel({ c, onClose }: { c: Consultant; onClose: () => void }) {
   const highlightTitle = c.highlightTitle ?? "1年間の伴走で見るポイント";
 
   return (
-    <div className="flex h-full max-h-[90vh] min-w-0 flex-col overflow-y-auto overflow-x-hidden bg-[#fbfbfd] px-6 py-8 text-[#101828] sm:px-8 sm:py-10 lg:px-12 lg:py-12">
+    <div className="flex h-full max-h-full min-h-0 min-w-0 flex-col overflow-y-auto overflow-x-hidden bg-[#fbfbfd] px-6 py-8 text-[#101828] sm:px-8 sm:py-10 lg:px-12 lg:py-12">
       <div className="mb-7 lg:mb-9">
         <p className="text-xs font-bold tracking-[0.08em] text-[#0f4fa8]">{c.title}</p>
         <h2 className="mt-2 text-2xl font-bold leading-tight text-[#101828] sm:mt-3 sm:text-3xl lg:text-4xl">

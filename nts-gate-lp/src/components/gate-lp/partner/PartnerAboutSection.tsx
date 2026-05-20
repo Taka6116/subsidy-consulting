@@ -54,10 +54,6 @@ export default function PartnerAboutSection() {
               className="pointer-events-none absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/40 to-transparent"
               aria-hidden="true"
             />
-            {/* キャプションピル */}
-            <div className="absolute bottom-6 left-6 rounded-full bg-white/95 px-4 py-2 text-xs font-medium text-[var(--text-primary)] shadow-sm backdrop-blur-sm md:bottom-8 md:left-8 md:text-sm">
-              紹介いただいた案件を、このチームが担当します
-            </div>
           </div>
 
           {/* 下段：コピー + Stats */}
@@ -73,7 +69,14 @@ export default function PartnerAboutSection() {
               </motion.h2>
 
               <motion.p
-                className="mt-6 text-base leading-relaxed text-[var(--text-secondary)] md:text-lg"
+                className="mt-4 font-heading text-[1.05rem] font-bold leading-snug text-[var(--text-secondary)] md:mt-5 md:text-[1.2rem]"
+                {...fadeUp(0.18)}
+              >
+                採択から、次のステージへ。ずっと、一緒に。
+              </motion.p>
+
+              <motion.p
+                className="mt-5 text-base leading-relaxed text-[var(--text-secondary)] md:mt-6 md:text-lg"
                 {...fadeUp(0.2)}
               >
                 日本提携支援は、補助金の活用戦略設計から採択、そして採択後1年間の伴走までを一貫して支援する専門チームです。
