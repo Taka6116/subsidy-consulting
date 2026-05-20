@@ -8,6 +8,9 @@ import sakurabaPhoto from "../../../icon-assets/PANA2727.webp";
 import seinoPhoto from "../../../icon-assets/PANA2741.webp";
 
 const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1];
+const MODAL_PHOTO_WIDTH = 400;
+const MODAL_PANEL_WIDTH = 720;
+const MODAL_PANEL_DELAY_MS = 500;
 
 // ============================================================
 // データ
@@ -156,7 +159,7 @@ export default function NtsWarmIntroMergedSection() {
 }
 
 // ============================================================
-// ConsultantProfileModal — 写真固定 + 右へ横スライド展開
+// ConsultantProfileModal — 中央に写真 → 1秒後にプロフィールが横へ展開
 // ============================================================
 function ConsultantProfileModal({
   consultant,
@@ -168,6 +171,7 @@ function ConsultantProfileModal({
   onClose: () => void;
 }) {
   const [mounted, setMounted] = useState(false);
+  const [panelReady, setPanelReady] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -179,6 +183,20 @@ function ConsultantProfileModal({
     },
     [onClose],
   );
+
+  useEffect(() => {
+    if (!consultant) {
+      setPanelReady(false);
+      return;
+    }
+    if (reduceMotion) {
+      setPanelReady(true);
+      return;
+    }
+    setPanelReady(false);
+    const timer = window.setTimeout(() => setPanelReady(true), MODAL_PANEL_DELAY_MS);
+    return () => window.clearTimeout(timer);
+  }, [consultant?.id, reduceMotion]);
 
   useEffect(() => {
     if (!consultant) return;
@@ -193,21 +211,7 @@ function ConsultantProfileModal({
 
   if (!mounted) return null;
 
-  const panelExpand = reduceMotion
-    ? { width: "100%", opacity: 1 }
-    : {
-        width: ["0%", "100%"],
-        opacity: [0, 1],
-        transition: { duration: 0.36, ease: EASE, opacity: { duration: 0.24, delay: 0.06 } },
-      };
-
-  const panelExpandMobile = reduceMotion
-    ? { height: "auto", opacity: 1 }
-    : {
-        height: ["0px", "auto"],
-        opacity: [0, 1],
-        transition: { duration: 0.34, ease: EASE },
-      };
+  const expandFromLeft = consultant?.panelSide === "left";
 
   return createPortal(
     <AnimatePresence>
@@ -227,43 +231,82 @@ function ConsultantProfileModal({
             transition={{ duration: reduceMotion ? 0 : 0.22 }}
             onClick={onClose}
           />
+          {/* ── デスクトップ (md+): 写真固定 → パネルが横に伸びる ── */}
           <motion.div
             role="dialog"
             aria-modal="true"
             aria-labelledby="consultant-modal-title"
-            className="relative flex max-h-[min(92vh,940px)] w-full max-w-[min(96vw,1240px)] flex-col overflow-hidden rounded-2xl border border-[#cce0f0] bg-white shadow-[0_24px_64px_rgba(8,42,94,0.22)] md:max-h-[90vh] md:flex-row md:items-stretch"
-            initial={reduceMotion ? undefined : { opacity: 0, y: 14 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={reduceMotion ? undefined : { opacity: 0, y: 14 }}
-            transition={{ duration: reduceMotion ? 0 : 0.26, ease: EASE }}
+            className={`relative hidden max-h-[90vh] overflow-hidden rounded-2xl border border-[#cce0f0] bg-white shadow-[0_24px_64px_rgba(8,42,94,0.22)] md:flex ${
+              expandFromLeft ? "md:flex-row-reverse" : "md:flex-row"
+            }`}
+            initial={reduceMotion ? undefined : { opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={reduceMotion ? undefined : { opacity: 0, scale: 0.95 }}
+            transition={{ duration: reduceMotion ? 0 : 0.3, ease: EASE }}
             onClick={(e) => e.stopPropagation()}
           >
             <p id="consultant-modal-title" className="sr-only">
               {consultant.name}のプロフィール
             </p>
 
-            {/* 写真（左・幅固定） */}
-            <div className="shrink-0 md:w-[34%] md:max-w-[400px] md:min-w-[280px]">
+            {/* 写真 — 最初から最終サイズで表示 */}
+            <div
+              className="shrink-0"
+              style={{ width: MODAL_PHOTO_WIDTH, minHeight: 520 }}
+            >
               <PhotoCard c={consultant} onClose={onClose} isActive modalMode />
             </div>
 
-            {/* プロフィール（写真の右へ横に伸びる / SPは下へ展開） */}
+            {/* プロフィール — 1秒後に横へ伸びる */}
             <motion.div
-              className="hidden min-h-0 overflow-hidden border-[#dce9f5] md:flex md:flex-1 md:border-l"
-              initial={reduceMotion ? undefined : { width: 0, opacity: 0 }}
-              animate={panelExpand}
-              exit={reduceMotion ? undefined : { width: 0, opacity: 0 }}
+              className={`shrink-0 overflow-hidden border-[#dce9f5] ${
+                expandFromLeft ? "border-r" : "border-l"
+              }`}
+              initial={{ width: 0, opacity: 0 }}
+              animate={{
+                width: panelReady ? MODAL_PANEL_WIDTH : 0,
+                opacity: panelReady ? 1 : 0,
+              }}
+              exit={{ width: 0, opacity: 0 }}
+              transition={{
+                duration: reduceMotion ? 0 : 0.42,
+                ease: EASE,
+                opacity: { duration: reduceMotion ? 0 : 0.28, delay: panelReady ? 0.06 : 0 },
+              }}
             >
-              <div className="min-w-[min(100%,560px)] flex-1 lg:min-w-[620px]">
+              <div className="h-full" style={{ width: MODAL_PANEL_WIDTH }}>
                 <ProfilePanel c={consultant} onClose={onClose} />
               </div>
             </motion.div>
+          </motion.div>
 
+          {/* ── モバイル (<md): 写真 → パネルが下に伸びる ── */}
+          <motion.div
+            role="dialog"
+            aria-modal="true"
+            className="relative flex max-h-[92vh] w-full max-w-[min(96vw,420px)] flex-col overflow-hidden rounded-2xl border border-[#cce0f0] bg-white shadow-[0_24px_64px_rgba(8,42,94,0.22)] md:hidden"
+            initial={reduceMotion ? undefined : { opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={reduceMotion ? undefined : { opacity: 0, scale: 0.95 }}
+            transition={{ duration: reduceMotion ? 0 : 0.3, ease: EASE }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="shrink-0">
+              <PhotoCard c={consultant} onClose={onClose} isActive modalMode />
+            </div>
             <motion.div
-              className="overflow-hidden border-t border-[#dce9f5] md:hidden"
-              initial={reduceMotion ? undefined : { height: 0, opacity: 0 }}
-              animate={panelExpandMobile}
-              exit={reduceMotion ? undefined : { height: 0, opacity: 0 }}
+              className="overflow-hidden border-t border-[#dce9f5]"
+              initial={{ height: 0, opacity: 0 }}
+              animate={{
+                height: panelReady ? "auto" : 0,
+                opacity: panelReady ? 1 : 0,
+              }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{
+                duration: reduceMotion ? 0 : 0.38,
+                ease: EASE,
+                opacity: { duration: reduceMotion ? 0 : 0.26, delay: panelReady ? 0.04 : 0 },
+              }}
             >
               <ProfilePanel c={consultant} onClose={onClose} />
             </motion.div>
