@@ -156,15 +156,15 @@ export default function VideosHero() {
         }}
       />
 
-      <div className="relative mx-auto max-w-7xl px-4 py-14 sm:px-6 sm:py-16 lg:py-20">
+      <div className="relative w-full px-[clamp(1.75rem,3.4vw,4rem)] py-14 sm:py-16 lg:py-20">
         <div className="flex flex-col items-center gap-10 lg:flex-row lg:gap-14">
 
           {/* ── 左: テキスト ── */}
-          <div className="w-full lg:max-w-[420px] lg:flex-shrink-0">
+          <div className="w-full lg:max-w-[540px] lg:flex-shrink-0">
             {/* H1 */}
             <h1
               id="videos-hero-heading"
-              className="font-heading text-[clamp(2rem,4.5vw,3rem)] font-black leading-tight tracking-tight text-[#111827]"
+              className="font-heading text-[clamp(2.2rem,4.5vw,3.6rem)] font-black leading-tight tracking-tight text-[#111827]"
               style={{ fontFamily: "'Noto Sans JP', sans-serif" }}
             >
               使える補助金を、
@@ -173,7 +173,7 @@ export default function VideosHero() {
             </h1>
 
             {/* サブコピー */}
-            <p className="mt-5 text-[15px] leading-relaxed text-slate-600">
+            <p className="mt-5 text-[16px] leading-relaxed text-slate-600">
               金額、対象企業、活用方法、申請前の注意点まで。
               <br className="hidden sm:block" />
               忙しい中小企業の経営者が、まず見るべきポイントだけを
