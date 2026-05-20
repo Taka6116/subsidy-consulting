@@ -490,6 +490,10 @@ function ProfilePanel({ c, onClose }: { c: Consultant; onClose: () => void }) {
         </p>
       </section>
 
+      {c.achievements && c.achievements.length > 0 ? (
+        <ProfileEditorialListSection title="実績" items={c.achievements} className="mt-8 lg:mt-11" />
+      ) : null}
+
       <ProfileEditorialListSection title="支援できること" items={c.supports} />
 
       <section className="mt-8 lg:mt-10">
@@ -505,10 +509,6 @@ function ProfilePanel({ c, onClose }: { c: Consultant; onClose: () => void }) {
           ))}
         </div>
       </section>
-
-      {c.achievements && c.achievements.length > 0 ? (
-        <ProfileEditorialListSection title="実績" items={c.achievements} className="mt-8 lg:mt-11" />
-      ) : null}
 
       {c.biography ? (
         <section className="mt-8 lg:mt-11">
