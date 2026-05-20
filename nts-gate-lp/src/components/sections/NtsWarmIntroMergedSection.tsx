@@ -22,6 +22,8 @@ type Consultant = {
   /** カード下部の補足テキスト（任意） */
   cardTagline?: string;
   message: string;
+  /** リード枠の見出し（任意） */
+  messageTitle?: string;
   supports: string[];
   /** 実績リスト（任意・モーダル専用セクション） */
   achievements?: string[];
@@ -30,7 +32,8 @@ type Consultant = {
   biography?: string;
   /** 下部ハイライト枠の見出し（未指定時は「1年間の伴走で見るポイント」） */
   highlightTitle?: string;
-  watchPoints: string;
+  /** 下部ハイライト枠の本文（未指定時は非表示） */
+  watchPoints?: string;
   /** 展開時にパネルが開く方向 */
   panelSide: "right" | "left";
 };
@@ -44,8 +47,9 @@ const CONSULTANTS: Consultant[] = [
     photoObjectPosition: "50% 20%",
     photoScale: 1.08,
     panelSide: "right",
+    messageTitle: "1年間の伴走で見るポイント",
     message:
-      "補助金を「使える制度」で終わらせず、事業計画・資金戦略・採択後の活用まで見据えて支援します。",
+      "補助金を「申請して終わり」にせず、事業成長につながっているかを定期的に確認します。",
     supports: [
       "事業計画の整理と、補助金活用方針の設計",
       "申請準備に必要な情報・資料整理のサポート",
@@ -56,7 +60,7 @@ const CONSULTANTS: Consultant[] = [
     biography:
       "青山学院大学経済学部卒業後、大手証券会社にてリテール・ホールセール業務に従事。その後、大手生命保険会社で新規事業の立ち上げ支援や店舗開発に携わり、東証上場企業では主力事業の企画推進、複数の新規部門立ち上げ、M&A・出資案件を担当。事業会社側で培った成長戦略・資金戦略の視点を活かし、現在は日本提携支援にて補助金活用支援を推進しています。",
     watchPoints:
-      "補助金を「申請して終わり」にせず、事業成長につながっているかを定期的に確認します。",
+      "M&A統括専門部署のマネージャー経験もあり、M&A・出資案件でソーシングからデューデリジェンス、クロージングに至るプロセス主導の経験と実績があります。",
   },
   {
     id: "seino",
@@ -66,9 +70,9 @@ const CONSULTANTS: Consultant[] = [
     photoObjectPosition: "50% 18%",
     photoScale: 1.08,
     panelSide: "left",
-    cardTagline: "補助金・資金調達に強い実戦型コンサルタント",
+    messageTitle: "印象に残っている支援",
     message:
-      "補助金申請支援、資金調達、経営計画策定まで、現場の経営相談に数多く向き合ってきた実戦型コンサルタントです。",
+      "一度不採択となった案件の再挑戦支援や、売上3,000万円規模の建設業者の経営計画策定など、事業者の転機に関わる相談を数多く担当。補助金を「申請するための制度」ではなく、事業を前に進めるための計画づくりとして支援しています。",
     supports: [
       "補助金申請に向けた事業計画の整理",
       "資金調達を見据えた計画策定・金融機関対応の相談",
@@ -86,9 +90,6 @@ const CONSULTANTS: Consultant[] = [
       "補助金申請支援 / 資金調達支援 / 中長期計画策定 / 経営相談 / M&A実行支援",
     biography:
       "1983年生まれ、北海道出身。明治大学文学部心理社会学科卒業後、医療系専門出版社に7年間勤務し、編集・制作部長を経験。2019年に中小企業診断士登録。2021年より経営コンサルタントとして独立し、きづき経営コンサルティングを開業。補助金申請支援、資金調達支援、中長期計画策定、M&A実行支援など、事業者の現場に近い経営相談を幅広く支援しています。",
-    highlightTitle: "印象に残っている支援",
-    watchPoints:
-      "一度不採択となった案件の再挑戦支援や、売上3,000万円規模の建設業者の経営計画策定など、事業者の転機に関わる相談を数多く担当。補助金を「申請するための制度」ではなく、事業を前に進めるための計画づくりとして支援しています。",
   },
 ];
 
@@ -155,7 +156,7 @@ export default function NtsWarmIntroMergedSection() {
 }
 
 // ============================================================
-// ConsultantProfileModal — フローティングモーダル
+// ConsultantProfileModal — 写真固定 + 右へ横スライド展開
 // ============================================================
 function ConsultantProfileModal({
   consultant,
@@ -192,14 +193,28 @@ function ConsultantProfileModal({
 
   if (!mounted) return null;
 
-  const isLeft = consultant?.panelSide === "left";
+  const panelExpand = reduceMotion
+    ? { width: "100%", opacity: 1 }
+    : {
+        width: ["0%", "100%"],
+        opacity: [0, 1],
+        transition: { duration: 0.36, ease: EASE, opacity: { duration: 0.24, delay: 0.06 } },
+      };
+
+  const panelExpandMobile = reduceMotion
+    ? { height: "auto", opacity: 1 }
+    : {
+        height: ["0px", "auto"],
+        opacity: [0, 1],
+        transition: { duration: 0.34, ease: EASE },
+      };
 
   return createPortal(
     <AnimatePresence>
       {consultant ? (
         <motion.div
           key={consultant.id}
-          className="fixed inset-0 z-[200] flex items-center justify-center p-4 sm:p-6"
+          className="fixed inset-0 z-[200] flex items-center justify-center p-3 sm:p-5 lg:p-8"
           role="presentation"
         >
           <motion.button
@@ -216,24 +231,42 @@ function ConsultantProfileModal({
             role="dialog"
             aria-modal="true"
             aria-labelledby="consultant-modal-title"
-            className={`relative flex max-h-[min(90vh,920px)] w-full max-w-[1080px] flex-col overflow-hidden rounded-2xl border border-[#cce0f0] bg-white shadow-[0_24px_64px_rgba(8,42,94,0.22)] md:max-h-[90vh] ${isLeft ? "md:flex-row-reverse" : "md:flex-row"}`}
-            initial={reduceMotion ? undefined : { opacity: 0, scale: 0.94, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={reduceMotion ? undefined : { opacity: 0, scale: 0.94, y: 20 }}
-            transition={{ duration: reduceMotion ? 0 : 0.3, ease: EASE }}
+            className="relative flex max-h-[min(92vh,940px)] w-full max-w-[min(96vw,1240px)] flex-col overflow-hidden rounded-2xl border border-[#cce0f0] bg-white shadow-[0_24px_64px_rgba(8,42,94,0.22)] md:max-h-[90vh] md:flex-row md:items-stretch"
+            initial={reduceMotion ? undefined : { opacity: 0, y: 14 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={reduceMotion ? undefined : { opacity: 0, y: 14 }}
+            transition={{ duration: reduceMotion ? 0 : 0.26, ease: EASE }}
             onClick={(e) => e.stopPropagation()}
           >
             <p id="consultant-modal-title" className="sr-only">
               {consultant.name}のプロフィール
             </p>
-            <div className="shrink-0 md:w-1/2">
+
+            {/* 写真（左・幅固定） */}
+            <div className="shrink-0 md:w-[34%] md:max-w-[400px] md:min-w-[280px]">
               <PhotoCard c={consultant} onClose={onClose} isActive modalMode />
             </div>
-            <div
-              className={`min-h-0 flex-1 overflow-hidden md:w-1/2 md:border-[#dce9f5] ${isLeft ? "md:border-r" : "md:border-l"}`}
+
+            {/* プロフィール（写真の右へ横に伸びる / SPは下へ展開） */}
+            <motion.div
+              className="hidden min-h-0 overflow-hidden border-[#dce9f5] md:flex md:flex-1 md:border-l"
+              initial={reduceMotion ? undefined : { width: 0, opacity: 0 }}
+              animate={panelExpand}
+              exit={reduceMotion ? undefined : { width: 0, opacity: 0 }}
+            >
+              <div className="min-w-[min(100%,560px)] flex-1 lg:min-w-[620px]">
+                <ProfilePanel c={consultant} onClose={onClose} />
+              </div>
+            </motion.div>
+
+            <motion.div
+              className="overflow-hidden border-t border-[#dce9f5] md:hidden"
+              initial={reduceMotion ? undefined : { height: 0, opacity: 0 }}
+              animate={panelExpandMobile}
+              exit={reduceMotion ? undefined : { height: 0, opacity: 0 }}
             >
               <ProfilePanel c={consultant} onClose={onClose} />
-            </div>
+            </motion.div>
           </motion.div>
         </motion.div>
       ) : null}
@@ -404,7 +437,12 @@ function ProfilePanel({ c, onClose }: { c: Consultant; onClose: () => void }) {
       </div>
 
       <section className="rounded-xl bg-[#f1f4f8] px-5 py-5 sm:px-7 sm:py-7">
-        <p className="break-words text-[14px] leading-7 text-[#344054] sm:text-[15px] sm:leading-8">
+        {c.messageTitle ? (
+          <h3 className="text-sm font-bold text-[#0f4fa8]">{c.messageTitle}</h3>
+        ) : null}
+        <p
+          className={`break-words text-[14px] leading-7 text-[#344054] sm:text-[15px] sm:leading-8 ${c.messageTitle ? "mt-3 sm:mt-4" : ""}`}
+        >
           {c.message}
         </p>
       </section>
@@ -436,10 +474,12 @@ function ProfilePanel({ c, onClose }: { c: Consultant; onClose: () => void }) {
         </section>
       ) : null}
 
-      <section className="mt-8 rounded-xl border border-[#d7e1f1] bg-white px-5 py-5 shadow-sm sm:px-7 sm:py-6 lg:mt-10">
-        <h3 className="text-sm font-bold text-[#0f4fa8]">{highlightTitle}</h3>
-        <p className="mt-3 break-words text-sm leading-7 text-[#475467] sm:mt-4 sm:leading-8">{c.watchPoints}</p>
-      </section>
+      {c.watchPoints ? (
+        <section className="mt-8 rounded-xl border border-[#d7e1f1] bg-white px-5 py-5 shadow-sm sm:px-7 sm:py-6 lg:mt-10">
+          <h3 className="text-sm font-bold text-[#0f4fa8]">{highlightTitle}</h3>
+          <p className="mt-3 break-words text-sm leading-7 text-[#475467] sm:mt-4 sm:leading-8">{c.watchPoints}</p>
+        </section>
+      ) : null}
 
       <button
         type="button"
