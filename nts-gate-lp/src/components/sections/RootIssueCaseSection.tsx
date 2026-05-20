@@ -85,7 +85,7 @@ const CASE_CARDS = [
 const LINE_COLOR = "rgba(11,79,138,0.4)";
 const LINE_COLOR_SOFT = "rgba(11,79,138,0.22)";
 
-export default function RootIssueCaseSection() {
+export default function RootIssueCaseSection({ heading }: { heading?: string } = {}) {
   return (
     <section
       aria-labelledby="root-issue-heading"
@@ -106,7 +106,7 @@ export default function RootIssueCaseSection() {
               letterSpacing: "0.01em",
             }}
           >
-            しかし、より最適な補助金制度があるかもしれません
+            {heading ?? "しかし、より最適な補助金制度があるかもしれません"}
           </h2>
           <p
             className="font-body mx-auto mt-5"

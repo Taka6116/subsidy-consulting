@@ -44,7 +44,7 @@ export default function PartnerPage() {
         <PartnerMeritSection />
         <PartnerSubsidySection />
         <SubsidyCaseStudySection />
-        <RootIssueCaseSection />
+        <RootIssueCaseSection heading="最適な補助金制度までの過程" />
         <PartnerConsultValueSection />
         <NtsAiGapSection />
         <PartnerFlowSection />
