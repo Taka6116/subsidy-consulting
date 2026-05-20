@@ -145,16 +145,6 @@ export default function VideosHero() {
         background: "linear-gradient(160deg,#dbeafe 0%,#eff6ff 45%,#f0f9ff 100%)",
       }}
     >
-      {/* 薄いグリッド背景 */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0"
-        style={{
-          backgroundImage:
-            "linear-gradient(rgba(14,53,127,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(14,53,127,0.04) 1px, transparent 1px)",
-          backgroundSize: "48px 48px",
-        }}
-      />
 
       <div className="relative w-full px-[clamp(1.75rem,3.4vw,4rem)] py-14 sm:py-16 lg:py-20">
         <div className="flex flex-col items-center gap-10 lg:flex-row lg:gap-14">
@@ -179,20 +169,6 @@ export default function VideosHero() {
               忙しい中小企業の経営者が、まず見るべきポイントだけを
               専門家の解説動画で確認できます。
             </p>
-
-            {/* 特徴3項目 */}
-            <dl className="mt-7 grid grid-cols-3 gap-3">
-              {[
-                { dt: "60本", dd: "短尺の補助金解説動画を掲載" },
-                { dt: "1分前後", dd: "制度概要・金額・注意点を圧縮" },
-                { dt: "目的別", dd: "設備投資・海外展開・人材など" },
-              ].map(({ dt, dd }) => (
-                <div key={dt} className="rounded-xl bg-white/70 p-3 shadow-sm ring-1 ring-[#dbeafe]">
-                  <dt className="text-[17px] font-black text-[#0e357f]">{dt}</dt>
-                  <dd className="mt-0.5 text-[11px] leading-snug text-slate-500">{dd}</dd>
-                </div>
-              ))}
-            </dl>
 
             {/* CTA */}
             <div className="mt-8 flex flex-wrap gap-3">
