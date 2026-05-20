@@ -42,11 +42,34 @@ function LineIcon({ type }: { type: "person" | "memo" | "file" | "chat" | "searc
           <path d="M13 4v4h4M10 13h4M10 16h3" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
         </svg>
       )}
-      {type === "chat" && <svg viewBox="0 0 24 24" className={common} fill="none" aria-hidden><path d="M5 6.5h14v8.5H10l-4 3v-3H5V6.5Z" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" /></svg>}
-      {type === "search" && <svg viewBox="0 0 24 24" className={common} fill="none" aria-hidden><circle cx="10.5" cy="10.5" r="5" stroke="currentColor" strokeWidth="1.7" /><path d="m15 15 4 4" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" /></svg>}
-      {type === "plan" && <svg viewBox="0 0 24 24" className={common} fill="none" aria-hidden><path d="M6 5h12v14H6V5Z" stroke="currentColor" strokeWidth="1.7" /><path d="m9 11 2 2 4-5M9 16h6" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" /></svg>}
-      {type === "folder" && <svg viewBox="0 0 24 24" className={common} fill="none" aria-hidden><path d="M4.5 8h6l1.4 2H19.5v8.5h-15V8Z" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" /></svg>}
-      {type === "chart" && <svg viewBox="0 0 24 24" className={common} fill="none" aria-hidden><path d="M6 18V9M12 18V5M18 18v-6" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" /><path d="M4 19h16" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" /></svg>}
+      {type === "chat" && (
+        <svg viewBox="0 0 24 24" className={common} fill="none" aria-hidden>
+          <path d="M5 6.5h14v8.5H10l-4 3v-3H5V6.5Z" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" />
+        </svg>
+      )}
+      {type === "search" && (
+        <svg viewBox="0 0 24 24" className={common} fill="none" aria-hidden>
+          <circle cx="10.5" cy="10.5" r="5" stroke="currentColor" strokeWidth="1.7" />
+          <path d="m15 15 4 4" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
+        </svg>
+      )}
+      {type === "plan" && (
+        <svg viewBox="0 0 24 24" className={common} fill="none" aria-hidden>
+          <path d="M6 5h12v14H6V5Z" stroke="currentColor" strokeWidth="1.7" />
+          <path d="m9 11 2 2 4-5M9 16h6" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      )}
+      {type === "folder" && (
+        <svg viewBox="0 0 24 24" className={common} fill="none" aria-hidden>
+          <path d="M4.5 8h6l1.4 2H19.5v8.5h-15V8Z" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" />
+        </svg>
+      )}
+      {type === "chart" && (
+        <svg viewBox="0 0 24 24" className={common} fill="none" aria-hidden>
+          <path d="M6 18V9M12 18V5M18 18v-6" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" />
+          <path d="M4 19h16" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
+        </svg>
+      )}
     </span>
   );
 }
@@ -157,6 +180,7 @@ export default function PartnerHandoffSection() {
         </motion.div>
 
         <div className="grid gap-4 xl:grid-cols-[430px_300px_540px] xl:items-start">
+          {/* ── 左: 御社がやること ── */}
           <motion.div {...fu(0.06)}>
             <div className="relative rounded-[18px] border border-[#cdddf0] bg-white/90 p-4 shadow-[0_14px_34px_rgba(12,42,72,0.08)]">
               <div className="mb-3 flex items-center gap-4">
@@ -193,6 +217,7 @@ export default function PartnerHandoffSection() {
             </div>
           </motion.div>
 
+          {/* ── 中央: ハンドオフ領域（PC のみ表示） ── */}
           <motion.div
             className="relative hidden h-[500px] xl:block"
             {...fu(0.12)}
@@ -253,6 +278,7 @@ export default function PartnerHandoffSection() {
             </div>
           </motion.div>
 
+          {/* ── 右: NTSがやること ── */}
           <motion.div {...fu(0.18)}>
             <div className="rounded-[18px] border border-[#cdddf0] bg-white/95 p-4 shadow-[0_14px_34px_rgba(12,42,72,0.08)]">
               <div className="mb-4 flex items-center gap-6">
@@ -307,6 +333,7 @@ export default function PartnerHandoffSection() {
           </motion.div>
         </div>
 
+        {/* ── 安心帯 ── */}
         <motion.div className="mt-5" {...fu(0.24)}>
           <div className="flex flex-col gap-4 rounded-2xl border border-[#cdddf0] bg-white px-6 py-4 shadow-[0_12px_28px_rgba(12,42,72,0.06)] md:flex-row md:items-center md:px-10">
             <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[#0b56c5] text-white">
