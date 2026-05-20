@@ -101,7 +101,7 @@ export default function SubsidiesPlatformCtaCard() {
 
           <div className="shrink-0 lg:w-auto">
             <Link
-              href="/subsidies/list"
+              href="/subsidies"
               className="group/platform-cta inline-flex min-h-[44px] w-full items-center justify-center gap-2 rounded-xl bg-[#0B4F8A] px-5 py-3 text-[13px] font-bold text-white shadow-[0_3px_14px_rgba(11,79,138,0.28)] transition hover:bg-[#083D6D] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0B4F8A] sm:text-sm lg:w-auto lg:min-w-[240px]"
             >
               補助金情報プラットフォームを見る

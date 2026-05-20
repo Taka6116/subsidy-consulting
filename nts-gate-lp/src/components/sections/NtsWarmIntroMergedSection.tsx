@@ -25,6 +25,8 @@ type Consultant = {
   specialty: string;
   /** 略歴（任意・モーダル下部に小さく表示） */
   biography?: string;
+  /** 下部ハイライト枠の見出し（未指定時は「1年間の伴走で見るポイント」） */
+  highlightTitle?: string;
   watchPoints: string;
   /** 展開時にパネルが開く方向 */
   panelSide: "right" | "left";
@@ -56,20 +58,29 @@ const CONSULTANTS: Consultant[] = [
   },
   {
     id: "seino",
-    name: "清野洋司",
+    name: "清野 洋司",
     title: "中小企業診断士",
     photo: seinoPhoto,
     photoObjectPosition: "50% 18%",
     photoScale: 1.08,
     panelSide: "left",
-    message: "制度の選定だけでなく、申請後の運用や効果測定まで、担当者として継続的に伴走します。",
+    cardTagline: "補助金・資金調達に強い実戦型コンサルタント",
+    // NOTE: 支援件数・金額は掲載前に最新情報・根拠の確認が必要な場合があります
+    message:
+      "補助金申請支援、資金調達、経営計画策定まで、現場の経営相談に数多く向き合ってきた実戦型コンサルタントです。2023年以降、延べ300件以上の経営相談に対応。補助金支援では50件以上、総額6.5億円規模の獲得支援実績があります。",
     supports: [
-      "現状ヒアリングと本質課題の整理",
-      "最適な制度の選定・申請準備の支援",
-      "導入後の効果測定・改善相談",
+      "補助金申請に向けた事業計画の整理",
+      "資金調達を見据えた計画策定・金融機関対応の相談",
+      "建設業、製造業、飲食店などの中長期計画策定",
+      "M&Aや新規事業を含む経営課題の総合相談",
     ],
-    specialty: "課題整理 / 採択後の活用支援",
-    watchPoints: "投資が計画どおりに事業の成果につながっているか、現場目線で定点観測します。",
+    specialty:
+      "補助金申請支援 / 資金調達支援 / 中長期計画策定 / 経営相談 / M&A実行支援",
+    biography:
+      "1983年生まれ、北海道出身。明治大学文学部心理社会学科卒業後、医療系専門出版社に7年間勤務し、編集・制作部長を経験。2019年に中小企業診断士登録。2021年より経営コンサルタントとして独立し、きづき経営コンサルティングを開業。補助金申請支援、資金調達支援、中長期計画策定、M&A実行支援など、事業者の現場に近い経営相談を幅広く支援しています。",
+    highlightTitle: "印象に残っている支援",
+    watchPoints:
+      "一度不採択となった案件の再挑戦支援や、売上3,000万円規模の建設業者の経営計画策定など、事業者の転機に関わる相談を数多く担当。補助金を「申請するための制度」ではなく、事業を前に進めるための計画づくりとして支援しています。",
   },
 ];
 
@@ -324,6 +335,7 @@ function parseSpecialtyChips(specialty: string) {
 
 function ProfilePanel({ c, onClose }: { c: Consultant; onClose: () => void }) {
   const specialtyChips = parseSpecialtyChips(c.specialty);
+  const highlightTitle = c.highlightTitle ?? "1年間の伴走で見るポイント";
 
   return (
     <div className="h-full min-w-0 overflow-y-auto overflow-x-hidden p-6 lg:p-7">
@@ -373,7 +385,7 @@ function ProfilePanel({ c, onClose }: { c: Consultant; onClose: () => void }) {
 
       {/* 1年間の伴走で見るポイント */}
       <div className="mt-5 rounded-xl border border-[#dde9f4] bg-[#f4f9fe] p-4">
-        <p className="text-[11px] font-bold uppercase tracking-wider text-[#1d6fe8]">1年間の伴走で見るポイント</p>
+        <p className="text-[11px] font-bold uppercase tracking-wider text-[#1d6fe8]">{highlightTitle}</p>
         <p className="mt-1.5 break-words text-[12.5px] leading-relaxed text-[#3a5a78]">{c.watchPoints}</p>
       </div>
 
