@@ -52,17 +52,18 @@ export default function HeroSection() {
         {/* 左カラム: テキスト + CTA */}
         <div className={styles.content}>
           <h1 ref={headlineRef} className={`${styles.headline} font-heading`}>
-            <span className={styles.headlineLine}>「補助金が使えますよ」</span>
-            <span className={`${styles.headlineLine} ${styles.headlineAccent}`}>その一言で営業が変わる</span>
+            <span className={styles.headlineLine}>補助金提案を、御社の営業・</span>
+            <span className={`${styles.headlineLine} ${styles.headlineAccent}`}>顧客支援の武器に。</span>
           </h1>
           <p ref={subRef} className={`${styles.sub} font-body`}>
-            御社の商材を提案するとき、「補助金の対象です」
+            設備・IT・省エネ・人材投資を検討している顧客に、
             <br />
-            と添えるだけで顧客の反応が変わります。
+            補助金活用という選択肢を加えませんか。
             <br />
-            補助金の知識も、申請の対応も不要。
             <br />
-            紹介フィーもお支払いします。
+            制度選定から申請準備、採択後の活用相談までNTSが伴走します。
+            <br />
+            御社は顧客をご紹介いただくだけで、提案力の強化と紹介収益の機会を得られます。
           </p>
 
           <div ref={ctRef} className={`${styles.ctas} font-body`}>

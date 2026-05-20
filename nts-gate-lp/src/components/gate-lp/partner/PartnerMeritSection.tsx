@@ -25,9 +25,7 @@ export default function PartnerMeritSection() {
       <div className="mx-auto max-w-5xl px-6 md:px-8">
         <motion.div className="mb-20 text-center" {...fadeUp(0)}>
           <h2 className="font-heading text-3xl font-bold leading-tight text-[var(--text-primary)] md:text-4xl lg:text-5xl">
-            御社の営業に、
-            <br />
-            補助金という選択肢を加えてください。
+            提携先様に生まれる3つのメリット
           </h2>
         </motion.div>
 
@@ -40,11 +38,11 @@ export default function PartnerMeritSection() {
             {/* テキスト */}
             <div className="flex-1">
               <h3 className="font-heading text-2xl font-bold leading-snug text-[var(--text-primary)] md:text-3xl">
-                成約率が上がる
+                顧客への提案理由が増える
               </h3>
               <p className="mt-4 text-base leading-relaxed text-[var(--text-secondary)]">
-                「補助金が使えます」と添えるだけで、価格交渉の土俵が変わります。顧客が「やれるかもしれない」と感じるきっかけになります。
-                補助金に関する知識は不要です。NTSが必要な情報をすべて提供します。
+                設備投資・IT導入・省エネ対策などの提案時に、
+                補助金活用という選択肢を加えることで、顧客の検討ハードルを下げやすくなります。
               </p>
               <div className="mt-6 rounded-lg bg-[#F5F8FF] px-4 py-3">
                 <p className="mb-2 text-[11px] font-bold uppercase tracking-wider text-[var(--text-muted)]">
@@ -62,7 +60,7 @@ export default function PartnerMeritSection() {
             <div className="flex w-full items-end justify-center lg:w-[40%] lg:flex-none">
               <Image
                 src={isometric14}
-                alt="成約率が上がるイラスト"
+                alt="顧客への提案理由が増えるイラスト"
                 width={640}
                 height={640}
                 className="h-[280px] w-auto object-contain"
@@ -79,7 +77,7 @@ export default function PartnerMeritSection() {
             <div className="flex w-full items-end justify-center lg:order-first lg:w-[40%] lg:flex-none">
               <Image
                 src={isometric09}
-                alt="紹介フィーで新しい収益が生まれるイラスト"
+                alt="紹介収益の機会が生まれるイラスト"
                 width={640}
                 height={640}
                 className="h-[280px] w-auto object-contain"
@@ -89,14 +87,12 @@ export default function PartnerMeritSection() {
             {/* テキスト */}
             <div className="flex-1">
               <h3 className="font-heading text-2xl font-bold leading-snug text-[var(--text-primary)] md:text-3xl">
-                紹介フィーで
-                <br />
-                新しい収益が生まれる
+                紹介収益の機会が生まれる
               </h3>
               <p className="mt-4 text-base leading-relaxed text-[var(--text-secondary)]">
-                顧客を紹介いただいた場合、紹介フィーをお支払いします。
-                ヒアリングから採択後の伴走まで、NTSが一貫してサポートします。
-                御社の手間はご紹介の一言だけです。
+                ご紹介いただいた案件が条件を満たす場合、
+                案件内容に応じた紹介フィーをご案内します。
+                対象条件・支払いタイミングは初回面談時に明確にご説明します。
               </p>
               <div className="mt-6 rounded-lg bg-[#F5F8FF] px-4 py-3">
                 <p className="mb-2 text-[11px] font-bold uppercase tracking-wider text-[var(--text-muted)]">
