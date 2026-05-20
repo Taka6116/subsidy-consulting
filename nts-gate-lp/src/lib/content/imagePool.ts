@@ -84,19 +84,23 @@ function listImagesInFolder(folderName: string): string[] {
   if (!normalized) return [];
 
   const folderPath = path.join(CUSTOM_ARTICLE_PICTURES_DIR, normalized);
-  if (!fs.existsSync(folderPath)) {
+  try {
+    if (!fs.existsSync(folderPath)) {
+      return [];
+    }
+
+    const images = fs
+      .readdirSync(folderPath, { withFileTypes: true })
+      .filter((entry) => entry.isFile())
+      .map((entry) => entry.name)
+      .filter((fileName) =>
+        IMAGE_EXTENSIONS.has(path.extname(fileName).toLowerCase() as ".jpg"),
+      );
+
+    return images;
+  } catch {
     return [];
   }
-
-  const images = fs
-    .readdirSync(folderPath, { withFileTypes: true })
-    .filter((entry) => entry.isFile())
-    .map((entry) => entry.name)
-    .filter((fileName) =>
-      IMAGE_EXTENSIONS.has(path.extname(fileName).toLowerCase() as ".jpg"),
-    );
-
-  return images;
 }
 
 function pickRandom<T>(items: T[]): T | null {
@@ -145,12 +149,17 @@ export function pickArticlePictureOnly(params: {
   const custom = pickCustomArticlePicture(params);
   if (custom) return custom;
 
-  if (!fs.existsSync(CUSTOM_ARTICLE_PICTURES_DIR)) return null;
-  const allFolders = fs
-    .readdirSync(CUSTOM_ARTICLE_PICTURES_DIR, { withFileTypes: true })
-    .filter((entry) => entry.isDirectory())
-    .map((entry) => entry.name)
-    .filter((name) => normalizePathSegment(name).length > 0);
+  let allFolders: string[] = [];
+  try {
+    if (!fs.existsSync(CUSTOM_ARTICLE_PICTURES_DIR)) return null;
+    allFolders = fs
+      .readdirSync(CUSTOM_ARTICLE_PICTURES_DIR, { withFileTypes: true })
+      .filter((entry) => entry.isDirectory())
+      .map((entry) => entry.name)
+      .filter((name) => normalizePathSegment(name).length > 0);
+  } catch {
+    return null;
+  }
   if (allFolders.length === 0) return null;
 
   const seedBase = params.seedKey ?? params.subsidyId;

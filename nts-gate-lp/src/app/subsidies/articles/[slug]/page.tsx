@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { unstable_noStore as noStore } from "next/cache";
 import { notFound } from "next/navigation";
 
 import Header from "@/components/shared/Header";
@@ -203,7 +202,6 @@ async function getRelatedArticles({
 // ========== /UPDATED ==========
 
 export default async function SubsidyArticlePage({ params }: PageProps) {
-  noStore();
   const { slug } = await params;
 
   const article = await prisma.generatedContent.findFirst({
@@ -239,14 +237,19 @@ export default async function SubsidyArticlePage({ params }: PageProps) {
     : null;
 
   // ========== 関連記事を取得（同都道府県・同タグ・公募中優先） ==========
-  const relatedArticles = await getRelatedArticles({
-    currentSlug: slug,
-    tags: article.tags ?? [],
-    prefecture: article.grant?.rawPayload
-      ? (toObj(article.grant.rawPayload)?.prefecture as string | undefined)
-      : null,
-    limit: 3,
-  });
+  let relatedArticles: Awaited<ReturnType<typeof getRelatedArticles>> = [];
+  try {
+    relatedArticles = await getRelatedArticles({
+      currentSlug: slug,
+      tags: article.tags ?? [],
+      prefecture: article.grant?.rawPayload
+        ? (toObj(article.grant.rawPayload)?.prefecture as string | undefined)
+        : null,
+      limit: 3,
+    });
+  } catch (e) {
+    console.error("[article] getRelatedArticles failed:", e);
+  }
   // ========== /UPDATED ==========
 
   // ── 図解ブロック用データを組み立て ──────────────────────

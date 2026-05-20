@@ -41,10 +41,15 @@ export default async function SubsidiesListPage() {
         updatedAt: true,
         rawPayload: true,
         contents: {
-          where: { contentType: "article", status: "published", slug: { not: null } },
+          where: {
+            contentType: "article",
+            status: "published",
+            slug: { not: null },
+            body: { not: null },
+          },
           orderBy: { publishedAt: "desc" },
           take: 1,
-          select: { slug: true },
+          select: { slug: true, body: true },
         },
       },
       orderBy: { updatedAt: "desc" },
@@ -84,7 +89,10 @@ export default async function SubsidiesListPage() {
       source: g.source,
       syncedAt: g.syncedAt.toISOString(),
       updatedAt: g.updatedAt.toISOString(),
-      articleSlug: g.contents[0]?.slug ?? null,
+      articleSlug:
+        g.contents[0]?.slug && g.contents[0]?.body && g.contents[0].body.length >= 100
+          ? g.contents[0].slug
+          : null,
       hasLp: lpGrantIds.has(g.id),
     };
   });
