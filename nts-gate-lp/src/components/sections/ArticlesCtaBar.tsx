@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import SubsidiesPlatformCtaCard from "@/components/sections/SubsidiesPlatformCtaCard";
 
 const VIDEO_FALLBACK_TITLE = "補助金制度のポイント解説";
 
@@ -385,6 +386,8 @@ export default function ArticlesCtaBar({ articles, featuredVideos }: Props) {
 
           </div>
         </div>
+
+        <SubsidiesPlatformCtaCard />
       </div>
     </section>
   );
