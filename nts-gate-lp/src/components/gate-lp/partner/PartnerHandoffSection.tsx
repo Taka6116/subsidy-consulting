@@ -179,12 +179,11 @@ export default function PartnerHandoffSection() {
           </p>
         </motion.div>
 
-        <div className="grid gap-4 xl:grid-cols-[430px_300px_540px] xl:items-start">
+        <div className="grid gap-4 xl:grid-cols-[430px_300px_540px] xl:items-stretch">
           {/* ── 左: 御社がやること ── */}
-          <motion.div {...fu(0.06)}>
-            <div className="relative rounded-[18px] border border-[#cdddf0] bg-white/90 p-4 shadow-[0_14px_34px_rgba(12,42,72,0.08)]">
+          <motion.div {...fu(0.06)} className="h-full">
+            <div className="relative h-full rounded-[18px] border border-[#cdddf0] bg-white/90 p-4 shadow-[0_14px_34px_rgba(12,42,72,0.08)]">
               <div className="mb-3 flex items-center gap-4">
-                <span className="h-10 w-1.5 rounded-full bg-[#0b56c5]" />
                 <p className="text-2xl font-black tracking-[0.04em] text-[#071b46]">
                   御社がやること
                 </p>
@@ -219,21 +218,23 @@ export default function PartnerHandoffSection() {
 
           {/* ── 中央: ハンドオフ領域（PC のみ表示） ── */}
           <motion.div
-            className="relative hidden h-[500px] xl:block"
+            className="relative hidden h-full min-h-[500px] xl:block"
             {...fu(0.12)}
             aria-hidden
           >
             <svg
               className="absolute inset-0 h-full w-full overflow-visible"
               viewBox="0 0 300 500"
+              preserveAspectRatio="none"
               fill="none"
             >
               <path d="M0 116 C42 126 70 140 96 156" stroke="#c8dcf3" strokeWidth="1.7" />
               <path d="M0 250 H96" stroke="#b6d1ef" strokeWidth="1.8" />
               <path d="M0 388 C44 372 72 352 96 330" stroke="#c8dcf3" strokeWidth="1.7" />
 
-              <path d="M182 252 H286" stroke="#0b56c5" strokeWidth="3" strokeLinecap="round" />
-              <path d="M272 240 288 252 272 264" stroke="#0b56c5" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+              {/* 中央→右への太い青矢印（NTSへ紹介の下に配置） */}
+              <path d="M196 290 H290" stroke="#0b56c5" strokeWidth="3" strokeLinecap="round" />
+              <path d="M278 278 294 290 278 302" stroke="#0b56c5" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
 
               <path d="M90 145 C66 150 44 162 26 181" stroke="#506f99" strokeWidth="1.15" strokeLinecap="round" strokeDasharray="3 5" />
               <path d="M90 254 C66 258 44 270 26 288" stroke="#506f99" strokeWidth="1.15" strokeLinecap="round" strokeDasharray="3 5" />
@@ -268,19 +269,20 @@ export default function PartnerHandoffSection() {
             <TransferCard label="接点メモ" type="memo" className="left-[104px] top-[208px]" />
             <TransferCard label="商材資料" type="file" className="left-[104px] top-[358px]" />
 
-            <div className="absolute left-[184px] top-[214px] whitespace-nowrap text-center">
-              <p className="text-[24px] font-black leading-none tracking-[0.08em] text-[#0b56c5]">
+            {/* NTSへ紹介ラベル（矢印の上に配置） */}
+            <div className="absolute left-[196px] top-[228px] whitespace-nowrap text-center">
+              <p className="text-[22px] font-black leading-none tracking-[0.08em] text-[#0b56c5]">
                 NTSへ
               </p>
-              <p className="mt-1 text-[14px] font-black tracking-[0.1em] text-[#0b56c5]">
+              <p className="mt-1 text-[14px] font-black tracking-[0.12em] text-[#0b56c5]">
                 紹介
               </p>
             </div>
           </motion.div>
 
           {/* ── 右: NTSがやること ── */}
-          <motion.div {...fu(0.18)}>
-            <div className="rounded-[18px] border border-[#cdddf0] bg-white/95 p-4 shadow-[0_14px_34px_rgba(12,42,72,0.08)]">
+          <motion.div {...fu(0.18)} className="h-full">
+            <div className="flex h-full flex-col rounded-[18px] border border-[#cdddf0] bg-white/95 p-4 shadow-[0_14px_34px_rgba(12,42,72,0.08)]">
               <div className="mb-4 flex items-center gap-6">
                 <div className="relative bg-[#0b56c5] px-6 py-3 text-xl font-black tracking-[0.04em] text-white shadow-[0_8px_18px_rgba(11,86,197,0.18)]">
                   NTSがやること
@@ -291,11 +293,11 @@ export default function PartnerHandoffSection() {
                 </p>
               </div>
 
-              <ol className="relative rounded-2xl border border-[#dce7f5] bg-white shadow-sm">
+              <ol className="relative flex flex-1 flex-col rounded-2xl border border-[#dce7f5] bg-white shadow-sm">
                 {NTS_ITEMS.map((item, index) => (
                   <li
                     key={item}
-                    className="relative grid grid-cols-[48px_38px_1fr_16px] items-center gap-3 border-b border-[#e5edf6] px-4 py-3 last:border-b-0"
+                    className="relative grid flex-1 grid-cols-[48px_1fr_16px] items-center gap-3 border-b border-[#e5edf6] px-4 py-3 last:border-b-0"
                   >
                     <div className="relative flex h-full items-center justify-center">
                       {index < NTS_ITEMS.length - 1 && (
@@ -305,22 +307,6 @@ export default function PartnerHandoffSection() {
                         {String(index + 1).padStart(2, "0")}
                       </span>
                     </div>
-
-                    <LineIcon
-                      type={
-                        index === 0
-                          ? "chat"
-                          : index === 1
-                            ? "search"
-                            : index === 2
-                              ? "search"
-                              : index === 3
-                                ? "plan"
-                                : index === 4
-                                  ? "folder"
-                                  : "chart"
-                      }
-                    />
 
                     <p className="text-base font-black tracking-[0.035em] text-[#071b46]">
                       {item}
@@ -332,38 +318,6 @@ export default function PartnerHandoffSection() {
             </div>
           </motion.div>
         </div>
-
-        {/* ── 安心帯 ── */}
-        <motion.div className="mt-5" {...fu(0.24)}>
-          <div className="flex flex-col gap-4 rounded-2xl border border-[#cdddf0] bg-white px-6 py-4 shadow-[0_12px_28px_rgba(12,42,72,0.06)] md:flex-row md:items-center md:px-10">
-            <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[#0b56c5] text-white">
-              <svg viewBox="0 0 28 28" className="h-7 w-7" fill="none" aria-hidden>
-                <path
-                  d="M14 3.5 5.5 7v6.8c0 5.2 3.5 9.1 8.5 10.7 5-1.6 8.5-5.5 8.5-10.7V7L14 3.5Z"
-                  stroke="currentColor"
-                  strokeWidth="1.6"
-                />
-                <path
-                  d="m10.5 14.2 2.5 2.5 5-5.4"
-                  stroke="currentColor"
-                  strokeWidth="1.8"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </span>
-            <p className="text-base font-black tracking-[0.04em] text-[#071b46] md:text-xl">
-              補助金の専門知識がなくても、顧客対応はNTSが進めます。
-            </p>
-            <div className="hidden h-10 w-px bg-[#d9e4f2] md:ml-auto md:block" />
-            <div className="inline-flex w-fit items-center gap-2 rounded-full bg-[#eefaf4] px-4 py-2">
-              <span className="h-2.5 w-2.5 rounded-full bg-[#0e9f5d]" />
-              <span className="text-xs font-black tracking-[0.06em] text-[#0a8a4d]">
-                安心して紹介できます
-              </span>
-            </div>
-          </div>
-        </motion.div>
       </div>
     </section>
   );
