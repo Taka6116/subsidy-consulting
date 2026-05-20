@@ -18,9 +18,13 @@ type Consultant = {
   photo: typeof sakurabaPhoto;
   photoObjectPosition: string;
   photoScale: number;
+  /** カード下部の補足テキスト（任意） */
+  cardTagline?: string;
   message: string;
   supports: string[];
   specialty: string;
+  /** 略歴（任意・モーダル下部に小さく表示） */
+  biography?: string;
   watchPoints: string;
   /** 展開時にパネルが開く方向 */
   panelSide: "right" | "left";
@@ -29,20 +33,26 @@ type Consultant = {
 const CONSULTANTS: Consultant[] = [
   {
     id: "sakuraba",
-    name: "櫻庭真之介",
+    name: "櫻庭 真之介",
     title: "中小企業診断士",
     photo: sakurabaPhoto,
     photoObjectPosition: "50% 20%",
     photoScale: 1.08,
     panelSide: "right",
-    message: "制度を見つけるだけで終わらせず、申請準備から採択後の活用相談まで継続して支援します。",
+    cardTagline: "事業成長・資金戦略に強い補助金活用支援",
+    message:
+      "補助金を「使える制度」で終わらせず、事業計画・資金戦略・採択後の活用まで見据えて支援します。",
     supports: [
-      "事業計画の整理・補助金活用戦略の設計",
-      "申請準備・必要書類の整理サポート",
-      "採択後の活用相談・効果検証の伴走",
+      "事業計画の整理と、補助金活用方針の設計",
+      "申請準備に必要な情報・資料整理のサポート",
+      "採択後の投資実行、資金活用、効果検証の相談",
     ],
-    specialty: "事業計画策定 / 補助金活用設計",
-    watchPoints: "補助金を「使える制度」で終わらせず、事業成長につながっているかを定期的に確認します。",
+    specialty:
+      "事業計画策定 / 補助金活用設計 / 資金戦略 / 新規事業・M&A視点での成長支援",
+    biography:
+      "青山学院大学経済学部卒業後、大手証券会社にてリテール・ホールセール業務に従事。その後、大手生命保険会社で新規事業の立ち上げ支援や店舗開発に携わり、東証上場企業では主力事業の企画推進、複数の新規部門立ち上げ、M&A・出資案件を担当。事業会社側で培った成長戦略・資金戦略の視点を活かし、現在は日本提携支援にて補助金活用支援を推進しています。",
+    watchPoints:
+      "補助金を「申請して終わり」にせず、事業成長につながっているかを定期的に確認します。",
   },
   {
     id: "seino",
@@ -237,6 +247,9 @@ function NormalCard({ c, onOpen }: { c: Consultant; onOpen: () => void }) {
       <div className="px-5 py-4 sm:px-6">
         <p className="text-[12px] font-bold uppercase tracking-widest text-[#5a80a0]">{c.title}</p>
         <p className="mt-1 text-[20px] font-black leading-snug text-[#0c2a48] sm:text-[22px]">{c.name}</p>
+        {c.cardTagline ? (
+          <p className="mt-2 text-[13px] leading-relaxed text-[#4a6a82]">{c.cardTagline}</p>
+        ) : null}
       </div>
     </div>
   );
@@ -305,15 +318,21 @@ function PhotoCard({
 // ============================================================
 // ProfilePanel — プロフィール本文パネル
 // ============================================================
+function parseSpecialtyChips(specialty: string) {
+  return specialty.split(/\s*\/\s*/).filter(Boolean);
+}
+
 function ProfilePanel({ c, onClose }: { c: Consultant; onClose: () => void }) {
+  const specialtyChips = parseSpecialtyChips(c.specialty);
+
   return (
-    <div className="h-full overflow-y-auto p-6 lg:p-7">
+    <div className="h-full min-w-0 overflow-y-auto overflow-x-hidden p-6 lg:p-7">
       {/* 肩書 + 名前 */}
       <p className="text-[11px] font-bold uppercase tracking-widest text-[#1d6fe8]">{c.title}</p>
       <p className="mt-1 text-[21px] font-black leading-snug text-[#0c2a48] lg:text-[23px]">{c.name}</p>
 
       {/* 一言メッセージ */}
-      <p className="mt-4 rounded-xl bg-[#eff6fd] px-4 py-3 text-[13px] leading-relaxed text-[#1a4972]">
+      <p className="mt-4 break-words rounded-xl bg-[#eff6fd] px-4 py-3 text-[13px] leading-relaxed text-[#1a4972]">
         {c.message}
       </p>
 
@@ -324,7 +343,7 @@ function ProfilePanel({ c, onClose }: { c: Consultant; onClose: () => void }) {
           {c.supports.map((s) => (
             <li key={s} className="flex items-start gap-2 text-[13px] leading-relaxed text-[#3a5a78]">
               <span aria-hidden className="mt-[6px] inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-[#1d6fe8]" />
-              <span>{s}</span>
+              <span className="min-w-0 break-words">{s}</span>
             </li>
           ))}
         </ul>
@@ -333,13 +352,29 @@ function ProfilePanel({ c, onClose }: { c: Consultant; onClose: () => void }) {
       {/* 得意領域 */}
       <div className="mt-5">
         <p className="text-[11px] font-bold uppercase tracking-wider text-[#5a80a0]">得意領域</p>
-        <p className="mt-1.5 text-[13px] leading-relaxed text-[#3a5a78]">{c.specialty}</p>
+        <div className="mt-2 flex flex-wrap gap-2">
+          {specialtyChips.map((chip) => (
+            <span
+              key={chip}
+              className="inline-block max-w-full break-words rounded-full border border-[#d4e8f6] bg-[#f4f9fe] px-2.5 py-1 text-[11.5px] leading-snug text-[#3a5a78]"
+            >
+              {chip}
+            </span>
+          ))}
+        </div>
       </div>
+
+      {c.biography ? (
+        <div className="mt-5 border-t border-[#e8f0f8] pt-4">
+          <p className="text-[10px] font-bold uppercase tracking-wider text-[#5a80a0]">略歴</p>
+          <p className="mt-2 break-words text-[11px] leading-relaxed text-[#5a7088]">{c.biography}</p>
+        </div>
+      ) : null}
 
       {/* 1年間の伴走で見るポイント */}
       <div className="mt-5 rounded-xl border border-[#dde9f4] bg-[#f4f9fe] p-4">
         <p className="text-[11px] font-bold uppercase tracking-wider text-[#1d6fe8]">1年間の伴走で見るポイント</p>
-        <p className="mt-1.5 text-[12.5px] leading-relaxed text-[#3a5a78]">{c.watchPoints}</p>
+        <p className="mt-1.5 break-words text-[12.5px] leading-relaxed text-[#3a5a78]">{c.watchPoints}</p>
       </div>
 
       {/* 閉じるボタン（パネル下部） */}
