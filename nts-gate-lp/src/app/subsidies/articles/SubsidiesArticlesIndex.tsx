@@ -11,6 +11,30 @@ import {
 const ALL = "__all__";
 const PAGE_SIZE = 12;
 
+/** ページ数が多いときも 1 ページ目と現在ページ周辺が必ず見えるよう省略表示用の配列を返す */
+function getVisiblePageNumbers(
+  current: number,
+  total: number,
+): Array<number | "ellipsis"> {
+  if (total <= 9) {
+    return Array.from({ length: total }, (_, i) => i + 1);
+  }
+
+  const set = new Set<number>([1, total]);
+  for (let p = current - 2; p <= current + 2; p++) {
+    if (p >= 1 && p <= total) set.add(p);
+  }
+
+  const sorted = [...set].sort((a, b) => a - b);
+  const out: Array<number | "ellipsis"> = [];
+  for (let i = 0; i < sorted.length; i++) {
+    const n = sorted[i]!;
+    if (i > 0 && n - sorted[i - 1]! > 1) out.push("ellipsis");
+    out.push(n);
+  }
+  return out;
+}
+
 export type ArticleCard = {
   id: string;
   slug: string;
@@ -551,7 +575,7 @@ export default function SubsidiesArticlesIndex({
               )}
 
               {totalPages > 1 && (
-                <div className="mt-10 flex items-center justify-center gap-1.5">
+                <div className="mt-10 flex flex-wrap items-center justify-center gap-1.5">
                   <button
                     type="button"
                     onClick={() => setPage((p) => Math.max(1, p - 1))}
@@ -561,20 +585,31 @@ export default function SubsidiesArticlesIndex({
                     前へ
                   </button>
 
-                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
-                    <button
-                      key={p}
-                      type="button"
-                      onClick={() => setPage(p)}
-                      className={`rounded-md px-3 py-1.5 text-sm font-medium transition ${
-                        p === page
-                          ? "bg-primary-700 text-white"
-                          : "border border-gray-200 bg-white text-gray-600 hover:border-gray-300"
-                      }`}
-                    >
-                      {p}
-                    </button>
-                  ))}
+                  {getVisiblePageNumbers(page, totalPages).map((item, idx) =>
+                    item === "ellipsis" ? (
+                      <span
+                        key={`ellipsis-${idx}`}
+                        className="px-1 text-sm text-gray-400"
+                        aria-hidden
+                      >
+                        …
+                      </span>
+                    ) : (
+                      <button
+                        key={item}
+                        type="button"
+                        onClick={() => setPage(item)}
+                        aria-current={item === page ? "page" : undefined}
+                        className={`min-w-[2.25rem] rounded-md px-3 py-1.5 text-sm font-medium transition ${
+                          item === page
+                            ? "bg-primary-700 text-white"
+                            : "border border-gray-200 bg-white text-gray-600 hover:border-gray-300"
+                        }`}
+                      >
+                        {item}
+                      </button>
+                    ),
+                  )}
 
                   <button
                     type="button"
