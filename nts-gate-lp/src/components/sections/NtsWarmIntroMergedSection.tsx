@@ -22,6 +22,8 @@ type Consultant = {
   cardTagline?: string;
   message: string;
   supports: string[];
+  /** 実績リスト（任意・モーダル専用セクション） */
+  achievements?: string[];
   specialty: string;
   /** 略歴（任意・モーダル下部に小さく表示） */
   biography?: string;
@@ -65,14 +67,20 @@ const CONSULTANTS: Consultant[] = [
     photoScale: 1.08,
     panelSide: "left",
     cardTagline: "補助金・資金調達に強い実戦型コンサルタント",
-    // NOTE: 支援件数・金額は掲載前に最新情報・根拠の確認が必要な場合があります
     message:
-      "補助金申請支援、資金調達、経営計画策定まで、現場の経営相談に数多く向き合ってきた実戦型コンサルタントです。2023年以降、延べ300件以上の経営相談に対応。補助金支援では50件以上、総額6.5億円規模の獲得支援実績があります。",
+      "補助金申請支援、資金調達、経営計画策定まで、現場の経営相談に数多く向き合ってきた実戦型コンサルタントです。",
     supports: [
       "補助金申請に向けた事業計画の整理",
       "資金調達を見据えた計画策定・金融機関対応の相談",
       "建設業、製造業、飲食店などの中長期計画策定",
       "M&Aや新規事業を含む経営課題の総合相談",
+    ],
+    // NOTE: 件数・金額は掲載前に最新情報・根拠の確認が必要な場合があります
+    achievements: [
+      "2023年以降、延べ300件以上の経営相談に対応",
+      "補助金獲得支援 50件以上",
+      "補助金獲得支援総額 6.5億円規模",
+      "建設業、製造業、飲食店など幅広い業種の計画策定を支援",
     ],
     specialty:
       "補助金申請支援 / 資金調達支援 / 中長期計画策定 / 経営相談 / M&A実行支援",
@@ -333,67 +341,85 @@ function parseSpecialtyChips(specialty: string) {
   return specialty.split(/\s*\/\s*/).filter(Boolean);
 }
 
+function ProfileEditorialListSection({
+  title,
+  items,
+  className = "mt-8 lg:mt-11",
+}: {
+  title: string;
+  items: string[];
+  className?: string;
+}) {
+  return (
+    <section className={className}>
+      <h3 className="border-b border-[#d7dce5] pb-3 text-base font-bold text-[#101828]">{title}</h3>
+      <ul className="mt-5 space-y-3 sm:mt-6 sm:space-y-4">
+        {items.map((item) => (
+          <li key={item} className="flex gap-3 text-[14px] leading-7 text-[#475467] sm:gap-4 sm:text-[15px]">
+            <span aria-hidden className="mt-3 h-1 w-1 flex-none rounded-full bg-[#aab3c2]" />
+            <span className="min-w-0 break-words">{item}</span>
+          </li>
+        ))}
+      </ul>
+    </section>
+  );
+}
+
 function ProfilePanel({ c, onClose }: { c: Consultant; onClose: () => void }) {
   const specialtyChips = parseSpecialtyChips(c.specialty);
   const highlightTitle = c.highlightTitle ?? "1年間の伴走で見るポイント";
 
   return (
-    <div className="h-full min-w-0 overflow-y-auto overflow-x-hidden p-6 lg:p-7">
-      {/* 肩書 + 名前 */}
-      <p className="text-[11px] font-bold uppercase tracking-widest text-[#1d6fe8]">{c.title}</p>
-      <p className="mt-1 text-[21px] font-black leading-snug text-[#0c2a48] lg:text-[23px]">{c.name}</p>
-
-      {/* 一言メッセージ */}
-      <p className="mt-4 break-words rounded-xl bg-[#eff6fd] px-4 py-3 text-[13px] leading-relaxed text-[#1a4972]">
-        {c.message}
-      </p>
-
-      {/* 支援できること */}
-      <div className="mt-5">
-        <p className="text-[11px] font-bold uppercase tracking-wider text-[#5a80a0]">支援できること</p>
-        <ul className="mt-2 space-y-2">
-          {c.supports.map((s) => (
-            <li key={s} className="flex items-start gap-2 text-[13px] leading-relaxed text-[#3a5a78]">
-              <span aria-hidden className="mt-[6px] inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-[#1d6fe8]" />
-              <span className="min-w-0 break-words">{s}</span>
-            </li>
-          ))}
-        </ul>
+    <div className="flex h-full max-h-[90vh] min-w-0 flex-col overflow-y-auto overflow-x-hidden bg-[#fbfbfd] px-6 py-8 text-[#101828] sm:px-8 sm:py-10 lg:px-12 lg:py-12">
+      <div className="mb-7 lg:mb-9">
+        <p className="text-xs font-bold tracking-[0.08em] text-[#0f4fa8]">{c.title}</p>
+        <h2 className="mt-2 text-2xl font-bold leading-tight text-[#101828] sm:mt-3 sm:text-3xl lg:text-4xl">
+          {c.name}
+        </h2>
       </div>
 
-      {/* 得意領域 */}
-      <div className="mt-5">
-        <p className="text-[11px] font-bold uppercase tracking-wider text-[#5a80a0]">得意領域</p>
-        <div className="mt-2 flex flex-wrap gap-2">
+      <section className="rounded-xl bg-[#f1f4f8] px-5 py-5 sm:px-7 sm:py-7">
+        <p className="break-words text-[14px] leading-7 text-[#344054] sm:text-[15px] sm:leading-8">
+          {c.message}
+        </p>
+      </section>
+
+      <ProfileEditorialListSection title="支援できること" items={c.supports} />
+
+      <section className="mt-8 lg:mt-10">
+        <h3 className="text-sm font-bold tracking-[0.08em] text-[#475467]">得意領域</h3>
+        <div className="mt-3 flex flex-wrap gap-2 sm:mt-4">
           {specialtyChips.map((chip) => (
             <span
               key={chip}
-              className="inline-block max-w-full break-words rounded-full border border-[#d4e8f6] bg-[#f4f9fe] px-2.5 py-1 text-[11.5px] leading-snug text-[#3a5a78]"
+              className="inline-block max-w-full break-words rounded-full border border-[#cfd7e6] bg-white px-3 py-1.5 text-xs text-[#475467] sm:px-4 sm:py-2 sm:text-sm"
             >
               {chip}
             </span>
           ))}
         </div>
-      </div>
+      </section>
 
-      {c.biography ? (
-        <div className="mt-5 border-t border-[#e8f0f8] pt-4">
-          <p className="text-[10px] font-bold uppercase tracking-wider text-[#5a80a0]">略歴</p>
-          <p className="mt-2 break-words text-[11px] leading-relaxed text-[#5a7088]">{c.biography}</p>
-        </div>
+      {c.achievements && c.achievements.length > 0 ? (
+        <ProfileEditorialListSection title="実績" items={c.achievements} className="mt-8 lg:mt-11" />
       ) : null}
 
-      {/* 1年間の伴走で見るポイント */}
-      <div className="mt-5 rounded-xl border border-[#dde9f4] bg-[#f4f9fe] p-4">
-        <p className="text-[11px] font-bold uppercase tracking-wider text-[#1d6fe8]">{highlightTitle}</p>
-        <p className="mt-1.5 break-words text-[12.5px] leading-relaxed text-[#3a5a78]">{c.watchPoints}</p>
-      </div>
+      {c.biography ? (
+        <section className="mt-8 lg:mt-11">
+          <h3 className="border-b border-[#d7dce5] pb-3 text-base font-bold text-[#101828]">略歴</h3>
+          <p className="mt-5 break-words text-sm leading-7 text-[#5f6b7a] sm:mt-6 sm:leading-8">{c.biography}</p>
+        </section>
+      ) : null}
 
-      {/* 閉じるボタン（パネル下部） */}
+      <section className="mt-8 rounded-xl border border-[#d7e1f1] bg-white px-5 py-5 shadow-sm sm:px-7 sm:py-6 lg:mt-10">
+        <h3 className="text-sm font-bold text-[#0f4fa8]">{highlightTitle}</h3>
+        <p className="mt-3 break-words text-sm leading-7 text-[#475467] sm:mt-4 sm:leading-8">{c.watchPoints}</p>
+      </section>
+
       <button
         type="button"
         onClick={onClose}
-        className="mt-6 inline-flex items-center gap-1.5 text-[12px] font-bold text-[#5a80a0] transition hover:text-[#1d6fe8] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#1d6fe8]"
+        className="mt-8 inline-flex items-center gap-1.5 text-sm font-bold text-[#5f6b7a] transition hover:text-[#0f4fa8] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#0f4fa8] lg:mt-10"
       >
         <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden>
           <path d="M2 2l8 8M10 2l-8 8" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
