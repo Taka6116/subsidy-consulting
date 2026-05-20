@@ -284,10 +284,10 @@ export default async function SubsidiesLpIndexPage() {
                   無料相談する
                 </Link>
                 <Link
-                  href="/consult"
+                  href="/check"
                   className="inline-flex h-12 flex-1 items-center justify-center rounded-xl border border-[#0B4F8A]/30 bg-white px-6 font-bold text-[#0B4F8A] transition hover:bg-[#F4F7FB] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0B4F8A]"
                 >
-                  無料相談予約する
+                  対象の補助金を確認する
                 </Link>
               </div>
               <ul className="mt-5 grid grid-cols-1 gap-2 text-xs text-slate-500 sm:grid-cols-3">
