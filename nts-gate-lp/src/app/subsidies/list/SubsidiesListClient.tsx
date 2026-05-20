@@ -745,29 +745,24 @@ function SubsidyResultCard({ grant }: { grant: SubsidyCard }) {
         </dl>
         <p className="mt-2 text-[11px] text-[#6b7a99]">締切日：{deadlineLabel}</p>
 
-        {/* アクションボタン — 優先順位: 詳細 > 解説記事 > 専門LP > 相談 */}
+        {/* アクションボタン */}
         <div className="mt-4 flex flex-wrap items-center gap-2 border-t border-[#eef2f8] pt-3">
-          {/* 主CTA: 詳細を見る */}
+          {/* 主CTA: 解説記事を見る（articleSlugあり） / 詳細を見る（なし） */}
           <Link
-            href={`/subsidies/list/${grant.id}`}
+            href={
+              grant.articleSlug
+                ? `/subsidies/articles/${grant.articleSlug}`
+                : `/subsidies/list/${grant.id}`
+            }
             aria-disabled={isExpired}
             tabIndex={isExpired ? -1 : 0}
             className={`inline-flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-[#1f4dab] px-4 py-2.5 text-sm font-bold text-white shadow-sm transition hover:bg-[#173d8c] ${
               isExpired ? "pointer-events-none opacity-60" : ""
             }`}
           >
-            詳細を見る
+            {grant.articleSlug ? "解説記事を見る" : "詳細を見る"}
             <ArrowRight className="h-4 w-4" />
           </Link>
-          {/* 補助CTA: 解説記事 */}
-          {grant.articleSlug ? (
-            <Link
-              href={`/subsidies/articles/${grant.articleSlug}`}
-              className="inline-flex items-center justify-center rounded-xl border border-[#d6e1f4] bg-white px-3 py-2.5 text-xs font-semibold text-[#1f4dab] transition hover:bg-[#f7faff]"
-            >
-              解説記事
-            </Link>
-          ) : null}
           {/* 補助CTA: 専門LP（存在する場合のみ） */}
           {grant.hasLp ? (
             <Link
