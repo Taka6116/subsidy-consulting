@@ -291,7 +291,7 @@ export default async function SubsidyArticlePage({ params }: PageProps) {
               <time className="text-sm text-neutral-500">
                 {formatPublishedJP(article.publishedAt)}
               </time>
-              {article.tags.slice(0, 3).map((tag) => (
+              {(article.tags ?? []).slice(0, 3).map((tag) => (
                 <span
                   key={tag}
                   className="rounded border border-[#0e357f]/30 px-2.5 py-0.5 text-xs font-medium text-[#0e357f]"
