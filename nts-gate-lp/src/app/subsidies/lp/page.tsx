@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Header from "@/components/shared/Header";
 import LpFooter from "@/components/gate-lp/LpFooter";
-import LpPurposeHero from "@/components/subsidies-lp/LpPurposeHero";
 import { prisma } from "@/lib/db/prisma";
 import SubsidiesLpClient from "./SubsidiesLpClient";
 import {
@@ -257,12 +256,11 @@ export default async function SubsidiesLpIndexPage() {
     <>
       <Header />
       <main className="min-h-[100svh] bg-[#F4F7FB] pt-16 font-body sm:pt-20">
-        <LpPurposeHero totalLpCount={totalLpCount} />
-
-        {/* ============ 検索・フィルター + 相談ミニバナー + カード一覧 ============ */}
-        <section id="lp-list" className="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8 lg:py-12">
-          <SubsidiesLpClient rows={rows} featuredLps={featuredWithImages} />
-        </section>
+        <SubsidiesLpClient
+          rows={rows}
+          featuredLps={featuredWithImages}
+          totalLpCount={totalLpCount}
+        />
 
         {/* ============ ページ下部 相談CTA ============ */}
         <section id="consult-cta" className="bg-white py-12 sm:py-16">

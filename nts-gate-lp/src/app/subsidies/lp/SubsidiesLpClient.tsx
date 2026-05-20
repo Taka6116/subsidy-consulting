@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState, useEffect } from "react";
+import { useMemo, useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Search, X, ArrowRight, Check, ChevronLeft, ChevronRight } from "lucide-react";
@@ -16,10 +16,14 @@ import {
   PURPOSE_LABELS,
   INDUSTRY_LABELS,
   AMOUNT_LABELS,
+  type HeroFilterAction,
 } from "@/lib/lp-pictures/pickLpCategoryImage";
+import LpPurposeHero from "@/components/subsidies-lp/LpPurposeHero";
+import LpListingSidebar from "./LpListingSidebar";
 
 const DEADLINE_MAX = new Date("2050-01-01");
 const SOON_DAYS = 30;
+const NEW_DAYS = 7;
 
 function parseDeadlineDate(d: Date | string | null | undefined): Date | null {
   if (!d) return null;
@@ -42,6 +46,15 @@ function daysUntil(deadline: string | null | undefined): number | null {
 function isSoon(deadline: string | null | undefined): boolean {
   const days = daysUntil(deadline);
   return days !== null && days >= 0 && days <= SOON_DAYS;
+}
+
+function isNewPublished(publishedAt: string): boolean {
+  return Date.now() - new Date(publishedAt).getTime() < NEW_DAYS * 86400000;
+}
+
+function formatPrefecture(prefecture: string | null | undefined): string {
+  const raw = prefecture?.trim();
+  return raw && raw.length > 0 ? raw : "全国";
 }
 
 // =============================================================
@@ -297,12 +310,19 @@ const AMOUNT_CHIPS: AmountBucket[] = ["lt300", "gte1000", "gte10000"];
 // メインコンポーネント
 // =============================================================
 
+type PulseFilter =
+  | { kind: "purpose"; key: PurposeKey }
+  | { kind: "industry"; key: IndustryKey }
+  | null;
+
 export default function SubsidiesLpClient({
   rows,
   featuredLps = [],
+  totalLpCount,
 }: {
   rows: LpRow[];
   featuredLps?: readonly FeaturedLp[];
+  totalLpCount: number;
 }) {
   const [query, setQuery] = useState("");
   const [tab, setTab] = useState<StatusTab>("all");
@@ -311,6 +331,9 @@ export default function SubsidiesLpClient({
   const [amountBucket, setAmountBucket] = useState<AmountBucket | null>(null);
   const [sortKey, setSortKey] = useState<SortKey>("recommend");
   const [currentPage, setCurrentPage] = useState(1);
+  const [pulseFilter, setPulseFilter] = useState<PulseFilter>(null);
+  const [pulseHeroLabel, setPulseHeroLabel] = useState<string | null>(null);
+  const [filterBoxHighlight, setFilterBoxHighlight] = useState(false);
 
   // 全カードを統一形式に変換
   const allCards: UnifiedCard[] = useMemo(() => {
@@ -394,6 +417,42 @@ export default function SubsidiesLpClient({
     return { all: allCards.length, open, soon, closed };
   }, [allCards]);
 
+  const newCount = useMemo(
+    () => allCards.filter((c) => c.publishedAt && isNewPublished(c.publishedAt)).length,
+    [allCards],
+  );
+
+  const closingSoonItems = useMemo(
+    () =>
+      [...allCards]
+        .filter((c) => c.soon && !c.expired)
+        .sort((a, b) => {
+          const ad = parseDeadlineDate(a.deadline)?.getTime() ?? Number.MAX_SAFE_INTEGER;
+          const bd = parseDeadlineDate(b.deadline)?.getTime() ?? Number.MAX_SAFE_INTEGER;
+          return ad - bd;
+        })
+        .slice(0, 5)
+        .map((c) => ({
+          key: c.key,
+          href: c.href,
+          name: c.name,
+          prefecture: formatPrefecture(c.prefecture),
+          daysUntil: daysUntil(c.deadline),
+          deadlineLabel: c.deadlineLabel,
+        })),
+    [allCards],
+  );
+
+  const sidebarStats = useMemo(
+    () => ({
+      published: counts.all,
+      open: counts.open,
+      soon: counts.soon,
+      newCount,
+    }),
+    [counts, newCount],
+  );
+
   // フィルター変更時はページを1にリセット
   useEffect(() => {
     setCurrentPage(1);
@@ -438,10 +497,65 @@ export default function SubsidiesLpClient({
     });
   };
 
+  const handleSelectFromHero = useCallback((action: HeroFilterAction) => {
+    if (action.type === "purpose") {
+      setPurposes(new Set([action.key]));
+      setIndustries(new Set());
+      setPulseFilter({ kind: "purpose", key: action.key });
+      setPulseHeroLabel(PURPOSE_LABELS[action.key]);
+    } else {
+      setIndustries(new Set([action.key]));
+      setPurposes(new Set());
+      setPulseFilter({ kind: "industry", key: action.key });
+      setPulseHeroLabel(INDUSTRY_LABELS[action.key]);
+    }
+    setTab("all");
+    setCurrentPage(1);
+    setFilterBoxHighlight(true);
+
+    requestAnimationFrame(() => {
+      document.getElementById("lp-filters")?.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+      });
+    });
+  }, []);
+
+  useEffect(() => {
+    if (!pulseFilter && !pulseHeroLabel && !filterBoxHighlight) return;
+    const t = window.setTimeout(() => {
+      setPulseFilter(null);
+      setPulseHeroLabel(null);
+      setFilterBoxHighlight(false);
+    }, 2200);
+    return () => window.clearTimeout(t);
+  }, [pulseFilter, pulseHeroLabel, filterBoxHighlight]);
+
   return (
-    <div>
+    <>
+      <LpPurposeHero
+        totalLpCount={totalLpCount}
+        purposes={purposes}
+        industries={industries}
+        onSelectFilter={handleSelectFromHero}
+        pulseHeroLabel={pulseHeroLabel}
+      />
+
+      <section
+        id="lp-list"
+        className="mx-auto max-w-[1320px] px-4 py-8 sm:px-6 lg:px-8 lg:py-12"
+      >
+        <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_300px]">
+          <div className="min-w-0">
       {/* ============ 検索・フィルター ============ */}
-      <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
+      <div
+        id="lp-filters"
+        className={`rounded-2xl border bg-white p-4 shadow-sm transition-shadow duration-500 sm:p-5 ${
+          filterBoxHighlight
+            ? "border-[#075BD8] shadow-[0_0_0_4px_rgba(7,91,216,0.18)]"
+            : "border-slate-200"
+        }`}
+      >
         {/* 上段：検索バー + 並び替え */}
         <div className="flex flex-col gap-3 md:flex-row md:items-center">
           <div className="flex flex-1 items-center rounded-xl border border-slate-200 bg-slate-50 px-4 transition focus-within:border-[#0B4F8A] focus-within:bg-white">
@@ -520,6 +634,7 @@ export default function SubsidiesLpClient({
         {/* 目的チップ */}
         <ChipRow
           label="目的で絞り込む"
+          pulseKey={pulseFilter?.kind === "purpose" ? pulseFilter.key : null}
           chips={PURPOSE_CHIPS.map((k) => ({
             key: k,
             label: PURPOSE_LABELS[k],
@@ -531,6 +646,7 @@ export default function SubsidiesLpClient({
         {/* 業種チップ */}
         <ChipRow
           label="業種で絞り込む"
+          pulseKey={pulseFilter?.kind === "industry" ? pulseFilter.key : null}
           chips={INDUSTRY_CHIPS.map((k) => ({
             key: k,
             label: INDUSTRY_LABELS[k],
@@ -566,7 +682,7 @@ export default function SubsidiesLpClient({
       </div>
 
       {/* ============ 相談ミニバナー ============ */}
-      <div className="mt-6 flex flex-col gap-4 rounded-2xl border border-blue-100 bg-white p-5 shadow-sm sm:flex-row sm:items-center sm:justify-between sm:p-6">
+      <div className="mt-6 flex flex-col gap-4 rounded-2xl border border-blue-100 bg-white p-5 shadow-sm sm:flex-row sm:items-center sm:justify-between sm:p-6 xl:hidden">
         <div>
           <p className="text-base font-bold text-slate-900 sm:text-lg">
             どの補助金が自社に合うか分からない方へ
@@ -645,7 +761,12 @@ export default function SubsidiesLpClient({
           )}
         </>
       )}
-    </div>
+          </div>
+
+          <LpListingSidebar stats={sidebarStats} closingSoon={closingSoonItems} />
+        </div>
+      </section>
+    </>
   );
 }
 
@@ -656,9 +777,11 @@ export default function SubsidiesLpClient({
 function ChipRow({
   label,
   chips,
+  pulseKey,
 }: {
   label: string;
   chips: { key: string; label: string; active: boolean; onToggle: () => void }[];
+  pulseKey?: string | null;
 }) {
   return (
     <div className="mt-4">
@@ -674,6 +797,10 @@ function ChipRow({
               chip.active
                 ? "border-[#0B4F8A] bg-[#0B4F8A] text-white"
                 : "border-transparent bg-slate-100 text-slate-700 hover:bg-slate-200"
+            } ${
+              pulseKey === chip.key
+                ? "animate-[filterChipPulse_0.55s_ease-out_2] ring-2 ring-amber-400 ring-offset-2"
+                : ""
             }`}
           >
             {chip.active ? <Check className="h-3 w-3" /> : null}
