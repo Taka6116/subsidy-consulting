@@ -392,7 +392,7 @@ function ProfilePanel({ c, onClose }: { c: Consultant; onClose: () => void }) {
           {specialtyChips.map((chip) => (
             <span
               key={chip}
-              className="inline-block max-w-full break-words rounded-full border border-[#cfd7e6] bg-white px-3 py-1.5 text-xs text-[#475467] sm:px-4 sm:py-2 sm:text-sm"
+              className="inline-block max-w-full break-words rounded-md border border-[#cfd7e6] bg-white px-3 py-1.5 text-xs text-[#475467] sm:px-4 sm:py-2 sm:text-sm"
             >
               {chip}
             </span>
