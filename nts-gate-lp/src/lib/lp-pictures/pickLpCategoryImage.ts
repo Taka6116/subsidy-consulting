@@ -313,6 +313,21 @@ export const INDUSTRY_LABELS: Record<IndustryKey, string> = {
   retail_service: "小売・サービス",
 };
 
+/** FV右カラムの目的カード → 一覧フィルターへの連動 */
+export type HeroFilterAction =
+  | { type: "purpose"; key: PurposeKey }
+  | { type: "industry"; key: IndustryKey };
+
+export const HERO_CARD_FILTERS: Record<string, HeroFilterAction> = {
+  設備投資: { type: "purpose", key: "equipment" },
+  "IT導入・DX": { type: "purpose", key: "it_dx" },
+  人材確保: { type: "purpose", key: "hr" },
+  "物流・運送": { type: "purpose", key: "logistics" },
+  "建設・施工": { type: "industry", key: "construction" },
+  省エネ: { type: "purpose", key: "labor_saving" },
+  事業計画: { type: "purpose", key: "new_business" },
+};
+
 /** 制度の対象業種を推定 */
 export function detectIndustries(opts: {
   name: string | null;
