@@ -61,8 +61,8 @@ export default function PartnerConsultValueSection() {
             <br />
             NTSがクライアントの経営課題を、
             <br />
-            御社の代わりに
-            <span style={{ color: "var(--color-primary, #1a56db)" }}>深掘りします。</span>
+            御社と一緒に
+            <span style={{ color: "var(--color-primary, #1a56db)" }}>特定、深掘りをします。</span>
           </h2>
 
           <p

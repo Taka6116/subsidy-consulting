@@ -34,16 +34,16 @@ export default function PartnerPage() {
       <main className="relative z-[2] pt-20">
         {/*
           パートナーLP セクション順（ナラティブ調整版）
-          ①FV ②見送り ③NTS支援事例の実績 ④提携企業像 ⑤営業メリット ⑥補助金事例カード
+          ①FV ②見送り ③例えばこんな補助金 ④NTS支援事例の実績 ⑤提携企業像 ⑥営業メリット
           ⑦制度選定の差別化（RootIssue）⑧課題深掘り価値
           ⑨AI限界 ⑩紹介後フロー ⑪チーム・伴走 ⑫FAQ ⑬CTA
         */}
         <HeroSection />
         <PartnerAgitationSection />
+        <PartnerSubsidySection />
         <SubsidyCaseStudySection />
         <PartnerUseCasesSection />
         <PartnerMeritSection />
-        <PartnerSubsidySection />
         <RootIssueCaseSection heading="最適な補助金制度までの過程" />
         <PartnerConsultValueSection />
         <NtsAiGapSection />

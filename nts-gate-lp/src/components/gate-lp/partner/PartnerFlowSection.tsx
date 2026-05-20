@@ -28,9 +28,9 @@ export default function PartnerFlowSection() {
       <div className="mx-auto max-w-7xl px-6 md:px-8">
         <motion.div className="mb-16 text-center" {...fadeUp(0)}>
           <h2 className="font-heading text-3xl font-bold text-[var(--text-primary)] md:text-4xl">
-            お客様をご紹介いただいたら、
+            お客様の経営課題に、
             <br />
-            あとは我々が伴走します。
+            補助金という解決策を添えて届けます。
           </h2>
           <p className="mt-6 text-base leading-relaxed text-[var(--text-secondary)] md:text-lg">
             ヒアリングから補助金の活用戦略の設計、提携行政書士との連携を通じた申請のサポート、採択後の伴走まで、NTSが段階を追って進めます。
