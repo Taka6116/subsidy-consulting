@@ -70,7 +70,7 @@ export default function WhatIsNtsSection() {
           <div className="mb-12 text-center md:mb-16">
             <h2
               id="home-what-is-nts-heading"
-              className="font-heading text-[1.75rem] font-bold leading-snug text-[var(--text-primary)] md:text-[2.25rem]"
+              className="font-heading text-3xl font-bold leading-tight text-[var(--text-primary)] md:text-4xl"
             >
               申請が、ゴールではありません。
             </h2>

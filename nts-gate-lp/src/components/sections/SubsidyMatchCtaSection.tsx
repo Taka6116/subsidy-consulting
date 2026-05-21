@@ -26,7 +26,7 @@ export default function SubsidyMatchCtaSection() {
           <div className="col-text space-y-6 text-center lg:text-left">
             <h2
               id="home-subsidy-match-heading"
-              className="font-heading text-[1.75rem] font-bold leading-snug text-[var(--text-primary)] md:text-[2.25rem]"
+              className="font-heading text-3xl font-bold leading-tight text-[var(--text-primary)] md:text-4xl"
             >
               まず、自社に使える制度を
               <br />

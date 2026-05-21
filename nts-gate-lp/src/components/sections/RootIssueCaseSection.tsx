@@ -97,14 +97,7 @@ export default function RootIssueCaseSection({ heading }: { heading?: string } =
         <div className="text-center">
           <h2
             id="root-issue-heading"
-            className="font-heading mt-0"
-            style={{
-              fontSize: "clamp(1.6rem, 3.2vw, 2.4rem)",
-              fontWeight: 700,
-              lineHeight: 1.4,
-              color: "var(--text-primary)",
-              letterSpacing: "0.01em",
-            }}
+            className="font-heading mt-0 text-3xl font-bold leading-tight text-[var(--text-primary)] md:text-4xl"
           >
             {heading ?? "しかし、より最適な補助金制度があるかもしれません"}
           </h2>

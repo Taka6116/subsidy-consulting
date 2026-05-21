@@ -314,8 +314,7 @@ export default function SubsidyCaseStudySection() {
         <div className="text-center">
           <h2
             id="case-study-heading"
-            className="font-heading text-[1.7rem] font-bold leading-snug md:text-[2.2rem]"
-            style={{ color: "#082A5E" }}
+            className="font-heading text-3xl font-bold leading-tight text-[var(--text-primary)] md:text-4xl"
           >
             NTS 支援事例の実績
           </h2>

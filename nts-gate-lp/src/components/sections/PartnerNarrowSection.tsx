@@ -42,7 +42,7 @@ export default function PartnerNarrowSection() {
           <div className="col-text space-y-6 text-center lg:text-left">
             <h2
               id="home-partner-heading"
-              className="font-heading text-[1.75rem] font-bold leading-snug text-[var(--text-primary)] md:text-[2.25rem]"
+              className="font-heading text-3xl font-bold leading-tight text-[var(--text-primary)] md:text-4xl"
             >
               パートナー企業の方へ。
               <br />

@@ -61,7 +61,7 @@ export default function FaqSection() {
         >
           <h2
             id={`${baseId}-faq-title`}
-            className="font-heading text-[1.75rem] font-bold leading-snug text-[var(--text-primary)] md:text-[2.25rem]"
+            className="font-heading text-3xl font-bold leading-tight text-[var(--text-primary)] md:text-4xl"
           >
             よくあるご質問
           </h2>

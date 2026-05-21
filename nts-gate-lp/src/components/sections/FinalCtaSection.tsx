@@ -140,7 +140,7 @@ export default function FinalCtaSection({ variant = "home" }: FinalCtaSectionPro
   const footerNote =
     variant === "partner"
       ? "紹介フィーの詳細・提携条件は個別にご案内します。"
-      : "建設業・運送業の経営者からのご相談、歓迎します。";
+      : "補助金の活用や制度の整理について、お気軽にご相談ください。";
   const subCopy =
     variant === "partner"
       ? "「うちの商材は対象になりますか？」だけでも構いません。提携の可能性についてお気軽にご相談ください。"
@@ -162,7 +162,7 @@ export default function FinalCtaSection({ variant = "home" }: FinalCtaSectionPro
         >
           <h2
             id={headingId}
-            className="font-heading text-[1.75rem] font-bold leading-snug text-white md:text-[2.25rem]"
+            className="font-heading text-3xl font-bold leading-tight text-white md:text-4xl"
           >
             まず、話を聞かせてください。
           </h2>

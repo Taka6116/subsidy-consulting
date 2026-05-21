@@ -74,7 +74,7 @@ export default function NtsAiGapSection() {
         >
           <h2
             id="home-nts-aigap-heading"
-            className="font-heading text-[1.75rem] font-bold leading-snug text-[var(--text-primary)] md:text-[2.25rem]"
+            className="font-heading text-3xl font-bold leading-tight text-[var(--text-primary)] md:text-4xl"
           >
             AIで書類は作れる時代。
             <br className="md:hidden" />

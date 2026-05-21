@@ -126,7 +126,7 @@ export default function NtsWarmIntroMergedSection() {
         <motion.div {...(reduce ? {} : fadeUp(0))} className="mb-12 text-center md:mb-14">
           <h2
             id="warm-merged-heading"
-            className="font-heading text-[1.75rem] font-bold leading-snug text-[var(--text-primary)] md:text-[2.25rem]"
+            className="font-heading text-3xl font-bold leading-tight text-[var(--text-primary)] md:text-4xl"
           >
             伴走するのは、補助金活用を知る専門家です。
           </h2>

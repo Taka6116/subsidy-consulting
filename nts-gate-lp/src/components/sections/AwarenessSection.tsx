@@ -118,9 +118,9 @@ export default function AwarenessSection() {
           <div className="mb-12 text-center md:mb-16">
             <h2
               id="home-awareness-heading"
-              className="font-heading text-[1.75rem] font-bold leading-snug text-[var(--text-primary)] md:text-[2.25rem]"
+              className="font-heading text-3xl font-bold leading-tight text-[var(--text-primary)] md:text-4xl"
             >
-              その経営課題
+              あなたの経営課題
               <br />
               補助金で動かせるかもしれません
             </h2>

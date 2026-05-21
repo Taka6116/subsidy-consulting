@@ -76,7 +76,7 @@ export default function ArticlesCtaBar({ articles, featuredVideos }: Props) {
         <header className="mb-10 text-center md:mb-12">
           <h2
             id="home-information-hub-heading"
-            className="font-heading text-[1.9rem] font-bold leading-snug text-[var(--text-primary)] md:text-[2.6rem]"
+            className="font-heading text-3xl font-bold leading-tight text-[var(--text-primary)] md:text-4xl"
           >
             補助金情報を最速で届けます。
           </h2>
