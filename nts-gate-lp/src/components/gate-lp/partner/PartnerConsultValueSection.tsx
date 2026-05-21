@@ -57,7 +57,7 @@ export default function PartnerConsultValueSection() {
               marginBottom: "16px",
             }}
           >
-            紹介するだけではありません。
+            紹介して頂くだけではありません。
             <br />
             NTSがクライアントの経営課題を、
             <br />
