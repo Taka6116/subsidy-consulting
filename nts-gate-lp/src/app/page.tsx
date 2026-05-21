@@ -138,7 +138,7 @@ export default async function Home() {
         <NtsAiGapSection />
         {/* ⑨ 申請が、ゴールではありません。（フロー説明） */}
         <WhatIsNtsSection />
-        {/* ⑩ 「補助金が使えます」。その先に、1年間の伴走があります。（統合セクション） */}
+        {/* ⑩ 伴走するのは、補助金活用を知る専門家です。（統合セクション） */}
         <NtsWarmIntroMergedSection />
         {/* ⑪ パートナー企業の方へ。補助金を、御社の営業の武器に。 */}
         <PartnerNarrowSection />

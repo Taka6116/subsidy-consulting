@@ -126,15 +126,14 @@ export default function NtsWarmIntroMergedSection() {
         <motion.div {...(reduce ? {} : fadeUp(0))} className="mb-12 text-center md:mb-14">
           <h2
             id="warm-merged-heading"
-            className="text-[1.9rem] font-black leading-snug tracking-tight text-[#0c2a48] md:text-[2.6rem] lg:text-[2.8rem]"
-            style={{ fontFamily: "'Noto Sans JP', sans-serif" }}
+            className="font-heading text-[1.75rem] font-bold leading-snug text-[var(--text-primary)] md:text-[2.25rem]"
           >
-            「補助金が使えます」。
-            <br className="hidden sm:block" />
-            その先に、1年間の伴走があります。
+            伴走するのは、補助金活用を知る専門家です。
           </h2>
-          <p className="mx-auto mt-5 max-w-2xl text-[0.97rem] leading-relaxed text-[#4a6a82] md:text-[1.05rem]">
-            制度を見つけるだけで終わらせず、申請準備から採択後の活用相談まで、担当者が継続して支援します。
+          <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-[var(--text-secondary)] md:text-lg">
+            申請前の整理、課題特定から、採択後の活用・投資判断、経営戦略まで
+            <br className="hidden md:inline" />
+            中小企業診断士保有のコンサルタントが、貴社の状況に合わせて伴走します。
           </p>
         </motion.div>
 
