@@ -27,16 +27,22 @@ export default function PartnerFlowSection() {
     >
       <div className="mx-auto max-w-7xl px-6 md:px-8">
         <motion.div className="mb-16 text-center" {...fadeUp(0)}>
-          <h2 className="font-heading text-3xl font-bold text-[var(--text-primary)] md:text-4xl">
-            お客様の経営課題に、
+          <h2 className="font-heading text-3xl font-bold leading-tight text-[var(--text-primary)] md:text-4xl">
+            お客様の経営課題を深く掘り、
             <br />
-            補助金という解決策を添えて届けます。
+            補助金も活用しながら前進まで伴走します。
           </h2>
-          <p className="mt-6 text-base leading-relaxed text-[var(--text-secondary)] md:text-lg">
-            ヒアリングから補助金の活用戦略の設計、提携行政書士との連携を通じた申請のサポート、採択後の伴走まで、NTSが段階を追って進めます。
-            <br className="hidden md:inline" />
-            制度の細部まで御社で説明いただく必要はありません。まずはお声がけをお願いします。
-          </p>
+          <div className="mx-auto mt-6 max-w-3xl space-y-4 text-base leading-relaxed text-[var(--text-secondary)] md:text-lg">
+            <p>
+              目の前の制度を当てはめるのではなく、まずはお客様の事業課題や投資の背景を丁寧に伺い、補助金活用の可能性を整理します。
+            </p>
+            <p>
+              ヒアリングから活用戦略の設計、提携行政書士との連携を通じた申請準備支援、採択後の伴走まで、NTSが段階に応じて支えます。
+            </p>
+            <p>
+              制度の細部まで御社で説明いただく必要はありません。顧客課題の整理段階から、まずはお声がけください。
+            </p>
+          </div>
         </motion.div>
 
         <motion.div
