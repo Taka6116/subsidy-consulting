@@ -41,12 +41,14 @@ const STEPS = [
     title: "選択肢を広げる",
     sub: "補助金活用も含めて検討",
     icon: "branch" as IconKey,
+    imgSrc: "/images/icon_branches.png",
   },
   {
     no: "03",
     title: "提案を前へ進める",
     sub: "実現性と提案品質を高める",
     icon: "trend" as IconKey,
+    imgSrc: "/images/icon_growth.png",
   },
 ];
 
