@@ -90,22 +90,29 @@ function MiniIcon({ type }: { type: string }) {
           <path d="M12 7v3M10 11 6 17M14 11l4 6" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
         </svg>
       )}
+      {/* 課題の深掘り：Layers（掘り下げるレイヤー） */}
       {type === "dig" && (
         <svg viewBox="0 0 24 24" className={c} fill="none" aria-hidden>
-          <circle cx="11" cy="11" r="6" stroke="currentColor" strokeWidth="1.6" />
-          <path d="m16 16 4 4" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+          <path d="M2 17l10 5 10-5" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
+          <path d="M2 12l10 5 10-5" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
+          <path d="M12 2 2 7l10 5 10-5-10-5Z" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
       )}
+      {/* 解決の選択肢を広げる：GitBranch（分岐・広がり） */}
       {type === "expand" && (
         <svg viewBox="0 0 24 24" className={c} fill="none" aria-hidden>
-          <path d="M8 12h8M12 8v8" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-          <rect x="4" y="4" width="16" height="16" rx="3" stroke="currentColor" strokeWidth="1.6" />
+          <circle cx="6" cy="6" r="2" stroke="currentColor" strokeWidth="1.7" />
+          <circle cx="6" cy="18" r="2" stroke="currentColor" strokeWidth="1.7" />
+          <circle cx="18" cy="9" r="2" stroke="currentColor" strokeWidth="1.7" />
+          <path d="M6 8v8" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
+          <path d="M6 8C6 12 18 11 18 9" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
         </svg>
       )}
+      {/* 提案の質を高める：TrendingUp（上昇・洗練） */}
       {type === "quality" && (
         <svg viewBox="0 0 24 24" className={c} fill="none" aria-hidden>
-          <path d="M6 18V8l6-4 6 4v10" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" />
-          <path d="M9 18v-5h6v5" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" />
+          <path d="M3 17l5-5 4 4 9-9" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
+          <path d="M14 7h6v6" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
       )}
       {type === "leaf" && (
@@ -144,19 +151,25 @@ function SourceCluster({
       {/* 円形起点 */}
       <div className="flex shrink-0 flex-col items-center">
         <div
-          className={`flex h-[72px] w-[72px] items-center justify-center rounded-full border-2 shadow-[0_8px_24px_rgba(26,86,219,0.12)] ${
+          className={`flex h-[84px] w-[84px] items-center justify-center rounded-full border-[3px] shadow-[0_8px_28px_rgba(26,86,219,0.16)] ${
             isPartner
-              ? "border-[#b8d4ff] bg-gradient-to-br from-[#eef4ff] to-white"
-              : "border-[#a8ddd0] bg-gradient-to-br from-[#edfaf5] to-white"
+              ? "border-[#93c5fd] bg-gradient-to-br from-[#eef4ff] to-white"
+              : "border-[#67e8f9] bg-gradient-to-br from-[#e0f9ff] to-white"
           }`}
         >
           {isPartner ? (
-            <svg viewBox="0 0 32 32" className="h-9 w-9 text-[#1a56db]" fill="none" aria-hidden>
-              <path d="M6 26V12l10-7 10 7v14H6Z" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" />
-              <path d="M13 26v-8h6v8" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" />
+            /* Building2: 企業・パートナー */
+            <svg viewBox="0 0 24 24" className="h-10 w-10 text-[#1a56db]" fill="none" aria-hidden>
+              <path d="M6 22V4h12v18" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" />
+              <path d="M2 22h20" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" />
+              <path d="M9 9h1M14 9h1M9 13h1M14 13h1M9 17h1M14 17h1" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
             </svg>
           ) : (
-            <span className="text-[15px] font-black tracking-tight text-[#0f6e57]">NTS</span>
+            /* ShieldCheck: 専門性・信頼性 */
+            <svg viewBox="0 0 24 24" className="h-10 w-10 text-[#0891b2]" fill="none" aria-hidden>
+              <path d="M12 3 4 7v5c0 4.4 3.4 8.5 8 9.5 4.6-1 8-5.1 8-9.5V7L12 3Z" stroke="currentColor" strokeWidth="1.9" strokeLinejoin="round" />
+              <path d="m9 12 2 2 4-4" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
           )}
         </div>
         <p className="mt-2 text-[15px] font-bold text-[#071b46]">{isPartner ? "御社" : "NTS"}</p>
@@ -228,9 +241,15 @@ function DesktopFlowSVG() {
           <stop offset="0%" stopColor="#22c4ef" />
           <stop offset="100%" stopColor="#3d8fe8" />
         </linearGradient>
+        {/* 共同パス用：水色グラデーション */}
         <linearGradient id="ph-joint" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" stopColor="#1a56db" />
-          <stop offset="100%" stopColor="#0b3fa0" />
+          <stop offset="0%" stopColor="#93C5FD" />
+          <stop offset="100%" stopColor="#38BDF8" />
+        </linearGradient>
+        {/* 矢尻用：同グラデーション（水平方向） */}
+        <linearGradient id="ph-arr-grad" x1="0%" y1="50%" x2="100%" y2="50%" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stopColor="#93C5FD" />
+          <stop offset="100%" stopColor="#38BDF8" />
         </linearGradient>
         <filter id="ph-glow">
           <feGaussianBlur stdDeviation="4" result="b" />
@@ -239,8 +258,9 @@ function DesktopFlowSVG() {
             <feMergeNode in="SourceGraphic" />
           </feMerge>
         </filter>
-        <marker id="ph-arr" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
-          <path d="M0 0 L10 5 L0 10 Z" fill="#0b3fa0" />
+        {/* スマートな矢尻（角張りを抑えた形状） */}
+        <marker id="ph-arr" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+          <path d="M1 2 L10 6 L1 10 Q4 6 1 2Z" fill="url(#ph-arr-grad)" />
         </marker>
       </defs>
 
@@ -289,12 +309,13 @@ function DesktopFlowSVG() {
       <circle cx="548" cy="250" r="9" fill="#fff" stroke="#1a56db" strokeWidth="3.5" />
       <circle cx="548" cy="250" r="4" fill="#1a56db" />
 
-      {/* 共同パス → 山（山頂方向へ上向き） */}
+      {/* 共同パス → 山：水色グラデーション・太め・やや透明 */}
       <path
         d="M557 248 C680 215 780 175 1085 128"
         stroke="url(#ph-joint)"
-        strokeWidth="7"
+        strokeWidth="11"
         strokeLinecap="round"
+        opacity="0.80"
         markerEnd="url(#ph-arr)"
       />
 
