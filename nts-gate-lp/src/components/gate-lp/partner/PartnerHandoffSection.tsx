@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { motion, useReducedMotion } from "framer-motion";
 
 // ─────────────────────────────────────────────────────────────
@@ -113,26 +114,37 @@ function Icon({ type, className = "h-4 w-4" }: { type: IconKey; className?: stri
         </svg>
       );
     case "dig":
+      // 書類 + 虫眼鏡（参照画像の「課題を深く捉える」）
       return (
         <svg viewBox="0 0 24 24" className={className} fill="none" aria-hidden>
-          <path d="M9 4h6l2 4H7l2-4Z" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" />
-          <path d="M7 8h10l-1 12H8L7 8Z" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" />
-          <circle cx="12" cy="14" r="2" stroke="currentColor" strokeWidth="1.6" />
+          <path d="M6 3h9l3 3v9.5" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" />
+          <path d="M6 3v18h12v-3" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" />
+          <path d="M9 9h6M9 12h4" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
+          <circle cx="15.5" cy="16.5" r="3" stroke="currentColor" strokeWidth="1.8" />
+          <path d="m18 19 3 3" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" />
         </svg>
       );
     case "branch":
+      // Y字3本上向き矢印（参照画像の「選択肢を広げる」）
       return (
         <svg viewBox="0 0 24 24" className={className} fill="none" aria-hidden>
-          <path d="M12 20V8" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" />
-          <path d="M12 8 6 4M12 8l6-4" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" />
-          <path d="m4 6 2-2 2 2M16 6l2-2 2 2" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" />
+          <path d="M12 21V11" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" />
+          <path d="M5 14 12 9l7 5" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" />
+          <path d="M5 14V8M2 11l3-3 3 3" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" />
+          <path d="M12 9V3M9 6l3-3 3 3" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" />
+          <path d="M19 14V8M16 11l3-3 3 3" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
       );
     case "trend":
+      // 棒グラフ上昇 + 矢印（参照画像の「提案を前へ進める」）
       return (
         <svg viewBox="0 0 24 24" className={className} fill="none" aria-hidden>
-          <path d="M3 17l5-5 4 4 9-9" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" />
-          <path d="M14 7h6v6" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" />
+          <path d="M4 20h16" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+          <rect x="5.5" y="14" width="3" height="6" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" />
+          <rect x="10.5" y="10" width="3" height="10" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" />
+          <rect x="15.5" y="6" width="3" height="14" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" />
+          <path d="m3 10 5-5 4 4 8-8" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
+          <path d="M14 1h6v6" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
       );
     case "building":
@@ -151,18 +163,13 @@ function Icon({ type, className = "h-4 w-4" }: { type: IconKey; className?: stri
         </svg>
       );
     case "mountain":
-      return (
-        <svg viewBox="0 0 64 48" className={className} fill="none" aria-hidden>
-          <path d="M4 40 L22 14 L34 30 L44 18 L60 40 Z" fill="#dbeafe" stroke="#7eb3f0" strokeWidth="1.5" strokeLinejoin="round" />
-          <path d="M22 14 L29 24 L26 26 Z" fill="#fff" stroke="#7eb3f0" strokeWidth="1" strokeLinejoin="round" />
-          <path d="M44 18 L48 24 L46 25 Z" fill="#fff" stroke="#7eb3f0" strokeWidth="1" strokeLinejoin="round" />
-          <path d="M44 18 V8 M44 8 H52 L48 11 L52 14 H44" stroke="#facc15" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" fill="#facc15" />
-        </svg>
-      );
+      return null;
     case "handshake":
+      // 握手アイコン（NTS起点用）
       return (
         <svg viewBox="0 0 24 24" className={className} fill="none" aria-hidden>
-          <path d="M3 12 8 7l3 2 3-2 5 5-4 4-2-2-2 2-3-3-3 2-2-3Z" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" />
+          <path d="M3 13.5l5-5 2.5 2L13 8l5.5 5.5-3 3-2-2-2 2-3-3-3.5 2.5L3 13.5Z" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" strokeLinecap="round" />
+          <path d="m9 7 1.5-1.5 2 1M14 5.5l-1 2.5" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
       );
   }
@@ -196,7 +203,7 @@ function SourceBlock({
         >
           <Icon
             type={isPartner ? "building" : "handshake"}
-            className={`h-9 w-9 ${isPartner ? "text-[#1a56db]" : "text-[#0891b2]"}`}
+            className={`h-10 w-10 ${isPartner ? "text-[#1a56db]" : "text-[#0891b2]"}`}
           />
         </div>
         <p className="mt-1.5 text-[14px] font-bold text-[#071b46]">{label}</p>
@@ -298,10 +305,18 @@ function FinishConnector() {
 function Goal() {
   return (
     <div className="flex flex-col items-center justify-center gap-2">
-      <div className="relative flex h-[96px] w-[96px] items-center justify-center">
+      <div className="relative flex h-[120px] w-[140px] items-center justify-center">
         {/* 後光 */}
         <div className="absolute inset-0 rounded-full bg-[#dbeafe]/60 blur-2xl" aria-hidden />
-        <Icon type="mountain" className="relative h-16 w-16" />
+        <Image
+          src="/images/nts_partner_progress_destination_bg_v1.png"
+          alt=""
+          fill
+          quality={100}
+          className="relative object-contain object-center"
+          sizes="140px"
+          aria-hidden
+        />
       </div>
       <p className="text-center text-[15px] font-bold tracking-wide text-[#071b46] lg:text-[16px]">
         お客様の前進へ
