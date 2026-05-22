@@ -1,323 +1,374 @@
 "use client";
 
+import Image from "next/image";
 import { motion, useReducedMotion } from "framer-motion";
 
 const EASE_OUT = [0.22, 1, 0.36, 1] as const;
-
 const fadeUp = (delay: number) => ({
   initial: { opacity: 0, y: 18 },
   whileInView: { opacity: 1, y: 0 },
-  viewport: { once: true, amount: 0.16 },
-  transition: { duration: 0.52, ease: EASE_OUT, delay },
+  viewport: { once: true, amount: 0.12 },
+  transition: { duration: 0.55, ease: EASE_OUT, delay },
 });
 
-const NTS_ITEMS = [
-  "顧客へのヒアリング",
-  "課題の特定",
-  "最適な補助金制度の確認",
-  "補助金活用方針等の整理",
-  "申請準備支援",
-  "採択後の利活用戦略などの相談",
-];
+// ────────────────────────────────────────────────────────────
+// アイコン
+// ────────────────────────────────────────────────────────────
+type IconType = "relation" | "field" | "proposal" | "knowledge" | "strategy" | "network";
 
-function LineIcon({ type }: { type: "person" | "memo" | "file" | "chat" | "search" | "plan" | "folder" | "chart" }) {
-  const common = "h-5 w-5";
+function Icon({ type }: { type: IconType }) {
+  const base = "h-5 w-5";
   return (
-    <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#eef5ff] text-[#0b56c5] ring-1 ring-[#d7e6fb]">
-      {type === "person" && (
-        <svg viewBox="0 0 24 24" className={common} fill="none" aria-hidden>
-          <circle cx="12" cy="8" r="3" stroke="currentColor" strokeWidth="1.7" />
-          <path d="M6 19c.8-3.2 3-5 6-5s5.2 1.8 6 5" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
+    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#eef4ff] text-[#1a56db]">
+      {type === "relation" && (
+        <svg viewBox="0 0 24 24" className={base} fill="none" aria-hidden>
+          <circle cx="9" cy="8" r="3" stroke="currentColor" strokeWidth="1.7" />
+          <circle cx="17" cy="10" r="2.5" stroke="currentColor" strokeWidth="1.7" />
+          <path d="M3 19c.7-2.8 2.8-4.5 6-4.5s5.3 1.7 6 4.5" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
+          <path d="M17 14c1.8.4 3.2 1.6 3.8 3.5" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
         </svg>
       )}
-      {type === "memo" && (
-        <svg viewBox="0 0 24 24" className={common} fill="none" aria-hidden>
-          <rect x="7" y="5" width="10" height="14" rx="1.8" stroke="currentColor" strokeWidth="1.7" />
-          <path d="M10 9h4M10 12h4M10 15h2.5" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
+      {type === "field" && (
+        <svg viewBox="0 0 24 24" className={base} fill="none" aria-hidden>
+          <path d="M12 3L4 9v12h5v-6h6v6h5V9L12 3Z" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" />
         </svg>
       )}
-      {type === "file" && (
-        <svg viewBox="0 0 24 24" className={common} fill="none" aria-hidden>
-          <path d="M7 4h6l4 4v12H7V4Z" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" />
-          <path d="M13 4v4h4M10 13h4M10 16h3" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
+      {type === "proposal" && (
+        <svg viewBox="0 0 24 24" className={base} fill="none" aria-hidden>
+          <path d="M8 5h8l3 4-3 4H8V5Z" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" />
+          <path d="M8 13v6M12 13v6" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
         </svg>
       )}
-      {type === "chat" && (
-        <svg viewBox="0 0 24 24" className={common} fill="none" aria-hidden>
-          <path d="M5 6.5h14v8.5H10l-4 3v-3H5V6.5Z" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" />
+      {type === "knowledge" && (
+        <svg viewBox="0 0 24 24" className={base} fill="none" aria-hidden>
+          <path d="M12 4C8.7 4 6 6.7 6 10c0 2.2 1.2 4.1 3 5.2V17h6v-1.8c1.8-1.1 3-3 3-5.2 0-3.3-2.7-6-6-6Z" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" />
+          <path d="M9 20h6" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
         </svg>
       )}
-      {type === "search" && (
-        <svg viewBox="0 0 24 24" className={common} fill="none" aria-hidden>
-          <circle cx="10.5" cy="10.5" r="5" stroke="currentColor" strokeWidth="1.7" />
-          <path d="m15 15 4 4" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
+      {type === "strategy" && (
+        <svg viewBox="0 0 24 24" className={base} fill="none" aria-hidden>
+          <path d="M3 19h18M7 19V9l5-5 5 5v10" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
+          <rect x="10" y="13" width="4" height="6" rx="0.5" stroke="currentColor" strokeWidth="1.7" />
         </svg>
       )}
-      {type === "plan" && (
-        <svg viewBox="0 0 24 24" className={common} fill="none" aria-hidden>
-          <path d="M6 5h12v14H6V5Z" stroke="currentColor" strokeWidth="1.7" />
-          <path d="m9 11 2 2 4-5M9 16h6" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
-      )}
-      {type === "folder" && (
-        <svg viewBox="0 0 24 24" className={common} fill="none" aria-hidden>
-          <path d="M4.5 8h6l1.4 2H19.5v8.5h-15V8Z" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" />
-        </svg>
-      )}
-      {type === "chart" && (
-        <svg viewBox="0 0 24 24" className={common} fill="none" aria-hidden>
-          <path d="M6 18V9M12 18V5M18 18v-6" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" />
-          <path d="M4 19h16" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
+      {type === "network" && (
+        <svg viewBox="0 0 24 24" className={base} fill="none" aria-hidden>
+          <circle cx="12" cy="5" r="2" stroke="currentColor" strokeWidth="1.7" />
+          <circle cx="5" cy="19" r="2" stroke="currentColor" strokeWidth="1.7" />
+          <circle cx="19" cy="19" r="2" stroke="currentColor" strokeWidth="1.7" />
+          <path d="M12 7v4M10.3 12.5 6.4 17M13.7 12.5l3.9 4.5M8 19h8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
         </svg>
       )}
     </span>
   );
 }
 
-function HandNote({ className, children }: { className: string; children: React.ReactNode }) {
+// ────────────────────────────────────────────────────────────
+// 入口カード
+// ────────────────────────────────────────────────────────────
+function InputCard({
+  label,
+  accent,
+  items,
+}: {
+  label: string;
+  accent: string;
+  items: { type: IconType; text: string }[];
+}) {
   return (
-    <p
-      className={`absolute z-20 text-[12px] font-bold leading-[1.7] tracking-[0.1em] text-[#466996] ${className}`}
-      style={{ fontFamily: '"Yu Mincho", "Hiragino Mincho ProN", "Klee One", cursive' }}
-    >
-      {children}
-    </p>
+    <div className="rounded-2xl border border-[#cdddf0] bg-white p-4 shadow-[0_6px_20px_rgba(12,42,72,0.07)]">
+      <p className={`mb-3 text-sm font-black tracking-widest ${accent}`}>{label}</p>
+      <ul className="space-y-2">
+        {items.map((item) => (
+          <li key={item.text} className="flex items-center gap-2.5 text-[13px] font-semibold text-[#1e3a5f]">
+            <Icon type={item.type} />
+            {item.text}
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 }
 
-function TransferCard({
-  label,
-  type,
-  className = "",
+// ────────────────────────────────────────────────────────────
+// 中央カード
+// ────────────────────────────────────────────────────────────
+function CenterCard({
+  title,
+  items,
+  accent = false,
 }: {
-  label: string;
-  type: "person" | "memo" | "file";
-  className?: string;
+  title: string;
+  items: string[];
+  accent?: boolean;
 }) {
   return (
     <div
-      className={`absolute w-[86px] rounded-xl border border-[#d6e4f4] bg-white p-2.5 shadow-[0_10px_22px_rgba(12,42,72,0.12)] ${className}`}
+      className={`rounded-xl border p-3 text-sm ${
+        accent
+          ? "border-[#b3d9cc] bg-[#f0fbf7]"
+          : "border-[#cdddf0] bg-white"
+      } shadow-[0_4px_14px_rgba(12,42,72,0.07)]`}
     >
-      <p className="text-[10px] font-black leading-none text-[#17385f]">{label}</p>
-      <div className="mt-2 flex justify-center">
-        <LineIcon type={type} />
+      <p className={`mb-2 text-[11px] font-black tracking-widest ${accent ? "text-[#1a7a5e]" : "text-[#1a56db]"}`}>
+        {title}
+      </p>
+      <ul className="space-y-1">
+        {items.map((item) => (
+          <li key={item} className="flex items-start gap-1.5 text-[12px] font-semibold leading-snug text-[#1e3a5f]">
+            <span className={`mt-[4px] h-1.5 w-1.5 shrink-0 rounded-full ${accent ? "bg-[#1a7a5e]" : "bg-[#1a56db]"}`} />
+            {item}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+// ────────────────────────────────────────────────────────────
+// 山ゴールコンポーネント
+// ────────────────────────────────────────────────────────────
+function MountainGoal() {
+  return (
+    <div className="relative flex flex-col items-center">
+      {/* 背景画像（装飾のみ） */}
+      <div className="relative h-[180px] w-[220px] sm:h-[200px] sm:w-[240px]">
+        <Image
+          src="/images/nts_partner_progress_destination_bg_v1.png"
+          alt=""
+          fill
+          className="object-contain opacity-80"
+          sizes="240px"
+          aria-hidden
+        />
       </div>
-      <div className="mt-2 space-y-1">
-        <span className="block h-1.5 rounded bg-[#dfe7f1]" />
-        <span className="block h-1.5 w-2/3 rounded bg-[#dfe7f1]" />
+      {/* ラベル（画像の上に重ねる） */}
+      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 text-center">
+        <p className="whitespace-nowrap text-[15px] font-black tracking-[0.08em] text-[#071b46] drop-shadow-sm md:text-[17px]">
+          お客様の前進へ
+        </p>
       </div>
     </div>
   );
 }
 
+// ────────────────────────────────────────────────────────────
+// セクション本体
+// ────────────────────────────────────────────────────────────
 export default function PartnerHandoffSection() {
   const reduce = useReducedMotion();
   const fu = (delay: number) => (reduce ? {} : fadeUp(delay));
 
-  const yourItems = [
-    {
-      no: "01",
-      title: "顧客をご紹介",
-      icon: "person" as const,
-      body: (
-        <>
-          <p className="font-black text-[#071b46]">株式会社〇〇〇〇</p>
-          <p className="mt-1 text-xs font-semibold leading-5 text-[#536985]">
-            製造業　従業員数：45名
-            <br />
-            所在地：東京都中央区
-          </p>
-        </>
-      ),
-    },
-    {
-      no: "02",
-      title: "初回接点の共有",
-      icon: "memo" as const,
-      body: (
-        <p className="text-xs font-semibold leading-6 text-[#344a67]">
-          商談の中で、補助金に関心があるとのご相談がありました。
-          <br />
-          ご担当者：山田様（経営企画部）
-        </p>
-      ),
-    },
-    {
-      no: "03",
-      title: "商材情報の共有",
-      icon: "file" as const,
-      body: (
-        <>
-          <p className="font-black text-[#071b46]">自社サービス概要資料.pdf</p>
-          <p className="mt-1 text-xs font-semibold text-[#536985]">
-            更新日：2026/05/20　2.3MB
-          </p>
-        </>
-      ),
-    },
+  const yourItems: { type: IconType; text: string }[] = [
+    { type: "relation", text: "お客様との信頼・関係性" },
+    { type: "field", text: "現場の相談・経営課題の把握" },
+    { type: "proposal", text: "提案したい商材・サービス" },
+  ];
+
+  const ntsItems: { type: IconType; text: string }[] = [
+    { type: "knowledge", text: "補助金制度の知見・最新情報" },
+    { type: "strategy", text: "活用戦略の設計力・投資判断の整理" },
+    { type: "network", text: "専門家ネットワーク・実行支援体制" },
   ];
 
   return (
     <section
-      className="relative overflow-hidden bg-[#F4F7FB] py-10 md:py-12"
-      aria-labelledby="handoff-heading"
+      className="relative overflow-hidden bg-[#f0f5fb] py-20 md:py-28"
+      aria-labelledby="joint-progress-heading"
     >
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-36 bg-[radial-gradient(circle_at_50%_0%,rgba(255,255,255,0.98),rgba(244,247,251,0))]" />
+      {/* 上部グラデーション */}
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-white/80 to-transparent" />
 
-      <div className="relative mx-auto max-w-[1320px] px-3 sm:px-4">
-        <motion.div className="mx-auto mb-7 max-w-3xl text-center" {...fu(0)}>
+      <div className="relative mx-auto max-w-[1200px] px-5 sm:px-8">
+
+        {/* ── 見出し・リード ── */}
+        <motion.div className="mb-12 text-center md:mb-16" {...fu(0)}>
           <h2
-            id="handoff-heading"
-            className="text-[28px] font-black leading-tight tracking-[0.04em] text-[#071b46] md:text-[38px]"
+            id="joint-progress-heading"
+            className="font-heading text-3xl font-bold leading-tight text-[#071b46] md:text-4xl"
           >
-            紹介後の対応は、NTSが引き受けます
+            御社とともに、
+            <br />
+            お客様の前進を支える連携へ。
           </h2>
-          <p className="mx-auto mt-3 max-w-2xl text-sm font-medium leading-7 tracking-[0.04em] text-[#31435f] md:text-base">
-            提携先様にお願いするのは、補助金に関心がありそうな顧客のご紹介まで。
-            <br className="hidden md:block" />
-            制度説明や申請準備の支援はNTSが対応します。
+          <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-[#31445f] md:text-lg">
+            お客様の課題を一緒に深く捉え、提案や事業の前進につながる選択肢をともに考える。
+            <br className="hidden md:inline" />
+            NTSは補助金活用の視点も添えながら、御社の顧客支援と提案活動をバックアップします。
           </p>
         </motion.div>
 
-        <div className="grid gap-4 xl:grid-cols-[430px_300px_540px] xl:items-stretch">
-          {/* ── 左: 御社がやること ── */}
-          <motion.div {...fu(0.06)} className="h-full">
-            <div className="relative h-full rounded-[18px] border border-[#cdddf0] bg-white/90 p-4 shadow-[0_14px_34px_rgba(12,42,72,0.08)]">
-              <div className="mb-3 flex items-center gap-4">
-                <p className="text-2xl font-black tracking-[0.04em] text-[#071b46]">
-                  御社がやること
-                </p>
-                <p className="ml-auto text-xs font-black tracking-[0.06em] text-[#0b56c5]">
-                  最小限の共有だけでOK
-                </p>
-              </div>
+        {/* ── PC 図解: 横並び ── */}
+        <div className="hidden lg:block">
+          <div className="grid grid-cols-[220px_1fr_220px] items-center gap-0">
 
-              <div className="space-y-3">
-                {yourItems.map((item) => (
-                  <div
-                    key={item.no}
-                    className="rounded-2xl border border-[#dce7f5] bg-white p-3.5 shadow-[0_8px_20px_rgba(12,42,72,0.055)]"
-                  >
-                    <div className="mb-2.5 flex items-center gap-3">
-                      <span className="rounded-md bg-[#072f72] px-2.5 py-1.5 text-xs font-black text-white">
-                        {item.no}
-                      </span>
-                      <p className="text-lg font-black tracking-[0.04em] text-[#071b46]">
-                        {item.title}
-                      </p>
-                    </div>
-                    <div className="flex items-center gap-3 rounded-xl border border-[#dde8f4] bg-white px-4 py-3 shadow-sm">
-                      <LineIcon type={item.icon} />
-                      <div className="min-w-0">{item.body}</div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </motion.div>
+            {/* 左: 入口ノード */}
+            <motion.div className="space-y-4" {...fu(0.06)}>
+              <InputCard label="御社" accent="text-[#1a56db]" items={yourItems} />
+              <InputCard label="NTS" accent="text-[#0d7c5e]" items={ntsItems} />
+            </motion.div>
 
-          {/* ── 中央: ハンドオフ領域（PC のみ表示） ── */}
-          <motion.div
-            className="relative hidden h-full min-h-[500px] xl:block"
-            {...fu(0.12)}
-            aria-hidden
-          >
-            <svg
-              className="absolute inset-0 h-full w-full overflow-visible"
-              viewBox="0 0 300 500"
-              preserveAspectRatio="none"
-              fill="none"
-            >
-              <path d="M0 116 C42 126 70 140 96 156" stroke="#c8dcf3" strokeWidth="1.7" />
-              <path d="M0 250 H96" stroke="#b6d1ef" strokeWidth="1.8" />
-              <path d="M0 388 C44 372 72 352 96 330" stroke="#c8dcf3" strokeWidth="1.7" />
+            {/* 中央: 合流ゾーン + 共同パス + ゴール */}
+            <motion.div className="relative flex items-center" {...fu(0.12)} aria-hidden>
+              {/* 左→中央への収束SVG */}
+              <svg
+                className="absolute left-0 top-0 h-full w-[100px] shrink-0"
+                viewBox="0 0 100 260"
+                preserveAspectRatio="none"
+                fill="none"
+              >
+                <path d="M0 65 C30 65 70 120 100 130" stroke="#c2d5ee" strokeWidth="2" />
+                <path d="M0 195 C30 195 70 140 100 130" stroke="#c2d5ee" strokeWidth="2" />
+              </svg>
 
-              {/* 中央→右への太い青矢印（NTSへ紹介の下に配置） */}
-              <path d="M196 290 H290" stroke="#0b56c5" strokeWidth="3" strokeLinecap="round" />
-              <path d="M278 278 294 290 278 302" stroke="#0b56c5" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
-
-              <path d="M90 145 C66 150 44 162 26 181" stroke="#506f99" strokeWidth="1.15" strokeLinecap="round" strokeDasharray="3 5" />
-              <path d="M90 254 C66 258 44 270 26 288" stroke="#506f99" strokeWidth="1.15" strokeLinecap="round" strokeDasharray="3 5" />
-              <path d="M90 365 C66 372 44 386 26 406" stroke="#506f99" strokeWidth="1.15" strokeLinecap="round" strokeDasharray="3 5" />
-            </svg>
-
-            <HandNote className="left-[10px] top-[76px] -rotate-6 whitespace-nowrap">
-              まずは
-              <br />
-              ご紹介だけで
-              <br />
-              大丈夫です
-            </HandNote>
-
-            <HandNote className="left-[6px] top-[204px] -rotate-6 whitespace-nowrap">
-              商談内容や接点、
-              <br />
-              背景やその他を
-              <br />
-              共有いただきます
-            </HandNote>
-
-            <HandNote className="left-[10px] top-[346px] -rotate-6 whitespace-nowrap">
-              必要に応じて
-              <br />
-              資料を共有
-              <br />
-              いただきます
-            </HandNote>
-
-            <TransferCard label="顧客情報" type="person" className="left-[104px] top-[58px]" />
-            <TransferCard label="接点メモ" type="memo" className="left-[104px] top-[208px]" />
-            <TransferCard label="商材資料" type="file" className="left-[104px] top-[358px]" />
-
-            {/* NTSへ紹介ラベル（矢印の上に配置） */}
-            <div className="absolute left-[196px] top-[228px] whitespace-nowrap text-center">
-              <p className="text-[22px] font-black leading-none tracking-[0.08em] text-[#0b56c5]">
-                NTSへ
-              </p>
-              <p className="mt-1 text-[14px] font-black tracking-[0.12em] text-[#0b56c5]">
-                紹介
-              </p>
-            </div>
-          </motion.div>
-
-          {/* ── 右: NTSがやること ── */}
-          <motion.div {...fu(0.18)} className="h-full">
-            <div className="flex h-full flex-col rounded-[18px] border border-[#cdddf0] bg-white/95 p-4 shadow-[0_14px_34px_rgba(12,42,72,0.08)]">
-              <div className="mb-4 flex items-center gap-6">
-                <div className="relative bg-[#0b56c5] px-6 py-3 text-xl font-black tracking-[0.04em] text-white shadow-[0_8px_18px_rgba(11,86,197,0.18)]">
-                  NTSがやること
-                  <span className="absolute -right-6 top-0 h-0 w-0 border-y-[24px] border-l-[24px] border-y-transparent border-l-[#0b56c5]" />
+              {/* 中央ゾーン */}
+              <div className="mx-[100px] flex-1">
+                {/* 共同ゾーンヘッダー */}
+                <div className="mb-4 rounded-2xl border-2 border-[#1a56db]/30 bg-white px-5 py-3 text-center shadow-[0_4px_16px_rgba(26,86,219,0.10)]">
+                  <p className="text-sm font-black tracking-widest text-[#1a56db]">御社 × NTS</p>
+                  <p className="mt-0.5 text-base font-black leading-snug text-[#071b46]">一緒に深く考える</p>
                 </div>
-                <p className="text-xs font-black tracking-[0.06em] text-[#0b56c5]">
-                  制度説明から伴走まで対応
+
+                {/* 主要カード3枚 */}
+                <div className="grid grid-cols-3 gap-2.5">
+                  <CenterCard
+                    title="課題の深掘り"
+                    items={["本質的な課題の特定", "制約条件の整理", "投資背景の確認"]}
+                  />
+                  <CenterCard
+                    title="解決の選択肢を広げる"
+                    items={["解決アプローチの検討", "優先順位の整理", "実現可能性の評価"]}
+                  />
+                  <CenterCard
+                    title="提案の質を高める"
+                    items={["ストーリーの構築", "効果・メリットの最大化", "意思決定の後押し"]}
+                  />
+                </div>
+
+                {/* 補助カード3枚 */}
+                <div className="mt-2.5 grid grid-cols-3 gap-2.5">
+                  <CenterCard title="補助金活用の知見" items={["制度選定の視点"]} accent />
+                  <CenterCard title="投資背景の整理" items={["優先課題の明確化"]} accent />
+                  <CenterCard title="専門家との連携" items={["行政書士・士業連携"]} accent />
+                </div>
+
+                {/* 中央下補助文 */}
+                <p className="mt-3 text-center text-[12px] font-semibold text-[#4a6580]">
+                  御社とNTSがともに考え、お客様の前進につながる提案へ。
                 </p>
+
+                {/* 中央→右への共同パス矢印 */}
+                <div className="mt-4 flex items-center justify-center">
+                  <div className="h-0.5 flex-1 bg-gradient-to-r from-[#1a56db]/40 to-[#1a56db]" />
+                  <svg className="mx-1 h-5 w-5 shrink-0 text-[#1a56db]" viewBox="0 0 20 20" fill="currentColor" aria-hidden>
+                    <path d="M8 4l6 6-6 6V4Z" />
+                  </svg>
+                </div>
               </div>
 
-              <ol className="relative flex flex-1 flex-col rounded-2xl border border-[#dce7f5] bg-white shadow-sm">
-                {NTS_ITEMS.map((item, index) => (
-                  <li
-                    key={item}
-                    className="relative grid flex-1 grid-cols-[48px_1fr_16px] items-center gap-3 border-b border-[#e5edf6] px-4 py-3 last:border-b-0"
-                  >
-                    <div className="relative flex h-full items-center justify-center">
-                      {index < NTS_ITEMS.length - 1 && (
-                        <span className="absolute left-1/2 top-7 h-[calc(100%+14px)] w-0.5 -translate-x-1/2 bg-[#0b56c5]" />
-                      )}
-                      <span className="relative z-10 flex h-9 w-9 items-center justify-center rounded-full bg-[#0b56c5] text-xs font-black text-white">
-                        {String(index + 1).padStart(2, "0")}
-                      </span>
-                    </div>
+              {/* 右: ゴール（山） */}
+              <div className="shrink-0">
+                <MountainGoal />
+              </div>
+            </motion.div>
 
-                    <p className="text-base font-black tracking-[0.035em] text-[#071b46]">
-                      {item}
-                    </p>
-                    <span className="text-xl font-light text-[#6f8199]">›</span>
-                  </li>
-                ))}
-              </ol>
+            {/* 右: CTA */}
+            <motion.div {...fu(0.2)}>
+              <div className="rounded-2xl border border-[#cdddf0] bg-white p-5 shadow-[0_6px_20px_rgba(12,42,72,0.08)]">
+                <p className="mb-1 text-sm font-black tracking-widest text-[#1a56db]">ご相談</p>
+                <p className="mb-3 text-base font-black text-[#071b46]">案件のご相談はこちら</p>
+                <p className="mb-4 text-[12px] leading-relaxed text-[#4a6580]">
+                  提案中の案件や、今後のご計画についてお気軽にご相談ください。
+                </p>
+                <a
+                  href="#contact"
+                  className="block w-full rounded-xl bg-[#1a56db] py-3 text-center text-sm font-black tracking-wide text-white shadow-[0_4px_14px_rgba(26,86,219,0.25)] transition hover:bg-[#1645b8]"
+                >
+                  相談する
+                </a>
+              </div>
+            </motion.div>
+          </div>
+        </div>
+
+        {/* ── SP 縦構成 ── */}
+        <div className="lg:hidden space-y-6">
+          {/* 入口ノード2枚 */}
+          <motion.div className="grid grid-cols-1 gap-4 sm:grid-cols-2" {...fu(0.06)}>
+            <InputCard label="御社" accent="text-[#1a56db]" items={yourItems} />
+            <InputCard label="NTS" accent="text-[#0d7c5e]" items={ntsItems} />
+          </motion.div>
+
+          {/* 収束線（装飾） */}
+          <div className="flex justify-center" aria-hidden>
+            <svg width="40" height="32" viewBox="0 0 40 32" fill="none">
+              <path d="M10 0 Q10 16 20 24 Q30 16 30 0" stroke="#c2d5ee" strokeWidth="2" fill="none" />
+              <path d="M16 24 L20 32 L24 24" stroke="#1a56db" strokeWidth="2" strokeLinejoin="round" fill="none" />
+            </svg>
+          </div>
+
+          {/* 共同ゾーン */}
+          <motion.div {...fu(0.1)}>
+            <div className="rounded-2xl border-2 border-[#1a56db]/30 bg-white p-4 shadow-[0_4px_16px_rgba(26,86,219,0.09)]">
+              <div className="mb-3 text-center">
+                <p className="text-sm font-black tracking-widest text-[#1a56db]">御社 × NTS</p>
+                <p className="mt-0.5 text-base font-black text-[#071b46]">一緒に深く考える</p>
+              </div>
+              <div className="space-y-2.5">
+                <CenterCard
+                  title="課題の深掘り"
+                  items={["本質的な課題の特定", "制約条件の整理", "投資背景の確認"]}
+                />
+                <CenterCard
+                  title="解決の選択肢を広げる"
+                  items={["解決アプローチの検討", "優先順位の整理", "実現可能性の評価"]}
+                />
+                <CenterCard
+                  title="提案の質を高める"
+                  items={["ストーリーの構築", "効果・メリットの最大化", "意思決定の後押し"]}
+                />
+                <div className="grid grid-cols-3 gap-2">
+                  <CenterCard title="補助金活用の知見" items={["制度選定の視点"]} accent />
+                  <CenterCard title="投資背景の整理" items={["優先課題の明確化"]} accent />
+                  <CenterCard title="専門家との連携" items={["行政書士・士業連携"]} accent />
+                </div>
+              </div>
+              <p className="mt-3 text-center text-[11px] font-semibold text-[#4a6580]">
+                御社とNTSがともに考え、お客様の前進につながる提案へ。
+              </p>
+            </div>
+          </motion.div>
+
+          {/* 矢印 */}
+          <div className="flex justify-center" aria-hidden>
+            <svg width="28" height="24" viewBox="0 0 28 24" fill="none">
+              <path d="M14 0 V16 M7 10 L14 20 L21 10" stroke="#1a56db" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </div>
+
+          {/* 山ゴール */}
+          <motion.div className="flex justify-center" {...fu(0.16)}>
+            <MountainGoal />
+          </motion.div>
+
+          {/* CTA */}
+          <motion.div {...fu(0.2)}>
+            <div className="rounded-2xl border border-[#cdddf0] bg-white p-5 shadow-[0_6px_20px_rgba(12,42,72,0.08)]">
+              <p className="mb-1 text-sm font-black tracking-widest text-[#1a56db]">ご相談</p>
+              <p className="mb-2 text-base font-black text-[#071b46]">案件のご相談はこちら</p>
+              <p className="mb-4 text-[12px] leading-relaxed text-[#4a6580]">
+                提案中の案件や、今後のご計画についてお気軽にご相談ください。
+              </p>
+              <a
+                href="#contact"
+                className="block w-full rounded-xl bg-[#1a56db] py-3 text-center text-sm font-black tracking-wide text-white shadow-[0_4px_14px_rgba(26,86,219,0.25)] transition hover:bg-[#1645b8]"
+              >
+                相談する
+              </a>
             </div>
           </motion.div>
         </div>
+
       </div>
     </section>
   );
