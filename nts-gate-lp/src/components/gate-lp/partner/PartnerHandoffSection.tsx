@@ -192,15 +192,15 @@ function MainJointCard({
   items: string[];
 }) {
   return (
-    <div className="rounded-xl border border-[#cdddf0] bg-white px-3 py-3 shadow-[0_4px_16px_rgba(12,42,72,0.06)]">
-      <div className="flex items-center gap-2 border-b border-[#e8f0fa] pb-2">
+    <div className="rounded-xl border border-[#cdddf0] bg-white px-4 py-4 shadow-[0_4px_16px_rgba(12,42,72,0.07)]">
+      <div className="flex items-center gap-2.5 border-b border-[#e8f0fa] pb-2.5">
         <MiniIcon type={icon} />
-        <h4 className="text-[12.5px] font-bold leading-tight text-[#071b46]">{title}</h4>
+        <h4 className="text-[13.5px] font-bold leading-tight text-[#071b46]">{title}</h4>
       </div>
-      <ul className="mt-2 space-y-1">
+      <ul className="mt-2.5 space-y-1.5">
         {items.map((item) => (
-          <li key={item} className="flex items-start gap-1.5 text-[11px] leading-snug text-[#3d5a78]">
-            <span className="mt-[5px] h-1 w-1 shrink-0 rounded-full bg-[#1a56db]" />
+          <li key={item} className="flex items-start gap-2 text-[11.5px] leading-snug text-[#3d5a78]">
+            <span className="mt-[5px] h-1.5 w-1.5 shrink-0 rounded-full bg-[#1a56db]" />
             {item}
           </li>
         ))}
@@ -427,25 +427,25 @@ export default function PartnerHandoffSection() {
                 </h3>
               </div>
 
-              {/* 上段・下段を同じ左オフセットで右寄せ・等間隔 */}
-              <div className="mx-auto w-full max-w-[580px] pl-5 pr-2 sm:pl-7 lg:pl-9 lg:pr-3 xl:pl-11">
-                <div className="grid grid-cols-3 gap-3.5 lg:gap-4">
+              {/* 上段・下段を同じ左オフセットで右寄せ・等間隔（上段1.2倍拡大）*/}
+              <div className="mx-auto w-full max-w-[640px] pl-7 pr-2 lg:pl-12 lg:pr-3 xl:pl-14 xl:pr-2">
+                <div className="grid grid-cols-3 gap-4 lg:gap-5">
                   {MAIN_CARDS.map((card) => (
                     <MainJointCard key={card.title} {...card} />
                   ))}
                 </div>
 
-                <div className="mt-6 grid grid-cols-3 gap-3.5 lg:mt-7 lg:gap-4">
+                <div className="mt-7 grid grid-cols-3 gap-4 lg:mt-8 lg:gap-5">
                 {SUPPORT_PILLS.map((pill) => (
                   <div
                     key={pill.title}
-                    className="rounded-lg border border-[#c5e8dc] bg-[#f0fbf7]/80 px-2 py-2 text-center"
+                    className="rounded-lg border border-[#c5e8dc] bg-[#f0fbf7]/80 px-2.5 py-2.5 text-center"
                   >
                     <div className="flex justify-center">
                       <MiniIcon type={pill.icon} />
                     </div>
-                    <p className="mt-1 text-[10.5px] font-bold text-[#0f6e57]">{pill.title}</p>
-                    <p className="mt-0.5 text-[9.5px] leading-tight text-[#3d6a5c]">{pill.sub}</p>
+                    <p className="mt-1.5 text-[11px] font-bold text-[#0f6e57]">{pill.title}</p>
+                    <p className="mt-0.5 text-[10px] leading-tight text-[#3d6a5c]">{pill.sub}</p>
                   </div>
                 ))}
                 </div>
