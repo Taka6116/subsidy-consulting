@@ -119,7 +119,7 @@ export default function Hero() {
         <div className="pointer-events-none absolute inset-0 z-[5] flex flex-col justify-center pl-6 sm:pl-10 md:w-[62%] md:pl-16">
           <div className="pointer-events-auto">
             <p className="hero-text-item mb-5 text-[13px] font-medium leading-snug tracking-normal text-white/90 opacity-0">
-              その経営課題、補助金で動かせるかもしれません
+              あなたの経営課題、補助金で動かせるかもしれません
             </p>
             <h1 className="hero-text-item mb-8 font-heading text-[clamp(20px,2.6vw,36px)] font-bold leading-[1.6] text-white opacity-0">
               <span className="block whitespace-nowrap">人手不足、設備の老朽化、事業承継</span>
