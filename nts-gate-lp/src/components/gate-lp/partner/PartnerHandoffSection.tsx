@@ -31,9 +31,10 @@ const NTS_LABELS = [
 const STEPS = [
   {
     no: "01",
-    title: "課題を深く捉える",
-    sub: "顧客課題・投資背景を整理",
+    title: "課題を一緒に特定",
+    sub: "顧客課題や投資対象などを整理",
     icon: "dig" as IconKey,
+    imgSrc: "/images/icon_doc_search.png",
   },
   {
     no: "02",
@@ -231,16 +232,43 @@ function SourceBlock({
 // ─────────────────────────────────────────────────────────────
 // 中央：3ステップカード
 // ─────────────────────────────────────────────────────────────
-function StepCard({ no, title, sub, icon }: { no: string; title: string; sub: string; icon: IconKey }) {
+function StepCard({
+  no,
+  title,
+  sub,
+  icon,
+  imgSrc,
+}: {
+  no: string;
+  title: string;
+  sub: string;
+  icon: IconKey;
+  imgSrc?: string;
+}) {
   return (
     <div className="relative flex flex-col items-center rounded-xl border border-[#cdddf0] bg-white px-3 py-5 shadow-[0_4px_14px_rgba(12,42,72,0.06)] lg:px-4 lg:py-6">
       {/* 番号バッジ */}
       <span className="absolute -top-3 flex h-7 w-7 items-center justify-center rounded-full bg-[#1a56db] text-[11px] font-bold text-white shadow-md">
         {no}
       </span>
-      <span className="mt-2 flex h-10 w-10 items-center justify-center rounded-full bg-[#eef4ff] text-[#1a56db]">
-        <Icon type={icon} className="h-5 w-5" />
-      </span>
+      {/* アイコン：imgSrc があれば画像、なければSVG */}
+      {imgSrc ? (
+        <div className="relative mt-2 h-10 w-10">
+          <Image
+            src={imgSrc}
+            alt=""
+            fill
+            quality={100}
+            className="object-contain"
+            sizes="40px"
+            aria-hidden
+          />
+        </div>
+      ) : (
+        <span className="mt-2 flex h-10 w-10 items-center justify-center rounded-full bg-[#eef4ff] text-[#1a56db]">
+          <Icon type={icon} className="h-5 w-5" />
+        </span>
+      )}
       <h4 className="mt-3 text-[14px] font-bold leading-tight text-[#071b46] lg:text-[15px]">{title}</h4>
       <p className="mt-1.5 text-center text-[11px] leading-snug text-[#5a7a9a] lg:text-[11.5px]">{sub}</p>
     </div>
