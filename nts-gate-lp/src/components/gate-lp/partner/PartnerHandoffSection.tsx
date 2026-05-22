@@ -246,7 +246,7 @@ function DesktopFlowSVG() {
 
       {/* グロー下線 */}
       <path
-        d="M248 118 C360 118 420 210 548 248"
+        d="M248 108 C360 108 420 205 548 248"
         stroke="#1a56db"
         strokeOpacity="0.12"
         strokeWidth="22"
@@ -254,7 +254,7 @@ function DesktopFlowSVG() {
         filter="url(#ph-glow)"
       />
       <path
-        d="M248 382 C360 382 420 290 548 252"
+        d="M248 392 C360 392 420 295 548 252"
         stroke="#22c4ef"
         strokeOpacity="0.14"
         strokeWidth="22"
@@ -272,14 +272,14 @@ function DesktopFlowSVG() {
 
       {/* 御社ライン */}
       <path
-        d="M248 118 C360 118 420 210 548 248"
+        d="M248 108 C360 108 420 205 548 248"
         stroke="url(#ph-partner)"
         strokeWidth="5"
         strokeLinecap="round"
       />
       {/* NTSライン */}
       <path
-        d="M248 382 C360 382 420 290 548 252"
+        d="M248 392 C360 392 420 295 548 252"
         stroke="url(#ph-nts)"
         strokeWidth="5"
         strokeLinecap="round"
@@ -300,12 +300,12 @@ function DesktopFlowSVG() {
 
       {/* 流れ上のノード */}
       {[
-        [340, 130],
-        [440, 200],
-        [500, 240],
-        [340, 370],
-        [440, 300],
-        [500, 255],
+        [340, 120],
+        [440, 195],
+        [500, 238],
+        [340, 378],
+        [440, 305],
+        [500, 258],
         [700, 210],
         [850, 165],
         [1000, 138],
@@ -314,8 +314,8 @@ function DesktopFlowSVG() {
       ))}
 
       {/* 入口ドット */}
-      <circle cx="248" cy="118" r="6" fill="#1a56db" />
-      <circle cx="248" cy="382" r="6" fill="#22c4ef" />
+      <circle cx="248" cy="108" r="6" fill="#1a56db" />
+      <circle cx="248" cy="392" r="6" fill="#22c4ef" />
     </svg>
   );
 }
@@ -323,29 +323,29 @@ function DesktopFlowSVG() {
 // ─── 右：山ゴール ───────────────────────────────────────────
 function DestinationGoal() {
   return (
-    <div className="relative h-full min-h-[300px] w-full lg:min-h-[460px]">
-      {/* 到達点グロー（山頂付近） */}
+    <div className="relative h-full min-h-[260px] w-full lg:min-h-[340px]">
+      {/* 到達点グロー（山頂付近・約30%縮小） */}
       <div
-        className="pointer-events-none absolute right-4 top-[18%] h-36 w-36 rounded-full bg-[#dfeeff]/70 blur-3xl lg:right-8 lg:top-[14%]"
+        className="pointer-events-none absolute right-6 top-[16%] h-24 w-24 rounded-full bg-[#dfeeff]/65 blur-2xl lg:right-10 lg:top-[14%] lg:h-28 lg:w-28"
         aria-hidden
       />
-      {/* 都市・山（矢印先端＝山頂へ。白矩形感を消すフェード） */}
+      {/* 都市・山（表示領域を約70%に縮小、矢印先端へ） */}
       <div
-        className="pointer-events-none absolute inset-x-0 top-0 bottom-14 overflow-hidden"
+        className="pointer-events-none absolute right-[6%] top-[10%] h-[48%] w-[58%] max-h-[200px] max-w-[240px] overflow-hidden lg:right-[8%] lg:top-[8%] lg:max-h-[230px] lg:max-w-[280px]"
         aria-hidden
         style={{
           maskImage:
-            "radial-gradient(ellipse 95% 90% at 78% 32%, black 25%, rgba(0,0,0,0.7) 45%, transparent 72%)",
+            "radial-gradient(ellipse 90% 88% at 72% 38%, black 30%, rgba(0,0,0,0.65) 50%, transparent 75%)",
           WebkitMaskImage:
-            "radial-gradient(ellipse 95% 90% at 78% 32%, black 25%, rgba(0,0,0,0.7) 45%, transparent 72%)",
+            "radial-gradient(ellipse 90% 88% at 72% 38%, black 30%, rgba(0,0,0,0.65) 50%, transparent 75%)",
         }}
       >
         <Image
           src="/images/nts_partner_progress_destination_bg_v1.png"
           alt=""
           fill
-          className="object-contain object-[88%_28%] opacity-[0.88]"
-          sizes="(max-width: 1024px) 320px, 460px"
+          className="object-contain object-[90%_32%] opacity-[0.86]"
+          sizes="(max-width: 1024px) 240px, 300px"
         />
       </div>
       {/* ラベル（山の直下） */}
@@ -386,7 +386,7 @@ export default function PartnerHandoffSection() {
         aria-hidden
       />
 
-      <div className="relative mx-auto max-w-[1240px] px-5 sm:px-6 lg:max-w-[1380px] lg:px-3 xl:max-w-[1420px] xl:px-4">
+      <div className="relative mx-auto max-w-[1240px] px-5 sm:px-6 lg:max-w-[1480px] lg:px-2 xl:max-w-[min(1520px,96vw)] xl:px-3">
         {/* 見出し */}
         <motion.div className="mx-auto max-w-3xl text-center" {...reveal(0)}>
           <h2
@@ -406,34 +406,36 @@ export default function PartnerHandoffSection() {
 
         {/* ── PC 横長図解ステージ ── */}
         <motion.div
-          className="relative mt-12 hidden min-h-[500px] overflow-hidden rounded-[20px] bg-[radial-gradient(ellipse_120%_80%_at_50%_40%,rgba(223,238,255,0.55)_0%,rgba(255,255,255,0.15)_55%,transparent_100%)] ring-1 ring-[#d0e4f6]/25 lg:block"
+          className="relative mt-12 hidden min-h-[540px] overflow-hidden rounded-[20px] bg-[radial-gradient(ellipse_125%_85%_at_50%_38%,rgba(223,238,255,0.58)_0%,rgba(255,255,255,0.12)_52%,transparent_100%)] ring-1 ring-[#d0e4f6]/25 lg:block"
           {...reveal(0.06)}
         >
           <DesktopFlowSVG />
 
-          <div className="relative z-10 grid min-h-[500px] grid-cols-[minmax(228px,24%)_minmax(500px,46%)_minmax(300px,30%)] items-stretch gap-1 px-2 py-6 lg:px-3 xl:px-4">
+          <div className="relative z-10 grid min-h-[540px] grid-cols-[minmax(218px,22%)_minmax(540px,48%)_minmax(260px,30%)] items-stretch gap-0 px-1 py-5 lg:px-2 xl:px-3">
             {/* 左：2入力 */}
-            <div className="flex flex-col justify-center gap-10 py-4">
+            <div className="flex flex-col justify-center gap-14 py-3 lg:gap-[4.25rem] xl:gap-[4.75rem]">
               <SourceCluster variant="partner" />
               <SourceCluster variant="nts" />
             </div>
 
             {/* 中央：共同ゾーン */}
-            <div className="flex flex-col justify-center px-1 lg:px-2">
-              <div className="mb-5 text-center">
+            <div className="flex flex-col justify-center">
+              <div className="mb-5 text-center lg:mb-6">
                 <p className="text-[12px] font-bold tracking-widest text-[#1a56db]">御社 × NTS</p>
                 <h3 className="mt-1 font-heading text-xl font-bold text-[#071b46] xl:text-2xl">
                   一緒に深く考える
                 </h3>
               </div>
 
-              <div className="grid grid-cols-3 gap-3">
-                {MAIN_CARDS.map((card) => (
-                  <MainJointCard key={card.title} {...card} />
-                ))}
-              </div>
+              {/* 上段・下段を同じ左オフセットで右寄せ・等間隔 */}
+              <div className="mx-auto w-full max-w-[580px] pl-5 pr-2 sm:pl-7 lg:pl-9 lg:pr-3 xl:pl-11">
+                <div className="grid grid-cols-3 gap-3.5 lg:gap-4">
+                  {MAIN_CARDS.map((card) => (
+                    <MainJointCard key={card.title} {...card} />
+                  ))}
+                </div>
 
-              <div className="mt-5 grid grid-cols-3 gap-2.5 lg:mt-6">
+                <div className="mt-6 grid grid-cols-3 gap-3.5 lg:mt-7 lg:gap-4">
                 {SUPPORT_PILLS.map((pill) => (
                   <div
                     key={pill.title}
@@ -446,9 +448,10 @@ export default function PartnerHandoffSection() {
                     <p className="mt-0.5 text-[9.5px] leading-tight text-[#3d6a5c]">{pill.sub}</p>
                   </div>
                 ))}
+                </div>
               </div>
 
-              <div className="mt-5 flex items-center justify-center gap-3 lg:mt-6">
+              <div className="mt-6 flex items-center justify-center gap-3 lg:mt-7">
                 <div className="relative h-11 w-11 overflow-hidden rounded-full border-2 border-white shadow-md">
                   <Image src={PANA3025} alt="" fill className="object-cover" sizes="44px" />
                 </div>
