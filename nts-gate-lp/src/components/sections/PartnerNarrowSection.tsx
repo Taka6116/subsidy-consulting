@@ -60,7 +60,7 @@ export default function PartnerNarrowSection() {
                 <CTAButton
                   text="提携パートナーの詳細を見る"
                   href={partnerHref}
-                  variant="secondary"
+                  variant="primary"
                   size="large"
                   onClick={() => trackPartnerLinkClick("professional_section")}
                 />

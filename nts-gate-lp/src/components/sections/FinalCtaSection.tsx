@@ -120,7 +120,7 @@ export default function FinalCtaSection({ variant = "home" }: FinalCtaSectionPro
           {
             title: "提携について",
             body: "税理士・士業・ベンダーの方は、パートナープログラムをご覧ください。",
-            ctaLabel: "提携内容を確認する",
+            ctaLabel: "提携ページへ",
             href: partnerHref,
             icon: Handshake,
             external: partnerIsExternal,

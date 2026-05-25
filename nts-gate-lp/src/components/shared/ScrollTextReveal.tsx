@@ -22,6 +22,7 @@ const MOTION_TAGS = {
   h2: motion.h2,
   h3: motion.h3,
   p: motion.p,
+  span: motion.span,
 } as const;
 
 type ScrollTextRevealProps = {

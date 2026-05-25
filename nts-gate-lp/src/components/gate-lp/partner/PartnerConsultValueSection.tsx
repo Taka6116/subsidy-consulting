@@ -1,5 +1,6 @@
 "use client";
 
+import AuroraText from "@/components/shared/AuroraText";
 import ScrollTextReveal from "@/components/shared/ScrollTextReveal";
 import Image from "next/image";
 import isometric04 from "../../../../icon-assets/isometric_04.png";
@@ -46,26 +47,27 @@ export default function PartnerConsultValueSection() {
     >
       <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
         {/* 見出し */}
-        <div className="mb-14">
-          <ScrollTextReveal
-            as="h2"
+        <div className="mb-14 text-center">
+          <h2
             className="font-heading"
             style={{
               fontSize: "clamp(1.8rem, 3vw, 3rem)",
               fontWeight: 700,
               lineHeight: 1.45,
               color: "var(--text-primary, #111827)",
-              textAlign: "center",
               marginBottom: "16px",
             }}
           >
-            紹介して頂くだけではありません。
-            <br />
-            NTSがクライアントの経営課題を、
-            <br />
-            御社と一緒に
-            <span style={{ color: "var(--color-primary, #1a56db)" }}>特定、深掘りをします。</span>
-          </ScrollTextReveal>
+            <ScrollTextReveal as="span" className="block">
+              紹介して頂くだけではありません。
+              <br />
+              NTSが経営課題を、
+              <br />
+            </ScrollTextReveal>
+            <AuroraText className="block" animated={false}>
+              一緒に特定し深掘り、伴走をします。
+            </AuroraText>
+          </h2>
 
           <p
             className="font-body"

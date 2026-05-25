@@ -139,15 +139,6 @@ module.exports = {
           "0%": { opacity: "0" },
           "100%": { opacity: "1" },
         },
-      },
-      animation: {
-        "fade-in-up": "fadeInUp 0.5s ease-out both",
-        "fade-in": "fadeIn 0.4s ease-out both",
-        // nts LP tokens
-        "nts-count": "ntsCount 1.4s cubic-bezier(0.22,1,0.36,1) both",
-        "nts-fade-up": "ntsFadeUp 0.6s cubic-bezier(0.22,1,0.36,1) both",
-      },
-      keyframes: {
         ntsCount: {
           "0%": { opacity: "0" },
           "100%": { opacity: "1" },
@@ -156,6 +147,35 @@ module.exports = {
           "0%": { opacity: "0", transform: "translateY(5px)" },
           "100%": { opacity: "1", transform: "translateY(0)" },
         },
+        aurora: {
+          "0%": {
+            backgroundPosition: "0% 50%",
+            transform: "rotate(-5deg) scale(0.9)",
+          },
+          "25%": {
+            backgroundPosition: "50% 100%",
+            transform: "rotate(5deg) scale(1.1)",
+          },
+          "50%": {
+            backgroundPosition: "100% 50%",
+            transform: "rotate(-3deg) scale(0.95)",
+          },
+          "75%": {
+            backgroundPosition: "50% 0%",
+            transform: "rotate(3deg) scale(1.05)",
+          },
+          "100%": {
+            backgroundPosition: "0% 50%",
+            transform: "rotate(-5deg) scale(0.9)",
+          },
+        },
+      },
+      animation: {
+        "fade-in-up": "fadeInUp 0.5s ease-out both",
+        "fade-in": "fadeIn 0.4s ease-out both",
+        "nts-count": "ntsCount 1.4s cubic-bezier(0.22,1,0.36,1) both",
+        "nts-fade-up": "ntsFadeUp 0.6s cubic-bezier(0.22,1,0.36,1) both",
+        aurora: "aurora 8s ease-in-out infinite alternate",
       },
     },
   },
