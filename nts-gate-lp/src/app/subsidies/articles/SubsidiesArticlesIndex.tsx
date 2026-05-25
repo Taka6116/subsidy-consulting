@@ -304,7 +304,7 @@ export default function SubsidiesArticlesIndex({
               <div className="mt-auto pt-4">
                 <Link
                   href="/check"
-                  className="inline-flex h-11 w-full items-center justify-center rounded-lg bg-primary-700 px-4 text-sm font-bold text-white transition hover:bg-primary-600"
+                  className="inline-flex h-11 w-full items-center justify-center rounded-lg px-4 text-sm font-bold text-white transition hover:brightness-110 [background:linear-gradient(135deg,#0d9488_0%,#10b981_52%,#34d399_100%)]"
                 >
                   無料で診断してみる
                 </Link>
@@ -331,7 +331,7 @@ export default function SubsidiesArticlesIndex({
                 <button
                   type="submit"
                   disabled={isSubscribing}
-                  className="mt-auto inline-flex h-11 w-full shrink-0 items-center justify-center rounded-lg bg-primary-700 px-4 text-sm font-bold text-white transition hover:bg-primary-600 disabled:opacity-50"
+                  className="mt-auto inline-flex h-11 w-full shrink-0 items-center justify-center rounded-lg px-4 text-sm font-bold text-white transition hover:brightness-110 disabled:opacity-50 [background:linear-gradient(135deg,#0d9488_0%,#10b981_52%,#34d399_100%)]"
                 >
                   {isSubscribing ? "登録中..." : "登録する"}
                 </button>

@@ -440,7 +440,11 @@ export default function SubsidiesListClient({
                 onClick={() => setStatusTab(tab.key)}
                 className={`inline-flex items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-xs font-bold transition ${
                   active
-                    ? "border-[#1f4dab] bg-[#1f4dab] text-white shadow-sm"
+                    ? tab.key === "soon"
+                      ? "border-transparent text-white shadow-sm [background:linear-gradient(135deg,#b91c1c_0%,#ef4444_55%,#f97316_100%)]"
+                      : tab.key === "closed"
+                        ? "border-transparent text-white shadow-sm [background:linear-gradient(135deg,#374151_0%,#6b7280_55%,#9ca3af_100%)]"
+                        : "border-transparent text-white shadow-sm [background:var(--nts-gradient-primary)]"
                     : "border-[#d6e1f4] bg-white text-[#2a3f72] hover:bg-[#f1f5fb]"
                 }`}
               >
@@ -514,7 +518,7 @@ export default function SubsidiesListClient({
               <button
                 type="button"
                 onClick={clearAllFilters}
-                className="mt-4 inline-flex items-center gap-1.5 rounded-full bg-[#1f4dab] px-4 py-2 text-xs font-bold text-white shadow-sm transition hover:bg-[#173d8c]"
+                className="mt-4 inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-xs font-bold text-white shadow-sm transition hover:brightness-110 nts-cta-primary"
               >
                 <X className="h-3.5 w-3.5" />
                 条件をすべてクリア
@@ -588,7 +592,7 @@ export default function SubsidiesListClient({
             </p>
             <Link
               href="/subsidies/check"
-              className="mt-3 inline-flex w-full items-center justify-center gap-1.5 rounded-xl bg-[#1f4dab] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#173d8c]"
+              className="mt-3 inline-flex w-full items-center justify-center gap-1.5 rounded-xl px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:brightness-110 [background:var(--nts-gradient-primary)]"
             >
               無料診断をはじめる
               <ArrowRight className="h-4 w-4" />
@@ -660,16 +664,12 @@ function SubsidyResultCard({ grant }: { grant: SubsidyCard }) {
             NEW
           </span>
         ) : null}
-        {/* 出典種別バッジ */}
-        <span
-          className={`inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-semibold ring-1 ring-inset ${
-            grant.source === "municipality"
-              ? "bg-teal-50 text-teal-700 ring-teal-200"
-              : "bg-slate-50 text-slate-600 ring-slate-200"
-          }`}
-        >
-          {grant.source === "municipality" ? "自治体" : "jGrants"}
-        </span>
+        {/* 出典種別バッジ（自治体のみ表示） */}
+        {grant.source === "municipality" ? (
+          <span className="inline-flex items-center rounded-full bg-teal-50 px-2 py-0.5 text-[10px] font-semibold text-teal-700 ring-1 ring-inset ring-teal-200">
+            自治体
+          </span>
+        ) : null}
         <span className="ml-auto text-[11px] font-semibold text-[#6b7a99]">
           更新 {formatUpdatedAt(grant.updatedAt)}
         </span>
@@ -756,7 +756,7 @@ function SubsidyResultCard({ grant }: { grant: SubsidyCard }) {
             }
             aria-disabled={isExpired}
             tabIndex={isExpired ? -1 : 0}
-            className={`inline-flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-[#1f4dab] px-4 py-2.5 text-sm font-bold text-white shadow-sm transition hover:bg-[#173d8c] ${
+            className={`inline-flex flex-1 items-center justify-center gap-1.5 rounded-xl px-4 py-2.5 text-sm font-bold text-white shadow-sm transition hover:brightness-110 [background:var(--nts-gradient-primary)] ${
               isExpired ? "pointer-events-none opacity-60" : ""
             }`}
           >

@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import AuroraText from "@/components/shared/AuroraText";
 import { AnimatePresence, motion, type Easing } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import { ArrowRight, Search, MessageCircle, FileText } from "lucide-react";
@@ -181,13 +182,9 @@ export default function SubsidyHeroV2({
               <span className="block whitespace-nowrap">補助金情報を、</span>
               <span className="block whitespace-nowrap">探す時代を終わらせ</span>
               <span className="block whitespace-nowrap">
-                <span
-                  style={{
-                    color: "#14b8e6",
-                  }}
-                >
+                <AuroraText animated={false} className="font-black">
                   &ldquo;最速&rdquo;
-                </span>
+                </AuroraText>
                 で届ける
               </span>
             </h1>
