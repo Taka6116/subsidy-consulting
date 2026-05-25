@@ -301,16 +301,42 @@ function MergeConnector() {
       fill="none"
       aria-hidden
     >
-      {/* 御社水平線（上） */}
-      <path d="M0 50 H40" stroke="#93c5fd" strokeWidth="2.5" strokeLinecap="round" />
-      {/* NTS水平線（下） */}
-      <path d="M0 150 H40" stroke="#67e8f9" strokeWidth="2.5" strokeLinecap="round" />
-      {/* 縦線で合流 */}
-      <path d="M40 50 V150" stroke="#7eb3f0" strokeWidth="2.5" strokeLinecap="round" />
-      {/* 合流ノード */}
-      <circle cx="40" cy="100" r="5" fill="#fff" stroke="#1a56db" strokeWidth="2.5" />
-      {/* 中央への水平線 */}
-      <path d="M40 100 H80" stroke="#1a56db" strokeWidth="2.5" strokeLinecap="round" />
+      <defs>
+        <marker
+          id="merge-arrowhead"
+          markerWidth="8"
+          markerHeight="8"
+          refX="7"
+          refY="4"
+          orient="auto"
+        >
+          <path d="M0 0 L8 4 L0 8 Z" fill="#1a56db" />
+        </marker>
+      </defs>
+      {/* 御社ブラケット上腕（水平→縦・濃青・丸角） */}
+      <path
+        d="M0 50 H40 V100"
+        stroke="#1a56db"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      {/* NTSブラケット下腕（水平→縦・シアン・丸角） */}
+      <path
+        d="M0 150 H40 V100"
+        stroke="#22d3ee"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      {/* 合流→Step01 出口矢印（太め・矢じりあり） */}
+      <path
+        d="M40 100 H76"
+        stroke="#1a56db"
+        strokeWidth="3.5"
+        strokeLinecap="round"
+        markerEnd="url(#merge-arrowhead)"
+      />
     </svg>
   );
 }
@@ -398,7 +424,7 @@ export default function PartnerHandoffSection() {
             │ 左 source │ 合流 │ 3ステップ（→区切り）     │ 到達 │ ゴール│
             └──────────┴──────┴─────────────────────────┴──────┴─────┘
           */}
-          <div className="grid grid-cols-[minmax(260px,24%)_60px_minmax(420px,1fr)_64px_minmax(140px,160px)] items-center gap-3">
+          <div className="grid grid-cols-[minmax(260px,24%)_64px_minmax(420px,1fr)_64px_minmax(140px,160px)] items-center gap-3">
             {/* 左: 御社 / NTS（上下2段） */}
             <div className="flex flex-col gap-10">
               <SourceBlock label="御社" sub="顧客理解" variant="partner" items={PARTNER_LABELS} />
