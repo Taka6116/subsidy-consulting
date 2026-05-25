@@ -67,8 +67,7 @@ export default function ArticlesCtaBar({ articles, featuredVideos }: Props) {
 
   return (
     <section
-      className="section-block w-full"
-      style={{ background: "linear-gradient(165deg,#eef4fb 0%,#f4f8fc 50%,#e8f2fa 100%)" }}
+      className="section-block w-full lp-section-depth"
       aria-labelledby="home-information-hub-heading"
     >
       <div className="section-inner">
@@ -278,7 +277,7 @@ export default function ArticlesCtaBar({ articles, featuredVideos }: Props) {
 
                       {/* CTA */}
                       <div className="mt-auto pt-3">
-                        <span className="inline-flex h-9 w-full items-center justify-center gap-1 rounded-xl bg-[#0B4F8A] text-xs font-bold text-white transition group-hover/lpcard:bg-[#083D6D]">
+                        <span className="nts-cta-primary nts-cta-primary--xl h-9 w-full gap-1 text-xs">
                           専門LPを見る →
                         </span>
                       </div>

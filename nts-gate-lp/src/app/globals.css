@@ -2,6 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
+@import "../styles/home-lp-depth.css";
+
 :root {
   /* === LP refresh — カラートークン === */
   --bg-base: #eef2f7;
@@ -28,6 +30,19 @@
   --lp-hero-gradient: linear-gradient(135deg, #f5f9ff 0%, #eaf2fb 100%);
   --lp-card-radius: 12px;
   --lp-card-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+
+  /* === Home LP depth（Stripe系・薄い光と青い影）=== */
+  --nts-gradient-section: linear-gradient(180deg, #f8fbff 0%, #eef7ff 100%);
+  --nts-gradient-surface: linear-gradient(135deg, #ffffff 0%, #f3f9ff 100%);
+  --nts-gradient-primary: linear-gradient(135deg, #0b4ea2 0%, #1368d8 100%);
+  --nts-gradient-accent: linear-gradient(90deg, #1d4ed8 0%, #22d3ee 100%);
+  --nts-gradient-soft-cyan: linear-gradient(135deg, #ecfeff 0%, #eff6ff 100%);
+  --nts-gradient-soft-mint: linear-gradient(135deg, #f0fdfa 0%, #eef7ff 100%);
+  --nts-gradient-soft-warm: linear-gradient(135deg, #fff7ed 0%, #eff6ff 100%);
+  --nts-gradient-cta-dark: linear-gradient(135deg, #1a4c8e 0%, #0f4a8f 48%, #1368d8 100%);
+  --nts-shadow-blue-soft: 0 18px 48px rgba(29, 78, 216, 0.1);
+  --nts-shadow-blue-card: 0 14px 36px rgba(15, 76, 129, 0.08);
+  --nts-border-icon: rgba(29, 78, 216, 0.14);
 
   /* === Brand（#0F2027 → #2C5364 → #00c6ff） === */
   --brand-900: #0f2027;
@@ -374,22 +389,53 @@ body {
   transform: translateY(-2px);
 }
 
-.btn-primary {
-  background: var(--accent-navy);
+/* === NTS Primary CTA（エンドユーザー・提携LP共通） === */
+.nts-cta-primary,
+.btn-primary,
+.btn-teal {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--nts-gradient-primary);
   color: #ffffff;
   font-weight: 700;
+  border: none;
   border-radius: 8px;
   padding: 14px 32px;
   font-family: var(--font-heading);
   letter-spacing: 0.02em;
+  text-decoration: none;
+  box-shadow: 0 14px 32px rgba(11, 78, 162, 0.22);
   transition:
-    background 0.2s ease,
-    box-shadow 0.2s ease;
+    filter 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    color 0.2s ease;
 }
 
-.btn-primary:hover {
-  background: #1557a8;
-  box-shadow: 0 4px 16px rgba(26, 76, 142, 0.35);
+.nts-cta-primary:hover,
+.btn-primary:hover,
+.btn-teal:hover {
+  background: var(--nts-gradient-primary);
+  filter: brightness(1.06);
+  transform: translateY(-1px);
+  color: #ffffff;
+  box-shadow: 0 16px 36px rgba(11, 78, 162, 0.28);
+}
+
+.nts-cta-primary:focus-visible,
+.btn-primary:focus-visible,
+.btn-teal:focus-visible {
+  outline: 2px solid #1368d8;
+  outline-offset: 3px;
+}
+
+.nts-cta-primary--pill {
+  border-radius: 9999px;
+}
+
+.nts-cta-primary--xl {
+  border-radius: 12px;
 }
 
 .btn-secondary {
@@ -404,19 +450,6 @@ body {
 .btn-secondary:hover {
   background: var(--accent-navy);
   color: #ffffff;
-}
-
-.btn-teal {
-  background: var(--accent-teal);
-  color: #ffffff;
-  font-weight: 700;
-  border-radius: 8px;
-  padding: 14px 32px;
-}
-
-.btn-teal:hover {
-  background: #00a07e;
-  box-shadow: 0 4px 16px rgba(0, 184, 148, 0.35);
 }
 
 .label-en,
@@ -472,11 +505,26 @@ header.lp-site-header:not([data-hero-transparent]) a {
 
 nav .btn-cta,
 header.lp-site-header:not([data-hero-transparent]) .btn-cta {
-  background: var(--accent-navy);
+  background: var(--nts-gradient-primary);
   color: #ffffff;
-  border-radius: 6px;
+  border: none;
+  border-radius: 8px;
   padding: 10px 24px;
   font-weight: 700;
+  box-shadow: 0 14px 32px rgba(11, 78, 162, 0.22);
+  transition:
+    filter 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+nav .btn-cta:hover,
+header.lp-site-header:not([data-hero-transparent]) .btn-cta:hover {
+  background: var(--nts-gradient-primary);
+  filter: brightness(1.06);
+  transform: translateY(-1px);
+  box-shadow: 0 16px 36px rgba(11, 78, 162, 0.28);
+  color: #ffffff;
 }
 
 /* 共通ヘッダー — コンパクトCTAs */
@@ -507,21 +555,21 @@ header.lp-site-header:not([data-hero-transparent]) .btn-cta {
   }
 }
 
-.header-cta--primary {
-  background: var(--accent-navy);
-  color: #ffffff;
-  box-shadow: 0 1px 2px rgba(26, 76, 142, 0.12);
-}
-
 header.lp-site-header .header-cta--primary,
-header.lp-site-header .header-cta--primary:visited {
+header.lp-site-header .header-cta--primary:visited,
+.header-cta--primary {
+  background: var(--nts-gradient-primary);
   color: #ffffff;
+  border: none;
+  box-shadow: 0 14px 32px rgba(11, 78, 162, 0.22);
 }
 
 .header-cta--primary:hover {
-  background: #1557a8;
+  background: var(--nts-gradient-primary);
+  filter: brightness(1.06);
+  transform: translateY(-1px);
   color: #ffffff;
-  box-shadow: 0 2px 8px rgba(26, 76, 142, 0.2);
+  box-shadow: 0 16px 36px rgba(11, 78, 162, 0.28);
 }
 
 /* ヘッダー内の一般リンク色上書きより優先して、主CTAは常に白文字に固定 */

@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { createPortal } from "react-dom";
 import Image from "next/image";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
+import ScrollTextReveal from "@/components/shared/ScrollTextReveal";
 import sakurabaPhoto from "../../../icon-assets/PANA2727.webp";
 import seinoPhoto from "../../../icon-assets/PANA2741.webp";
 
@@ -118,18 +119,19 @@ export default function NtsWarmIntroMergedSection() {
   return (
     <section
       aria-labelledby="warm-merged-heading"
-      className="relative overflow-hidden bg-[#f0f4fa] py-20 md:py-28"
+      className="section-block section-alt lp-section-depth relative overflow-hidden py-20 md:py-28"
     >
       <div className="relative z-10 mx-auto w-full max-w-[1280px] px-5 sm:px-8 xl:px-10">
 
         {/* ── 見出し ── */}
         <motion.div {...(reduce ? {} : fadeUp(0))} className="mb-12 text-center md:mb-14">
-          <h2
+          <ScrollTextReveal
+            as="h2"
             id="warm-merged-heading"
             className="font-heading text-3xl font-bold leading-tight text-[var(--text-primary)] md:text-4xl"
           >
             伴走するのは、補助金活用を知る専門家です。
-          </h2>
+          </ScrollTextReveal>
           <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-[var(--text-secondary)] md:text-lg">
             申請前の整理、課題特定から、採択後の活用・投資判断、経営戦略まで
             <br className="hidden md:inline" />
@@ -348,7 +350,7 @@ function NormalCard({ c, onOpen }: { c: Consultant; onOpen: () => void }) {
           type="button"
           onClick={onOpen}
           aria-label={`${c.name}の詳細を見る`}
-          className="absolute bottom-4 right-4 inline-flex items-center gap-1.5 rounded-full bg-[#1d6fe8] px-4 py-2 text-[12px] font-bold text-white shadow-[0_3px_12px_rgba(29,111,232,0.36)] transition hover:-translate-y-0.5 hover:bg-[#1a60d0] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white sm:text-[13px]"
+          className="nts-cta-primary nts-cta-primary--pill absolute bottom-4 right-4 gap-1.5 px-4 py-2 text-[12px] sm:text-[13px] focus-visible:outline-white"
         >
           詳細を見る
           <svg width="11" height="11" viewBox="0 0 11 11" fill="none" aria-hidden>

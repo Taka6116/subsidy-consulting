@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { ArrowDown, ArrowLeft, ArrowRight } from "lucide-react";
 import { motion, useReducedMotion } from "framer-motion";
+import ScrollTextReveal from "@/components/shared/ScrollTextReveal";
 import isometric11 from "../../../icon-assets/isometric_11.webp";
 import isometric13 from "../../../icon-assets/isometric_13.webp";
 import isometric15 from "../../../icon-assets/isometric_15.webp";
@@ -68,12 +69,13 @@ export default function WhatIsNtsSection() {
           transition={fadeInUpTransition}
         >
           <div className="mb-12 text-center md:mb-16">
-            <h2
+            <ScrollTextReveal
+              as="h2"
               id="home-what-is-nts-heading"
               className="font-heading text-3xl font-bold leading-tight text-[var(--text-primary)] md:text-4xl"
             >
               申請が、ゴールではありません。
-            </h2>
+            </ScrollTextReveal>
             <p className="mt-4 font-heading text-[1.05rem] font-bold leading-snug text-[var(--text-secondary)] md:text-[1.25rem]">
               相談から採択、発展と成長まで。私たちが一緒に動きます。
             </p>

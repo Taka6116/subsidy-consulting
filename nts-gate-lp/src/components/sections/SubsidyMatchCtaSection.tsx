@@ -1,6 +1,7 @@
 "use client";
 
 import { motion, useReducedMotion } from "framer-motion";
+import ScrollTextReveal from "@/components/shared/ScrollTextReveal";
 import HeroCheckCtaLink from "@/components/shared/HeroCheckCtaLink";
 import {
   fadeInUpInitial,
@@ -24,14 +25,15 @@ export default function SubsidyMatchCtaSection() {
           className="two-col img-right lg:gap-[96px]"
         >
           <div className="col-text space-y-6 text-center lg:text-left">
-            <h2
+            <ScrollTextReveal
+              as="h2"
               id="home-subsidy-match-heading"
               className="font-heading text-3xl font-bold leading-tight text-[var(--text-primary)] md:text-4xl"
             >
               まず、自社に使える制度を
               <br />
               確認してみてください。
-            </h2>
+            </ScrollTextReveal>
             <p className="mx-auto max-w-2xl text-base leading-relaxed text-[var(--text-secondary)] md:text-lg lg:mx-0">
               会社名またはURLを入力するだけで、活用できる可能性のある補助金をご案内します。無料・1分で完了します。
             </p>
@@ -49,7 +51,7 @@ export default function SubsidyMatchCtaSection() {
           </div>
 
           <div className="col-img w-full justify-self-center">
-            <div className="relative overflow-hidden rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-section-alt)] shadow-[0_12px_40px_rgba(10,34,64,0.12)]">
+            <div className="relative overflow-hidden rounded-2xl border border-[var(--border-subtle)] bg-[var(--nts-gradient-surface)] shadow-[var(--nts-shadow-blue-soft)]">
               <video
                 className="block h-auto w-full"
                 src="/video/subsidy-check-demo.mp4"

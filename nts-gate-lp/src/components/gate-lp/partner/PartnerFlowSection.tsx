@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { motion } from "framer-motion";
+import ScrollTextReveal from "@/components/shared/ScrollTextReveal";
 import PANA3025 from "../../../../icon-assets/PANA3025.webp";
 import PANA2727 from "../../../../icon-assets/PANA2727.webp";
 import PANA2741 from "../../../../icon-assets/PANA2741.webp";
@@ -27,11 +28,14 @@ export default function PartnerFlowSection() {
     >
       <div className="mx-auto max-w-7xl px-6 md:px-8">
         <motion.div className="mb-16 text-center" {...fadeUp(0)}>
-          <h2 className="font-heading text-3xl font-bold leading-tight text-[var(--text-primary)] md:text-4xl">
+          <ScrollTextReveal
+            as="h2"
+            className="font-heading text-3xl font-bold leading-tight text-[var(--text-primary)] md:text-4xl"
+          >
             お客様の経営課題を深く掘り、
             <br />
             補助金も活用しながら前進まで伴走します。
-          </h2>
+          </ScrollTextReveal>
           <div className="mx-auto mt-6 max-w-3xl space-y-4 text-base leading-relaxed text-[var(--text-secondary)] md:text-lg">
             <p>
               目の前の制度を当てはめるのではなく、まずはお客様の事業課題や投資の背景を丁寧に伺い、補助金活用の可能性を整理します。

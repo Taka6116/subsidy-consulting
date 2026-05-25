@@ -10,7 +10,8 @@ export default function HeroSection() {
     <section
       className={`${styles.hero} relative flex flex-col`}
       style={{
-        background: "linear-gradient(160deg, #E8EFF8 0%, #DDE8F5 100%)",
+        background:
+          "linear-gradient(165deg, #f8fbff 0%, #eef7ff 42%, #e8f4ff 100%)",
       }}
       aria-label="補助金照会サービス ヒーローセクション"
     >

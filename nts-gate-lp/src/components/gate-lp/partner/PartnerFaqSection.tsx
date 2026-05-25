@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import ScrollTextReveal from "@/components/shared/ScrollTextReveal";
 import { ChevronDown } from "lucide-react";
 
 const EASE_OUT = [0.22, 1, 0.36, 1] as const;
@@ -43,12 +44,12 @@ export default function PartnerFaqSection() {
     >
       <div className="mx-auto max-w-3xl px-6 md:px-8">
         <div className="mb-14 text-center">
-          <motion.h2
+          <ScrollTextReveal
+            as="h2"
             className="font-heading text-3xl font-bold leading-tight text-[var(--text-primary)] md:text-4xl lg:text-5xl"
-            {...fadeUp(0.06)}
           >
             よくあるご質問
-          </motion.h2>
+          </ScrollTextReveal>
         </div>
 
         <div className="flex flex-col gap-4">

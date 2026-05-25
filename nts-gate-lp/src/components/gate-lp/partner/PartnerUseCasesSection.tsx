@@ -3,6 +3,7 @@
 import type { StaticImageData } from "next/image";
 import Image from "next/image";
 import { motion } from "framer-motion";
+import ScrollTextReveal from "@/components/shared/ScrollTextReveal";
 import isometric10 from "../../../../icon-assets/isometric_10.webp";
 import isometric11 from "../../../../icon-assets/isometric_11.webp";
 import isometric20 from "../../../../icon-assets/isometric_20.webp";
@@ -54,14 +55,14 @@ export default function PartnerUseCasesSection() {
     >
       <div className="mx-auto max-w-4xl px-6 md:px-8">
         <div className="mb-20 text-center">
-          <motion.h2
+          <ScrollTextReveal
+            as="h2"
             className="font-heading text-3xl font-bold leading-tight text-[var(--text-primary)] md:text-4xl lg:text-5xl"
-            {...fadeUp(0.05)}
           >
             こんな企業様と
             <br />
             提携しています。
-          </motion.h2>
+          </ScrollTextReveal>
           <motion.p
             className="mt-8 text-lg leading-relaxed text-[var(--text-secondary)] md:text-xl"
             {...fadeUp(0.12)}

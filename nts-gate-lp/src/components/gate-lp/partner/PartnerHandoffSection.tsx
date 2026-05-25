@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { motion, useReducedMotion } from "framer-motion";
+import ScrollTextReveal from "@/components/shared/ScrollTextReveal";
 
 // ─────────────────────────────────────────────────────────────
 // アニメーション
@@ -68,7 +69,9 @@ type IconKey =
   | "building"
   | "shield"
   | "mountain"
-  | "handshake";
+  | "handshake"
+  | "doccheck"
+  | "flag";
 
 function Icon({ type, className = "h-4 w-4" }: { type: IconKey; className?: string }) {
   switch (type) {
@@ -168,11 +171,27 @@ function Icon({ type, className = "h-4 w-4" }: { type: IconKey; className?: stri
     case "mountain":
       return null;
     case "handshake":
-      // 握手アイコン（NTS起点用）
       return (
         <svg viewBox="0 0 24 24" className={className} fill="none" aria-hidden>
           <path d="M3 13.5l5-5 2.5 2L13 8l5.5 5.5-3 3-2-2-2 2-3-3-3.5 2.5L3 13.5Z" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" strokeLinecap="round" />
           <path d="m9 7 1.5-1.5 2 1M14 5.5l-1 2.5" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      );
+    case "doccheck":
+      // 書類 + チェック（NTS起点用：補助金制度確認・申請支援を表す）
+      return (
+        <svg viewBox="0 0 24 24" className={className} fill="none" aria-hidden>
+          <path d="M7 4h7l3 3v13H7V4Z" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" />
+          <path d="m10 12 2 2 4-4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+          <path d="M10 17h4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+        </svg>
+      );
+    case "flag":
+      // 旗アイコン（ゴール）
+      return (
+        <svg viewBox="0 0 24 24" className={className} fill="none" aria-hidden>
+          <path d="M5 3v18" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+          <path d="M5 4h12l-3 5 3 5H5" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" strokeLinecap="round" />
         </svg>
       );
   }
@@ -184,7 +203,6 @@ function Icon({ type, className = "h-4 w-4" }: { type: IconKey; className?: stri
 function SourceBlock({
   label,
   sub,
-  variant,
   items,
 }: {
   label: string;
@@ -192,22 +210,12 @@ function SourceBlock({
   variant: "partner" | "nts";
   items: { text: string; icon: IconKey }[];
 }) {
-  const isPartner = variant === "partner";
   return (
     <div className="flex items-stretch gap-3">
       {/* 円形起点 */}
       <div className="flex shrink-0 flex-col items-center justify-center">
-        <div
-          className={`flex h-[78px] w-[78px] items-center justify-center rounded-full border-[2.5px] shadow-[0_6px_18px_rgba(26,86,219,0.12)] ${
-            isPartner
-              ? "border-[#93c5fd] bg-gradient-to-br from-[#eef4ff] to-white"
-              : "border-[#67e8f9] bg-gradient-to-br from-[#e0f9ff] to-white"
-          }`}
-        >
-          <Icon
-            type={isPartner ? "building" : "handshake"}
-            className={`h-10 w-10 ${isPartner ? "text-[#1a56db]" : "text-[#0891b2]"}`}
-          />
+        <div className="flex h-[78px] w-[78px] items-center justify-center rounded-full border-[2.5px] border-[#93c5fd] bg-gradient-to-br from-[#eef4ff] to-white shadow-[0_6px_18px_rgba(26,86,219,0.12)]">
+          <Icon type="building" className="h-10 w-10 text-[#1a56db]" />
         </div>
         <p className="mt-1.5 text-[14px] font-bold text-[#071b46]">{label}</p>
         <p className="text-[10.5px] font-semibold text-[#5a7a9a]">{sub}</p>
@@ -336,8 +344,8 @@ function FinishConnector() {
   return (
     <div className="flex items-center justify-center" aria-hidden>
       <svg width="56" height="14" viewBox="0 0 56 14" fill="none">
-        <path d="M2 7h46" stroke="#1a56db" strokeWidth="3" strokeLinecap="round" />
-        <path d="m44 2 8 5-8 5" stroke="#1a56db" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+        <path d="M2 7h44" stroke="#93c5fd" strokeWidth="2" strokeLinecap="round" strokeDasharray="3 3" />
+        <path d="m44 3 4 4-4 4" stroke="#1a56db" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
       </svg>
     </div>
   );
@@ -348,22 +356,15 @@ function FinishConnector() {
 // ─────────────────────────────────────────────────────────────
 function Goal() {
   return (
-    <div className="flex flex-col items-center justify-center gap-2">
-      <div className="relative flex h-[120px] w-[140px] items-center justify-center">
-        {/* 後光 */}
-        <div className="absolute inset-0 rounded-full bg-[#dbeafe]/60 blur-2xl" aria-hidden />
-        <Image
-          src="/images/nts_partner_progress_destination_bg_v1.png"
-          alt=""
-          fill
-          quality={100}
-          className="relative object-contain object-center"
-          sizes="140px"
-          aria-hidden
-        />
-      </div>
-      <p className="text-center text-[15px] font-bold tracking-wide text-[#071b46] lg:text-[16px]">
+    <div className="flex flex-col items-center justify-center gap-2.5 rounded-xl border border-[#cdddf0] bg-[#eef4ff]/60 px-4 py-5 shadow-[0_4px_14px_rgba(12,42,72,0.06)]">
+      <span className="flex h-10 w-10 items-center justify-center rounded-full border border-[#cdddf0] bg-white text-[#1a56db] shadow-sm">
+        <Icon type="flag" className="h-5 w-5" />
+      </span>
+      <p className="text-center text-[14px] font-bold leading-tight text-[#071b46] lg:text-[15px]">
         お客様の前進へ
+      </p>
+      <p className="text-center text-[10.5px] leading-snug text-[#5a7a9a] lg:text-[11px]">
+        提案・導入・活用まで<br className="hidden lg:inline" />次の一歩に接続
       </p>
     </div>
   );
@@ -386,14 +387,15 @@ export default function PartnerHandoffSection() {
       <div className="relative mx-auto max-w-[1240px] px-5 sm:px-6 lg:max-w-[1380px] lg:px-6 xl:max-w-[1440px] xl:px-8">
         {/* 見出し */}
         <motion.div className="mx-auto max-w-3xl text-center" {...reveal(0)}>
-          <h2
+          <ScrollTextReveal
+            as="h2"
             id="joint-progress-heading"
             className="font-heading text-3xl font-bold leading-tight text-[var(--text-primary)] md:text-4xl"
           >
             御社とともに、
             <br />
             お客様の前進を支える連携へ。
-          </h2>
+          </ScrollTextReveal>
           <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-[var(--text-secondary)] md:text-lg">
             お客様の課題を一緒に深く捉え、提案や事業の前進につながる選択肢をともに考える。
             <br className="hidden md:inline" />
@@ -502,7 +504,7 @@ export default function PartnerHandoffSection() {
           </div>
           <a
             href="#contact"
-            className="inline-flex shrink-0 items-center justify-center gap-1 rounded-xl bg-[#0f3e8d] px-6 py-3 text-sm font-bold text-white shadow-[0_4px_16px_rgba(15,62,141,0.28)] transition hover:bg-[#0c3477] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1a56db] focus-visible:ring-offset-2"
+            className="nts-cta-primary nts-cta-primary--xl shrink-0 gap-1 px-6 py-3 text-sm focus-visible:ring-2 focus-visible:ring-[#1368d8] focus-visible:ring-offset-2"
           >
             案件のご相談はこちら
             <span aria-hidden>›</span>

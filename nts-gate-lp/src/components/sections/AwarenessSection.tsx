@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { motion, useReducedMotion } from "framer-motion";
+import ScrollTextReveal from "@/components/shared/ScrollTextReveal";
 import {
   fadeInUpInitial,
   fadeInUpInView,
@@ -116,14 +117,15 @@ export default function AwarenessSection() {
           transition={fadeInUpTransition}
         >
           <div className="mb-12 text-center md:mb-16">
-            <h2
+            <ScrollTextReveal
+              as="h2"
               id="home-awareness-heading"
               className="font-heading text-3xl font-bold leading-tight text-[var(--text-primary)] md:text-4xl"
             >
               あなたの経営課題
               <br />
               補助金で動かせるかもしれません
-            </h2>
+            </ScrollTextReveal>
             <div className="mx-auto mt-4 max-w-2xl space-y-3 text-base leading-loose text-[var(--text-secondary)] md:mt-4 md:text-lg">
               <p>設備投資・人材育成・DX——多くの課題に、活用できる制度があります。</p>
             </div>

@@ -1,5 +1,6 @@
 "use client";
 
+import ScrollTextReveal from "@/components/shared/ScrollTextReveal";
 import { useRef, useEffect, useCallback } from "react";
 import { useReducedMotion } from "framer-motion";
 
@@ -162,7 +163,7 @@ const STRIDE = CARD_W + CARD_GAP;
 // 前後にコピーを3セット配置して無限ループを実現
 const CLONES_BEFORE = 3;
 
-export default function SubsidyCaseStudySection() {
+export default function SubsidyCaseStudySection({ homeDepth = false }: { homeDepth?: boolean } = {}) {
   const trackRef = useRef<HTMLDivElement>(null);
   const isDragging = useRef(false);
   const startX = useRef(0);
@@ -306,18 +307,19 @@ export default function SubsidyCaseStudySection() {
     <section
       ref={sectionRef}
       aria-labelledby="case-study-heading"
-      className="w-full py-20 md:py-24"
-      style={{ background: "#F4F8FC" }}
+      className={`w-full py-20 md:py-24${homeDepth ? " lp-section-depth" : ""}`}
+      style={homeDepth ? undefined : { background: "#F4F8FC" }}
     >
       {/* ── ヘッダー ── */}
       <div className="mx-auto max-w-[1160px] px-5 sm:px-8">
         <div className="text-center">
-          <h2
+          <ScrollTextReveal
+            as="h2"
             id="case-study-heading"
             className="font-heading text-3xl font-bold leading-tight text-[var(--text-primary)] md:text-4xl"
           >
             NTS 支援事例の実績
-          </h2>
+          </ScrollTextReveal>
           <p className="mx-auto mt-4 max-w-[640px] text-sm leading-relaxed md:text-base" style={{ color: "#4A5E78" }}>
             制度の名前だけでは見えない、実際の活用の姿。業種・課題・投資内容・採択金額・その後の成果
           </p>
@@ -412,6 +414,7 @@ export default function SubsidyCaseStudySection() {
 function CaseCard({ c }: { c: CaseData }) {
   return (
     <article
+      data-case-card
       className="flex shrink-0 flex-col overflow-hidden rounded-2xl bg-white"
       style={{
         width: `${CARD_W}px`,

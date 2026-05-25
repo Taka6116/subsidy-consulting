@@ -1,0 +1,154 @@
+/**
+ * エンドユーザー向けトップ LP 専用の質感レイヤー
+ * .home-lp 配下のみ適用（/partner には影響しない）
+ */
+
+/* ── ページベース ── */
+.home-lp {
+  background: var(--nts-gradient-section);
+}
+
+/* ── セクション背景の薄い階層 ── */
+.home-lp .section-white {
+  background: #ffffff;
+}
+
+.home-lp .section-alt,
+.home-lp .bg-section-gray {
+  background: var(--nts-gradient-section);
+}
+
+.home-lp .bg-section-white {
+  background: #ffffff;
+}
+
+.home-lp .lp-section-depth {
+  background: var(--nts-gradient-section);
+}
+
+.home-lp .lp-section-depth .lp-surface-card,
+.home-lp .lp-section-depth > div > .card,
+.home-lp .lp-section-depth .nts-card {
+  background: var(--nts-gradient-surface);
+}
+
+/* ── カード：上部アクセントライン（FAQ・静的情報は除外） ── */
+.home-lp .section-block .card:not(.lp-no-accent),
+.home-lp .section-block .nts-card:not(.lp-no-accent) {
+  position: relative;
+  background: var(--nts-gradient-surface);
+  box-shadow: var(--nts-shadow-blue-card);
+}
+
+.home-lp .section-block .card:not(.lp-no-accent)::before,
+.home-lp .section-block .nts-card:not(.lp-no-accent)::before {
+  content: "";
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  top: 0;
+  height: 3px;
+  border-radius: 999px;
+  background: var(--nts-gradient-accent);
+  opacity: 0.55;
+  pointer-events: none;
+}
+
+.home-lp section[aria-labelledby$="-faq-title"] .nts-card::before {
+  display: none;
+}
+
+.home-lp section[aria-labelledby$="-faq-title"] .nts-card {
+  background: #ffffff;
+  box-shadow: 0 4px 20px rgba(26, 76, 142, 0.07);
+}
+
+.home-lp .section-block .card:not(.lp-no-accent):hover,
+.home-lp .section-block .nts-card:not(.lp-no-accent):hover {
+  box-shadow: var(--nts-shadow-blue-soft);
+}
+
+.home-lp .card.lp-card-surface:not(.lp-no-accent) {
+  background: var(--nts-gradient-surface);
+  box-shadow: var(--nts-shadow-blue-card);
+}
+
+/* 補助金マルqueeカード */
+.home-lp .section-white .card.flex {
+  background: var(--nts-gradient-surface);
+  box-shadow: var(--nts-shadow-blue-card);
+}
+
+/* 事例写真カード：影だけ青系、写真面は白寄り */
+.home-lp [aria-labelledby="case-study-heading"] [data-case-card] {
+  background: var(--nts-gradient-surface) !important;
+  box-shadow: var(--nts-shadow-blue-card) !important;
+  border-color: rgba(29, 78, 216, 0.1) !important;
+}
+
+.home-lp [aria-labelledby="case-study-heading"] [data-case-card]::before,
+.home-lp [aria-labelledby="case-study-heading"] .rounded-2xl.border::before {
+  display: none;
+}
+
+/* ArticlesCtaBar カード */
+.home-lp [class*="group/card"],
+.home-lp [class*="group/lpcard"],
+.home-lp [class*="group/vcard"] {
+  background: var(--nts-gradient-surface) !important;
+  box-shadow: var(--nts-shadow-blue-card) !important;
+}
+
+/* ── アイコン背景（単色薄青 → 淡グラデーション） ── */
+.home-lp .lp-icon-surface,
+.home-lp .rounded-md.bg-\[\#eef4ff\],
+.home-lp .rounded-full.bg-\[\#eef4ff\],
+.home-lp .flex.h-6.w-6.items-center.justify-center.rounded-md.bg-\[\#eef4ff\] {
+  background: var(--nts-gradient-soft-cyan) !important;
+  border: 1px solid var(--nts-border-icon);
+}
+
+.home-lp .rounded-full.bg-\[\#EEF6FF\],
+.home-lp .final-cta-card .rounded-full.bg-\[\#EEF6FF\] {
+  background: var(--nts-gradient-soft-cyan) !important;
+  border: 1px solid var(--nts-border-icon);
+}
+
+/* WhatIsNts ステップアイコン等 */
+.home-lp .bg-\[\#EEF6FF\] {
+  background: var(--nts-gradient-soft-cyan) !important;
+}
+
+/* 最終CTAセクション */
+.home-lp .section-cta {
+  background: var(--nts-gradient-cta-dark);
+}
+
+.home-lp .section-cta::before {
+  opacity: 0.35;
+}
+
+.home-lp .final-cta-card {
+  background: var(--nts-gradient-surface);
+  box-shadow: var(--nts-shadow-blue-card);
+}
+
+/* 中盤・診断CTAの動画枠 */
+.home-lp #home-subsidy-match-heading ~ * .rounded-2xl,
+.home-lp [aria-labelledby="home-subsidy-match-heading"] .rounded-2xl {
+  box-shadow: var(--nts-shadow-blue-soft);
+}
+
+/* RootIssue セクション内カード面 */
+.home-lp [aria-labelledby="root-issue-heading"] .rounded-2xl,
+.home-lp [aria-labelledby="root-issue-heading"] .rounded-xl {
+  box-shadow: var(--nts-shadow-blue-card);
+}
+
+@media (max-width: 768px) {
+  .home-lp .section-block .card:not(.lp-no-accent)::before,
+  .home-lp .section-block .nts-card:not(.lp-no-accent)::before {
+    left: 12px;
+    right: 12px;
+  }
+}

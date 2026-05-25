@@ -1,5 +1,6 @@
 "use client";
 
+import ScrollTextReveal from "@/components/shared/ScrollTextReveal";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -85,22 +86,29 @@ const CASE_CARDS = [
 const LINE_COLOR = "rgba(11,79,138,0.4)";
 const LINE_COLOR_SOFT = "rgba(11,79,138,0.22)";
 
-export default function RootIssueCaseSection({ heading }: { heading?: string } = {}) {
+export default function RootIssueCaseSection({
+  heading,
+  homeDepth = false,
+}: {
+  heading?: string;
+  homeDepth?: boolean;
+} = {}) {
   return (
     <section
       aria-labelledby="root-issue-heading"
-      className="w-full py-20 md:py-24 lg:py-28"
-      style={{ background: "#F4F8FC" }}
+      className={`w-full py-20 md:py-24 lg:py-28${homeDepth ? " lp-section-depth" : ""}`}
+      style={homeDepth ? undefined : { background: "#F4F8FC" }}
     >
       <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* ─── ヘッダー ──────────────────────────────────── */}
         <div className="text-center">
-          <h2
+          <ScrollTextReveal
+            as="h2"
             id="root-issue-heading"
             className="font-heading mt-0 text-3xl font-bold leading-tight text-[var(--text-primary)] md:text-4xl"
           >
             {heading ?? "しかし、より最適な補助金制度があるかもしれません"}
-          </h2>
+          </ScrollTextReveal>
           <p
             className="font-body mx-auto mt-5"
             style={{
@@ -677,12 +685,10 @@ export default function RootIssueCaseSection({ heading }: { heading?: string } =
               </div>
               <Link
                 href="/consult"
-                className="font-body inline-flex w-full shrink-0 items-center justify-center gap-2 rounded-[10px] px-7 py-3.5 text-sm font-bold text-white transition-opacity hover:opacity-90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1a4c8e] sm:w-auto"
+                className="nts-cta-primary font-body w-full shrink-0 gap-2 rounded-[10px] px-7 py-3.5 text-sm sm:w-auto"
                 style={{
-                  background: "var(--accent-navy)",
                   letterSpacing: "0.06em",
                   whiteSpace: "nowrap",
-                  boxShadow: "0 6px 14px rgba(26,76,142,0.18)",
                 }}
               >
                 無料相談予約する

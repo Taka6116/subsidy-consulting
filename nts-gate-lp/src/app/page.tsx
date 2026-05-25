@@ -105,7 +105,7 @@ export default async function Home() {
     <HomeEntrance>
       <ScrollDepthTracker />
       <Header />
-      <main className="relative z-[2]">
+      <main className="home-lp relative z-[2]">
         {/*
           トップ LP セクション順
           ①FV ②ロゴ帯 ③情報ハブ ④課題共感 ⑤視点の違い ⑥制度例 ⑦事例
@@ -129,13 +129,13 @@ export default async function Home() {
         {/* ④ あなたの経営課題、補助金で動かせるかもしれません */}
         <AwarenessSection />
         {/* ⑤ しかし、より最適な補助金制度があるかもしれません */}
-        <RootIssueCaseSection />
+        <RootIssueCaseSection homeDepth />
         {/* ⑥ 例えばこんな補助金もあります。 */}
         <SubsidyExamplesSection />
         {/* ⑦ NTS 支援事例の実績 */}
-        <SubsidyCaseStudySection />
+        <SubsidyCaseStudySection homeDepth />
         {/* ⑧ AIで書類は作れる時代。それでも、採択には届きません。 */}
-        <NtsAiGapSection />
+        <NtsAiGapSection homeDepth />
         {/* ⑨ 申請が、ゴールではありません。（フロー説明） */}
         <WhatIsNtsSection />
         {/* ⑩ 伴走するのは、補助金活用を知る専門家です。（統合セクション） */}

@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { motion } from "framer-motion";
+import ScrollTextReveal from "@/components/shared/ScrollTextReveal";
 
 const EASE_OUT = [0.22, 1, 0.36, 1] as const;
 
@@ -59,14 +60,14 @@ export default function PartnerAboutSection() {
           {/* 下段：コピー + Stats */}
           <div className="bg-white px-6 py-12 md:px-12 md:py-16 lg:px-16 lg:py-20">
             <div className="mx-auto max-w-3xl text-center">
-              <motion.h2
+              <ScrollTextReveal
+                as="h2"
                 className="font-heading text-2xl font-bold leading-snug text-[var(--text-primary)] md:text-3xl lg:text-[2.25rem] lg:leading-[1.35]"
-                {...fadeUp(0.15)}
               >
                 紹介いただいた顧客に、
                 <br className="hidden md:block" />
                 私たちが責任を持って伴走します。
-              </motion.h2>
+              </ScrollTextReveal>
 
               <motion.p
                 className="mt-4 font-heading text-[1.05rem] font-bold leading-snug text-[var(--text-secondary)] md:mt-5 md:text-[1.2rem]"

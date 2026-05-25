@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { motion, useReducedMotion } from "framer-motion";
+import ScrollTextReveal from "@/components/shared/ScrollTextReveal";
 import CTAButton from "@/components/shared/CTAButton";
 import { getPartnerUrl } from "@/lib/partnerUrl";
 import { trackPartnerLinkClick } from "@/lib/analytics";
@@ -40,14 +41,15 @@ export default function PartnerNarrowSection() {
           </div>
 
           <div className="col-text space-y-6 text-center lg:text-left">
-            <h2
+            <ScrollTextReveal
+              as="h2"
               id="home-partner-heading"
               className="font-heading text-3xl font-bold leading-tight text-[var(--text-primary)] md:text-4xl"
             >
               パートナー企業の方へ。
               <br />
               補助金を、御社の営業の武器に。
-            </h2>
+            </ScrollTextReveal>
             <p className="mx-auto max-w-xl text-base leading-loose text-[var(--text-secondary)] md:mx-0 md:text-lg">
               税理士・ベンダー・士業の方々と提携しています。「補助金が使えますよ」その一言が、顧客との関係を深めます。
               <br />

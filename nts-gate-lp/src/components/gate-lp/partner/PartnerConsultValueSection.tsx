@@ -1,5 +1,6 @@
 "use client";
 
+import ScrollTextReveal from "@/components/shared/ScrollTextReveal";
 import Image from "next/image";
 import isometric04 from "../../../../icon-assets/isometric_04.png";
 import isometric06 from "../../../../icon-assets/isometric_06.png";
@@ -46,7 +47,8 @@ export default function PartnerConsultValueSection() {
       <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
         {/* 見出し */}
         <div className="mb-14">
-          <h2
+          <ScrollTextReveal
+            as="h2"
             className="font-heading"
             style={{
               fontSize: "clamp(1.8rem, 3vw, 3rem)",
@@ -63,7 +65,7 @@ export default function PartnerConsultValueSection() {
             <br />
             御社と一緒に
             <span style={{ color: "var(--color-primary, #1a56db)" }}>特定、深掘りをします。</span>
-          </h2>
+          </ScrollTextReveal>
 
           <p
             className="font-body"

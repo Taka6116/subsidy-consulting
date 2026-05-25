@@ -2,6 +2,7 @@
 
 import Image, { type StaticImageData } from "next/image";
 import { motion } from "framer-motion";
+import ScrollTextReveal from "@/components/shared/ScrollTextReveal";
 
 import isometric15 from "../../../../icon-assets/isometric_15.webp";
 import isometric07 from "../../../../icon-assets/isometric_07.png";
@@ -64,9 +65,12 @@ export default function PartnerSubsidySection() {
     >
       <div className="mx-auto max-w-5xl px-6 md:px-8">
         <motion.div className="mb-16 text-center" {...fadeUp(0)}>
-          <h2 className="font-heading text-3xl font-bold leading-tight text-[var(--text-primary)] md:text-4xl">
+          <ScrollTextReveal
+            as="h2"
+            className="font-heading text-3xl font-bold leading-tight text-[var(--text-primary)] md:text-4xl"
+          >
             例えばこんな補助金もあります。
-          </h2>
+          </ScrollTextReveal>
           <p className="mt-4 text-base text-[var(--text-secondary)]">
             顧客の課題に応じて、活用できる補助金をNTSが選定します。
             <br />

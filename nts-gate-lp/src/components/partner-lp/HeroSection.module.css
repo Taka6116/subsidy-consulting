@@ -439,7 +439,7 @@
 
 .btnP {
   padding: 14px 32px;
-  background: var(--accent-navy);
+  background: var(--nts-gradient-primary, linear-gradient(135deg, #0b4ea2 0%, #1368d8 100%));
   color: #fff;
   border: none;
   border-radius: 8px;
@@ -448,14 +448,19 @@
   font-family: var(--font-heading);
   letter-spacing: 0.02em;
   cursor: pointer;
-  transition: all 0.25s;
+  transition:
+    filter 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
   text-decoration: none;
+  box-shadow: 0 14px 32px rgba(11, 78, 162, 0.22);
 }
 
 .btnP:hover {
-  background: #1557a8;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 16px rgba(26, 76, 142, 0.35);
+  background: var(--nts-gradient-primary, linear-gradient(135deg, #0b4ea2 0%, #1368d8 100%));
+  filter: brightness(1.06);
+  transform: translateY(-1px);
+  box-shadow: 0 16px 36px rgba(11, 78, 162, 0.28);
 }
 
 .btnS {

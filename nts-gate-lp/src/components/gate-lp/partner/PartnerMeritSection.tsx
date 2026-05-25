@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { motion } from "framer-motion";
+import ScrollTextReveal from "@/components/shared/ScrollTextReveal";
 import isometric09 from "../../../../icon-assets/isometric_09.webp";
 import isometric14 from "../../../../icon-assets/isometric_14.webp";
 import isometric11 from "../../../../icon-assets/isometric_11.webp";
@@ -24,9 +25,12 @@ export default function PartnerMeritSection() {
     >
       <div className="mx-auto max-w-5xl px-6 md:px-8">
         <motion.div className="mb-20 text-center" {...fadeUp(0)}>
-          <h2 className="font-heading text-3xl font-bold leading-tight text-[var(--text-primary)] md:text-4xl lg:text-5xl">
+          <ScrollTextReveal
+            as="h2"
+            className="font-heading text-3xl font-bold leading-tight text-[var(--text-primary)] md:text-4xl lg:text-5xl"
+          >
             提携先様に生まれる3つのメリット
-          </h2>
+          </ScrollTextReveal>
         </motion.div>
 
         <div className="flex flex-col gap-20">

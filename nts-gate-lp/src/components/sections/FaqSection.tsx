@@ -2,6 +2,7 @@
 
 import { useId, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import ScrollTextReveal from "@/components/shared/ScrollTextReveal";
 import { ChevronDown } from "lucide-react";
 import {
   fadeInUpInitial,
@@ -59,12 +60,13 @@ export default function FaqSection() {
           transition={fadeInUpTransition}
           className="mb-12 text-center md:mb-16"
         >
-          <h2
+          <ScrollTextReveal
+            as="h2"
             id={`${baseId}-faq-title`}
             className="font-heading text-3xl font-bold leading-tight text-[var(--text-primary)] md:text-4xl"
           >
             よくあるご質問
-          </h2>
+          </ScrollTextReveal>
         </motion.div>
 
         <motion.ul

@@ -6,6 +6,7 @@ import imgNtsGap from "../../../icon-assets/isometric23.webp";
 import imgPit01 from "../../../icon-assets/isometric_24.webp";
 import imgPit02 from "../../../icon-assets/isometric_12.webp";
 import imgPit03 from "../../../icon-assets/isometric_09.webp";
+import ScrollTextReveal from "@/components/shared/ScrollTextReveal";
 import {
   fadeInUpInitial,
   fadeInUpInView,
@@ -54,12 +55,12 @@ const PITFALLS: readonly Pitfall[] = [
   },
 ] as const;
 
-export default function NtsAiGapSection() {
+export default function NtsAiGapSection({ homeDepth = false }: { homeDepth?: boolean } = {}) {
   const reduce = useReducedMotion();
 
   return (
     <section
-      className="section-block bg-[#f0f4fa] text-[var(--text-primary)]"
+      className={`section-block text-[var(--text-primary)]${homeDepth ? " lp-section-depth" : " bg-[#f0f4fa]"}`}
       style={{ zIndex: 10 }}
       aria-labelledby="home-nts-aigap-heading"
     >
@@ -72,14 +73,15 @@ export default function NtsAiGapSection() {
           viewport={fadeInUpViewport}
           transition={fadeInUpTransition}
         >
-          <h2
+          <ScrollTextReveal
+            as="h2"
             id="home-nts-aigap-heading"
             className="font-heading text-3xl font-bold leading-tight text-[var(--text-primary)] md:text-4xl"
           >
             AIで書類は作れる時代。
             <br className="md:hidden" />
             それでも、採択には届きません。
-          </h2>
+          </ScrollTextReveal>
           <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-[var(--text-secondary)] md:text-lg">
             申請件数が増え、採択は“中身”で差がつく時代に。
             <br className="hidden md:inline" />

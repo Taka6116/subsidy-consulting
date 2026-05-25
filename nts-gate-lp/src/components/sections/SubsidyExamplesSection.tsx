@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { motion } from "framer-motion";
+import ScrollTextReveal from "@/components/shared/ScrollTextReveal";
 
 type Card = {
   name: string;
@@ -85,7 +86,7 @@ function MarqueeRow({ cards, reverse = false }: { cards: Card[]; reverse?: boole
 
 export default function SubsidyExamplesSection() {
   return (
-    <section className="section-white relative overflow-hidden py-24 md:py-32">
+    <section className="section-white lp-section-depth relative overflow-hidden py-24 md:py-32">
       <div className="mx-auto max-w-7xl px-6 md:px-8">
         <motion.div
           className="mb-10 text-center"
@@ -94,9 +95,12 @@ export default function SubsidyExamplesSection() {
           viewport={{ once: true, amount: 0.2 }}
           transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
         >
-          <h2 className="font-heading text-3xl font-bold leading-tight text-[var(--text-primary)] md:text-4xl">
+          <ScrollTextReveal
+            as="h2"
+            className="font-heading text-3xl font-bold leading-tight text-[var(--text-primary)] md:text-4xl"
+          >
             例えばこんな補助金もあります。
-          </h2>
+          </ScrollTextReveal>
           <p className="mt-4 text-base text-[var(--text-secondary)]">
             自社の課題に応じて、活用できる制度をNTSが選定します。
           </p>

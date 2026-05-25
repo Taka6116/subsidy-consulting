@@ -6,6 +6,7 @@ import type { LucideIcon } from "lucide-react";
 import { BookOpen, Handshake, Home, Mail, Search } from "lucide-react";
 import { trackCTAClick, trackPartnerLinkClick } from "@/lib/analytics";
 import { getPartnerUrl } from "@/lib/partnerUrl";
+import ScrollTextReveal from "@/components/shared/ScrollTextReveal";
 import {
   fadeInUpInitial,
   fadeInUpInView,
@@ -43,7 +44,7 @@ function FinalCtaCard({ card }: { card: CtaCard }) {
         href={card.href}
         {...(card.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
         onClick={card.onClick}
-        className="mt-auto inline-flex w-full max-w-[240px] items-center justify-center gap-1 rounded-full bg-[var(--accent-gold)] px-5 py-3 text-sm font-bold text-white shadow-sm transition hover:opacity-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+        className="nts-cta-primary nts-cta-primary--pill mt-auto w-full max-w-[240px] gap-1 px-5 py-3 text-sm focus-visible:outline-white"
       >
         {card.ctaLabel}
         <span className="text-lg leading-none" aria-hidden>
@@ -160,12 +161,13 @@ export default function FinalCtaSection({ variant = "home" }: FinalCtaSectionPro
           transition={fadeInUpTransition}
           className="py-8 md:py-12"
         >
-          <h2
+          <ScrollTextReveal
+            as="h2"
             id={headingId}
             className="font-heading text-3xl font-bold leading-tight text-white md:text-4xl"
           >
             まず、話を聞かせてください。
-          </h2>
+          </ScrollTextReveal>
           <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-white/85 md:mt-6 md:text-lg">
             {subCopy}
           </p>

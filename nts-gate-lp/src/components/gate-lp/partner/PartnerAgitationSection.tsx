@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 import type { StaticImageData } from "next/image";
 import Image from "next/image";
 import { motion } from "framer-motion";
+import ScrollTextReveal from "@/components/shared/ScrollTextReveal";
 import isometric24 from "../../../../icon-assets/isometric_24.webp";
 import isometric14 from "../../../../icon-assets/isometric_14.webp";
 import isometric12 from "../../../../icon-assets/isometric_12.webp";
@@ -72,14 +73,14 @@ export default function PartnerAgitationSection() {
     >
       <div className="mx-auto max-w-4xl px-6 md:px-8">
         <div className="mb-20 text-center">
-          <motion.h2
+          <ScrollTextReveal
+            as="h2"
             className="font-heading text-3xl font-bold leading-tight text-[var(--text-primary)] md:text-4xl lg:text-5xl"
-            {...fadeUp(0)}
           >
             その「見送り」の裏に、
             <br />
             使えるはずの補助金がありました。
-          </motion.h2>
+          </ScrollTextReveal>
 
           <motion.p
             className="mt-8 text-lg leading-relaxed text-[var(--text-secondary)] md:text-xl"
