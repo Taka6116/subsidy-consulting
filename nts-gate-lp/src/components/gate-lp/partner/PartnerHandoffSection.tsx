@@ -293,6 +293,9 @@ function StepArrow() {
 // 左→中央：直角合流SVG（PC専用、合流のみ）
 // ─────────────────────────────────────────────────────────────
 function MergeConnector() {
+  // StepArrow と同じデザインルール:
+  //   点線ライン: stroke="#93c5fd" strokeWidth="2" strokeDasharray="3 3" strokeLinecap="round"
+  //   矢じり:     stroke="#1a56db" strokeWidth="2"
   return (
     <svg
       className="h-full w-full"
@@ -301,42 +304,27 @@ function MergeConnector() {
       fill="none"
       aria-hidden
     >
-      <defs>
-        <marker
-          id="merge-arrowhead"
-          markerWidth="8"
-          markerHeight="8"
-          refX="7"
-          refY="4"
-          orient="auto"
-        >
-          <path d="M0 0 L8 4 L0 8 Z" fill="#1a56db" />
-        </marker>
-      </defs>
-      {/* 御社ブラケット上腕（水平→縦・濃青・丸角） */}
+      {/* 御社ブラケット上腕（点線・統一色） */}
       <path
         d="M0 50 H40 V100"
-        stroke="#1a56db"
+        stroke="#93c5fd"
         strokeWidth="2"
         strokeLinecap="round"
         strokeLinejoin="round"
+        strokeDasharray="3 3"
       />
-      {/* NTSブラケット下腕（水平→縦・シアン・丸角） */}
+      {/* NTSブラケット下腕（点線・同一スタイル） */}
       <path
         d="M0 150 H40 V100"
-        stroke="#22d3ee"
+        stroke="#93c5fd"
         strokeWidth="2"
         strokeLinecap="round"
         strokeLinejoin="round"
+        strokeDasharray="3 3"
       />
-      {/* 合流→Step01 出口矢印（太め・矢じりあり） */}
-      <path
-        d="M40 100 H76"
-        stroke="#1a56db"
-        strokeWidth="3.5"
-        strokeLinecap="round"
-        markerEnd="url(#merge-arrowhead)"
-      />
+      {/* 合流→Step01 出口矢印（StepArrow と同トーン） */}
+      <path d="M40 100 H72" stroke="#93c5fd" strokeWidth="2" strokeLinecap="round" strokeDasharray="3 3" />
+      <path d="m68 96 4 4-4 4" stroke="#1a56db" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }
