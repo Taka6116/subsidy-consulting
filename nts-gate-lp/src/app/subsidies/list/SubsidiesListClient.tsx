@@ -326,7 +326,7 @@ export default function SubsidiesListClient({
     <div className="space-y-6">
       {/* 圧縮Hero */}
       <section className="rounded-2xl border border-[#dbe3f0] bg-white px-6 py-7 shadow-sm md:px-8 md:py-8">
-        <div className="flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
+        <div className="flex flex-col gap-5 md:flex-row md:items-start md:justify-between">
           <div>
             <span className="inline-flex items-center rounded-full bg-[#eef3ff] px-3 py-1 text-xs font-bold text-[#1f3f85] ring-1 ring-[#dbe5fa]">
               補助金データベース
@@ -598,128 +598,27 @@ export default function SubsidiesListClient({
 }
 
 // ─────────────────────────────────────────────────────────────
-// Subsidy Signal Strip
+// Subsidy Status Panel  (Live Index Console)
 // ─────────────────────────────────────────────────────────────
 function useCountUp(target: number, enabled: boolean) {
   const [value, setValue] = useState(0);
   const rafRef = useRef<number | null>(null);
-
   useEffect(() => {
-    if (!enabled) {
-      setValue(target);
-      return;
-    }
-    if (target === 0) {
-      setValue(0);
-      return;
-    }
+    if (!enabled) { setValue(target); return; }
+    if (target === 0) { setValue(0); return; }
     const duration = 900;
     const start = performance.now();
     const tick = (now: number) => {
-      const elapsed = now - start;
-      const progress = Math.min(elapsed / duration, 1);
-      // ease-out cubic
+      const progress = Math.min((now - start) / duration, 1);
       const eased = 1 - (1 - progress) ** 3;
       setValue(Math.round(eased * target));
-      if (progress < 1) {
-        rafRef.current = requestAnimationFrame(tick);
-      } else {
-        setValue(target);
-      }
+      if (progress < 1) { rafRef.current = requestAnimationFrame(tick); }
+      else { setValue(target); }
     };
     rafRef.current = requestAnimationFrame(tick);
-    return () => {
-      if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
-    };
+    return () => { if (rafRef.current !== null) cancelAnimationFrame(rafRef.current); };
   }, [target, enabled]);
-
   return value;
-}
-
-function SignalCard({
-  label,
-  value,
-  tone,
-  role,
-  updatedAt,
-  prefersReduced,
-}: {
-  label: string;
-  value: number;
-  tone: "blue" | "emerald" | "amber";
-  role: "primary" | "secondary" | "signal";
-  updatedAt?: string;
-  prefersReduced: boolean;
-}) {
-  const displayed = useCountUp(value, !prefersReduced);
-
-  const borderCls =
-    tone === "emerald"
-      ? "border-emerald-200"
-      : tone === "amber"
-        ? "border-amber-200"
-        : "border-[#c8d9f3]";
-
-  const bgCls =
-    tone === "emerald"
-      ? "bg-emerald-50/70"
-      : tone === "amber"
-        ? "bg-amber-50/70"
-        : "bg-[#f3f7ff]";
-
-  const labelCls =
-    tone === "emerald"
-      ? "text-emerald-700"
-      : tone === "amber"
-        ? "text-amber-700"
-        : "text-[#3b5a9a]";
-
-  const valueCls =
-    tone === "emerald"
-      ? "text-emerald-800"
-      : tone === "amber"
-        ? "text-amber-800"
-        : "text-[#0d2640]";
-
-  const isPrimary = role === "primary";
-
-  return (
-    <div
-      className={`flex flex-col rounded-xl border px-4 py-3 transition-transform duration-200 hover:-translate-y-0.5 hover:shadow-md md:px-5 md:py-4 ${borderCls} ${bgCls} ${
-        isPrimary ? "ring-1 ring-emerald-300/60" : ""
-      }`}
-    >
-      {/* ラベル行 */}
-      <div className="flex items-center gap-1.5">
-        {/* 受付中のみパルスドット */}
-        {tone === "emerald" && (
-          <span className="relative flex h-2 w-2 shrink-0" aria-hidden>
-            {!prefersReduced && (
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-50" />
-            )}
-            <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
-          </span>
-        )}
-        <p className={`text-[11px] font-semibold uppercase tracking-wide ${labelCls}`}>
-          {label}
-        </p>
-      </div>
-
-      {/* 数値 */}
-      <p
-        className={`mt-1 tabular-nums ${valueCls} ${
-          isPrimary ? "text-2xl font-black md:text-3xl" : "text-xl font-black md:text-2xl"
-        }`}
-      >
-        {displayed.toLocaleString("ja-JP")}
-      </p>
-
-      {/* 母数サブ表示（登録件数のみ） */}
-      {updatedAt && (
-        <p className="mt-1 text-[10px] text-[#7a8fba]">更新 {updatedAt}</p>
-      )}
-    </div>
-  );
 }
 
 function SubsidySignalStrip({
@@ -733,47 +632,102 @@ function SubsidySignalStrip({
   const prefersReduced =
     typeof window !== "undefined" &&
     window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  useEffect(() => { setMounted(true); }, []);
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  const animate = mounted && !prefersReduced;
+  const dispAll  = useCountUp(counts.all,  animate);
+  const dispOpen = useCountUp(counts.open, animate);
+  const dispSoon = useCountUp(counts.soon, animate);
+
+  const openRatio = counts.all > 0 ? (counts.open / counts.all) * 100 : 0;
 
   return (
-    /*
-      PC: 3列横並び
-      SP: 2段（受付中を1列フル幅 → 登録件数+締切間近を2列）
-    */
-    <div className="grid grid-cols-2 gap-2 md:grid-cols-3 md:gap-3">
-      {/* 受付中：主役・SP で全幅 */}
-      <div className="col-span-2 md:col-span-1 md:order-2">
-        <SignalCard
-          label="受付中"
-          value={counts.open}
-          tone="emerald"
-          role="primary"
-          prefersReduced={!mounted || prefersReduced}
-        />
+    <div
+      className="w-full shrink-0 overflow-hidden rounded-2xl transition-transform duration-200 hover:-translate-y-0.5 md:w-[300px] lg:w-[320px]"
+      style={{
+        background: "linear-gradient(160deg, #ffffff 0%, #f0f5ff 100%)",
+        border: "1px solid rgba(16,24,40,0.08)",
+        boxShadow:
+          "0 1px 2px rgba(16,24,40,0.06), 0 4px 8px rgba(16,24,40,0.04), 0 12px 24px rgba(16,24,40,0.03)",
+      }}
+    >
+      {/* ── 上段: ヘッダー ── */}
+      <div
+        className="flex items-center justify-between px-4 py-2.5"
+        style={{ borderBottom: "1px solid rgba(16,24,40,0.06)" }}
+      >
+        <div className="flex items-center gap-1.5">
+          <span
+            className="inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-[#1f4dab]"
+            style={{ background: "rgba(31,77,171,0.08)" }}
+          >
+            収集状況
+          </span>
+        </div>
+        <span className="text-[10px] font-medium tabular-nums text-[#8898b4]">
+          更新 {latestUpdated}
+        </span>
       </div>
-      {/* 登録件数：母数・SP 左 */}
-      <div className="col-span-1 md:order-1">
-        <SignalCard
-          label="登録件数"
-          value={counts.all}
-          tone="blue"
-          role="secondary"
-          updatedAt={latestUpdated}
-          prefersReduced={!mounted || prefersReduced}
-        />
+
+      {/* ── 中段: メトリクス ── */}
+      <div className="px-4 py-4">
+        {/* 受付中: 主役 */}
+        <div className="mb-3 flex items-end justify-between">
+          <div>
+            <div className="flex items-center gap-1.5">
+              <span className="relative flex h-2 w-2 shrink-0" aria-hidden>
+                {!prefersReduced && mounted && (
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-40" />
+                )}
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
+              </span>
+              <p className="text-[11px] font-semibold tracking-wide text-emerald-700">受付中</p>
+            </div>
+            <p className="mt-0.5 tabular-nums text-[2.25rem] font-black leading-none tracking-tight text-emerald-800">
+              {dispOpen.toLocaleString("ja-JP")}
+            </p>
+          </div>
+          {/* 右: 収集済み + 期限注意の小表示 */}
+          <div className="flex flex-col items-end gap-2 pb-0.5">
+            <div className="text-right">
+              <p className="text-[10px] font-medium text-[#8898b4]">収集済み</p>
+              <p className="tabular-nums text-[15px] font-black text-[#1e3060]">
+                {dispAll.toLocaleString("ja-JP")}
+              </p>
+            </div>
+            <div className="text-right">
+              <p className="text-[10px] font-medium text-[#8898b4]">期限注意</p>
+              <p className="tabular-nums text-[15px] font-black text-amber-700">
+                {dispSoon.toLocaleString("ja-JP")}
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
-      {/* 締切間近：シグナル・SP 右 */}
-      <div className="col-span-1 md:order-3">
-        <SignalCard
-          label="締切間近"
-          value={counts.soon}
-          tone="amber"
-          role="signal"
-          prefersReduced={!mounted || prefersReduced}
-        />
+
+      {/* ── 下段: データレール ── */}
+      <div
+        className="px-4 pb-3"
+        style={{ borderTop: "1px solid rgba(16,24,40,0.05)" }}
+      >
+        <div className="mt-3 flex items-center gap-2">
+          <div
+            className="relative h-1.5 flex-1 overflow-hidden rounded-full"
+            style={{ background: "rgba(16,24,40,0.06)" }}
+            aria-label={`受付中比率 ${Math.round(openRatio)}%`}
+          >
+            <div
+              className="h-full rounded-full bg-emerald-400/70 transition-[width] duration-1000"
+              style={{ width: mounted ? `${openRatio}%` : "0%" }}
+            />
+          </div>
+          <span className="shrink-0 tabular-nums text-[10px] font-semibold text-[#8898b4]">
+            {Math.round(openRatio)}%
+          </span>
+        </div>
+        <p className="mt-1.5 text-[10px] text-[#a0aec0]">
+          受付中 / 収集済み
+        </p>
       </div>
     </div>
   );
