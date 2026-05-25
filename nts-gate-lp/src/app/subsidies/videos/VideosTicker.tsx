@@ -76,10 +76,10 @@ export default function VideosTicker({ videos }: { videos: VideoCard[] }) {
     <div className="border-y border-[#dbeafe] bg-[#eff6ff]">
       <div className="flex items-stretch">
         {/* 固定ラベル */}
-        <div className="flex shrink-0 items-center gap-2 border-r border-[#dbeafe] bg-[#0e357f] px-4 py-3 sm:px-5">
-          <span className="flex h-2 w-2 animate-pulse rounded-full bg-[#60a5fa]" aria-hidden />
+        <div className="flex shrink-0 items-center gap-2 border-r border-[#93c5fd]/40 px-4 py-3 shadow-sm sm:px-5 [background:var(--nts-gradient-primary)]">
+          <span className="flex h-2 w-2 animate-pulse rounded-full bg-white/90" aria-hidden />
           <p className="whitespace-nowrap text-xs font-bold text-white sm:text-sm">
-            次に見られている動画
+            よく見られている動画
           </p>
         </div>
 

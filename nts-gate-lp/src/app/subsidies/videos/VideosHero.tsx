@@ -154,16 +154,17 @@ export default function VideosHero() {
             {/* H1 */}
             <h1
               id="videos-hero-heading"
-              className="font-heading text-[clamp(2.2rem,4.5vw,3.6rem)] font-black leading-tight tracking-tight text-[#111827]"
-              style={{ fontFamily: "'Noto Sans JP', sans-serif" }}
+              className="font-heading text-[clamp(2.875rem,4.1vw,4.5rem)] font-black leading-[1.14] tracking-tight text-[#081C44]"
             >
               使える補助金を、
               <br />
-              <span className="text-[#0e357f]">1分で要点確認。</span>
+              <span className="bg-gradient-to-r from-[#0EA5E9] to-[#006FE6] bg-clip-text text-transparent">
+                1分で要点確認。
+              </span>
             </h1>
 
             {/* サブコピー */}
-            <p className="mt-5 text-[16px] leading-relaxed text-slate-600">
+            <p className="mt-5 max-w-[560px] text-[clamp(1rem,1.1vw,1.1875rem)] font-semibold leading-[1.95] tracking-wide text-[#102C54]">
               金額、対象企業、活用方法、申請前の注意点まで。
               <br className="hidden sm:block" />
               忙しい中小企業の経営者が、まず見るべきポイントだけを
@@ -174,7 +175,7 @@ export default function VideosHero() {
             <div className="mt-8 flex flex-wrap gap-3">
               <Link
                 href="#video-list"
-                className="inline-flex items-center gap-2 rounded-xl bg-[#0e357f] px-6 py-3 text-sm font-bold text-white shadow-md transition hover:bg-[#1a4fa0] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0e357f]"
+                className="inline-flex h-[52px] items-center justify-center gap-2 rounded-xl px-6 text-sm font-black text-white shadow-[0_20px_42px_rgba(7,91,216,.30)] transition hover:-translate-y-0.5 hover:brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#075BD8] [background:var(--nts-gradient-primary)] sm:text-base"
               >
                 <svg viewBox="0 0 16 16" fill="currentColor" className="h-4 w-4">
                   <path d="M8 0C3.58 0 0 3.58 0 8s3.58 8 8 8 8-3.58 8-8-3.58-8-8-8zm-1 11.5V4.5l5 3.5-5 3.5z" />
@@ -183,7 +184,7 @@ export default function VideosHero() {
               </Link>
               <Link
                 href="/consult"
-                className="inline-flex items-center gap-2 rounded-xl border border-[#0e357f]/30 bg-white px-6 py-3 text-sm font-bold text-[#0e357f] transition hover:bg-[#eff6ff] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0e357f]"
+                className="inline-flex h-[52px] items-center justify-center gap-2 rounded-xl px-6 text-sm font-black text-white shadow-[0_20px_42px_rgba(13,148,136,.28)] transition hover:-translate-y-0.5 hover:brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0d9488] [background:var(--nts-gradient-check)] sm:text-base"
               >
                 自社に合う補助金を相談
               </Link>
