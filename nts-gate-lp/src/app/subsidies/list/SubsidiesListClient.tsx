@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { ArrowRight, Search, X } from "lucide-react";
 
@@ -338,23 +338,10 @@ export default function SubsidiesListClient({
               自治体・業種・目的・締切から、自社に合う補助金情報を確認できます。
             </p>
           </div>
-          <div className="grid grid-cols-3 gap-2 text-center md:gap-3">
-            <div className="rounded-xl border border-[#e2e8f4] bg-[#f7faff] px-3 py-2.5">
-              <p className="text-[11px] font-medium text-[#5b6b8c]">登録件数</p>
-              <p className="text-lg font-black text-[#0d2640] md:text-xl">{counts.all.toLocaleString("ja-JP")}</p>
-            </div>
-            <div className="rounded-xl border border-emerald-100 bg-emerald-50/60 px-3 py-2.5">
-              <p className="text-[11px] font-medium text-emerald-700">受付中</p>
-              <p className="text-lg font-black text-emerald-700 md:text-xl">{counts.open.toLocaleString("ja-JP")}</p>
-            </div>
-            <div className="rounded-xl border border-amber-100 bg-amber-50/60 px-3 py-2.5">
-              <p className="text-[11px] font-medium text-amber-700">締切間近</p>
-              <p className="text-lg font-black text-amber-700 md:text-xl">{counts.soon.toLocaleString("ja-JP")}</p>
-            </div>
-          </div>
+          <SubsidySignalStrip counts={counts} latestUpdated={latestUpdated} />
         </div>
         <p className="mt-4 text-[11px] text-[#6b7a99]">
-          最終更新 {latestUpdated} / 全国の自治体・省庁ページから自動収集
+          全国の自治体・省庁ページから自動収集
         </p>
       </section>
 
@@ -606,6 +593,188 @@ export default function SubsidiesListClient({
           </div>
         </aside>
       </section>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────
+// Subsidy Signal Strip
+// ─────────────────────────────────────────────────────────────
+function useCountUp(target: number, enabled: boolean) {
+  const [value, setValue] = useState(0);
+  const rafRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    if (!enabled) {
+      setValue(target);
+      return;
+    }
+    if (target === 0) {
+      setValue(0);
+      return;
+    }
+    const duration = 900;
+    const start = performance.now();
+    const tick = (now: number) => {
+      const elapsed = now - start;
+      const progress = Math.min(elapsed / duration, 1);
+      // ease-out cubic
+      const eased = 1 - (1 - progress) ** 3;
+      setValue(Math.round(eased * target));
+      if (progress < 1) {
+        rafRef.current = requestAnimationFrame(tick);
+      } else {
+        setValue(target);
+      }
+    };
+    rafRef.current = requestAnimationFrame(tick);
+    return () => {
+      if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
+    };
+  }, [target, enabled]);
+
+  return value;
+}
+
+function SignalCard({
+  label,
+  value,
+  tone,
+  role,
+  updatedAt,
+  prefersReduced,
+}: {
+  label: string;
+  value: number;
+  tone: "blue" | "emerald" | "amber";
+  role: "primary" | "secondary" | "signal";
+  updatedAt?: string;
+  prefersReduced: boolean;
+}) {
+  const displayed = useCountUp(value, !prefersReduced);
+
+  const borderCls =
+    tone === "emerald"
+      ? "border-emerald-200"
+      : tone === "amber"
+        ? "border-amber-200"
+        : "border-[#c8d9f3]";
+
+  const bgCls =
+    tone === "emerald"
+      ? "bg-emerald-50/70"
+      : tone === "amber"
+        ? "bg-amber-50/70"
+        : "bg-[#f3f7ff]";
+
+  const labelCls =
+    tone === "emerald"
+      ? "text-emerald-700"
+      : tone === "amber"
+        ? "text-amber-700"
+        : "text-[#3b5a9a]";
+
+  const valueCls =
+    tone === "emerald"
+      ? "text-emerald-800"
+      : tone === "amber"
+        ? "text-amber-800"
+        : "text-[#0d2640]";
+
+  const isPrimary = role === "primary";
+
+  return (
+    <div
+      className={`flex flex-col rounded-xl border px-4 py-3 transition-transform duration-200 hover:-translate-y-0.5 hover:shadow-md md:px-5 md:py-4 ${borderCls} ${bgCls} ${
+        isPrimary ? "ring-1 ring-emerald-300/60" : ""
+      }`}
+    >
+      {/* ラベル行 */}
+      <div className="flex items-center gap-1.5">
+        {/* 受付中のみパルスドット */}
+        {tone === "emerald" && (
+          <span className="relative flex h-2 w-2 shrink-0" aria-hidden>
+            {!prefersReduced && (
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-50" />
+            )}
+            <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
+          </span>
+        )}
+        <p className={`text-[11px] font-semibold uppercase tracking-wide ${labelCls}`}>
+          {label}
+        </p>
+      </div>
+
+      {/* 数値 */}
+      <p
+        className={`mt-1 tabular-nums ${valueCls} ${
+          isPrimary ? "text-2xl font-black md:text-3xl" : "text-xl font-black md:text-2xl"
+        }`}
+      >
+        {displayed.toLocaleString("ja-JP")}
+      </p>
+
+      {/* 母数サブ表示（登録件数のみ） */}
+      {updatedAt && (
+        <p className="mt-1 text-[10px] text-[#7a8fba]">更新 {updatedAt}</p>
+      )}
+    </div>
+  );
+}
+
+function SubsidySignalStrip({
+  counts,
+  latestUpdated,
+}: {
+  counts: { all: number; open: number; soon: number };
+  latestUpdated: string;
+}) {
+  const [mounted, setMounted] = useState(false);
+  const prefersReduced =
+    typeof window !== "undefined" &&
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  return (
+    /*
+      PC: 3列横並び
+      SP: 2段（受付中を1列フル幅 → 登録件数+締切間近を2列）
+    */
+    <div className="grid grid-cols-2 gap-2 md:grid-cols-3 md:gap-3">
+      {/* 受付中：主役・SP で全幅 */}
+      <div className="col-span-2 md:col-span-1 md:order-2">
+        <SignalCard
+          label="受付中"
+          value={counts.open}
+          tone="emerald"
+          role="primary"
+          prefersReduced={!mounted || prefersReduced}
+        />
+      </div>
+      {/* 登録件数：母数・SP 左 */}
+      <div className="col-span-1 md:order-1">
+        <SignalCard
+          label="登録件数"
+          value={counts.all}
+          tone="blue"
+          role="secondary"
+          updatedAt={latestUpdated}
+          prefersReduced={!mounted || prefersReduced}
+        />
+      </div>
+      {/* 締切間近：シグナル・SP 右 */}
+      <div className="col-span-1 md:order-3">
+        <SignalCard
+          label="締切間近"
+          value={counts.soon}
+          tone="amber"
+          role="signal"
+          prefersReduced={!mounted || prefersReduced}
+        />
+      </div>
     </div>
   );
 }
