@@ -161,17 +161,17 @@ export default function LpPurposeHero({
           <div className="mt-7 flex flex-col gap-3 sm:flex-row xl:mt-9 xl:gap-4">
             <Link
               href="/check"
-              className="inline-flex h-[52px] items-center justify-center gap-2 rounded-xl bg-[#075BD8] px-6 text-sm font-black text-white shadow-[0_20px_42px_rgba(7,91,216,.30)] transition hover:-translate-y-0.5 hover:bg-[#044BB8] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#075BD8] xl:h-14 xl:px-8 xl:text-base"
+              className="inline-flex h-[52px] items-center justify-center gap-2 rounded-xl px-6 text-sm font-black text-white shadow-[0_20px_42px_rgba(7,91,216,.30)] transition hover:-translate-y-0.5 hover:brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#075BD8] [background:var(--nts-gradient-primary)] xl:h-14 xl:px-8 xl:text-base"
             >
               自社に合う制度を確認する
               <ArrowRight className="h-5 w-5 rounded-full bg-white/18 p-1" />
             </Link>
             <Link
               href="/consult"
-              className="inline-flex h-[52px] items-center justify-center gap-2 rounded-xl border-2 border-[#081C44] bg-white/70 px-6 text-sm font-black text-[#081C44] shadow-sm backdrop-blur-md transition hover:-translate-y-0.5 hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#075BD8] xl:h-14 xl:px-8 xl:text-base"
+              className="inline-flex h-[52px] items-center justify-center gap-2 rounded-xl px-6 text-sm font-black text-white shadow-[0_20px_42px_rgba(13,148,136,.28)] transition hover:-translate-y-0.5 hover:brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0d9488] [background:var(--nts-gradient-check)] xl:h-14 xl:px-8 xl:text-base"
             >
               相談予約する
-              <ArrowRight className="h-5 w-5 rounded-full bg-[#EEF4FF] p-1 text-[#075BD8]" />
+              <ArrowRight className="h-5 w-5 rounded-full bg-white/18 p-1" />
             </Link>
           </div>
 

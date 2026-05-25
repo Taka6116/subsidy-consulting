@@ -614,7 +614,11 @@ export default function SubsidiesLpClient({
                 onClick={() => setTab(t.key)}
                 className={`inline-flex shrink-0 items-center gap-1.5 rounded-full border px-3.5 py-2 text-sm font-semibold transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0B4F8A] ${
                   active
-                    ? "border-[#0B4F8A] bg-[#0B4F8A] text-white"
+                    ? t.key === "soon"
+                      ? "border-transparent text-white shadow-sm [background:linear-gradient(135deg,#b91c1c_0%,#ef4444_55%,#f97316_100%)]"
+                      : t.key === "closed"
+                        ? "border-transparent text-white shadow-sm [background:linear-gradient(135deg,#374151_0%,#6b7280_55%,#9ca3af_100%)]"
+                        : "border-transparent text-white shadow-sm [background:var(--nts-gradient-primary)]"
                     : "border-transparent bg-slate-100 text-slate-700 hover:bg-slate-200"
                 }`}
               >
@@ -857,11 +861,11 @@ function LpResultCard({ card }: { card: UnifiedCard }) {
           {/* 右上：ステータス */}
           <div className="absolute right-3 top-3">
             {card.expired ? (
-              <span className="inline-flex items-center rounded-full bg-slate-500/90 px-2.5 py-1 text-xs font-bold text-white shadow-sm backdrop-blur-sm">
+              <span className="inline-flex items-center rounded-full px-2.5 py-1 text-xs font-bold text-white shadow-sm [background:linear-gradient(135deg,#374151_0%,#6b7280_55%,#9ca3af_100%)]">
                 受付終了
               </span>
             ) : card.soon ? (
-              <span className="inline-flex items-center rounded-full bg-amber-500 px-2.5 py-1 text-xs font-bold text-white shadow-sm">
+              <span className="inline-flex items-center rounded-full px-2.5 py-1 text-xs font-bold text-white shadow-sm [background:linear-gradient(135deg,#b91c1c_0%,#ef4444_55%,#f97316_100%)]">
                 締切間近
               </span>
             ) : card.alwaysOpen ? (
@@ -869,7 +873,7 @@ function LpResultCard({ card }: { card: UnifiedCard }) {
                 随時受付
               </span>
             ) : (
-              <span className="inline-flex items-center rounded-full bg-emerald-500 px-2.5 py-1 text-xs font-bold text-white shadow-sm">
+              <span className="inline-flex items-center rounded-full px-2.5 py-1 text-xs font-bold text-white shadow-sm [background:var(--nts-gradient-primary)]">
                 受付中
               </span>
             )}
@@ -932,7 +936,7 @@ function LpResultCard({ card }: { card: UnifiedCard }) {
 
           {/* 主CTA（mt-autoでカード下部に押し込み、3カラムで位置揃え） */}
           <div className="mt-auto pt-4">
-            <span className="inline-flex h-11 w-full items-center justify-center gap-1.5 rounded-xl bg-[#0B4F8A] px-4 text-sm font-bold text-white transition group-hover:bg-[#083D6D]">
+            <span className="inline-flex h-11 w-full items-center justify-center gap-1.5 rounded-xl px-4 text-sm font-bold text-white shadow-sm transition group-hover:brightness-110 [background:var(--nts-gradient-primary)]">
               専門LPを見る
               <ArrowRight className="h-4 w-4 transition group-hover:translate-x-0.5" />
               {isExternal ? <span className="sr-only">（特集LP）</span> : null}
