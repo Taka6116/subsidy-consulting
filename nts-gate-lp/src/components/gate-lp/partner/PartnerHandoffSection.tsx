@@ -3,6 +3,12 @@
 import Image from "next/image";
 import { motion, useReducedMotion } from "framer-motion";
 import ScrollTextReveal from "@/components/shared/ScrollTextReveal";
+import iso16 from "../../../../icon-assets/isometric_16.webp";
+import iso08 from "../../../../icon-assets/isometric_08.webp";
+import iso23 from "../../../../icon-assets/isometric23.webp";
+import iso21 from "../../../../icon-assets/isometric_21.webp";
+import iso20 from "../../../../icon-assets/isometric_20.webp";
+import iso07 from "../../../../icon-assets/isometric_07.png";
 
 // ─────────────────────────────────────────────────────────────
 // アニメーション
@@ -32,24 +38,35 @@ const NTS_LABELS = [
 const STEPS = [
   {
     no: "01",
+    tag: "整理",
     title: "課題を一緒に特定",
-    sub: "顧客課題や投資対象などを整理",
+    sub: "顧客課題を言語化",
     icon: "dig" as IconKey,
-    imgSrc: "/images/icon_doc_search.png",
+    isoImg: iso23,
   },
   {
     no: "02",
+    tag: "検討",
     title: "選択肢を広げる",
-    sub: "補助金活用も含めて検討",
+    sub: "補助金・支援策を\n追加提案",
     icon: "branch" as IconKey,
-    imgSrc: "/images/icon_branches.png",
+    isoImg: iso21,
   },
   {
     no: "03",
+    tag: "提案",
     title: "提案を前へ進める",
-    sub: "実現性と提案品質を高める",
+    sub: "資料・説明・実行を支援",
     icon: "trend" as IconKey,
-    imgSrc: "/images/icon_growth.png",
+    isoImg: iso20,
+  },
+  {
+    no: "04",
+    tag: "伴走",
+    title: "お客様の前進へ",
+    sub: "導入後の次の一手へ接続",
+    icon: "flag" as IconKey,
+    isoImg: iso07,
   },
 ];
 
@@ -198,38 +215,51 @@ function Icon({ type, className = "h-4 w-4" }: { type: IconKey; className?: stri
 }
 
 // ─────────────────────────────────────────────────────────────
-// 左：御社 / NTS 入力ブロック
+// 左：御社 / NTS 入力ブロック（3列グリッド：actor | items | ─合流線側─）
 // ─────────────────────────────────────────────────────────────
 function SourceBlock({
   label,
-  sub,
+  sub1,
+  sub2,
+  isoImg,
   items,
 }: {
   label: string;
-  sub: string;
-  variant: "partner" | "nts";
+  sub1: string;
+  sub2: string;
+  isoImg: Parameters<typeof Image>[0]["src"];
   items: { text: string; icon: IconKey }[];
 }) {
   return (
-    <div className="flex items-stretch gap-3">
-      {/* 円形起点 */}
-      <div className="flex shrink-0 flex-col items-center justify-center">
-        <div className="flex h-[78px] w-[78px] items-center justify-center rounded-full border-[2.5px] border-[#93c5fd] bg-gradient-to-br from-[#eef4ff] to-white shadow-[0_6px_18px_rgba(26,86,219,0.12)]">
-          <Icon type="building" className="h-10 w-10 text-[#1a56db]" />
+    /* actor 列 + items 列 を揃えるために幅を固定して flex で並べる */
+    <div className="flex items-center gap-5">
+      {/* ── actor 列：isometric カード + ラベル（w-[120px] 固定） ── */}
+      <div className="flex w-[120px] shrink-0 flex-col items-center gap-1">
+        <div className="relative h-[96px] w-[96px] overflow-hidden rounded-2xl border border-[#cdddf0] bg-gradient-to-br from-[#eef4ff] to-white shadow-[0_6px_18px_rgba(26,86,219,0.12)]">
+          <Image
+            src={isoImg}
+            alt=""
+            fill
+            sizes="96px"
+            quality={90}
+            className="object-contain p-1.5"
+            aria-hidden
+          />
         </div>
-        <p className="mt-1.5 text-[14px] font-bold text-[#071b46]">{label}</p>
-        <p className="text-[10.5px] font-semibold text-[#5a7a9a]">{sub}</p>
+        <p className="mt-0.5 text-[13px] font-bold text-[#071b46]">{label}</p>
+        <p className="text-center text-[10px] font-semibold leading-[1.4] text-[#5a7a9a]">{sub1}</p>
+        <p className="text-center text-[10px] font-semibold leading-[1.4] text-[#5a7a9a]">{sub2}</p>
       </div>
 
-      {/* ラベル */}
-      <ul className="flex flex-1 flex-col justify-center gap-1.5">
+      {/* ── items 列：3枚のカード（PC:192px固定, SP:flex-1で伸縮） ── */}
+      <ul className="flex flex-1 flex-col gap-[6px] lg:w-[192px] lg:flex-none">
         {items.map((item) => (
           <li
             key={item.text}
-            className="flex items-center gap-2 rounded-lg border border-[#d8e6f5] bg-white px-2.5 py-1.5 shadow-[0_2px_8px_rgba(12,42,72,0.05)]"
+            className="flex h-[44px] items-center gap-3 rounded-lg border border-[#d8e6f5] bg-white px-3 shadow-[0_2px_8px_rgba(12,42,72,0.05)]"
           >
-            <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-[#eef4ff] text-[#1a56db]">
-              <Icon type={item.icon} className="h-3.5 w-3.5" />
+            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-[#eef4ff] text-[#1a56db]">
+              <Icon type={item.icon} className="h-4 w-4" />
             </span>
             <span className="text-[12px] font-semibold leading-tight text-[#1e3a5f]">{item.text}</span>
           </li>
@@ -240,37 +270,43 @@ function SourceBlock({
 }
 
 // ─────────────────────────────────────────────────────────────
-// 中央：3ステップカード
+// 中央：ステップカード（isometric 画像付き）
 // ─────────────────────────────────────────────────────────────
 function StepCard({
   no,
+  tag,
   title,
   sub,
   icon,
-  imgSrc,
+  isoImg,
 }: {
   no: string;
+  tag: string;
   title: string;
   sub: string;
   icon: IconKey;
-  imgSrc?: string;
+  isoImg?: Parameters<typeof Image>[0]["src"];
 }) {
   return (
-    <div className="relative flex flex-col items-center rounded-xl border border-[#cdddf0] bg-white px-3 py-5 shadow-[0_4px_14px_rgba(12,42,72,0.06)] lg:px-4 lg:py-6">
+    <div className="relative flex flex-col items-center rounded-xl border border-[#cdddf0] bg-white px-3 pb-4 pt-7 shadow-[0_4px_14px_rgba(12,42,72,0.06)] lg:px-4 lg:pb-5 lg:pt-8">
       {/* 番号バッジ */}
-      <span className="absolute -top-3 flex h-7 w-7 items-center justify-center rounded-full bg-[#1a56db] text-[11px] font-bold text-white shadow-md">
+      <span className="absolute -top-3.5 left-1/2 -translate-x-1/2 flex h-7 min-w-[28px] items-center justify-center rounded-full bg-[#1a56db] px-2 text-[11px] font-bold text-white shadow-md">
         {no}
       </span>
-      {/* アイコン：imgSrc があれば画像、なければSVG */}
-      {imgSrc ? (
-        <div className="relative mt-2 h-10 w-10">
+      {/* タグ */}
+      <span className="mb-1 rounded-full bg-[#eef4ff] px-2.5 py-0.5 text-[10px] font-bold tracking-wide text-[#1a56db]">
+        {tag}
+      </span>
+      {/* isometric 画像 */}
+      {isoImg ? (
+        <div className="relative mt-1 h-[88px] w-full max-w-[120px]">
           <Image
-            src={imgSrc}
+            src={isoImg}
             alt=""
             fill
-            quality={100}
+            quality={90}
             className="object-contain"
-            sizes="40px"
+            sizes="120px"
             aria-hidden
           />
         </div>
@@ -279,8 +315,8 @@ function StepCard({
           <Icon type={icon} className="h-5 w-5" />
         </span>
       )}
-      <h4 className="mt-3 text-[14px] font-bold leading-tight text-[#071b46] lg:text-[15px]">{title}</h4>
-      <p className="mt-1.5 text-center text-[11px] leading-snug text-[#5a7a9a] lg:text-[11.5px]">{sub}</p>
+      <h4 className="mt-2 text-[13px] font-bold leading-tight text-[#071b46] lg:text-[14px]">{title}</h4>
+      <p className="mt-1.5 whitespace-pre-line text-center text-[11px] leading-snug text-[#5a7a9a] lg:text-[11.5px]">{sub}</p>
     </div>
   );
 }
@@ -338,39 +374,6 @@ function MergeConnector() {
 }
 
 // ─────────────────────────────────────────────────────────────
-// 中央→右：到達線
-// ─────────────────────────────────────────────────────────────
-function FinishConnector() {
-  return (
-    <div className="flex items-center justify-center" aria-hidden>
-      <svg width="56" height="14" viewBox="0 0 56 14" fill="none">
-        <path d="M2 7h44" stroke="#93c5fd" strokeWidth="2" strokeLinecap="round" strokeDasharray="3 3" />
-        <path d="m44 3 4 4-4 4" stroke="#1a56db" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-      </svg>
-    </div>
-  );
-}
-
-// ─────────────────────────────────────────────────────────────
-// 右ゴール
-// ─────────────────────────────────────────────────────────────
-function Goal() {
-  return (
-    <div className="flex flex-col items-center justify-center gap-2.5 rounded-xl border border-[#cdddf0] bg-[#eef4ff]/60 px-4 py-5 shadow-[0_4px_14px_rgba(12,42,72,0.06)]">
-      <span className="flex h-10 w-10 items-center justify-center rounded-full border border-[#cdddf0] bg-white text-[#1a56db] shadow-sm">
-        <Icon type="flag" className="h-5 w-5" />
-      </span>
-      <p className="text-center text-[14px] font-bold leading-tight text-[#071b46] lg:text-[15px]">
-        お客様の前進へ
-      </p>
-      <p className="text-center text-[10.5px] leading-snug text-[#5a7a9a] lg:text-[11px]">
-        提案・導入・活用まで<br className="hidden lg:inline" />次の一歩に接続
-      </p>
-    </div>
-  );
-}
-
-// ─────────────────────────────────────────────────────────────
 // セクション本体
 // ─────────────────────────────────────────────────────────────
 export default function PartnerHandoffSection() {
@@ -392,14 +395,14 @@ export default function PartnerHandoffSection() {
             id="joint-progress-heading"
             className="font-heading text-3xl font-bold leading-tight text-[var(--text-primary)] md:text-4xl"
           >
-            御社とともに、
+            御社の顧客接点に、
             <br />
-            お客様の前進を支える連携へ。
+            NTSの補助金活用支援を加える。
           </ScrollTextReveal>
           <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-[var(--text-secondary)] md:text-lg">
-            お客様の課題を一緒に深く捉え、提案や事業の前進につながる選択肢をともに考える。
+            顧客課題の整理から、補助金活用、提案・導入後の伴走まで。
             <br className="hidden md:inline" />
-            NTSは補助金活用の視点も添えながら、御社の顧客支援と提案活動をバックアップします。
+            御社の提案活動をバックアップし、お客様の次の一手を支援します。
           </p>
         </motion.div>
 
@@ -414,40 +417,67 @@ export default function PartnerHandoffSection() {
             │ 左 source │ 合流 │ 3ステップ（→区切り）     │ 到達 │ ゴール│
             └──────────┴──────┴─────────────────────────┴──────┴─────┘
           */}
-          <div className="grid grid-cols-[minmax(260px,24%)_64px_minmax(420px,1fr)_64px_minmax(140px,160px)] items-center gap-3">
-            {/* 左: 御社 / NTS（上下2段） */}
-            <div className="flex flex-col gap-10">
-              <SourceBlock label="御社" sub="顧客理解" variant="partner" items={PARTNER_LABELS} />
-              <SourceBlock label="NTS" sub="支援視点" variant="nts" items={NTS_LABELS} />
+          {/*
+            ┌─────────────────────────┬────────┬────────────────────────────────┐
+            │ 左 source（御社/NTS）    │ 合流線 │ 4ステップ（→区切り）            │
+            └─────────────────────────┴────────┴────────────────────────────────┘
+            左ゾーン幅: actor(120px) + gap(20px) + items(192px) = 332px
+          */}
+          <div className="grid grid-cols-[332px_64px_1fr] items-center gap-4 xl:grid-cols-[360px_72px_1fr]">
+            {/* 左: 御社 / NTS（上下2段、縦gap 48px） */}
+            <div className="flex flex-col gap-12">
+              <SourceBlock
+                label="御社"
+                sub1="顧客をよく知る"
+                sub2="営業・支援パートナー"
+                isoImg={iso16}
+                items={PARTNER_LABELS}
+              />
+              <SourceBlock
+                label="NTS"
+                sub1="補助金活用と"
+                sub2="提案支援の専門パートナー"
+                isoImg={iso08}
+                items={NTS_LABELS}
+              />
             </div>
 
             {/* 直角合流線 */}
-            <div className="h-full min-h-[240px]">
+            <div className="h-full min-h-[280px]">
               <MergeConnector />
             </div>
 
-            {/* 中央: 3ステップ + ステップ間矢印 */}
-            <div className="grid grid-cols-[1fr_auto_1fr_auto_1fr] items-center gap-3 lg:gap-4">
+            {/* 中央: 4ステップ + ステップ間矢印 */}
+            <div className="grid grid-cols-[1fr_auto_1fr_auto_1fr_auto_1fr] items-center gap-2 lg:gap-3">
               <StepCard {...STEPS[0]} />
               <StepArrow />
               <StepCard {...STEPS[1]} />
               <StepArrow />
               <StepCard {...STEPS[2]} />
+              <StepArrow />
+              <StepCard {...STEPS[3]} />
             </div>
-
-            {/* 到達線 */}
-            <FinishConnector />
-
-            {/* 右: ゴール */}
-            <Goal />
           </div>
         </motion.div>
 
         {/* ── SP 縦構成 ── */}
         <div className="mt-10 space-y-5 lg:hidden">
-          <motion.div className="space-y-5 rounded-2xl border border-[#d0e4f6] bg-white/95 p-4" {...reveal(0.06)}>
-            <SourceBlock label="御社" sub="顧客理解" variant="partner" items={PARTNER_LABELS} />
-            <SourceBlock label="NTS" sub="支援視点" variant="nts" items={NTS_LABELS} />
+          <motion.div className="space-y-6 rounded-2xl border border-[#d0e4f6] bg-white/95 p-5" {...reveal(0.06)}>
+            <SourceBlock
+              label="御社"
+              sub1="顧客をよく知る"
+              sub2="営業・支援パートナー"
+              isoImg={iso16}
+              items={PARTNER_LABELS}
+            />
+            <div className="border-t border-[#e8f0fb]" />
+            <SourceBlock
+              label="NTS"
+              sub1="補助金活用と"
+              sub2="提案支援の専門パートナー"
+              isoImg={iso08}
+              items={NTS_LABELS}
+            />
           </motion.div>
 
           {/* SP合流ラベル */}
@@ -479,11 +509,6 @@ export default function PartnerHandoffSection() {
               </div>
             ))}
           </motion.div>
-
-          {/* SP ゴール */}
-          <motion.div className="flex justify-center pt-2" {...reveal(0.18)}>
-            <Goal />
-          </motion.div>
         </div>
 
         {/* ── CTA ── */}
@@ -496,9 +521,9 @@ export default function PartnerHandoffSection() {
               <Icon type="people" className="h-5 w-5" />
             </span>
             <div>
-              <p className="text-base font-bold text-[#1a56db]">まずは案件のご相談から</p>
+              <p className="text-base font-bold text-[#1a56db]">この案件、補助金が使えるか？からご相談ください。</p>
               <p className="mt-1 text-sm leading-relaxed text-[var(--text-secondary)]">
-                提案中の案件や、今後のご計画についてお気軽にご相談ください。
+                提案中の案件や、今後の事業計画について、まずは気軽にご相談ください。
               </p>
             </div>
           </div>
@@ -506,7 +531,7 @@ export default function PartnerHandoffSection() {
             href="#contact"
             className="nts-cta-primary nts-cta-primary--xl shrink-0 gap-1 px-6 py-3 text-sm focus-visible:ring-2 focus-visible:ring-[#1368d8] focus-visible:ring-offset-2"
           >
-            案件のご相談はこちら
+            補助金活用の可能性を相談する
             <span aria-hidden>›</span>
           </a>
         </motion.div>

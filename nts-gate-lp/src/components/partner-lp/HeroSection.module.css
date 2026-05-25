@@ -464,22 +464,30 @@
 }
 
 .btnS {
-  padding: 12px 28px;
-  background: transparent;
-  color: var(--accent-navy);
-  border: 2px solid var(--accent-navy);
+  padding: 14px 32px;
+  background: var(--nts-gradient-check, linear-gradient(135deg, #0d9488 0%, #00b894 52%, #2dd4bf 100%));
+  color: #fff;
+  border: none;
   border-radius: 8px;
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 700;
+  font-family: var(--font-heading);
   cursor: pointer;
   letter-spacing: 0.04em;
-  transition: all 0.25s;
+  transition:
+    filter 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
   text-decoration: none;
+  box-shadow: 0 14px 32px rgba(0, 184, 148, 0.22);
 }
 
 .btnS:hover {
-  background: var(--accent-navy);
+  background: var(--nts-gradient-check, linear-gradient(135deg, #0d9488 0%, #00b894 52%, #2dd4bf 100%));
   color: #fff;
+  filter: brightness(1.06);
+  transform: translateY(-1px);
+  box-shadow: 0 16px 36px rgba(0, 184, 148, 0.28);
 }
 
 /* ── ロゴ帯上のセクションラベル ──────────────────────────── */

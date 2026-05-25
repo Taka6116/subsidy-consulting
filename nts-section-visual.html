@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NTS 補助金セクション</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Hiragino Sans', 'Meiryo', sans-serif; background: #f5f7fa; color: #2d3748; }
+
+  .section-wrapper {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 72px 24px;
+  }
+
+  /* ===== HEADER ===== */
+  .section-eyebrow {
+    text-align: center;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    color: #4a7fb5;
+    margin-bottom: 14px;
+    text-transform: uppercase;
+  }
+  .section-title {
+    text-align: center;
+    font-size: 24px;
+    font-weight: 900;
+    color: #1a2d4e;
+    margin-bottom: 10px;
+    line-height: 1.5;
+  }
+  .section-subtitle {
+    text-align: center;
+    font-size: 13px;
+    color: #718096;
+    margin-bottom: 56px;
+    line-height: 1.8;
+  }
+
+  /* ===== COLUMN LABELS ===== */
+  .col-labels {
+    display: grid;
+    grid-template-columns: 190px 1fr 1fr 160px;
+    gap: 12px;
+    margin-bottom: 8px;
+    padding: 0 0 0 0;
+  }
+  .col-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    color: #a0aec0;
+    text-align: center;
+    padding-bottom: 6px;
+    border-bottom: 1px solid #e2e8f0;
+  }
+
+  /* ===== CASE CARD ===== */
+  .case-card {
+    background: white;
+    border-radius: 12px;
+    border: 1px solid #e8edf4;
+    margin-bottom: 16px;
+    display: grid;
+    grid-template-columns: 190px 1fr 1fr 160px;
+    gap: 0;
+    overflow: hidden;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.04);
+  }
+
+  /* INDUSTRY TAG SIDEBAR */
+  .industry-col {
+    background: #f8fafc;
+    border-right: 1px solid #e8edf4;
+    padding: 28px 18px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 10px;
+  }
+  .industry-tag {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: #4a7fb5;
+    background: #EBF4FF;
+    border-radius: 4px;
+    padding: 3px 8px;
+    width: fit-content;
+  }
+  .industry-title {
+    font-size: 14px;
+    font-weight: 800;
+    color: #1a2d4e;
+    line-height: 1.5;
+  }
+  .industry-desc {
+    font-size: 11px;
+    color: #718096;
+    line-height: 1.7;
+    margin-top: 4px;
+  }
+
+  /* PROPOSAL CELLS */
+  .proposal-col {
+    padding: 24px 20px;
+    border-right: 1px solid #e8edf4;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .proposal-col.standard { background: #fff; }
+  .proposal-col.nts { background: #f0f6ff; }
+
+  .proposal-header {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    margin-bottom: 8px;
+  }
+  .proposal-col.standard .proposal-header { color: #a0aec0; }
+  .proposal-col.nts .proposal-header { color: #4a7fb5; }
+
+  .proposal-subsidy-name {
+    font-size: 14px;
+    font-weight: 700;
+    color: #2d3748;
+    margin-bottom: 4px;
+    line-height: 1.4;
+  }
+  .proposal-reasoning {
+    font-size: 12px;
+    color: #718096;
+    line-height: 1.7;
+    padding: 8px 10px;
+    background: rgba(0,0,0,0.025);
+    border-radius: 6px;
+    margin-top: 4px;
+    border-left: 2px solid #cbd5e0;
+  }
+  .proposal-col.nts .proposal-reasoning {
+    border-left-color: #90b8e0;
+    background: rgba(74,127,181,0.05);
+  }
+  .proposal-scope {
+    font-size: 11px;
+    color: #a0aec0;
+    margin-top: 2px;
+  }
+
+  /* RESULT CELL */
+  .result-col {
+    padding: 24px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    justify-content: center;
+  }
+  .result-item {
+    border-radius: 8px;
+    padding: 12px 14px;
+    text-align: center;
+  }
+  .result-item.standard-result {
+    background: #f7f8fa;
+    border: 1px solid #e2e8f0;
+  }
+  .result-item.nts-result {
+    background: #EBF4FF;
+    border: 1px solid #c3daf5;
+  }
+  .result-case-label {
+    font-size: 10px;
+    color: #a0aec0;
+    margin-bottom: 4px;
+    font-weight: 600;
+  }
+  .result-amount {
+    font-size: 18px;
+    font-weight: 900;
+    line-height: 1.2;
+  }
+  .result-item.standard-result .result-amount { color: #718096; }
+  .result-item.nts-result .result-amount { color: #2b6cb0; }
+  .result-note {
+    font-size: 9px;
+    color: #a0aec0;
+    margin-top: 3px;
+    line-height: 1.5;
+  }
+
+  /* DIVIDER between cards */
+  .cards-note {
+    text-align: center;
+    font-size: 11px;
+    color: #a0aec0;
+    margin: 6px 0 24px;
+    font-style: italic;
+  }
+
+  /* ===== INSIGHT BAR ===== */
+  .insight-bar {
+    background: white;
+    border: 1px solid #e8edf4;
+    border-radius: 12px;
+    padding: 24px 32px;
+    margin-bottom: 20px;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.04);
+  }
+  .insight-bar-inner {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+  }
+  .insight-icon {
+    width: 40px;
+    height: 40px;
+    background: #EBF4FF;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .insight-icon svg { width: 20px; height: 20px; }
+  .insight-text h4 {
+    font-size: 13px;
+    font-weight: 700;
+    color: #1a2d4e;
+    margin-bottom: 4px;
+  }
+  .insight-text p {
+    font-size: 12px;
+    color: #718096;
+    line-height: 1.8;
+  }
+
+  /* ===== CTA ===== */
+  .cta-block {
+    background: #1a5fa8;
+    border-radius: 12px;
+    padding: 32px 40px;
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    box-shadow: 0 4px 20px rgba(26,95,168,0.18);
+  }
+  .cta-text { flex: 1; }
+  .cta-text h3 {
+    font-size: 17px;
+    font-weight: 800;
+    color: white;
+    margin-bottom: 6px;
+    line-height: 1.5;
+  }
+  .cta-text p {
+    font-size: 12px;
+    color: rgba(255,255,255,0.75);
+    line-height: 1.8;
+  }
+  .cta-btn {
+    background: white;
+    color: #1a5fa8;
+    border: none;
+    border-radius: 8px;
+    padding: 14px 30px;
+    font-size: 14px;
+    font-weight: 800;
+    cursor: pointer;
+    white-space: nowrap;
+    flex-shrink: 0;
+    transition: opacity 0.2s;
+    letter-spacing: 0.02em;
+  }
+  .cta-btn:hover { opacity: 0.9; }
+
+  /* DISCLAIMER */
+  .disclaimer {
+    font-size: 10px;
+    color: #a0aec0;
+    margin-top: 16px;
+    line-height: 1.8;
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+<div class="section-wrapper">
+
+  <p class="section-eyebrow">補助金活用の考え方</p>
+  <h2 class="section-title">相談内容と、見えてくる補助金の選択肢</h2>
+  <p class="section-subtitle">
+    同じ課題でも、どの視点から整理するかによって、<br>活用できる補助金の選択肢は変わることがあります。
+  </p>
+
+  <!-- COLUMN LABELS -->
+  <div class="col-labels">
+    <div class="col-label">課題の背景</div>
+    <div class="col-label">制度単体で見た場合</div>
+    <div class="col-label">課題から整理した場合</div>
+    <div class="col-label">活用余地の比較</div>
+  </div>
+
+  <!-- CASE 1 -->
+  <div class="case-card">
+    <div class="industry-col">
+      <span class="industry-tag">卸売業の例</span>
+      <div class="industry-title">在庫管理がエクセル依存で、部門間の連携がとれていない</div>
+      <div class="industry-desc">手入力・転記が中心で、過剰在庫や納期ずれが繰り返し発生している状況。</div>
+    </div>
+
+    <div class="proposal-col standard">
+      <div class="proposal-header">制度単体で見た場合</div>
+      <div class="proposal-subsidy-name">IT導入補助金</div>
+      <div class="proposal-reasoning">在庫管理システムの導入費用として申請。ツール導入が目的になりやすい。</div>
+      <div class="proposal-scope">対象：ソフトウェア導入費用</div>
+    </div>
+
+    <div class="proposal-col nts">
+      <div class="proposal-header">課題から整理した場合</div>
+      <div class="proposal-subsidy-name">省力化補助金＋IT導入補助金</div>
+      <div class="proposal-reasoning">根本にある人員不足・属人化という課題を整理すると、省力化を目的とした補助金との併用が視野に入る場合があります。</div>
+      <div class="proposal-scope">対象：業務自動化設備＋ソフトウェア</div>
+    </div>
+
+    <div class="result-col">
+      <div class="result-item standard-result">
+        <div class="result-case-label">制度単体</div>
+        <div class="result-amount">〜100万円</div>
+        <div class="result-note">規模・条件により異なります</div>
+      </div>
+      <div class="result-item nts-result">
+        <div class="result-case-label">課題から整理</div>
+        <div class="result-amount">〜200万円</div>
+        <div class="result-note">活用余地が広がる場合があります</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CASE 2 -->
+  <div class="case-card">
+    <div class="industry-col">
+      <span class="industry-tag">製造業の例</span>
+      <div class="industry-title">熟練工の引退が相次ぎ、生産ラインの維持が難しくなっている</div>
+      <div class="industry-desc">技術伝承が追いつかず、受注に対して人員が確保できない状態が続いている。</div>
+    </div>
+
+    <div class="proposal-col standard">
+      <div class="proposal-header">制度単体で見た場合</div>
+      <div class="proposal-subsidy-name">雇用関係助成金</div>
+      <div class="proposal-reasoning">採用・育成の文脈で申請。人を増やす方向での対応が中心になりやすい。</div>
+      <div class="proposal-scope">対象：採用・訓練費用</div>
+    </div>
+
+    <div class="proposal-col nts">
+      <div class="proposal-header">課題から整理した場合</div>
+      <div class="proposal-subsidy-name">ものづくり補助金＋省力化補助金</div>
+      <div class="proposal-reasoning">「人に頼る体制」そのものを変えるという方向から整理すると、設備投資系の補助金が選択肢として浮かび上がることがあります。</div>
+      <div class="proposal-scope">対象：自動化設備・生産プロセス改善</div>
+    </div>
+
+    <div class="result-col">
+      <div class="result-item standard-result">
+        <div class="result-case-label">制度単体</div>
+        <div class="result-amount">〜50万円</div>
+        <div class="result-note">規模・条件により異なります</div>
+      </div>
+      <div class="result-item nts-result">
+        <div class="result-case-label">課題から整理</div>
+        <div class="result-amount">〜500万円</div>
+        <div class="result-note">活用余地が広がる場合があります</div>
+      </div>
+    </div>
+  </div>
+
+  <p class="cards-note">※ 上記はあくまで活用余地のイメージです。申請要件・審査結果により異なります。</p>
+
+  <!-- INSIGHT BAR -->
+  <div class="insight-bar">
+    <div class="insight-bar-inner">
+      <div class="insight-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#4a7fb5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+        </svg>
+      </div>
+      <div class="insight-text">
+        <h4>NTSにご相談いただく場合の進め方</h4>
+        <p>
+          まず経営上の困りごとをお聞きし、その課題の背景を整理するところから始めます。<br>
+          補助金の選定は、課題整理の結果として行うため、当初は想定していなかった制度が選択肢に入ることもあります。<br>
+          補助金活用と経営課題の整理をあわせてご相談いただけます。
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div class="cta-block">
+    <div class="cta-text">
+      <h3>どんな補助金が使えるか、まず話してみませんか</h3>
+      <p>業種・規模・状況をお聞きした上で、活用できそうな制度をご案内します。<br>申請を前提とせず、情報収集だけのご相談も歓迎しています。</p>
+    </div>
+    <button class="cta-btn">無料相談を申し込む</button>
+  </div>
+
+  <p class="disclaimer">
+    ※ 補助金の採択は審査機関の判断によるものであり、採択を保証するものではありません。<br>
+    記載の金額はあくまで活用余地のイメージであり、実際の補助額は申請内容・審査結果により異なります。
+  </p>
+
+</div>
+</body>
+</html>

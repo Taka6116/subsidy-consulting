@@ -1,0 +1,119 @@
+<mxGraphModel adaptiveColors="auto">
+  <root>
+    <mxCell id="0"/>
+    <mxCell id="1" parent="0"/>
+
+    <mxCell id="eyebrow" value="補助金活用の考え方" style="text;html=1;align=center;verticalAlign=middle;strokeColor=none;fillColor=none;fontColor=#4a7fb5;fontSize=11;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="40" y="20" width="1240" height="24" as="geometry"/>
+    </mxCell>
+    <mxCell id="title" value="&lt;font style=&quot;font-size:20px;&quot;&gt;相談内容と、見えてくる補助金の選択肢&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;strokeColor=none;fillColor=none;fontColor=#1a2d4e;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="40" y="48" width="1240" height="36" as="geometry"/>
+    </mxCell>
+    <mxCell id="subtitle" value="同じ課題でも、どの視点から整理するかによって、活用できる補助金の選択肢は変わることがあります。" style="text;html=1;align=center;verticalAlign=middle;strokeColor=none;fillColor=none;fontColor=#718096;fontSize=12;" vertex="1" parent="1">
+      <mxGeometry x="40" y="86" width="1240" height="28" as="geometry"/>
+    </mxCell>
+
+    <mxCell id="lh_label" value="課題の背景" style="text;html=1;align=center;verticalAlign=middle;strokeColor=none;fillColor=none;fontColor=#a0aec0;fontSize=11;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="40" y="128" width="200" height="24" as="geometry"/>
+    </mxCell>
+    <mxCell id="lh_label2" value="制度単体で見た場合" style="text;html=1;align=center;verticalAlign=middle;strokeColor=none;fillColor=none;fontColor=#a0aec0;fontSize=11;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="270" y="128" width="280" height="24" as="geometry"/>
+    </mxCell>
+    <mxCell id="lh_label3" value="課題から整理した場合" style="text;html=1;align=center;verticalAlign=middle;strokeColor=none;fillColor=none;fontColor=#4a7fb5;fontSize=11;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="590" y="128" width="280" height="24" as="geometry"/>
+    </mxCell>
+    <mxCell id="lh_label4" value="活用余地の比較" style="text;html=1;align=center;verticalAlign=middle;strokeColor=none;fillColor=none;fontColor=#a0aec0;fontSize=11;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="920" y="128" width="200" height="24" as="geometry"/>
+    </mxCell>
+
+    <mxCell id="case1_bg" value="" style="rounded=1;fillColor=#ffffff;strokeColor=#e8edf4;" vertex="1" parent="1">
+      <mxGeometry x="40" y="162" width="1180" height="200" as="geometry"/>
+    </mxCell>
+    <mxCell id="case1_side" value="" style="fillColor=#f8fafc;strokeColor=#e8edf4;" vertex="1" parent="1">
+      <mxGeometry x="40" y="162" width="210" height="200" as="geometry"/>
+    </mxCell>
+    <mxCell id="case1_tag" value="卸売業の例" style="rounded=1;fillColor=#EBF4FF;strokeColor=none;fontColor=#4a7fb5;html=1;align=center;verticalAlign=middle;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="52" y="174" width="80" height="22" as="geometry"/>
+    </mxCell>
+    <mxCell id="case1_problem" value="&lt;b&gt;在庫管理がエクセル依存で、&#xa;部門間の連携がとれていない&lt;/b&gt;&#xa;&#xa;手入力・転記が中心で、過剰在庫や&#xa;納期ずれが繰り返し発生している状況。" style="text;html=1;align=left;verticalAlign=top;strokeColor=none;fillColor=none;fontColor=#2d3748;fontSize=12;spacingLeft=4;" vertex="1" parent="1">
+      <mxGeometry x="52" y="200" width="186" height="148" as="geometry"/>
+    </mxCell>
+
+    <mxCell id="case1_std" value="&lt;b&gt;IT導入補助金&lt;/b&gt;&#xa;&#xa;在庫管理システムの導入費用として申請。&#xa;ツール導入が目的になりやすい。&#xa;&#xa;&lt;font color=&quot;#a0aec0&quot;&gt;対象：ソフトウェア導入費用&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f7f8fa;strokeColor=#e2e8f0;fontColor=#2d3748;fontSize=12;align=left;spacingLeft=10;spacingTop=8;verticalAlign=top;" vertex="1" parent="1">
+      <mxGeometry x="270" y="170" width="280" height="185" as="geometry"/>
+    </mxCell>
+    <mxCell id="case1_nts" value="&lt;b&gt;省力化補助金＋IT導入補助金&lt;/b&gt;&#xa;&#xa;根本にある人員不足・属人化という課題を整理すると、&#xa;省力化を目的とした補助金との併用が&#xa;視野に入る場合があります。&#xa;&#xa;&lt;font color=&quot;#4a7fb5&quot;&gt;対象：業務自動化設備＋ソフトウェア&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f0f6ff;strokeColor=#c3daf5;fontColor=#2d3748;fontSize=12;align=left;spacingLeft=10;spacingTop=8;verticalAlign=top;" vertex="1" parent="1">
+      <mxGeometry x="590" y="170" width="300" height="185" as="geometry"/>
+    </mxCell>
+
+    <mxCell id="case1_result_std" value="制度単体&#xa;&lt;b&gt;&lt;font style=&quot;font-size:16px;&quot; color=&quot;#718096&quot;&gt;〜100万円&lt;/font&gt;&lt;/b&gt;&#xa;&lt;font color=&quot;#a0aec0&quot; style=&quot;font-size:9px;&quot;&gt;規模・条件により異なります&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f7f8fa;strokeColor=#e2e8f0;fontColor=#718096;fontSize=11;align=center;" vertex="1" parent="1">
+      <mxGeometry x="920" y="170" width="180" height="80" as="geometry"/>
+    </mxCell>
+    <mxCell id="case1_result_nts" value="課題から整理&#xa;&lt;b&gt;&lt;font style=&quot;font-size:16px;&quot; color=&quot;#2b6cb0&quot;&gt;〜200万円&lt;/font&gt;&lt;/b&gt;&#xa;&lt;font color=&quot;#a0aec0&quot; style=&quot;font-size:9px;&quot;&gt;活用余地が広がる場合があります&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EBF4FF;strokeColor=#c3daf5;fontColor=#2d3748;fontSize=11;align=center;" vertex="1" parent="1">
+      <mxGeometry x="920" y="268" width="180" height="80" as="geometry"/>
+    </mxCell>
+
+    <mxCell id="arr1_std" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#e2e8f0;strokeWidth=1.5;endArrow=open;endSize=6;" edge="1" source="case1_side" target="case1_std" parent="1">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="arr1_nts" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#e2e8f0;strokeWidth=1.5;endArrow=open;endSize=6;" edge="1" source="case1_side" target="case1_nts" parent="1">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+
+    <mxCell id="case2_bg" value="" style="rounded=1;fillColor=#ffffff;strokeColor=#e8edf4;" vertex="1" parent="1">
+      <mxGeometry x="40" y="382" width="1180" height="200" as="geometry"/>
+    </mxCell>
+    <mxCell id="case2_side" value="" style="fillColor=#f8fafc;strokeColor=#e8edf4;" vertex="1" parent="1">
+      <mxGeometry x="40" y="382" width="210" height="200" as="geometry"/>
+    </mxCell>
+    <mxCell id="case2_tag" value="製造業の例" style="rounded=1;fillColor=#EBF4FF;strokeColor=none;fontColor=#4a7fb5;html=1;align=center;verticalAlign=middle;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="52" y="394" width="80" height="22" as="geometry"/>
+    </mxCell>
+    <mxCell id="case2_problem" value="&lt;b&gt;熟練工の引退が相次ぎ、&#xa;生産ラインの維持が難しくなっている&lt;/b&gt;&#xa;&#xa;技術伝承が追いつかず、受注に対して&#xa;人員が確保できない状態が続いている。" style="text;html=1;align=left;verticalAlign=top;strokeColor=none;fillColor=none;fontColor=#2d3748;fontSize=12;spacingLeft=4;" vertex="1" parent="1">
+      <mxGeometry x="52" y="420" width="186" height="148" as="geometry"/>
+    </mxCell>
+
+    <mxCell id="case2_std" value="&lt;b&gt;雇用関係助成金&lt;/b&gt;&#xa;&#xa;採用・育成の文脈で申請。&#xa;人を増やす方向での対応が中心になりやすい。&#xa;&#xa;&lt;font color=&quot;#a0aec0&quot;&gt;対象：採用・訓練費用&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f7f8fa;strokeColor=#e2e8f0;fontColor=#2d3748;fontSize=12;align=left;spacingLeft=10;spacingTop=8;verticalAlign=top;" vertex="1" parent="1">
+      <mxGeometry x="270" y="390" width="280" height="185" as="geometry"/>
+    </mxCell>
+    <mxCell id="case2_nts" value="&lt;b&gt;ものづくり補助金＋省力化補助金&lt;/b&gt;&#xa;&#xa;「人に頼る体制」そのものを変えるという方向から&#xa;整理すると、設備投資系の補助金が&#xa;選択肢として浮かび上がることがあります。&#xa;&#xa;&lt;font color=&quot;#4a7fb5&quot;&gt;対象：自動化設備・生産プロセス改善&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f0f6ff;strokeColor=#c3daf5;fontColor=#2d3748;fontSize=12;align=left;spacingLeft=10;spacingTop=8;verticalAlign=top;" vertex="1" parent="1">
+      <mxGeometry x="590" y="390" width="300" height="185" as="geometry"/>
+    </mxCell>
+
+    <mxCell id="case2_result_std" value="制度単体&#xa;&lt;b&gt;&lt;font style=&quot;font-size:16px;&quot; color=&quot;#718096&quot;&gt;〜50万円&lt;/font&gt;&lt;/b&gt;&#xa;&lt;font color=&quot;#a0aec0&quot; style=&quot;font-size:9px;&quot;&gt;規模・条件により異なります&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f7f8fa;strokeColor=#e2e8f0;fontColor=#718096;fontSize=11;align=center;" vertex="1" parent="1">
+      <mxGeometry x="920" y="390" width="180" height="80" as="geometry"/>
+    </mxCell>
+    <mxCell id="case2_result_nts" value="課題から整理&#xa;&lt;b&gt;&lt;font style=&quot;font-size:16px;&quot; color=&quot;#2b6cb0&quot;&gt;〜500万円&lt;/font&gt;&lt;/b&gt;&#xa;&lt;font color=&quot;#a0aec0&quot; style=&quot;font-size:9px;&quot;&gt;活用余地が広がる場合があります&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EBF4FF;strokeColor=#c3daf5;fontColor=#2d3748;fontSize=11;align=center;" vertex="1" parent="1">
+      <mxGeometry x="920" y="488" width="180" height="80" as="geometry"/>
+    </mxCell>
+
+    <mxCell id="arr2_std" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#e2e8f0;strokeWidth=1.5;endArrow=open;endSize=6;" edge="1" source="case2_side" target="case2_std" parent="1">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="arr2_nts" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#e2e8f0;strokeWidth=1.5;endArrow=open;endSize=6;" edge="1" source="case2_side" target="case2_nts" parent="1">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+
+    <mxCell id="disclaimer" value="※ 上記はあくまで活用余地のイメージです。申請要件・審査結果により補助額は異なります。" style="text;html=1;align=center;verticalAlign=middle;strokeColor=none;fillColor=none;fontColor=#a0aec0;fontSize=10;" vertex="1" parent="1">
+      <mxGeometry x="40" y="592" width="1180" height="24" as="geometry"/>
+    </mxCell>
+
+    <mxCell id="insight_bg" value="" style="rounded=1;fillColor=#ffffff;strokeColor=#e8edf4;" vertex="1" parent="1">
+      <mxGeometry x="40" y="626" width="1180" height="90" as="geometry"/>
+    </mxCell>
+    <mxCell id="insight_text" value="&lt;b&gt;NTSにご相談いただく場合の進め方&lt;/b&gt;&#xa;&#xa;まず経営上の困りごとをお聞きし、その課題の背景を整理するところから始めます。補助金の選定は課題整理の結果として行うため、当初は想定していなかった制度が選択肢に入ることもあります。補助金活用と経営課題の整理をあわせてご相談いただけます。" style="text;html=1;align=left;verticalAlign=top;strokeColor=none;fillColor=none;fontColor=#2d3748;fontSize=12;spacingLeft=16;spacingTop=12;" vertex="1" parent="1">
+      <mxGeometry x="56" y="626" width="1148" height="90" as="geometry"/>
+    </mxCell>
+
+    <mxCell id="cta_bg" value="" style="rounded=1;fillColor=#1a5fa8;strokeColor=none;" vertex="1" parent="1">
+      <mxGeometry x="40" y="730" width="1180" height="90" as="geometry"/>
+    </mxCell>
+    <mxCell id="cta_text" value="&lt;b&gt;&lt;font color=&quot;#ffffff&quot; style=&quot;font-size:16px;&quot;&gt;どんな補助金が使えるか、まず話してみませんか&lt;/font&gt;&lt;/b&gt;&#xa;&lt;font color=&quot;#ffffff&quot; style=&quot;font-size:12px;&quot;&gt;申請を前提とせず、情報収集だけのご相談も歓迎しています。&lt;/font&gt;" style="text;html=1;align=left;verticalAlign=middle;strokeColor=none;fillColor=none;spacingLeft=32;" vertex="1" parent="1">
+      <mxGeometry x="40" y="730" width="960" height="90" as="geometry"/>
+    </mxCell>
+    <mxCell id="cta_btn" value="&lt;b&gt;無料相談を申し込む&lt;/b&gt;" style="rounded=1;fillColor=#ffffff;strokeColor=none;fontColor=#1a5fa8;html=1;align=center;verticalAlign=middle;fontSize=14;" vertex="1" parent="1">
+      <mxGeometry x="1040" y="752" width="160" height="46" as="geometry"/>
+    </mxCell>
+
+  </root>
+</mxGraphModel>

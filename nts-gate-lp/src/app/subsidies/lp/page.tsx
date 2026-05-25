@@ -118,63 +118,69 @@ const DEDICATED_LP_GRANT_IDS = new Set([
   "34fbaf27-54a0-4396-b386-ec33d054d0e2",
 ]);
 
+const grantSelect = {
+  id: true,
+  name: true,
+  maxAmountLabel: true,
+  subsidyAmount: true,
+  deadlineLabel: true,
+  deadline: true,
+  prefecture: true,
+  targetIndustries: true,
+  status: true,
+  description: true,
+} as const;
+
+function buildFeaturedWithImages() {
+  return FEATURED_LPS.map((lp) => {
+    const image = pickLpImage(lp.category, lp.href);
+    const purposes = detectPurposes({ name: lp.name, copy: lp.copy, category: lp.category });
+    const industries = detectIndustries({ name: lp.name, copy: lp.copy, category: lp.category });
+    const amountYen = parseAmountYen({ maxAmountLabel: lp.amount });
+    const amountBucket = classifyAmountBucket(amountYen);
+    return {
+      ...lp,
+      imageUrl: image.url,
+      imageAlt: `${lp.name} - ${image.alt}`,
+      categoryLabel: CATEGORY_PURPOSE[lp.category],
+      targetLine: CATEGORY_TARGET_LINE[lp.category],
+      learnPoints: CATEGORY_LEARN_POINTS[lp.category],
+      purposes,
+      industries,
+      amountYen,
+      amountBucket,
+    };
+  });
+}
+
+async function getLpIndexRows() {
+  try {
+    const [raw, articleRaw] = await Promise.all([
+      prisma.generatedContent.findMany({
+        where: { contentType: "lp", status: "published" },
+        orderBy: { publishedAt: "desc" },
+        take: 200,
+        include: { grant: { select: grantSelect } },
+      }),
+      prisma.generatedContent.findMany({
+        where: { contentType: "article", status: "published" },
+        orderBy: { publishedAt: "desc" },
+        take: 200,
+        include: { grant: { select: grantSelect } },
+      }),
+    ]);
+
+    const lpGrantIds = new Set(raw.map((r) => r.grant.id));
+    const articleBackfilledRaw = articleRaw.filter((r) => !lpGrantIds.has(r.grant.id));
+    const combinedRaw = [...raw, ...articleBackfilledRaw];
+    return combinedRaw.filter((r) => !DEDICATED_LP_GRANT_IDS.has(r.grant.id));
+  } catch {
+    return [];
+  }
+}
+
 export default async function SubsidiesLpIndexPage() {
-  const raw = await prisma.generatedContent.findMany({
-    where: {
-      contentType: "lp",
-      status: "published",
-    },
-    orderBy: { publishedAt: "desc" },
-    take: 200,
-    include: {
-      grant: {
-        select: {
-          id: true,
-          name: true,
-          maxAmountLabel: true,
-          subsidyAmount: true,
-          deadlineLabel: true,
-          deadline: true,
-          prefecture: true,
-          targetIndustries: true,
-          status: true,
-          description: true,
-        },
-      },
-    },
-  });
-
-  const lpGrantIds = new Set(raw.map((r) => r.grant.id));
-
-  const articleRaw = await prisma.generatedContent.findMany({
-    where: {
-      contentType: "article",
-      status: "published",
-    },
-    orderBy: { publishedAt: "desc" },
-    take: 400,
-    include: {
-      grant: {
-        select: {
-          id: true,
-          name: true,
-          maxAmountLabel: true,
-          subsidyAmount: true,
-          deadlineLabel: true,
-          deadline: true,
-          prefecture: true,
-          targetIndustries: true,
-          status: true,
-          description: true,
-        },
-      },
-    },
-  });
-
-  const articleBackfilledRaw = articleRaw.filter((r) => !lpGrantIds.has(r.grant.id));
-  const combinedRaw = [...raw, ...articleBackfilledRaw];
-
-  const filteredRaw = combinedRaw.filter((r) => !DEDICATED_LP_GRANT_IDS.has(r.grant.id));
+  const filteredRaw = await getLpIndexRows();
 
   const rows = filteredRaw.map((r) => {
     const category = detectLpCategory({
@@ -229,26 +235,7 @@ export default async function SubsidiesLpIndexPage() {
     };
   });
 
-  // 特集LPに付帯情報を追加
-  const featuredWithImages = FEATURED_LPS.map((lp) => {
-    const image = pickLpImage(lp.category, lp.href);
-    const purposes = detectPurposes({ name: lp.name, copy: lp.copy, category: lp.category });
-    const industries = detectIndustries({ name: lp.name, copy: lp.copy, category: lp.category });
-    const amountYen = parseAmountYen({ maxAmountLabel: lp.amount });
-    const amountBucket = classifyAmountBucket(amountYen);
-    return {
-      ...lp,
-      imageUrl: image.url,
-      imageAlt: `${lp.name} - ${image.alt}`,
-      categoryLabel: CATEGORY_PURPOSE[lp.category],
-      targetLine: CATEGORY_TARGET_LINE[lp.category],
-      learnPoints: CATEGORY_LEARN_POINTS[lp.category],
-      purposes,
-      industries,
-      amountYen,
-      amountBucket,
-    };
-  });
+  const featuredWithImages = buildFeaturedWithImages();
 
   const totalLpCount = rows.length + featuredWithImages.length;
 
