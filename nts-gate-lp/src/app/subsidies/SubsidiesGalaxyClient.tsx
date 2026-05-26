@@ -99,23 +99,29 @@ export default function SubsidiesGalaxyClient({ counts, activePrefectureCount }:
         </section>
 
         {/* ── CTA バー ── */}
-        <div className="w-full border-t border-slate-200 bg-[#0f172a]">
+        <div
+          className="w-full border-t border-[rgba(16,24,40,0.08)]"
+          style={{
+            background:
+              "linear-gradient(135deg, #0b3a7a 0%, #1a4c8e 45%, #1368d8 100%)",
+          }}
+        >
           <div className="mx-auto flex max-w-[1400px] flex-col items-center gap-4 px-6 py-10 sm:flex-row sm:justify-between">
             <div>
-              <p className="mt-1 text-base font-medium text-white">
+              <p className="mt-1 text-base font-medium text-white/95">
                 あなたのビジネスに最適な補助金を、専門家が無料でご提案します。
               </p>
             </div>
             <div className="flex shrink-0 flex-col gap-3 sm:flex-row">
               <Link
                 href="/consult"
-                className="inline-flex items-center justify-center rounded-2xl bg-[#2563eb] px-7 py-3 text-sm font-semibold text-white shadow-md transition hover:bg-blue-500"
+                className="inline-flex items-center justify-center rounded-2xl px-7 py-3 text-sm font-bold text-white shadow-md transition hover:-translate-y-0.5 hover:brightness-110 [background:var(--nts-gradient-primary)]"
               >
                 無料相談を予約する →
               </Link>
               <Link
                 href={partnerHref}
-                className="inline-flex items-center justify-center rounded-2xl border border-white/25 px-7 py-3 text-sm font-medium text-white/75 transition hover:border-white/50 hover:text-white"
+                className="inline-flex items-center justify-center rounded-2xl px-7 py-3 text-sm font-bold text-white shadow-md transition hover:-translate-y-0.5 hover:brightness-110 [background:var(--nts-gradient-check)]"
               >
                 提携先ページへ
               </Link>

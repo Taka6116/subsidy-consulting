@@ -1,6 +1,10 @@
 "use client";
 
 import { useEffect, useRef, useCallback } from "react";
+import AuroraText from "@/components/shared/AuroraText";
+
+/** OP見出しの濃い青グラデーション（淡い背景でも視認できる） */
+const OP_HIGHLIGHT_COLORS = ["#1e40af", "#1d4ed8", "#2563eb", "#0b3a7a"];
 
 interface IntroOverlayProps {
   onComplete: () => void;
@@ -8,8 +12,7 @@ interface IntroOverlayProps {
 
 export default function IntroOverlay({ onComplete }: IntroOverlayProps) {
   const overlayRef = useRef<HTMLDivElement>(null);
-  const line1Ref = useRef<HTMLParagraphElement>(null);
-  const line2Ref = useRef<HTMLParagraphElement>(null);
+  const headlineRef = useRef<HTMLParagraphElement>(null);
   const subRef = useRef<HTMLParagraphElement>(null);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const tlRef = useRef<any>(null);
@@ -39,28 +42,18 @@ export default function IntroOverlay({ onComplete }: IntroOverlayProps) {
         });
         tlRef.current = tl;
 
-        gsap.set([line1Ref.current, line2Ref.current, subRef.current], {
+        gsap.set([headlineRef.current, subRef.current], {
           opacity: 0,
           y: 20,
         });
 
         tl
-          .to(line1Ref.current, {
+          .to(headlineRef.current, {
             opacity: 1,
             y: 0,
             duration: 1.2,
             ease: "power3.out",
           })
-          .to(
-            line2Ref.current,
-            {
-              opacity: 1,
-              y: 0,
-              duration: 1.2,
-              ease: "power3.out",
-            },
-            "-=0.7"
-          )
           .to(
             subRef.current,
             {
@@ -69,11 +62,9 @@ export default function IntroOverlay({ onComplete }: IntroOverlayProps) {
               duration: 0.8,
               ease: "power2.out",
             },
-            "-=0.4"
+            "-=0.5",
           )
-          // ホールド 1.4秒
           .to({}, { duration: 1.4 })
-          // オーバーレイ フェードアウト
           .to(overlayRef.current, {
             opacity: 0,
             duration: 0.8,
@@ -101,7 +92,7 @@ export default function IntroOverlay({ onComplete }: IntroOverlayProps) {
         position: "fixed",
         inset: 0,
         zIndex: 9999,
-        backgroundColor: "#f8f7f4",
+        backgroundColor: "#ffffff",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
@@ -112,7 +103,7 @@ export default function IntroOverlay({ onComplete }: IntroOverlayProps) {
     >
       <div style={{ textAlign: "center", padding: "0 1.5rem" }}>
         <p
-          ref={line1Ref}
+          ref={headlineRef}
           style={{
             fontFamily: "var(--font-heading, inherit)",
             fontSize: "clamp(30px, 4.6vw, 64px)",
@@ -123,20 +114,10 @@ export default function IntroOverlay({ onComplete }: IntroOverlayProps) {
             whiteSpace: "nowrap",
           }}
         >
-          補助金情報を最速で届けます
-        </p>
-        <p
-          ref={line2Ref}
-          style={{
-            fontFamily: "var(--font-heading, inherit)",
-            fontSize: 0,
-            fontWeight: 400,
-            lineHeight: 0,
-            color: "#1a2544",
-            margin: 0,
-          }}
-        >
-          {" "}
+          補助金情報を
+          <AuroraText animated={false} colors={OP_HIGHLIGHT_COLORS} className="font-normal">
+            最速でお届け
+          </AuroraText>
         </p>
         <p
           ref={subRef}
@@ -152,7 +133,6 @@ export default function IntroOverlay({ onComplete }: IntroOverlayProps) {
         </p>
       </div>
 
-      {/* スキップボタン */}
       <button
         type="button"
         onClick={skip}
@@ -185,7 +165,8 @@ export default function IntroOverlay({ onComplete }: IntroOverlayProps) {
       >
         スキップ
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <polyline points="13 17 18 12 13 7" /><polyline points="6 17 11 12 6 7" />
+          <polyline points="13 17 18 12 13 7" />
+          <polyline points="6 17 11 12 6 7" />
         </svg>
       </button>
     </div>

@@ -5,12 +5,18 @@ import Link from "next/link";
 import AuroraText from "@/components/shared/AuroraText";
 import { AnimatePresence, motion, type Easing } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
-import { ArrowRight, Search, MessageCircle, FileText } from "lucide-react";
+import { ArrowRight, Search, FileText } from "lucide-react";
 
 const EASE: Easing = [0.22, 1, 0.36, 1];
 
 type Counts = { grants: number; articles: number; videos: number; lps: number };
-type LiveItem = { id: string; title: string; area: string; minutesAgo: number | null };
+type LiveItem = {
+  id: string;
+  articleSlug: string;
+  title: string;
+  area: string;
+  minutesAgo: number | null;
+};
 
 const FEATURES = [
   {
@@ -201,24 +207,15 @@ export default function SubsidyHeroV2({
             <div className="mb-5 flex flex-wrap items-center gap-3">
               <Link
                 href="/subsidies/list"
-                className="inline-flex min-h-[54px] min-w-[230px] items-center justify-center gap-2.5 rounded-[14px] px-6 text-base font-black text-white transition-all hover:-translate-y-px"
-                style={{
-                  background: "linear-gradient(135deg, #2463eb, #1f6bf0)",
-                  boxShadow: "0 16px 30px rgba(37,99,235,0.24)",
-                }}
+                className="inline-flex min-h-[54px] min-w-[230px] items-center justify-center gap-2.5 rounded-[14px] px-6 text-base font-black text-white shadow-[0_16px_30px_rgba(11,78,162,0.24)] transition-all hover:-translate-y-px hover:brightness-110 [background:var(--nts-gradient-primary)]"
               >
                 <Search className="h-5 w-5" strokeWidth={2.4} />
                 使える補助金を探す
               </Link>
               <Link
                 href="/consult"
-                className="inline-flex min-h-[54px] min-w-[168px] items-center justify-center gap-2.5 rounded-[14px] border border-[#c7d6e7] px-6 text-base font-black text-[#111827] transition-all hover:-translate-y-px"
-                style={{
-                  background: "rgba(255,255,255,0.9)",
-                  boxShadow: "0 10px 26px rgba(15,49,96,0.08)",
-                }}
+                className="inline-flex min-h-[54px] min-w-[168px] items-center justify-center rounded-[14px] px-6 text-base font-black text-white shadow-[0_16px_30px_rgba(13,148,136,0.28)] transition-all hover:-translate-y-px hover:brightness-110 [background:var(--nts-gradient-check)]"
               >
-                <MessageCircle className="h-5 w-5" strokeWidth={2.4} />
                 無料相談する
               </Link>
             </div>
@@ -344,8 +341,7 @@ export default function SubsidyHeroV2({
             ))}
             <Link
               href="/subsidies/list?sort=newest"
-              className="inline-flex min-h-[46px] items-center justify-center gap-2 rounded-[14px] border border-[#afd2ff] bg-[#e8f3ff] text-sm font-black text-[#2563eb] transition hover:bg-blue-100"
-              style={{ boxShadow: "0 10px 24px rgba(37,99,235,0.12)" }}
+              className="inline-flex min-h-[46px] items-center justify-center gap-2 rounded-[14px] px-4 text-sm font-black text-white shadow-[0_10px_24px_rgba(11,78,162,0.18)] transition hover:-translate-y-px hover:brightness-110 [background:var(--nts-gradient-primary)]"
             >
               最新を見る <ArrowRight className="h-4 w-4" />
             </Link>
@@ -368,7 +364,7 @@ export default function SubsidyHeroV2({
         >
           {/* ラベル */}
           <div
-            className="inline-flex shrink-0 items-center gap-2 rounded-full bg-[#155c9f] px-[15px] text-sm font-black text-white"
+            className="inline-flex shrink-0 items-center gap-2 rounded-full px-[15px] text-sm font-black text-white shadow-sm [background:var(--nts-gradient-primary)]"
             style={{ height: "38px" }}
           >
             <span className="h-2 w-2 rounded-full bg-[#8ed4ff]" />
@@ -404,11 +400,11 @@ export default function SubsidyHeroV2({
                 >
                   {marqueeItems.map((item, idx) => (
                     <Link
-                      key={`${item.id}-${idx}`}
-                      href={`/subsidies/list/${item.id}`}
+                      key={`${item.articleSlug}-${idx}`}
+                      href={`/subsidies/articles/${item.articleSlug}`}
                       className="group inline-flex h-[42px] shrink-0 max-w-[340px] items-center gap-2.5 rounded-full border border-[#d9e7f6] bg-white px-3.5 text-sm font-black text-[#26344a] transition hover:border-blue-200 hover:shadow-md"
                     >
-                      <span className="shrink-0 inline-flex h-6 items-center rounded-[7px] bg-[#276cf2] px-2.5 text-xs text-white">
+                      <span className="inline-flex h-6 shrink-0 items-center rounded-[7px] px-2.5 text-xs font-bold text-white [background:var(--nts-gradient-primary)]">
                         受付中
                       </span>
                       <span className="shrink-0 text-xs text-[#9aa8ba]">{item.area}</span>
