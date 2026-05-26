@@ -52,7 +52,7 @@ export default function HeroSection() {
         {/* 左カラム: テキスト + CTA */}
         <div className={styles.content}>
           <h1 ref={headlineRef} className={`${styles.headline} font-heading`}>
-            <span className={styles.headlineLine}>補助金提案を、御社の営業・</span>
+            <span className={styles.headlineLine}>補助金提案を、御社の</span>
             <span className={`${styles.headlineLine} ${styles.headlineAccent}`}>顧客支援の武器に。</span>
           </h1>
           <p ref={subRef} className={`${styles.sub} font-body`}>
