@@ -128,7 +128,7 @@ export default async function Home() {
         <ArticlesCtaBar articles={previewArticles} featuredVideos={featuredVideos} />
         {/* ④ あなたの経営課題、補助金で動かせるかもしれません */}
         <AwarenessSection />
-        {/* ⑤ しかし、より最適な補助金制度があるかもしれません */}
+        {/* ⑤ より最適な補助金制度があるかもしれません */}
         <RootIssueCaseSection homeDepth />
         {/* ⑥ 例えばこんな補助金もあります。 */}
         <SubsidyExamplesSection />

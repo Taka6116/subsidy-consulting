@@ -11,11 +11,15 @@ import {
 import { motion, useReducedMotion } from "framer-motion";
 import gsap from "gsap";
 import { HomeIntroContext } from "@/contexts/HomeIntroContext";
+import AuroraText from "@/components/shared/AuroraText";
 import {
   trackIntroComplete,
   trackIntroSkip,
   trackIntroStart,
 } from "@/lib/analytics";
+
+/** ヒーロー見出し（navy→teal）と同系のグリーン。--nts-gradient-check 基準 */
+const SPLASH_HIGHLIGHT_COLORS = ["#0d9488", "#00b894", "#10b981", "#047857"];
 
 const ease = [0.16, 1, 0.3, 1] as const;
 const CONTENT_IN = 0.55;
@@ -295,7 +299,15 @@ export default function HomeEntrance({ children }: { children: ReactNode }) {
                 aria-hidden="true"
                 className="opacity-0 whitespace-nowrap will-change-[opacity] mt-[clamp(0.75rem,2.8vmin,1.25rem)] text-[clamp(1.05rem,4.8vw,2.6rem)] font-bold leading-snug text-[var(--text-primary)]"
               >
-                {SPLASH_LINES[1]}
+                URLひとつで、
+                <AuroraText
+                  animated={false}
+                  colors={SPLASH_HIGHLIGHT_COLORS}
+                  className="font-bold"
+                >
+                  御社が使える補助金がわかる
+                </AuroraText>
+                。
               </p>
             </div>
 

@@ -107,7 +107,7 @@ export default function RootIssueCaseSection({
             id="root-issue-heading"
             className="font-heading mt-0 text-3xl font-bold leading-tight text-[var(--text-primary)] md:text-4xl"
           >
-            {heading ?? "しかし、より最適な補助金制度があるかもしれません"}
+            {heading ?? "より最適な補助金制度があるかもしれません"}
           </ScrollTextReveal>
           <p
             className="font-body mx-auto mt-5"
