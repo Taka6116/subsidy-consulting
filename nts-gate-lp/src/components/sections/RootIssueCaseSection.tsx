@@ -12,6 +12,16 @@ import {
   Monitor,
 } from "lucide-react";
 
+/** NTS紺（--accent-navy）ベースのグラデーション */
+const NAVY_GRADIENT_SOLID =
+  "linear-gradient(135deg, #143a6f 0%, var(--accent-navy) 48%, #2162a5 100%)";
+const NAVY_GRADIENT_PANEL =
+  "linear-gradient(165deg, #f6f9fd 0%, #eaf2fa 42%, #dceaf7 100%)";
+const NAVY_GRADIENT_CARD =
+  "linear-gradient(160deg, #f8fbff 0%, #eef5fc 55%, #e5eff9 100%)";
+const NAVY_GRADIENT_CARD_EMPHASIZED =
+  "linear-gradient(160deg, #ebf3fb 0%, #dfeefb 52%, #d3e7f8 100%)";
+
 // ============================================================
 // 左側：制度単体で進めた場合（白＋薄いグレー）
 // ============================================================
@@ -211,7 +221,7 @@ export default function RootIssueCaseSection({
                     fontSize: "0.88rem",
                     fontWeight: 700,
                     color: "#fff",
-                    background: "var(--accent-navy)",
+                    background: NAVY_GRADIENT_SOLID,
                     boxShadow: "0 6px 18px rgba(26,76,142,0.22)",
                   }}
                 >
@@ -261,6 +271,15 @@ export default function RootIssueCaseSection({
             {/* 比較本体（PC）— 5行：左2+100万 / 右01〜05（04は活用余地）      */}
             {/* ====================================================== */}
             <div className="relative mt-6 hidden md:block md:mt-8">
+              <div
+                aria-hidden
+                className="pointer-events-none absolute bottom-0 right-0 top-0 z-0 rounded-[14px]"
+                style={{
+                  left: "calc(50% + clamp(12px, 2vw, 28px))",
+                  background: NAVY_GRADIENT_PANEL,
+                  boxShadow: "inset 0 0 0 1px rgba(26,76,142,0.10)",
+                }}
+              />
               <div
                 aria-hidden
                 className="pointer-events-none absolute left-1/2 top-0 z-0 hidden md:block"
@@ -489,36 +508,45 @@ export default function RootIssueCaseSection({
                 </div>
               </div>
 
-              {/* 右タイトル */}
-              <div className="flex justify-center">
-                <span
-                  className="font-heading inline-flex rounded-full px-4 py-1.5"
-                  style={{
-                    fontSize: "0.78rem",
-                    fontWeight: 700,
-                    color: "#fff",
-                    background: "var(--accent-navy)",
-                  }}
-                >
-                  NTSに相談した場合
-                </span>
-              </div>
-              {RIGHT_STEPS.slice(0, 3).map((step) => (
-                <div key={`mob-R-${step.num}`} className="relative pl-5">
-                  <StepCard step={step} tone="right" />
+              {/* 右ブロック（NTSに相談した場合） */}
+              <div
+                className="rounded-[14px] px-3 pb-4 pt-5"
+                style={{
+                  background: NAVY_GRADIENT_PANEL,
+                  boxShadow: "inset 0 0 0 1px rgba(26,76,142,0.10)",
+                }}
+              >
+                <div className="flex justify-center">
+                  <span
+                    className="font-heading inline-flex rounded-full px-4 py-1.5"
+                    style={{
+                      fontSize: "0.78rem",
+                      fontWeight: 700,
+                      color: "#fff",
+                      background: NAVY_GRADIENT_SOLID,
+                      boxShadow: "0 4px 14px rgba(26,76,142,0.2)",
+                    }}
+                  >
+                    NTSに相談した場合
+                  </span>
                 </div>
-              ))}
-              <div className="relative pl-5">
-                <ActivationCard
-                  amount="150"
-                  amountUnit="万円規模"
-                  caption="条件が合えば、追加の活用余地が見つかる場合があります"
-                  tone="right"
-                  emphasized
-                />
-              </div>
-              <div className="relative pl-5">
-                <StepCard step={RIGHT_STEPS[3]} tone="right" />
+                {RIGHT_STEPS.slice(0, 3).map((step) => (
+                  <div key={`mob-R-${step.num}`} className="relative mt-4 pl-5">
+                    <StepCard step={step} tone="right" />
+                  </div>
+                ))}
+                <div className="relative mt-4 pl-5">
+                  <ActivationCard
+                    amount="150"
+                    amountUnit="万円規模"
+                    caption="条件が合えば、追加の活用余地が見つかる場合があります"
+                    tone="right"
+                    emphasized
+                  />
+                </div>
+                <div className="relative mt-4 pl-5">
+                  <StepCard step={RIGHT_STEPS[3]} tone="right" />
+                </div>
               </div>
             </div>
 
@@ -774,7 +802,7 @@ function StepCard({
       <span
         className="font-heading absolute left-0 top-3 z-[3] flex h-8 w-8 items-center justify-center rounded-full md:h-9 md:w-9"
         style={{
-          background: isRight ? "var(--accent-navy)" : "#F1F4F9",
+          background: isRight ? NAVY_GRADIENT_SOLID : "#F1F4F9",
           color: isRight ? "#fff" : "#5A6B82",
           fontSize: "0.72rem",
           fontWeight: 700,
@@ -789,7 +817,7 @@ function StepCard({
       <div
         className="relative z-[2] flex items-stretch gap-3 rounded-[12px] p-3 md:gap-4 md:p-3.5"
         style={{
-          background: isRight ? "#F0F6FE" : "#fff",
+          background: isRight ? NAVY_GRADIENT_CARD : "#fff",
           border: isRight ? "1px solid #B5D4F4" : "1px solid #E5EBF3",
           boxShadow: isRight
             ? "0 4px 12px rgba(26,76,142,0.06)"
@@ -860,8 +888,8 @@ function ActivationCard({
         style={{
           background: isRight
             ? emphasized
-              ? "linear-gradient(160deg, #E8F2FC 0%, #DCEBFA 55%, #D0E4F8 100%)"
-              : "linear-gradient(135deg, #F0F6FE 0%, #E4EFFC 100%)"
+              ? NAVY_GRADIENT_CARD_EMPHASIZED
+              : NAVY_GRADIENT_CARD
             : "#fff",
           border: isRight
             ? emphasized

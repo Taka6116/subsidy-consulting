@@ -452,7 +452,7 @@ export default function SubsidyCheckClient({ audience, initialValues }: Props) {
                 <button
                   type="submit"
                   disabled={searchLoading}
-                  className="w-full rounded-full bg-[var(--accent-teal)] px-6 py-4 text-base font-bold text-white shadow-sm transition-all hover:brightness-105 hover:shadow-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent-teal)] disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto sm:min-w-[240px]"
+                  className="w-full rounded-full px-6 py-4 text-base font-bold text-white shadow-[0_14px_32px_rgba(11,78,162,0.22)] transition-all hover:-translate-y-px hover:brightness-110 hover:shadow-[0_16px_36px_rgba(11,78,162,0.28)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1368d8] disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:translate-y-0 sm:w-auto sm:min-w-[240px] [background:var(--nts-gradient-primary)]"
                 >
                   {searchLoading ? "照合中…" : "補助金を照合する"}
                 </button>

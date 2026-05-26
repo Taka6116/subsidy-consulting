@@ -4,6 +4,9 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { ArrowRight, Search, X } from "lucide-react";
 import SubsidyAmountHeroRow from "@/components/subsidies/SubsidyAmountHeroRow";
+import SubsidyDeadlineRail, {
+  type DeadlineRailItem,
+} from "@/components/subsidies/SubsidyDeadlineRail";
 
 type StatusTab = "all" | "open" | "soon" | "closed";
 type SortKey = "newest" | "deadline" | "amount";
@@ -313,6 +316,18 @@ export default function SubsidiesListClient({
       .slice(0, 5);
   }, [grants]);
 
+  const closingSoonRailItems = useMemo<DeadlineRailItem[]>(
+    () =>
+      closingSoon.map((item) => ({
+        id: item.id,
+        name: item.name ?? "名称未設定",
+        meta: `${formatPrefecture(item.prefecture)} · ${formatInstitution(item)}`,
+        daysLeft: daysUntilDeadline(item.deadline),
+        deadlineDate: formatDeadlineLabel(item),
+      })),
+    [closingSoon],
+  );
+
   const hasAnyFilter =
     !!query.trim() || !!prefectureFilter || !!industryFilter || statusTab !== "open";
 
@@ -543,35 +558,7 @@ export default function SubsidiesListClient({
 
         {/* 補助サイド */}
         <aside className="space-y-4 xl:sticky xl:top-24 xl:self-start">
-          <div className="rounded-2xl border border-[#e2e8f4] bg-white p-4 shadow-sm">
-            <h4 className="text-sm font-bold text-[#1e3878]">締切が近い補助金</h4>
-            {closingSoon.length === 0 ? (
-              <p className="mt-3 text-xs text-[#6b7a99]">締切間近の案件はありません。</p>
-            ) : (
-              <div className="mt-3 space-y-2">
-                {closingSoon.map((item) => {
-                  const days = daysUntilDeadline(item.deadline);
-                  return (
-                    <Link
-                      key={item.id}
-                      href={`/subsidies/list/${item.id}`}
-                      className="block rounded-xl border border-[#e8edf7] px-3 py-2.5 transition hover:bg-[#f7faff]"
-                    >
-                      <p className="line-clamp-2 text-[13px] font-semibold leading-snug text-[#243862]">
-                        {item.name ?? "名称未設定"}
-                      </p>
-                      <p className="mt-1 text-[11px] text-[#6b7a99]">
-                        {formatPrefecture(item.prefecture)} · {formatInstitution(item)}
-                      </p>
-                      <p className="mt-1 text-[11px] font-bold text-amber-700">
-                        {days !== null ? `残り${days}日` : "随時"} / {formatDeadlineLabel(item)}
-                      </p>
-                    </Link>
-                  );
-                })}
-              </div>
-            )}
-          </div>
+          <SubsidyDeadlineRail items={closingSoonRailItems} />
 
           <div className="rounded-2xl border border-[#d7e2f7] bg-[#f6f9ff] p-4 shadow-sm">
             <h4 className="text-sm font-bold text-[#1f3f85]">自社に合う制度を診断</h4>
