@@ -216,7 +216,7 @@ export default function SubsidiesArticlesIndex({
     <div className="mx-auto w-full max-w-[1720px] px-3 py-8 sm:px-4 lg:px-6 lg:py-10 xl:px-4 2xl:px-2">
       <section className="mb-4 rounded-xl border border-blue-100 bg-white px-4 py-3">
         <div className="flex items-center gap-3">
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-primary-700 px-2.5 py-1 text-xs font-bold text-white">
+          <span className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-bold text-white shadow-sm [background:var(--nts-gradient-primary)]">
             <BellRing className="h-3.5 w-3.5" />
             最新速報
           </span>
@@ -230,7 +230,7 @@ export default function SubsidiesArticlesIndex({
                     className="inline-flex items-center gap-2 text-xs text-neutral-700 hover:text-primary-700"
                   >
                     {item.isNew && (
-                      <span className="rounded bg-pink-500 px-1.5 py-0.5 text-[10px] font-bold text-white">
+                      <span className="rounded px-1.5 py-0.5 text-[10px] font-bold text-white shadow-sm [background:var(--nts-gradient-new)]">
                         NEW
                       </span>
                     )}
@@ -530,7 +530,7 @@ export default function SubsidiesArticlesIndex({
                             </span>
                           ))}
                           {article.deadlineLabel && (
-                            <span className="rounded bg-emerald-500 px-2 py-0.5 text-[10px] font-semibold text-white">
+                            <span className="rounded px-2 py-0.5 text-[10px] font-semibold text-white shadow-sm [background:var(--nts-gradient-check)]">
                               公募中
                             </span>
                           )}

@@ -88,46 +88,22 @@ export default function IntroOverlay({ onComplete }: IntroOverlayProps) {
   return (
     <div
       ref={overlayRef}
-      style={{
-        position: "fixed",
-        inset: 0,
-        zIndex: 9999,
-        backgroundColor: "#ffffff",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        pointerEvents: "all",
-      }}
+      className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-white px-4 sm:px-6"
       aria-hidden="true"
     >
-      <div style={{ textAlign: "center", padding: "0 1.5rem" }}>
+      <div className="mx-auto w-fit max-w-full shrink-0 text-center font-heading">
         <p
           ref={headlineRef}
-          style={{
-            fontFamily: "var(--font-heading, inherit)",
-            fontSize: "clamp(30px, 4.6vw, 64px)",
-            fontWeight: 400,
-            lineHeight: 1.1,
-            color: "#1a2544",
-            margin: "0 0 1.5rem",
-            whiteSpace: "nowrap",
-          }}
+          className="whitespace-nowrap text-[clamp(1.05rem,4.8vw,2.6rem)] font-bold leading-snug text-[var(--text-primary)]"
         >
           補助金情報を
-          <AuroraText animated={false} colors={OP_HIGHLIGHT_COLORS} className="font-normal">
+          <AuroraText animated={false} colors={OP_HIGHLIGHT_COLORS} className="font-bold">
             最速でお届け
           </AuroraText>
         </p>
         <p
           ref={subRef}
-          style={{
-            fontSize: "clamp(13px, 1.4vw, 16px)",
-            color: "#6b7280",
-            letterSpacing: "0.03em",
-            lineHeight: 1.7,
-            margin: 0,
-          }}
+          className="mt-[clamp(0.75rem,2.8vmin,1.25rem)] font-body text-sm leading-relaxed text-[var(--text-secondary)] md:text-base"
         >
           公募開始から最速でお届け。
         </p>
@@ -136,35 +112,10 @@ export default function IntroOverlay({ onComplete }: IntroOverlayProps) {
       <button
         type="button"
         onClick={skip}
-        style={{
-          position: "absolute",
-          bottom: "2.5rem",
-          left: "50%",
-          transform: "translateX(-50%)",
-          display: "flex",
-          alignItems: "center",
-          gap: "0.375rem",
-          padding: "0.5rem 1.25rem",
-          border: "1px solid #d1d5db",
-          borderRadius: "9999px",
-          backgroundColor: "transparent",
-          color: "#9ca3af",
-          fontSize: "13px",
-          letterSpacing: "0.04em",
-          cursor: "pointer",
-          transition: "color 0.15s, border-color 0.15s",
-        }}
-        onMouseEnter={(e) => {
-          (e.currentTarget as HTMLButtonElement).style.color = "#374151";
-          (e.currentTarget as HTMLButtonElement).style.borderColor = "#9ca3af";
-        }}
-        onMouseLeave={(e) => {
-          (e.currentTarget as HTMLButtonElement).style.color = "#9ca3af";
-          (e.currentTarget as HTMLButtonElement).style.borderColor = "#d1d5db";
-        }}
+        className="absolute bottom-10 left-1/2 flex -translate-x-1/2 items-center gap-1.5 rounded-full border border-[#d1d5db] bg-transparent px-5 py-2 font-body text-[13px] tracking-wide text-[#9ca3af] transition-colors hover:border-[#9ca3af] hover:text-[#374151]"
       >
         スキップ
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
           <polyline points="13 17 18 12 13 7" />
           <polyline points="6 17 11 12 6 7" />
         </svg>

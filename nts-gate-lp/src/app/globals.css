@@ -36,6 +36,7 @@
   --nts-gradient-surface: linear-gradient(135deg, #ffffff 0%, #f3f9ff 100%);
   --nts-gradient-primary: linear-gradient(135deg, #0b4ea2 0%, #1368d8 100%);
   --nts-gradient-check: linear-gradient(135deg, #0d9488 0%, #00b894 52%, #2dd4bf 100%);
+  --nts-gradient-new: linear-gradient(135deg, #db2777 0%, #ec4899 52%, #f472b6 100%);
   --nts-gradient-accent: linear-gradient(90deg, #1d4ed8 0%, #22d3ee 100%);
   --nts-gradient-soft-cyan: linear-gradient(135deg, #ecfeff 0%, #eff6ff 100%);
   --nts-gradient-soft-mint: linear-gradient(135deg, #f0fdfa 0%, #eef7ff 100%);
