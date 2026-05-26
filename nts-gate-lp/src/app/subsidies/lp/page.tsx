@@ -242,7 +242,7 @@ export default async function SubsidiesLpIndexPage() {
   return (
     <>
       <Header />
-      <main className="min-h-[100svh] bg-[#F4F7FB] pt-16 font-body sm:pt-20">
+      <main className="subsidies-portal min-h-[100svh] bg-[#F4F7FB] pt-16 font-body sm:pt-20">
         <SubsidiesLpClient
           rows={rows}
           featuredLps={featuredWithImages}

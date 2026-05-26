@@ -227,6 +227,23 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* /subsidies・/lp・/videos — エンドユーザーLP（OP含む）と同系統のフォント */
+.subsidies-portal {
+  font-family: var(--font-body);
+  letter-spacing: 0.06em;
+}
+
+.subsidies-portal :is(h1, h2, h3, h4, h5, h6) {
+  font-family: var(--font-heading);
+  letter-spacing: 0.02em;
+}
+
+.subsidies-portal :is(a, button).font-black,
+.subsidies-portal :is(a, button).font-bold {
+  font-family: var(--font-heading);
+  letter-spacing: 0.02em;
+}
+
 @layer base {
   h1,
   h2,

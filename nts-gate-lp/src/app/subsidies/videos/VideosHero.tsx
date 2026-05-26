@@ -164,7 +164,7 @@ export default function VideosHero() {
             </h1>
 
             {/* サブコピー */}
-            <p className="mt-5 max-w-[560px] text-[clamp(1rem,1.1vw,1.1875rem)] font-semibold leading-[1.95] tracking-wide text-[#102C54]">
+            <p className="font-body mt-5 max-w-[560px] text-[clamp(1rem,1.1vw,1.1875rem)] font-semibold leading-[1.95] tracking-wide text-[#102C54]">
               金額、対象企業、活用方法、申請前の注意点まで。
               <br className="hidden sm:block" />
               忙しい中小企業の経営者が、まず見るべきポイントだけを

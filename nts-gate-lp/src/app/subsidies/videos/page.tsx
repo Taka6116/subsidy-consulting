@@ -116,7 +116,7 @@ export default async function SubsidiesVideosPage() {
   return (
     <>
       <Header />
-      <main className="relative z-[2] min-h-[100svh] bg-[#f8faff] pt-16 font-body sm:pt-20">
+      <main className="subsidies-portal relative z-[2] min-h-[100svh] bg-[#f8faff] pt-16 font-body sm:pt-20">
         <SubsidiesVideosIndex videos={videos} />
       </main>
       <LpFooter />

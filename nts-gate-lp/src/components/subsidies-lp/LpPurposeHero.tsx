@@ -143,7 +143,7 @@ export default function LpPurposeHero({
 
       <div className="relative z-10 mx-auto grid max-w-[1780px] items-center gap-8 px-5 sm:px-8 lg:grid-cols-[0.42fr_0.58fr] lg:px-12 xl:px-14 2xl:px-16">
         <div className="max-w-[720px] lg:pl-2">
-          <h1 className="mt-0 text-[clamp(2.875rem,4.1vw,4.5rem)] font-black leading-[1.14] tracking-tight text-[#081C44] xl:mt-8">
+          <h1 className="font-heading mt-0 text-[clamp(2.875rem,4.1vw,4.5rem)] font-black leading-[1.14] tracking-tight text-[#081C44] xl:mt-8">
             業種・目的から
             <br />
             <span className="bg-gradient-to-r from-[#0EA5E9] to-[#006FE6] bg-clip-text text-transparent">
@@ -152,7 +152,7 @@ export default function LpPurposeHero({
             を見つける
           </h1>
 
-          <p className="mt-5 max-w-[560px] text-[clamp(1rem,1.1vw,1.1875rem)] font-semibold leading-[1.95] tracking-wide text-[#102C54] xl:mt-6">
+          <p className="font-body mt-5 max-w-[560px] text-[clamp(1rem,1.1vw,1.1875rem)] font-semibold leading-[1.95] tracking-wide text-[#102C54] xl:mt-6">
             設備投資、IT導入、人材確保、物流改善まで。
             <br className="hidden sm:block" />
             自社に関係する制度を、目的別にわかりやすく整理しています。

@@ -39,7 +39,7 @@ export default async function SubsidiesPage() {
   return (
     <>
       <Header />
-      <main className="relative z-[2] font-body">
+      <main className="subsidies-portal relative z-[2] font-body">
         <SubsidiesGalaxyClient
           counts={{
             grants: grantCount,

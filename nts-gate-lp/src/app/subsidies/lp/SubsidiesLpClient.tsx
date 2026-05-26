@@ -847,16 +847,11 @@ function LpResultCard({ card }: { card: UnifiedCard }) {
             aria-hidden
             className="absolute inset-0 bg-gradient-to-t from-slate-950/30 via-transparent to-transparent"
           />
-          {/* 左上：カテゴリバッジ + 特集LPバッジ */}
+          {/* 左上：カテゴリバッジ */}
           <div className="absolute left-3 top-3 flex flex-wrap items-center gap-1.5">
             <span className="inline-flex items-center rounded-full bg-white/95 px-2.5 py-1 text-xs font-bold text-[#0B4F8A] shadow-sm">
               {card.categoryLabel}
             </span>
-            {card.isFeatured ? (
-              <span className="inline-flex items-center rounded-full bg-[#0B4F8A] px-2.5 py-1 text-[10px] font-bold text-white shadow-sm">
-                ★ 専門LP
-              </span>
-            ) : null}
           </div>
           {/* 右上：ステータス */}
           <div className="absolute right-3 top-3">

@@ -197,7 +197,7 @@ export default function SubsidyHeroV2({
 
             {/* lead */}
             <p
-              className="font-semibold leading-[1.95] text-[#536174]"
+              className="font-body font-semibold leading-[1.95] text-[#536174]"
               style={{ maxWidth: "570px", marginBottom: "34px", fontSize: "clamp(1rem, 1.1vw, 1.1875rem)" }}
             >
               全国の自治体・省庁サイトの補助金情報をここに集約。受付中の補助金を、業種・地域・締切から確認できます。
