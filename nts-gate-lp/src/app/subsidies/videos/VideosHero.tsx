@@ -53,7 +53,7 @@ function VideoPlayer() {
 // ────────────────────────────────────────────────────────────
 function MonitorFrame() {
   return (
-    <div className="relative mx-auto w-full max-w-[560px] lg:max-w-none">
+    <div className="relative mx-auto w-full">
       {/* モニター外枠 */}
       <div
         className="rounded-2xl p-1.5 shadow-2xl"
@@ -146,15 +146,15 @@ export default function VideosHero() {
       }}
     >
 
-      <div className="relative w-full px-[clamp(1.75rem,3.4vw,4rem)] py-14 sm:py-16 lg:py-20">
-        <div className="flex flex-col items-center gap-10 lg:flex-row lg:gap-14">
+      <div className="relative mx-auto w-full max-w-[1780px] px-[clamp(1.75rem,3.4vw,4rem)] py-14 sm:py-16 lg:py-20">
+        <div className="grid items-center gap-10 lg:grid-cols-[minmax(0,0.46fr)_minmax(0,0.54fr)] lg:gap-10 xl:gap-12">
 
-          {/* ── 左: テキスト ── */}
-          <div className="w-full lg:max-w-[540px] lg:flex-shrink-0">
+          {/* ── 左: テキスト（大画面でも幅を確保） ── */}
+          <div className="w-full min-w-0 lg:max-w-[600px] xl:max-w-[640px] 2xl:max-w-[680px]">
             {/* H1 */}
             <h1
               id="videos-hero-heading"
-              className="font-heading text-[clamp(2.875rem,4.1vw,4.5rem)] font-black leading-[1.14] tracking-tight text-[#081C44]"
+              className="font-heading text-[clamp(2.875rem,3.5vw,4rem)] font-black leading-[1.14] tracking-tight text-[#081C44]"
             >
               使える補助金を、
               <br />
@@ -191,9 +191,11 @@ export default function VideosHero() {
             </div>
           </div>
 
-          {/* ── 右: PCモニタービジュアル ── */}
-          <div className="w-full lg:flex-1">
-            <MonitorFrame />
+          {/* ── 右: PCモニタービジュアル（右カラム幅いっぱいに近いサイズまで拡大） ── */}
+          <div className="flex w-full min-w-0 justify-center lg:justify-end">
+            <div className="w-full max-w-[560px] sm:max-w-[620px] lg:max-w-[min(100%,760px)] xl:max-w-[min(100%,860px)] 2xl:max-w-[min(100%,960px)]">
+              <MonitorFrame />
+            </div>
           </div>
         </div>
       </div>

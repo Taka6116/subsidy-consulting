@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { ArrowRight, Search, X } from "lucide-react";
+import SubsidyAmountHeroRow from "@/components/subsidies/SubsidyAmountHeroRow";
 
 type StatusTab = "all" | "open" | "soon" | "closed";
 type SortKey = "newest" | "deadline" | "amount";
@@ -765,6 +766,16 @@ function SubsidyResultCard({ grant }: { grant: SubsidyCard }) {
   const amount = formatAmountShort(grant);
   const rate = formatSubsidyRate(grant.subsidyRate);
   const deadlineLabel = formatDeadlineLabel(grant);
+  const deadlinePrimary =
+    deadlineLabel === "随時"
+      ? "随時"
+      : daysInfo.tone === "expired"
+        ? "受付終了"
+        : daysInfo.text.replace("残り", "");
+  const deadlineSecondary =
+    deadlineLabel !== "随時" && daysInfo.tone !== "always"
+      ? `締切日：${deadlineLabel}`
+      : null;
   const prefectureLabel = formatPrefecture(grant.prefecture);
   const institution = formatInstitution(grant);
   const description = grant.description?.trim();
@@ -833,40 +844,13 @@ function SubsidyResultCard({ grant }: { grant: SubsidyCard }) {
           </div>
         ) : null}
 
-        {/* メトリクス */}
-        <dl className="mt-4 grid grid-cols-3 gap-2 rounded-xl border border-[#eef2f8] bg-[#fafcff] p-3 text-center">
-          <div>
-            <dt className="text-[10px] font-medium text-[#6b7a99]">補助上限</dt>
-            <dd className="mt-1 text-sm font-extrabold leading-tight text-[#0d2640]">
-              {amount}
-            </dd>
-          </div>
-          <div className="border-x border-[#eef2f8]">
-            <dt className="text-[10px] font-medium text-[#6b7a99]">補助率</dt>
-            <dd
-              className={`mt-1 text-sm font-extrabold leading-tight ${
-                rate === "要確認" ? "text-[#94a3b8]" : "text-[#0d2640]"
-              }`}
-            >
-              {rate}
-            </dd>
-          </div>
-          <div>
-            <dt className="text-[10px] font-medium text-[#6b7a99]">締切</dt>
-            <dd
-              className={`mt-1 text-sm font-extrabold leading-tight ${
-                daysInfo.tone === "soon"
-                  ? "text-amber-700"
-                  : daysInfo.tone === "expired"
-                    ? "text-neutral-500"
-                    : "text-[#0d2640]"
-              }`}
-            >
-              {deadlineLabel === "随時" ? "随時" : daysInfo.text.replace("残り", "")}
-            </dd>
-          </div>
-        </dl>
-        <p className="mt-2 text-[11px] text-[#6b7a99]">締切日：{deadlineLabel}</p>
+        <SubsidyAmountHeroRow
+          amountLabel={amount}
+          rateLabel={rate}
+          deadlinePrimary={deadlinePrimary}
+          deadlineSecondary={deadlineSecondary}
+          deadlineTone={daysInfo.tone}
+        />
 
         {/* アクションボタン */}
         <div className="mt-4 flex flex-wrap items-center gap-2 border-t border-[#eef2f8] pt-3">
