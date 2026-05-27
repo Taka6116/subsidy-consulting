@@ -169,35 +169,32 @@ const STEPS = [
 ];
 
 // ─────────────────────────────────────────────────────────────
-// 左側：御社 / NTS アクターカード（コンパクトグリッド）
+// 左側：御社 / NTS アクターカード
 // ─────────────────────────────────────────────────────────────
 function ActorCard({
   label,
-  subtitle,
   isoImg,
   items,
 }: {
   label: string;
-  subtitle: string;
   isoImg: Parameters<typeof Image>[0]["src"];
   items: { text: string; icon: IconKey }[];
 }) {
   return (
     <div className="flex-1 rounded-xl border border-[#cdddf0] bg-white shadow-[0_3px_12px_rgba(12,42,72,0.06)]">
-      {/* カードヘッダー */}
-      <div className="flex items-center gap-2 border-b border-[#e8f0fb] px-3 py-2">
-        <span className="text-[12px] font-bold tracking-wide text-[#071b46]">{label}</span>
-        <span className="text-[10px] text-[#5a7a9a]">（{subtitle}）</span>
+      {/* カードヘッダー: 中央揃え */}
+      <div className="flex items-center justify-center border-b border-[#e8f0fb] px-3 py-2">
+        <span className="text-[13px] font-bold tracking-wide text-[#071b46]">{label}</span>
       </div>
       {/* カード本体: 画像 + 項目リスト */}
-      <div className="flex items-center gap-2 p-3">
+      <div className="flex items-center gap-2.5 p-3">
         {/* isometric イラスト */}
-        <div className="relative h-[72px] w-[72px] shrink-0 overflow-hidden rounded-xl border border-[#d8e8f6] bg-gradient-to-br from-[#eef4ff] to-white">
+        <div className="relative h-[76px] w-[76px] shrink-0 overflow-hidden rounded-xl border border-[#d8e8f6] bg-gradient-to-br from-[#eef4ff] to-white">
           <Image
             src={isoImg}
             alt=""
             fill
-            sizes="72px"
+            sizes="76px"
             quality={90}
             className="object-contain p-1"
             aria-hidden
@@ -223,7 +220,7 @@ function ActorCard({
 }
 
 // ─────────────────────────────────────────────────────────────
-// 工程カード（完全均一化）
+// 工程カード（固定高さで完全均一化）
 // ─────────────────────────────────────────────────────────────
 function StepCard({
   no,
@@ -241,22 +238,19 @@ function StepCard({
   isoImg?: Parameters<typeof Image>[0]["src"];
 }) {
   return (
-    /* 固定高さ: カード全体 210px、flex-col で各ゾーンを均等配置 */
-    <div className="relative flex h-[210px] w-full flex-col items-center rounded-xl border border-[#cdddf0] bg-white px-3 pb-3 pt-6 shadow-[0_4px_14px_rgba(12,42,72,0.06)]">
-      {/* 番号バッジ: top-center 絶対配置、全カード統一 */}
+    <div className="relative flex h-[220px] w-full flex-col items-center rounded-xl border border-[#cdddf0] bg-white px-3 pb-3 pt-7 shadow-[0_4px_14px_rgba(12,42,72,0.06)]">
+      {/* 番号バッジ: top-center 絶対配置 */}
       <span className="absolute left-1/2 top-0 flex h-[28px] min-w-[28px] -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-[#1a56db] px-[7px] text-[11px] font-bold text-white shadow-md">
         {no}
       </span>
-
-      {/* タグ: 高さ固定ゾーン */}
+      {/* タグ: 高さ固定 */}
       <div className="flex h-[20px] items-center">
         <span className="rounded-full bg-[#eef4ff] px-2.5 py-0.5 text-[10px] font-bold tracking-wide text-[#1a56db]">
           {tag}
         </span>
       </div>
-
-      {/* 画像スロット: 高さ固定 68px */}
-      <div className="relative mt-1.5 h-[68px] w-full max-w-[100px] shrink-0">
+      {/* 画像スロット: 高さ固定 76px */}
+      <div className="relative mt-2 h-[76px] w-full max-w-[108px] shrink-0">
         {isoImg ? (
           <Image
             src={isoImg}
@@ -264,7 +258,7 @@ function StepCard({
             fill
             quality={90}
             className="object-contain"
-            sizes="100px"
+            sizes="108px"
             aria-hidden
           />
         ) : (
@@ -273,14 +267,12 @@ function StepCard({
           </span>
         )}
       </div>
-
-      {/* タイトル: 2行分の高さ確保 */}
-      <h4 className="mt-2 line-clamp-2 h-[36px] text-center text-[12.5px] font-bold leading-[1.4] text-[#071b46]">
+      {/* タイトル: 2行分確保 */}
+      <h4 className="mt-2 line-clamp-2 h-[38px] text-center text-[13px] font-bold leading-[1.45] text-[#071b46]">
         {title}
       </h4>
-
-      {/* サブテキスト: 2行分の高さ確保 */}
-      <p className="mt-1 line-clamp-2 h-[30px] whitespace-pre-line text-center text-[10.5px] leading-[1.45] text-[#5a7a9a]">
+      {/* サブテキスト: 2行分確保 */}
+      <p className="mt-1 line-clamp-2 h-[30px] whitespace-pre-line text-center text-[11px] leading-[1.4] text-[#5a7a9a]">
         {sub}
       </p>
     </div>
@@ -299,15 +291,58 @@ function StepArrow() {
   );
 }
 
-// ─── 左ブロック → Step01 接続矢印（PC専用） ─────────────────
-function ConnectorArrow() {
+// ─────────────────────────────────────────────────────────────
+// PC専用：御社・NTS ⇒ 合流 ⇒ 01 SVGコネクター
+// viewBox内座標:
+//   上線（御社）: (0, 42) → (60, 42) → (60, 80) 右へ向かい中央へ
+//   下線（NTS）:  (0,118) → (60,118) → (60, 80) 左から中央へ
+//   合流→出口:   (60, 80) → (110, 80) → 矢印
+// ─────────────────────────────────────────────────────────────
+function MergeConnector() {
   return (
-    <div className="flex h-full shrink-0 items-center justify-center" aria-hidden>
-      <svg width="36" height="14" viewBox="0 0 36 14" fill="none">
-        <path d="M2 7h28" stroke="#93c5fd" strokeWidth="2" strokeLinecap="round" strokeDasharray="3 3" />
-        <path d="m30 3 4 4-4 4" stroke="#1a56db" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-      </svg>
-    </div>
+    <svg
+      className="h-full w-full"
+      viewBox="0 0 110 160"
+      preserveAspectRatio="xMidYMid meet"
+      fill="none"
+      aria-hidden
+    >
+      {/* 御社（上）から中央合流点へ */}
+      <path
+        d="M0 42 H58 V80"
+        stroke="#93c5fd"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeDasharray="4 3"
+      />
+      {/* NTS（下）から中央合流点へ */}
+      <path
+        d="M0 118 H58 V80"
+        stroke="#93c5fd"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeDasharray="4 3"
+      />
+      {/* 合流点の小さな丸 */}
+      <circle cx="58" cy="80" r="3.5" fill="#1a56db" opacity="0.7" />
+      {/* 合流→01カードへの矢印 */}
+      <path
+        d="M61 80 H104"
+        stroke="#93c5fd"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeDasharray="4 3"
+      />
+      <path
+        d="m101 75.5 5 4.5-5 4.5"
+        stroke="#1a56db"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
   );
 }
 
@@ -320,47 +355,67 @@ export default function PartnerJointFlowDiagram() {
 
   return (
     <>
-      {/* ── PC（lg以上）: 横1行レイアウト ── */}
+      {/* ════════════════════════════════════════════════════════
+          PC（lg以上）: 横1行レイアウト
+          外側コンテナを min(92vw, 1680px) まで広げてフルードに対応
+          ════════════════════════════════════════════════════════ */}
       <motion.div
         className="relative mt-10 hidden lg:block"
+        style={{ width: "min(92vw, 1680px)", marginLeft: "auto", marginRight: "auto" }}
         {...reveal(0.06)}
       >
         {/* 薄いグラデ背景 */}
-        <div className="absolute inset-0 rounded-2xl bg-[radial-gradient(ellipse_100%_80%_at_50%_50%,rgba(223,238,255,0.4)_0%,transparent_70%)]" aria-hidden />
+        <div
+          className="absolute inset-0 rounded-2xl"
+          style={{
+            background:
+              "radial-gradient(ellipse 100% 80% at 50% 50%, rgba(223,238,255,0.4) 0%, transparent 70%)",
+          }}
+          aria-hidden
+        />
 
-        <div className="relative flex items-center gap-0 rounded-2xl px-5 py-8">
-          {/* ── 左: 御社 / NTS カードグリッド ── */}
-          {/* 2つのカードを同一高さで上下に並べる */}
-          <div className="flex w-[300px] shrink-0 flex-col gap-3 xl:w-[320px]">
-            {/* 上部ラベル */}
-            <div className="flex items-center justify-center gap-2 pb-0.5">
-              <div className="h-px flex-1 bg-[#cdddf0]" />
-              <span className="text-[11px] font-bold tracking-widest text-[#1a56db]">御社 × NTS</span>
-              <div className="h-px flex-1 bg-[#cdddf0]" />
-            </div>
-            {/* ActorCard 2枚: 同じ高さにするため items-stretch で揃える */}
-            <div className="flex flex-col gap-2.5">
-              <ActorCard
-                label="御社"
-                subtitle="ご顧客"
-                isoImg={iso16}
-                items={PARTNER_LABELS}
-              />
-              <ActorCard
-                label="NTS"
-                subtitle="弊社"
-                isoImg={iso08}
-                items={NTS_LABELS}
-              />
-            </div>
+        {/* ── 全工程を束ねる「御社 × NTS」帯ラベル ── */}
+        <div className="relative flex items-center gap-3 px-5 pb-1 pt-5">
+          <div className="h-px flex-1 bg-[#c5d9f0]" />
+          <span className="shrink-0 text-[11px] font-bold tracking-[0.18em] text-[#1a56db]">
+            御社 × NTS
+          </span>
+          <div className="h-px flex-1 bg-[#c5d9f0]" />
+        </div>
+
+        {/* ── メイン横並びレイアウト ── */}
+        <div
+          className="relative flex items-center rounded-2xl px-5 pb-8 pt-4"
+          style={{ gap: "clamp(20px, 1.8vw, 44px)" }}
+        >
+          {/* ── 左: 御社 / NTS カード（gap込み） ── */}
+          <div
+            className="shrink-0 flex flex-col"
+            style={{
+              width: "clamp(280px, 24vw, 480px)",
+              gap: "clamp(10px, 1vw, 20px)",
+            }}
+          >
+            <ActorCard label="御社" isoImg={iso16} items={PARTNER_LABELS} />
+            <ActorCard label="NTS" isoImg={iso08} items={NTS_LABELS} />
           </div>
 
-          {/* ── 接続矢印 ── */}
-          <ConnectorArrow />
+          {/* ── 合流SVGコネクター ── */}
+          <div
+            className="shrink-0 self-stretch"
+            style={{ width: "clamp(60px, 5vw, 110px)" }}
+          >
+            <MergeConnector />
+          </div>
 
           {/* ── 右: 4工程カード ── */}
-          {/* grid-cols-[1fr auto 1fr auto 1fr auto 1fr] で完全均一化 */}
-          <div className="grid flex-1 grid-cols-[1fr_auto_1fr_auto_1fr_auto_1fr] items-center gap-2">
+          <div
+            className="grid flex-1 items-center"
+            style={{
+              gridTemplateColumns: "1fr auto 1fr auto 1fr auto 1fr",
+              gap: "clamp(6px, 1vw, 16px)",
+            }}
+          >
             <StepCard {...STEPS[0]} />
             <StepArrow />
             <StepCard {...STEPS[1]} />
@@ -372,7 +427,9 @@ export default function PartnerJointFlowDiagram() {
         </div>
       </motion.div>
 
-      {/* ── Tablet（md〜lg）: 2段構成 ── */}
+      {/* ════════════════════════════════════════════════════════
+          Tablet（md〜lg）: 2段構成
+          ════════════════════════════════════════════════════════ */}
       <div className="mt-8 hidden md:block lg:hidden">
         <motion.div
           className="rounded-2xl border border-[#d0e4f6] bg-white/95 p-5"
@@ -380,18 +437,8 @@ export default function PartnerJointFlowDiagram() {
         >
           {/* 御社 / NTS 横並び */}
           <div className="flex gap-3">
-            <ActorCard
-              label="御社"
-              subtitle="ご顧客"
-              isoImg={iso16}
-              items={PARTNER_LABELS}
-            />
-            <ActorCard
-              label="NTS"
-              subtitle="弊社"
-              isoImg={iso08}
-              items={NTS_LABELS}
-            />
+            <ActorCard label="御社" isoImg={iso16} items={PARTNER_LABELS} />
+            <ActorCard label="NTS" isoImg={iso08} items={NTS_LABELS} />
           </div>
         </motion.div>
 
@@ -409,36 +456,24 @@ export default function PartnerJointFlowDiagram() {
         </motion.div>
 
         {/* 工程カード 2×2 */}
-        <motion.div
-          className="grid grid-cols-2 gap-3"
-          {...reveal(0.14)}
-        >
+        <motion.div className="grid grid-cols-2 gap-3" {...reveal(0.14)}>
           {STEPS.map((step) => (
             <StepCard key={step.no} {...step} />
           ))}
         </motion.div>
       </div>
 
-      {/* ── Mobile（〜md）: 1カラム ── */}
+      {/* ════════════════════════════════════════════════════════
+          Mobile（〜md）: 1カラム
+          ════════════════════════════════════════════════════════ */}
       <div className="mt-8 md:hidden">
-        {/* 御社 / NTS カード縦並び */}
         <motion.div
           className="space-y-2.5 rounded-2xl border border-[#d0e4f6] bg-white/95 p-4"
           {...reveal(0.06)}
         >
-          <ActorCard
-            label="御社"
-            subtitle="ご顧客"
-            isoImg={iso16}
-            items={PARTNER_LABELS}
-          />
+          <ActorCard label="御社" isoImg={iso16} items={PARTNER_LABELS} />
           <div className="border-t border-[#e8f0fb]" />
-          <ActorCard
-            label="NTS"
-            subtitle="弊社"
-            isoImg={iso08}
-            items={NTS_LABELS}
-          />
+          <ActorCard label="NTS" isoImg={iso08} items={NTS_LABELS} />
         </motion.div>
 
         {/* 接続ライン */}
@@ -463,7 +498,14 @@ export default function PartnerJointFlowDiagram() {
                 <div className="flex justify-center py-1.5" aria-hidden>
                   <svg width="14" height="20" viewBox="0 0 14 20">
                     <path d="M7 1v14" stroke="#93c5fd" strokeWidth="2" strokeLinecap="round" />
-                    <path d="m2 13 5 6 5-6" stroke="#1a56db" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+                    <path
+                      d="m2 13 5 6 5-6"
+                      stroke="#1a56db"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      fill="none"
+                    />
                   </svg>
                 </div>
               )}
