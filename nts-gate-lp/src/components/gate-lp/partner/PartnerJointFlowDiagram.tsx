@@ -486,45 +486,6 @@ function StepCard({
 }
 
 // ─────────────────────────────────────────────────────────────
-// 補足ボックス（下部）
-// ─────────────────────────────────────────────────────────────
-function FooterNote() {
-  return (
-    <div
-      className="mt-6 flex items-center gap-4 rounded-[16px] px-6 py-4"
-      style={{
-        background: "rgba(255,255,255,0.88)",
-        border: "1px solid rgba(37,99,235,0.14)",
-        boxShadow: "0 12px 30px rgba(15,23,42,0.05)",
-      }}
-    >
-      {/* アイコン丸 */}
-      <div
-        className="flex h-[42px] w-[42px] shrink-0 items-center justify-center rounded-full"
-        style={{
-          background: "linear-gradient(135deg, #dbeafe, #eff6ff)",
-          border: "1px solid rgba(37,99,235,0.16)",
-        }}
-      >
-        <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" aria-hidden>
-          <path
-            d="M8 11c0-1.1.9-2 2-2h4c1.1 0 2 .9 2 2v3c0 1.1-.9 2-2 2h-2l-3 2v-2H8c-1.1 0-2-.9-2-2v-3z"
-            stroke="#1a56db"
-            strokeWidth="1.7"
-            strokeLinejoin="round"
-          />
-          <path d="M7 9V7a5 5 0 0 1 10 0v2" stroke="#1a56db" strokeWidth="1.7" strokeLinecap="round" />
-        </svg>
-      </div>
-      <p className="text-[12.5px] font-semibold leading-[1.75] text-[#334155]">
-        御社の<span className="font-bold text-[#1a56db]">信頼関係を活かし</span>、NTSが専門家として裏側で支えます。
-        だから紹介先にも、<span className="font-bold text-[#1a56db]">御社にも負担が少ない</span>。
-      </p>
-    </div>
-  );
-}
-
-// ─────────────────────────────────────────────────────────────
 // PC帯ラベル（全工程横断）- 囲いなし
 // ─────────────────────────────────────────────────────────────
 function SpanLabel({ text, sub }: { text: string; sub: string }) {
@@ -592,12 +553,12 @@ export default function PartnerJointFlowDiagram() {
           >
             {/* グラデーション合流矢印 */}
             <FlowArrow size="lg" />
-            {/* 共同支援バッジ：cx=38/80=47.5% → left 47.5%, cy=135/270=50% → top 50% */}
+            {/* 共同支援バッジ：合流点 cx=38/80=47.5%, cy=135/270=50% */}
             <motion.div
               className="absolute z-10"
               style={{
-                left: "calc(38 / 80 * 100%)",
-                top: "calc(135 / 270 * 100%)",
+                left: "47.5%",
+                top: "50%",
                 transform: "translate(-50%, -50%)",
               }}
               {...scale(0.18)}
@@ -626,10 +587,6 @@ export default function PartnerJointFlowDiagram() {
           </div>
         </div>
 
-        {/* 補足ボックス */}
-        <motion.div {...reveal(0.42)}>
-          <FooterNote />
-        </motion.div>
       </div>
 
       {/* ════════════════════════════════════════════════════════
@@ -688,9 +645,6 @@ export default function PartnerJointFlowDiagram() {
           ))}
         </motion.div>
 
-        <motion.div {...reveal(0.28)}>
-          <FooterNote />
-        </motion.div>
       </div>
 
       {/* ════════════════════════════════════════════════════════
@@ -761,9 +715,6 @@ export default function PartnerJointFlowDiagram() {
           ))}
         </motion.div>
 
-        <motion.div {...reveal(0.32)}>
-          <FooterNote />
-        </motion.div>
       </div>
     </>
   );
