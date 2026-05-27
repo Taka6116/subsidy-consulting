@@ -140,10 +140,7 @@ export default function VideosHero() {
   return (
     <section
       aria-labelledby="videos-hero-heading"
-      className="relative overflow-hidden"
-      style={{
-        background: "linear-gradient(160deg,#dbeafe 0%,#eff6ff 45%,#f0f9ff 100%)",
-      }}
+      className="videos-hero-gradient overflow-hidden"
     >
 
       <div className="relative mx-auto w-full max-w-[1780px] px-[clamp(1.75rem,3.4vw,4rem)] py-14 sm:py-16 lg:py-20">

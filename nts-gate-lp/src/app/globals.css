@@ -42,6 +42,27 @@
   --nts-gradient-soft-mint: linear-gradient(135deg, #f0fdfa 0%, #eef7ff 100%);
   --nts-gradient-soft-warm: linear-gradient(135deg, #fff7ed 0%, #eff6ff 100%);
   --nts-gradient-cta-dark: linear-gradient(135deg, #1a4c8e 0%, #0f4a8f 48%, #1368d8 100%);
+  /* /subsidies/videos ヒーロー — 薄い水色・高精度127deg（紫版 d-gt1 の水色対応） */
+  --videos-hero-bg: #f8fcff;
+  --videos-hero-surface: #e8f4fd;
+  --videos-hero-accent: #0ea5e9;
+  --videos-hero-accent-b: #38bdf8;
+  --nts-gradient-videos-hero: linear-gradient(
+    127deg,
+    #ffffff 0%,
+    var(--videos-hero-bg) 8%,
+    #f0f9ff 16%,
+    var(--videos-hero-surface) 26%,
+    #e0f2fe 36%,
+    #dbeafe 46%,
+    #d4efff 56%,
+    #cce9ff 66%,
+    #c7e6fe 74%,
+    #d6efff 82%,
+    color-mix(in srgb, var(--videos-hero-accent) 20%, #e6f6ff) 90%,
+    color-mix(in srgb, var(--videos-hero-accent-b) 14%, #f2fbff) 96%,
+    #fafcff 100%
+  );
   --nts-shadow-blue-soft: 0 18px 48px rgba(29, 78, 216, 0.1);
   --nts-shadow-blue-card: 0 14px 36px rgba(15, 76, 129, 0.08);
   --nts-border-icon: rgba(29, 78, 216, 0.14);
@@ -331,6 +352,30 @@ body {
 }
 
 .section-hero > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* /subsidies/videos ヒーロー背景 — 127deg 高精度リニアグラデーション（水色版） */
+.videos-hero-gradient {
+  position: relative;
+  isolation: isolate;
+  background: var(--nts-gradient-videos-hero);
+}
+
+.videos-hero-gradient::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 80% 60% at 12% 18%, rgba(56, 189, 248, 0.14) 0%, transparent 62%),
+    radial-gradient(ellipse 70% 55% at 88% 78%, rgba(14, 165, 233, 0.10) 0%, transparent 58%),
+    radial-gradient(ellipse 55% 45% at 52% 50%, rgba(186, 230, 253, 0.16) 0%, transparent 70%);
+}
+
+.videos-hero-gradient > * {
   position: relative;
   z-index: 1;
 }
