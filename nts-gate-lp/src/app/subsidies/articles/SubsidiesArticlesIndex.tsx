@@ -496,9 +496,6 @@ export default function SubsidiesArticlesIndex({
                         />
                       </svg>
                     </div>
-                    <p className="mt-0.5 text-[11px] font-medium" style={{ color: "#7a8798" }}>
-                      {c.count}記事
-                    </p>
                   </button>
                 );
               })}
