@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { motion, useReducedMotion } from "framer-motion";
 
 const EASE_OUT = [0.22, 1, 0.36, 1] as const;
@@ -97,6 +98,13 @@ type ProcessStep = {
   description: string;
   tone: Tone;
   icon: IconKey;
+  image: string;
+  imageAlt: string;
+};
+
+const ENTRY_IMAGE = {
+  src: "/images/hero-digital-platform.png",
+  alt: "顧客接点から課題を見つける御社のイメージ",
 };
 
 const processSteps: ProcessStep[] = [
@@ -107,6 +115,8 @@ const processSteps: ProcessStep[] = [
     description: "顧客接点から商談や現場の課題を捉える",
     tone: "partner",
     icon: "search",
+    image: "/icon-assets/subsidy-lp/advisor.png",
+    imageAlt: "顧客課題を見つける相談イメージ",
   },
   {
     number: "02",
@@ -115,6 +125,8 @@ const processSteps: ProcessStep[] = [
     description: "対話を通じて本質的な課題を整理する",
     tone: "mixed-partner",
     icon: "talk",
+    image: "/icon-assets/subsidy-lp/meeting-wide.png",
+    imageAlt: "御社とNTSが一緒に課題を深掘る会議イメージ",
   },
   {
     number: "03",
@@ -123,6 +135,8 @@ const processSteps: ProcessStep[] = [
     description: "活用可能性を整理し、提案の幅を広げる",
     tone: "mixed-nts",
     icon: "stack",
+    image: "/icon-assets/subsidy-lp/hero-consulting.png",
+    imageAlt: "補助金の選択肢を提示するイメージ",
   },
   {
     number: "04",
@@ -131,6 +145,8 @@ const processSteps: ProcessStep[] = [
     description: "導入後の次の一手まで支援する",
     tone: "nts",
     icon: "compass",
+    image: "/icon-assets/subsidy-lp/handshake.png",
+    imageAlt: "成約後も伴走するイメージ",
   },
 ];
 
@@ -192,7 +208,7 @@ function EntryCard() {
     /* pt-[22px] は StepCard と高さベースラインを揃えるためのスペーサー */
     <div className="relative h-full" style={{ paddingTop: "22px" }}>
       <div
-        className="flex h-full flex-col overflow-hidden rounded-[20px] bg-white transition-all duration-300 hover:-translate-y-1"
+        className="flex min-h-[340px] h-full flex-col overflow-hidden rounded-[20px] bg-white transition-all duration-300 hover:-translate-y-1"
         style={{
           border: "1px solid rgba(16,185,129,0.28)",
           boxShadow: "0 20px 44px rgba(15,23,42,0.10), 0 4px 12px rgba(16,185,129,0.08)",
@@ -216,16 +232,15 @@ function EntryCard() {
         </div>
 
         {/* 大きめのイラストエリア */}
-        <div className="flex items-center justify-center py-4">
-          <div
-            className="flex h-[72px] w-[72px] items-center justify-center rounded-2xl"
-            style={{
-              background: "linear-gradient(135deg, #d1fae5 0%, #ecfdf5 100%)",
-              color: "#059669",
-              boxShadow: "0 4px 16px rgba(16,185,129,0.14)",
-            }}
-          >
-            <Icon type="building" className="h-[38px] w-[38px]" />
+        <div className="flex items-center justify-center px-4 py-4">
+          <div className="relative h-[132px] w-full max-w-[230px]">
+            <Image
+              src={ENTRY_IMAGE.src}
+              alt={ENTRY_IMAGE.alt}
+              fill
+              sizes="230px"
+              className="object-contain drop-shadow-[0_16px_24px_rgba(15,23,42,0.12)]"
+            />
           </div>
         </div>
 
@@ -277,7 +292,7 @@ function StepCard({ step }: { step: ProcessStep }) {
 
       {/* ── カード本体 ── */}
       <div
-        className="flex h-full flex-col overflow-hidden rounded-[20px] bg-white transition-all duration-300 hover:-translate-y-[3px]"
+        className="flex min-h-[340px] h-full flex-col overflow-hidden rounded-[20px] bg-white transition-all duration-300 hover:-translate-y-[3px]"
         style={{
           border: `1px solid ${palette.border}`,
           boxShadow: "0 20px 44px rgba(15,23,42,0.10), 0 4px 12px rgba(15,23,42,0.04)",
@@ -296,22 +311,26 @@ function StepCard({ step }: { step: ProcessStep }) {
           </span>
         </div>
 
-        {/* 大きめアイコンエリア */}
-        <div className="flex flex-1 flex-col items-center px-4 pb-4 pt-3 text-center">
-          <span
-            className="mb-3 flex h-[68px] w-[68px] items-center justify-center rounded-2xl"
-            style={{
-              background: palette.iconBg,
-              color: palette.iconText,
-              boxShadow: "0 4px 14px rgba(0,0,0,0.07)",
-            }}
+        {/* 画像 + テキストエリア */}
+        <div className="flex flex-1 flex-col items-center px-4 pb-5 pt-4 text-center">
+          <div className="relative mb-3 h-[132px] w-full">
+            <Image
+              src={step.image}
+              alt={step.imageAlt}
+              fill
+              sizes="260px"
+              className="object-contain drop-shadow-[0_16px_24px_rgba(15,23,42,0.12)]"
+            />
+          </div>
+
+          <h4
+            className="line-clamp-2 text-[15px] font-black leading-[1.55]"
+            style={{ color: palette.iconText }}
           >
-            <Icon type={step.icon} className="h-[34px] w-[34px]" />
-          </span>
-          <h4 className="line-clamp-2 text-[14px] font-bold leading-[1.55] text-[#071b46]">
             {step.title}
           </h4>
-          <p className="mt-1.5 line-clamp-2 text-[11.5px] leading-[1.55] text-[#5a7a9a]">
+
+          <p className="mt-2 line-clamp-2 text-[12px] leading-[1.65] text-[#4f6f8f]">
             {step.description}
           </p>
         </div>
@@ -325,7 +344,15 @@ function StepCard({ step }: { step: ProcessStep }) {
 // ─────────────────────────────────────────────────────────────
 function ThickGradientArrow() {
   const sharedClip =
-    "polygon(0 22%, calc(100% - 68px) 22%, calc(100% - 68px) 0, 100% 50%, calc(100% - 68px) 100%, calc(100% - 68px) 78%, 0 78%)";
+    "polygon(0 22%, calc(100% - 92px) 22%, calc(100% - 92px) 0, 100% 50%, calc(100% - 92px) 100%, calc(100% - 92px) 78%, 0 78%)";
+
+  const sharedRect = {
+    left: "clamp(270px, 18vw, 340px)",
+    right: "-72px",
+    top: "50%",
+    height: "clamp(74px, 6vw, 104px)",
+    transform: "translateY(-50%)",
+  } as const;
 
   return (
     <>
@@ -334,16 +361,12 @@ function ThickGradientArrow() {
         className="pointer-events-none absolute z-0"
         aria-hidden
         style={{
-          left: "clamp(260px, 19vw, 340px)",
-          right: "clamp(24px, 3vw, 72px)",
-          top: "50%",
-          height: "clamp(58px, 5vw, 88px)",
-          transform: "translateY(-50%)",
+          ...sharedRect,
           background:
-            "linear-gradient(90deg, #20c58e 0%, #20c5b8 42%, #2396ee 70%, #145ee8 100%)",
+            "linear-gradient(90deg, #20c58e 0%, #1fc5b7 38%, #248fe8 70%, #135be8 100%)",
           clipPath: sharedClip,
-          opacity: 0.95,
-          filter: "drop-shadow(0 10px 24px rgba(37,99,235,0.22))",
+          opacity: 0.96,
+          filter: "drop-shadow(0 16px 30px rgba(37,99,235,0.24))",
         }}
       />
       {/* 上面ハイライト（立体感） */}
@@ -351,11 +374,7 @@ function ThickGradientArrow() {
         className="pointer-events-none absolute z-0"
         aria-hidden
         style={{
-          left: "clamp(260px, 19vw, 340px)",
-          right: "clamp(24px, 3vw, 72px)",
-          top: "50%",
-          height: "clamp(58px, 5vw, 88px)",
-          transform: "translateY(-50%)",
+          ...sharedRect,
           background:
             "linear-gradient(180deg, rgba(255,255,255,0.30) 0%, rgba(255,255,255,0) 50%)",
           clipPath: sharedClip,
@@ -459,8 +478,8 @@ export default function PartnerJointFlowDiagram() {
             className="relative z-[1] grid items-stretch"
             style={{
               gridTemplateColumns:
-                "clamp(250px, 18vw, 320px) repeat(4, minmax(0, 1fr))",
-              gap: "clamp(20px, 2.5vw, 48px)",
+                "clamp(270px, 17vw, 330px) repeat(4, clamp(220px, 14vw, 270px))",
+              gap: "clamp(26px, 2.7vw, 52px)",
             }}
           >
             <motion.div {...reveal(0.1)} className="self-stretch">
@@ -575,12 +594,15 @@ export default function PartnerJointFlowDiagram() {
                       </span>
                     </div>
                     <div className="flex items-center gap-4 px-4 pb-4">
-                      <span
-                        className="flex h-[56px] w-[56px] shrink-0 items-center justify-center rounded-xl"
-                        style={{ background: palette.iconBg, color: palette.iconText }}
-                      >
-                        <Icon type={step.icon} className="h-[28px] w-[28px]" />
-                      </span>
+                      <div className="relative h-[96px] w-[112px] shrink-0">
+                        <Image
+                          src={step.image}
+                          alt={step.imageAlt}
+                          fill
+                          sizes="112px"
+                          className="object-contain drop-shadow-[0_10px_18px_rgba(15,23,42,0.10)]"
+                        />
+                      </div>
                       <div>
                         <h4 className="text-[14px] font-bold leading-[1.5] text-[#071b46]">{step.title}</h4>
                         <p className="mt-1 text-[11.5px] leading-[1.5] text-[#5a7a9a]">{step.description}</p>
