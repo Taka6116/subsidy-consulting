@@ -592,9 +592,14 @@ export default function PartnerJointFlowDiagram() {
           >
             {/* グラデーション合流矢印 */}
             <FlowArrow size="lg" />
-            {/* 共同支援バッジ：SVGの合流点（cx=38/80≈47.5%、cy=135/270=50%）に重ねる */}
+            {/* 共同支援バッジ：cx=38/80=47.5% → left 47.5%, cy=135/270=50% → top 50% */}
             <motion.div
-              className="absolute left-[47%] top-1/2 z-10 -translate-x-1/2 -translate-y-1/2"
+              className="absolute z-10"
+              style={{
+                left: "calc(38 / 80 * 100%)",
+                top: "calc(135 / 270 * 100%)",
+                transform: "translate(-50%, -50%)",
+              }}
               {...scale(0.18)}
             >
               <JointBadge />
