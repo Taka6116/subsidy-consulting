@@ -42,6 +42,7 @@
   --nts-gradient-soft-mint: linear-gradient(135deg, #f0fdfa 0%, #eef7ff 100%);
   --nts-gradient-soft-warm: linear-gradient(135deg, #fff7ed 0%, #eff6ff 100%);
   --nts-gradient-cta-dark: linear-gradient(135deg, #1a4c8e 0%, #0f4a8f 48%, #1368d8 100%);
+  --nts-gradient-header-bar: linear-gradient(135deg, #0b3a7a 0%, #1a4c8e 45%, #1368d8 100%);
   --nts-shadow-blue-soft: 0 18px 48px rgba(29, 78, 216, 0.1);
   --nts-shadow-blue-card: 0 14px 36px rgba(15, 76, 129, 0.08);
   --nts-border-icon: rgba(29, 78, 216, 0.14);
@@ -620,6 +621,89 @@ header.lp-site-header[data-hero-transparent="true"] .header-cta--secondary {
 
 header.lp-site-header[data-hero-transparent="true"] .header-cta--secondary:hover {
   background: rgba(255, 255, 255, 0.92);
+}
+
+/* 補助金ポータル — ヘッダーグラデーション */
+header.lp-site-header--subsidies {
+  background: var(--nts-gradient-header-bar);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+header.lp-site-header--subsidies .header-nav-link {
+  color: rgba(255, 255, 255, 0.88) !important;
+  font-weight: 600;
+}
+
+header.lp-site-header--subsidies .header-nav-link:hover {
+  color: #ffffff !important;
+}
+
+header.lp-site-header--subsidies .header-cta--primary,
+header.lp-site-header--subsidies .header-cta--primary:visited,
+header.lp-site-header--subsidies .header-cta--primary:hover,
+header.lp-site-header--subsidies .header-cta--check,
+header.lp-site-header--subsidies .header-cta--check:visited,
+header.lp-site-header--subsidies .header-cta--check:hover {
+  color: #ffffff !important;
+}
+
+header.lp-site-header--subsidies .header-cta--check,
+header.lp-site-header--subsidies .header-cta--check:visited {
+  background: var(--nts-gradient-check);
+  color: #ffffff;
+  border: none;
+  box-shadow: 0 10px 24px rgba(13, 148, 136, 0.28);
+}
+
+header.lp-site-header--subsidies .header-cta--check:hover {
+  background: var(--nts-gradient-check);
+  filter: brightness(1.06);
+  transform: translateY(-1px);
+  color: #ffffff;
+  box-shadow: 0 12px 28px rgba(13, 148, 136, 0.34);
+}
+
+/* フッター — グラデーションCTA */
+.footer-cta-gradient-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 9999px;
+  padding: 0.75rem 1.5rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #ffffff;
+  background: var(--nts-gradient-primary);
+  box-shadow: 0 10px 24px rgba(11, 78, 162, 0.22);
+  transition: filter 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.footer-cta-gradient-primary:hover {
+  filter: brightness(1.06);
+  transform: translateY(-1px);
+  box-shadow: 0 12px 28px rgba(11, 78, 162, 0.28);
+  color: #ffffff;
+}
+
+.footer-cta-gradient-check {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #ffffff;
+  background: var(--nts-gradient-check);
+  border-radius: 9999px;
+  padding: 0.5rem 1rem;
+  box-shadow: 0 8px 20px rgba(13, 148, 136, 0.24);
+  transition: filter 0.2s ease, transform 0.2s ease;
+}
+
+.footer-cta-gradient-check:hover {
+  filter: brightness(1.06);
+  transform: translateY(-1px);
+  color: #ffffff;
 }
 
 hr,

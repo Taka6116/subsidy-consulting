@@ -45,6 +45,7 @@ export default function Header() {
         flex flex-col items-stretch gap-2.5 px-4 py-2.5 transition-all duration-300
         sm:min-h-[3.5rem] sm:flex-row sm:items-center sm:gap-4 sm:px-6 sm:py-0
         ${barClass}
+        ${isSubsidies ? "lp-site-header--subsidies" : ""}
       `}
       data-hero-transparent={heroStyle ? "true" : undefined}
     >
@@ -68,29 +69,29 @@ export default function Header() {
             className="flex min-w-0 flex-1 items-center justify-end gap-x-3 overflow-hidden sm:ml-2 lg:ml-6 lg:gap-x-5"
             aria-label="補助金プラットフォーム"
           >
-            <Link href="/subsidies" className="shrink-0 whitespace-nowrap text-xs font-medium text-[var(--text-secondary)] transition-colors hover:text-[var(--accent-navy)] lg:text-sm">
+            <Link href="/subsidies" className="header-nav-link shrink-0 whitespace-nowrap text-xs lg:text-sm">
               トップへ
             </Link>
-            <Link href="/subsidies/list" className="shrink-0 whitespace-nowrap text-xs font-medium text-[var(--text-secondary)] transition-colors hover:text-[var(--accent-navy)] lg:text-sm">
+            <Link href="/subsidies/list" className="header-nav-link shrink-0 whitespace-nowrap text-xs lg:text-sm">
               補助金一覧
             </Link>
-            <Link href="/subsidies/articles" className="shrink-0 whitespace-nowrap text-xs font-medium text-[var(--text-secondary)] transition-colors hover:text-[var(--accent-navy)] lg:text-sm">
+            <Link href="/subsidies/articles" className="header-nav-link shrink-0 whitespace-nowrap text-xs lg:text-sm">
               解説記事
             </Link>
-            <Link href="/subsidies/lp" className="shrink-0 whitespace-nowrap text-xs font-medium text-[var(--text-secondary)] transition-colors hover:text-[var(--accent-navy)] lg:text-sm">
+            <Link href="/subsidies/lp" className="header-nav-link shrink-0 whitespace-nowrap text-xs lg:text-sm">
               補助金ページ
             </Link>
-            <Link href="/subsidies/videos" className="shrink-0 whitespace-nowrap text-xs font-medium text-[var(--text-secondary)] transition-colors hover:text-[var(--accent-navy)] lg:text-sm">
+            <Link href="/subsidies/videos" className="header-nav-link shrink-0 whitespace-nowrap text-xs lg:text-sm">
               動画
             </Link>
             <Link
               href={partnerHref}
               onClick={() => trackPartnerLinkClick("header_subsidies")}
-              className="shrink-0 whitespace-nowrap text-xs font-medium text-[var(--text-secondary)] transition-colors hover:text-[var(--accent-navy)] lg:text-sm"
+              className="header-cta header-cta--check shrink-0 text-xs lg:text-sm"
             >
               提携先の方へ
             </Link>
-            <Link href="/check" className="shrink-0 whitespace-nowrap text-xs font-medium text-[var(--text-secondary)] transition-colors hover:text-[var(--accent-navy)] lg:text-sm">
+            <Link href="/check" className="header-nav-link shrink-0 whitespace-nowrap text-xs lg:text-sm">
               補助金を申請したい方へ
             </Link>
           </nav>

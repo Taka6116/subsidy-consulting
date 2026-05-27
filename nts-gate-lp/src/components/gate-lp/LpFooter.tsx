@@ -1,8 +1,15 @@
+"use client";
+
+import { usePathname } from "next/navigation";
 import Link from "next/link";
 import FooterPartnerLink from "@/components/shared/FooterPartnerLink";
 import SubsidyLegalDisclaimer from "@/components/shared/SubsidyLegalDisclaimer";
 
 export default function LpFooter() {
+  const pathname = usePathname();
+  const isSubsidies =
+    pathname === "/subsidies" || pathname.startsWith("/subsidies/");
+
   return (
     <footer className="relative z-[20] border-t border-[var(--border-subtle)] bg-[var(--bg-section-alt)] text-[var(--text-primary)]">
       <div className="mx-auto max-w-5xl px-6 py-12 md:px-8">
@@ -36,7 +43,11 @@ export default function LpFooter() {
 
           <Link
             href="/consult"
-            className="inline-flex items-center gap-2 rounded-full border border-[var(--accent-navy)]/35 px-6 py-3 text-sm text-[var(--accent-navy)] transition hover:border-[var(--accent-navy)] hover:bg-[var(--accent-navy)] hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent-navy)]"
+            className={
+              isSubsidies
+                ? "footer-cta-gradient-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent-navy)]"
+                : "inline-flex items-center gap-2 rounded-full border border-[var(--accent-navy)]/35 px-6 py-3 text-sm text-[var(--accent-navy)] transition hover:border-[var(--accent-navy)] hover:bg-[var(--accent-navy)] hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent-navy)]"
+            }
           >
             お問い合わせ
             <span aria-hidden="true">→</span>
@@ -44,10 +55,10 @@ export default function LpFooter() {
         </div>
 
         <div className="mt-8 border-t border-[var(--border-subtle)] pt-6">
-          <SubsidyLegalDisclaimer variant="full" className="mb-4" />
-          <div className="flex flex-col gap-2 md:flex-row md:justify-between">
+          {!isSubsidies && <SubsidyLegalDisclaimer variant="full" className="mb-4" />}
+          <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
             <p className="text-xs text-[var(--text-muted)]">© 2026 株式会社日本提携支援</p>
-            <FooterPartnerLink />
+            <FooterPartnerLink gradient={isSubsidies} />
           </div>
         </div>
       </div>
