@@ -310,8 +310,8 @@ function MergeConnector() {
       {/* 御社（上）から中央合流点へ */}
       <path
         d="M0 42 H58 V80"
-        stroke="#93c5fd"
-        strokeWidth="1.8"
+        stroke="#5b9fd8"
+        strokeWidth="2.2"
         strokeLinecap="round"
         strokeLinejoin="round"
         strokeDasharray="4 3"
@@ -319,26 +319,27 @@ function MergeConnector() {
       {/* NTS（下）から中央合流点へ */}
       <path
         d="M0 118 H58 V80"
-        stroke="#93c5fd"
-        strokeWidth="1.8"
+        stroke="#5b9fd8"
+        strokeWidth="2.2"
         strokeLinecap="round"
         strokeLinejoin="round"
         strokeDasharray="4 3"
       />
-      {/* 合流点の小さな丸 */}
-      <circle cx="58" cy="80" r="3.5" fill="#1a56db" opacity="0.7" />
+      {/* 合流点: 外リング + 内丸で強調 */}
+      <circle cx="58" cy="80" r="5.5" fill="rgba(26,86,219,0.15)" />
+      <circle cx="58" cy="80" r="3.5" fill="#1a56db" />
       {/* 合流→01カードへの矢印 */}
       <path
-        d="M61 80 H104"
-        stroke="#93c5fd"
-        strokeWidth="1.8"
+        d="M63 80 H104"
+        stroke="#5b9fd8"
+        strokeWidth="2.2"
         strokeLinecap="round"
         strokeDasharray="4 3"
       />
       <path
         d="m101 75.5 5 4.5-5 4.5"
         stroke="#1a56db"
-        strokeWidth="2"
+        strokeWidth="2.2"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
@@ -361,7 +362,7 @@ export default function PartnerJointFlowDiagram() {
           ════════════════════════════════════════════════════════ */}
       <motion.div
         className="relative mt-10 hidden lg:block"
-        style={{ width: "min(92vw, 1680px)", marginLeft: "auto", marginRight: "auto" }}
+        style={{ width: "min(92vw, 1520px)", marginLeft: "auto", marginRight: "auto" }}
         {...reveal(0.06)}
       >
         {/* 薄いグラデ背景 */}
@@ -375,9 +376,15 @@ export default function PartnerJointFlowDiagram() {
         />
 
         {/* ── 全工程を束ねる「御社 × NTS」帯ラベル ── */}
-        <div className="relative flex items-center gap-3 px-5 pb-1 pt-5">
+        <div className="relative flex items-center gap-3 px-5 pb-2 pt-5">
           <div className="h-px flex-1 bg-[#c5d9f0]" />
-          <span className="shrink-0 text-[11px] font-bold tracking-[0.18em] text-[#1a56db]">
+          <span
+            className="shrink-0 rounded-full px-4 py-[3px] text-[11px] font-bold tracking-[0.18em] text-[#1a56db]"
+            style={{
+              background: "rgba(218,234,255,0.72)",
+              border: "1px solid rgba(147,197,253,0.6)",
+            }}
+          >
             御社 × NTS
           </span>
           <div className="h-px flex-1 bg-[#c5d9f0]" />
@@ -385,15 +392,15 @@ export default function PartnerJointFlowDiagram() {
 
         {/* ── メイン横並びレイアウト ── */}
         <div
-          className="relative flex items-center rounded-2xl px-5 pb-8 pt-4"
-          style={{ gap: "clamp(20px, 1.8vw, 44px)" }}
+          className="relative flex items-center rounded-2xl px-5 pb-8 pr-8 pt-4"
+          style={{ gap: "clamp(14px, 1.4vw, 28px)" }}
         >
           {/* ── 左: 御社 / NTS カード（gap込み） ── */}
           <div
             className="shrink-0 flex flex-col"
             style={{
-              width: "clamp(280px, 24vw, 480px)",
-              gap: "clamp(10px, 1vw, 20px)",
+              width: "clamp(260px, 21vw, 380px)",
+              gap: "clamp(8px, 0.9vw, 16px)",
             }}
           >
             <ActorCard label="御社" isoImg={iso16} items={PARTNER_LABELS} />
@@ -403,7 +410,7 @@ export default function PartnerJointFlowDiagram() {
           {/* ── 合流SVGコネクター ── */}
           <div
             className="shrink-0 self-stretch"
-            style={{ width: "clamp(60px, 5vw, 110px)" }}
+            style={{ width: "clamp(50px, 4vw, 80px)" }}
           >
             <MergeConnector />
           </div>
@@ -413,7 +420,7 @@ export default function PartnerJointFlowDiagram() {
             className="grid flex-1 items-center"
             style={{
               gridTemplateColumns: "1fr auto 1fr auto 1fr auto 1fr",
-              gap: "clamp(6px, 1vw, 16px)",
+              gap: "clamp(4px, 0.7vw, 10px)",
             }}
           >
             <StepCard {...STEPS[0]} />

@@ -7,12 +7,12 @@ import PartnerJointFlowDiagram from "./PartnerJointFlowDiagram";
 export default function PartnerConsultValueSection() {
   return (
     <section
-      className="relative overflow-hidden py-20 md:py-24"
+      className="relative overflow-hidden py-12 md:py-16"
       style={{ background: "var(--bg-surface, #f8fafc)" }}
       aria-labelledby="partner-consult-value-heading"
     >
       <div className="mx-auto max-w-[1240px] px-5 sm:px-6 lg:max-w-[1380px] lg:px-6 xl:max-w-[1440px] xl:px-8">
-        <div className="mb-10 text-center md:mb-14">
+        <div className="mb-6 text-center md:mb-10">
           <h2
             id="partner-consult-value-heading"
             className="font-heading text-[clamp(1.8rem,3vw,3rem)] font-bold leading-[1.45] text-[var(--text-primary,#111827)]"
