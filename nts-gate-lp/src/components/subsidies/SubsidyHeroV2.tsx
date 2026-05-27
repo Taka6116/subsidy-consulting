@@ -5,7 +5,7 @@ import Link from "next/link";
 import AuroraText from "@/components/shared/AuroraText";
 import { AnimatePresence, motion, type Easing } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
-import { ArrowRight, Search, FileText } from "lucide-react";
+import { ArrowRight, FileText } from "lucide-react";
 
 const EASE: Easing = [0.22, 1, 0.36, 1];
 
@@ -209,7 +209,6 @@ export default function SubsidyHeroV2({
                 href="/subsidies/list"
                 className="inline-flex min-h-[54px] min-w-[230px] items-center justify-center gap-2.5 rounded-[14px] px-6 text-base font-black text-white shadow-[0_16px_30px_rgba(11,78,162,0.24)] transition-all hover:-translate-y-px hover:brightness-110 [background:var(--nts-gradient-primary)]"
               >
-                <Search className="h-5 w-5" strokeWidth={2.4} />
                 使える補助金を探す
               </Link>
               <Link
