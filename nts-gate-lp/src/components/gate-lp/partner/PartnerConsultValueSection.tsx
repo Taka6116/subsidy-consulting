@@ -8,7 +8,10 @@ export default function PartnerConsultValueSection() {
   return (
     <section
       className="relative overflow-hidden py-12 md:py-16"
-      style={{ background: "var(--bg-surface, #f8fafc)" }}
+      style={{
+        background:
+          "radial-gradient(circle at 50% 20%, rgba(59,130,246,0.08), transparent 36%), linear-gradient(180deg, #f8fbff 0%, #ffffff 52%, #f3f7fc 100%)",
+      }}
       aria-labelledby="partner-consult-value-heading"
     >
       <div className="mx-auto max-w-[1240px] px-5 sm:px-6 lg:max-w-[1380px] lg:px-6 xl:max-w-[1440px] xl:px-8">

@@ -11,26 +11,24 @@ import iso07 from "../../../../icon-assets/isometric_07.png";
 
 const EASE_OUT = [0.22, 1, 0.36, 1] as const;
 const fadeUp = (delay: number) => ({
-  initial: { opacity: 0, y: 16 },
+  initial: { opacity: 0, y: 18 },
   whileInView: { opacity: 1, y: 0 },
-  viewport: { once: true, amount: 0.12 },
-  transition: { duration: 0.55, ease: EASE_OUT, delay },
+  viewport: { once: true, amount: 0.1 },
+  transition: { duration: 0.6, ease: EASE_OUT, delay },
+});
+const scaleIn = (delay: number) => ({
+  initial: { opacity: 0, scale: 0.82 },
+  whileInView: { opacity: 1, scale: 1 },
+  viewport: { once: true, amount: 0.1 },
+  transition: { duration: 0.5, ease: EASE_OUT, delay },
 });
 
 // ─────────────────────────────────────────────────────────────
 // アイコン
 // ─────────────────────────────────────────────────────────────
 type IconKey =
-  | "people"
-  | "chat"
-  | "chart"
-  | "bulb"
-  | "doc"
-  | "net"
-  | "dig"
-  | "branch"
-  | "trend"
-  | "flag";
+  | "people" | "chat" | "chart" | "bulb" | "doc" | "net"
+  | "dig" | "branch" | "trend" | "flag" | "handshake";
 
 function Icon({ type, className = "h-4 w-4" }: { type: IconKey; className?: string }) {
   switch (type) {
@@ -116,6 +114,13 @@ function Icon({ type, className = "h-4 w-4" }: { type: IconKey; className?: stri
           <path d="M5 4h12l-3 5 3 5H5" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" strokeLinecap="round" />
         </svg>
       );
+    case "handshake":
+      return (
+        <svg viewBox="0 0 24 24" className={className} fill="none" aria-hidden>
+          <path d="M9 11l3 3 8-8" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+          <path d="M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h9" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      );
   }
 }
 
@@ -129,67 +134,107 @@ const PARTNER_LABELS = [
 ];
 const NTS_LABELS = [
   { text: "補助金活用", icon: "bulb" as IconKey },
-  { text: "投資背景整理", icon: "doc" as IconKey },
+  { text: "投資背景把握", icon: "doc" as IconKey },
   { text: "専門家連携", icon: "net" as IconKey },
 ];
 
 const STEPS = [
   {
-    no: "01",
-    tag: "整理",
+    no: "01", tag: "整理",
     title: "課題を一緒に特定",
-    sub: "顧客課題を言語化",
+    sub: "顧客課題を言語化し、\n本質を特定します。",
     icon: "dig" as IconKey,
     isoImg: iso23,
+    accent: true,
   },
   {
-    no: "02",
-    tag: "検討",
+    no: "02", tag: "検討",
     title: "選択肢を広げる",
-    sub: "補助金・支援策を\n追加提案",
+    sub: "補助金・支援策を\n幅広く整理します。",
     icon: "branch" as IconKey,
     isoImg: iso21,
+    accent: false,
   },
   {
-    no: "03",
-    tag: "提案",
+    no: "03", tag: "提案",
     title: "提案を前へ進める",
-    sub: "資料・説明・実行を支援",
+    sub: "資料・説明・実行まで\n伴走します。",
     icon: "trend" as IconKey,
     isoImg: iso20,
+    accent: false,
   },
   {
-    no: "04",
-    tag: "伴走",
+    no: "04", tag: "伴走",
     title: "お客様の前進へ",
-    sub: "導入後の次の一手へ接続",
+    sub: "導入後の次の一手まで\n支援します。",
     icon: "flag" as IconKey,
     isoImg: iso07,
+    accent: true,
   },
 ];
 
 // ─────────────────────────────────────────────────────────────
-// 左側：御社 / NTS アクターカード
+// 御社 / NTS アクターカード（刷新版）
 // ─────────────────────────────────────────────────────────────
 function ActorCard({
   label,
   isoImg,
   items,
+  variant,
 }: {
   label: string;
   isoImg: Parameters<typeof Image>[0]["src"];
   items: { text: string; icon: IconKey }[];
+  variant: "partner" | "nts";
 }) {
+  const isPartner = variant === "partner";
   return (
-    <div className="flex-1 rounded-xl border border-[#cdddf0] bg-white shadow-[0_3px_12px_rgba(12,42,72,0.06)]">
-      {/* カードヘッダー: 中央揃え */}
-      <div className="flex items-center justify-center border-b border-[#e8f0fb] px-3 py-2">
-        <span className="text-[13px] font-bold tracking-wide text-[#071b46]">{label}</span>
+    <div
+      className="flex flex-col overflow-hidden rounded-[18px] transition-all duration-300 hover:-translate-y-1"
+      style={{
+        background: isPartner
+          ? "linear-gradient(160deg, rgba(240,253,250,0.95) 0%, rgba(255,255,255,0.97) 100%)"
+          : "linear-gradient(160deg, rgba(255,255,255,0.97) 0%, rgba(248,251,255,0.97) 100%)",
+        border: isPartner
+          ? "1px solid rgba(20,184,166,0.22)"
+          : "1px solid rgba(37,99,235,0.18)",
+        boxShadow: "0 18px 40px rgba(15,23,42,0.08)",
+        backdropFilter: "blur(12px)",
+      }}
+    >
+      {/* ヘッダー */}
+      <div
+        className="flex items-center justify-center gap-2 px-4 py-2.5"
+        style={{
+          borderBottom: isPartner
+            ? "1px solid rgba(20,184,166,0.14)"
+            : "1px solid rgba(37,99,235,0.1)",
+          background: isPartner
+            ? "rgba(240,253,250,0.6)"
+            : "rgba(239,246,255,0.6)",
+        }}
+      >
+        <span
+          className="text-[13px] font-bold tracking-[0.1em]"
+          style={{ color: isPartner ? "#0f766e" : "#1a56db" }}
+        >
+          {label}
+        </span>
       </div>
-      {/* カード本体: 画像 + 項目リスト */}
+      {/* 本体 */}
       <div className="flex items-center gap-2.5 p-3">
         {/* isometric イラスト */}
-        <div className="relative h-[76px] w-[76px] shrink-0 overflow-hidden rounded-xl border border-[#d8e8f6] bg-gradient-to-br from-[#eef4ff] to-white">
+        <div
+          className="relative h-[76px] w-[76px] shrink-0 overflow-hidden rounded-xl"
+          style={{
+            background: isPartner
+              ? "linear-gradient(135deg, #ccfbf1, #f0fdf4)"
+              : "linear-gradient(135deg, #dbeafe, #eff6ff)",
+            border: isPartner
+              ? "1px solid rgba(20,184,166,0.18)"
+              : "1px solid rgba(37,99,235,0.14)",
+          }}
+        >
           <Image
             src={isoImg}
             alt=""
@@ -205,10 +250,21 @@ function ActorCard({
           {items.map((item) => (
             <li
               key={item.text}
-              className="flex h-[34px] items-center gap-2 rounded-md border border-[#e0ecf8] bg-[#f8fbff] px-2.5"
+              className="flex h-[32px] items-center gap-2 rounded-md px-2.5"
+              style={{
+                background: isPartner
+                  ? "rgba(240,253,250,0.7)"
+                  : "rgba(239,246,255,0.7)",
+                border: isPartner
+                  ? "1px solid rgba(20,184,166,0.14)"
+                  : "1px solid rgba(37,99,235,0.1)",
+              }}
             >
-              <span className="flex h-[22px] w-[22px] shrink-0 items-center justify-center rounded text-[#1a56db]">
-                <Icon type={item.icon} className="h-[13px] w-[13px]" />
+              <span
+                className="flex h-[20px] w-[20px] shrink-0 items-center justify-center rounded"
+                style={{ color: isPartner ? "#0d9488" : "#1a56db" }}
+              >
+                <Icon type={item.icon} className="h-[12px] w-[12px]" />
               </span>
               <span className="text-[11px] font-semibold leading-tight text-[#1e3a5f]">{item.text}</span>
             </li>
@@ -220,37 +276,183 @@ function ActorCard({
 }
 
 // ─────────────────────────────────────────────────────────────
-// 工程カード（固定高さで完全均一化）
+// 共同支援バッジ
+// ─────────────────────────────────────────────────────────────
+function JointBadge() {
+  return (
+    <div
+      className="flex h-[52px] w-[52px] shrink-0 flex-col items-center justify-center rounded-full"
+      style={{
+        background: "#ffffff",
+        border: "1px solid rgba(37,99,235,0.18)",
+        boxShadow: "0 16px 36px rgba(37,99,235,0.16), 0 4px 12px rgba(15,23,42,0.08)",
+      }}
+    >
+      <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" aria-hidden>
+        <path
+          d="M4.5 15.5C3.1 14.1 3 11.9 4.1 10.3L7 7h4l1 2-3 3 1.5 1.5"
+          stroke="#1a56db"
+          strokeWidth="1.7"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <path
+          d="M19.5 8.5C20.9 9.9 21 12.1 19.9 13.7L17 17h-4l-1-2 3-3-1.5-1.5"
+          stroke="#0d9488"
+          strokeWidth="1.7"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <path
+          d="M9 15l6-6"
+          stroke="#7c3aed"
+          strokeWidth="1.4"
+          strokeLinecap="round"
+          strokeDasharray="2 2"
+        />
+      </svg>
+      <span className="mt-0.5 text-[8px] font-black leading-none tracking-wide text-[#0f3b7a]">共同支援</span>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────
+// グラデーション矢印コネクター（左カード群 → 01カード）
+// ─────────────────────────────────────────────────────────────
+function FlowArrow({ size = "lg" }: { size?: "lg" | "sm" }) {
+  if (size === "sm") {
+    return (
+      <div className="flex shrink-0 items-center justify-center" aria-hidden>
+        <svg width="28" height="14" viewBox="0 0 28 14" fill="none">
+          <defs>
+            <linearGradient id="arrow-grad-sm" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stopColor="#60a5fa" />
+              <stop offset="100%" stopColor="#2563eb" />
+            </linearGradient>
+          </defs>
+          <path d="M2 7h20" stroke="url(#arrow-grad-sm)" strokeWidth="2" strokeLinecap="round" />
+          <path d="m20 3 5 4-5 4" stroke="#2563eb" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      </div>
+    );
+  }
+  return (
+    <div className="flex shrink-0 items-center justify-center self-stretch" aria-hidden>
+      <svg
+        className="h-full w-full"
+        viewBox="0 0 80 160"
+        preserveAspectRatio="xMidYMid meet"
+        fill="none"
+      >
+        <defs>
+          <linearGradient id="merge-line-top" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stopColor="#5eead4" />
+            <stop offset="100%" stopColor="#38bdf8" />
+          </linearGradient>
+          <linearGradient id="merge-line-bot" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stopColor="#60a5fa" />
+            <stop offset="100%" stopColor="#38bdf8" />
+          </linearGradient>
+          <linearGradient id="merge-line-out" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stopColor="#38bdf8" />
+            <stop offset="100%" stopColor="#2563eb" />
+          </linearGradient>
+          <filter id="glow">
+            <feGaussianBlur stdDeviation="1.4" result="blur" />
+            <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
+          </filter>
+        </defs>
+        {/* 御社（上）→合流点 */}
+        <path
+          d="M2 46 H44 V80"
+          stroke="url(#merge-line-top)"
+          strokeWidth="2.4"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          filter="url(#glow)"
+        />
+        {/* NTS（下）→合流点 */}
+        <path
+          d="M2 114 H44 V80"
+          stroke="url(#merge-line-bot)"
+          strokeWidth="2.4"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          filter="url(#glow)"
+        />
+        {/* 合流点 外リング */}
+        <circle cx="44" cy="80" r="7" fill="rgba(37,99,235,0.12)" />
+        {/* 合流点 内丸 */}
+        <circle cx="44" cy="80" r="4" fill="#2563eb" />
+        {/* 合流→出口 */}
+        <path
+          d="M48 80 H72"
+          stroke="url(#merge-line-out)"
+          strokeWidth="2.6"
+          strokeLinecap="round"
+          filter="url(#glow)"
+        />
+        {/* 矢印ヘッド */}
+        <path
+          d="m68 75 6 5-6 5"
+          stroke="#2563eb"
+          strokeWidth="2.4"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────
+// 工程カード（刷新版）
 // ─────────────────────────────────────────────────────────────
 function StepCard({
-  no,
-  tag,
-  title,
-  sub,
-  icon,
-  isoImg,
+  no, tag, title, sub, icon, isoImg, accent,
 }: {
-  no: string;
-  tag: string;
-  title: string;
-  sub: string;
-  icon: IconKey;
-  isoImg?: Parameters<typeof Image>[0]["src"];
+  no: string; tag: string; title: string; sub: string;
+  icon: IconKey; isoImg?: Parameters<typeof Image>[0]["src"]; accent?: boolean;
 }) {
   return (
-    <div className="relative flex h-[220px] w-full flex-col items-center rounded-xl border border-[#cdddf0] bg-white px-3 pb-3 pt-7 shadow-[0_4px_14px_rgba(12,42,72,0.06)]">
-      {/* 番号バッジ: top-center 絶対配置 */}
-      <span className="absolute left-1/2 top-0 flex h-[28px] min-w-[28px] -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-[#1a56db] px-[7px] text-[11px] font-bold text-white shadow-md">
+    <div
+      className="relative flex h-[228px] w-full flex-col items-center rounded-[18px] px-3 pb-3 pt-8 transition-all duration-300 hover:-translate-y-[3px]"
+      style={{
+        background: "rgba(255,255,255,0.9)",
+        border: accent
+          ? "1px solid rgba(37,99,235,0.22)"
+          : "1px solid rgba(37,99,235,0.10)",
+        boxShadow: accent
+          ? "0 18px 40px rgba(37,99,235,0.12), 0 4px 12px rgba(15,23,42,0.06)"
+          : "0 14px 32px rgba(15,23,42,0.07), 0 2px 8px rgba(15,23,42,0.04)",
+        backdropFilter: "blur(12px)",
+      }}
+    >
+      {/* 番号バッジ */}
+      <span
+        className="absolute left-1/2 top-0 flex h-[28px] min-w-[28px] -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full px-[7px] text-[11px] font-black text-white"
+        style={{
+          background: "linear-gradient(135deg, #2563eb 0%, #0f4fb8 100%)",
+          boxShadow: "0 6px 16px rgba(37,99,235,0.3)",
+        }}
+      >
         {no}
       </span>
-      {/* タグ: 高さ固定 */}
+      {/* タグ */}
       <div className="flex h-[20px] items-center">
-        <span className="rounded-full bg-[#eef4ff] px-2.5 py-0.5 text-[10px] font-bold tracking-wide text-[#1a56db]">
+        <span
+          className="rounded-full px-2.5 py-0.5 text-[10px] font-bold tracking-wide"
+          style={{
+            background: accent ? "rgba(219,234,254,0.8)" : "rgba(239,246,255,0.8)",
+            color: "#1a56db",
+            border: "1px solid rgba(37,99,235,0.14)",
+          }}
+        >
           {tag}
         </span>
       </div>
-      {/* 画像スロット: 高さ固定 76px */}
-      <div className="relative mt-2 h-[76px] w-full max-w-[108px] shrink-0">
+      {/* 画像スロット */}
+      <div className="relative mt-2 h-[72px] w-full max-w-[104px] shrink-0">
         {isoImg ? (
           <Image
             src={isoImg}
@@ -258,7 +460,7 @@ function StepCard({
             fill
             quality={90}
             className="object-contain"
-            sizes="108px"
+            sizes="104px"
             aria-hidden
           />
         ) : (
@@ -267,11 +469,11 @@ function StepCard({
           </span>
         )}
       </div>
-      {/* タイトル: 2行分確保 */}
+      {/* タイトル */}
       <h4 className="mt-2 line-clamp-2 h-[38px] text-center text-[13px] font-bold leading-[1.45] text-[#071b46]">
         {title}
       </h4>
-      {/* サブテキスト: 2行分確保 */}
+      {/* サブ */}
       <p className="mt-1 line-clamp-2 h-[30px] whitespace-pre-line text-center text-[11px] leading-[1.4] text-[#5a7a9a]">
         {sub}
       </p>
@@ -279,140 +481,128 @@ function StepCard({
   );
 }
 
-// ─── ステップ間矢印 ─────────────────────────────────────────
-function StepArrow() {
+// ─────────────────────────────────────────────────────────────
+// 補足ボックス（下部）
+// ─────────────────────────────────────────────────────────────
+function FooterNote() {
   return (
-    <div className="flex shrink-0 items-center justify-center" aria-hidden>
-      <svg width="22" height="14" viewBox="0 0 22 14" fill="none">
-        <path d="M2 7h16" stroke="#93c5fd" strokeWidth="2" strokeLinecap="round" strokeDasharray="3 3" />
-        <path d="m16 3 4 4-4 4" stroke="#1a56db" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-      </svg>
+    <div
+      className="mt-6 flex items-center gap-4 rounded-[16px] px-6 py-4"
+      style={{
+        background: "rgba(255,255,255,0.88)",
+        border: "1px solid rgba(37,99,235,0.14)",
+        boxShadow: "0 12px 30px rgba(15,23,42,0.05)",
+      }}
+    >
+      {/* アイコン丸 */}
+      <div
+        className="flex h-[42px] w-[42px] shrink-0 items-center justify-center rounded-full"
+        style={{
+          background: "linear-gradient(135deg, #dbeafe, #eff6ff)",
+          border: "1px solid rgba(37,99,235,0.16)",
+        }}
+      >
+        <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" aria-hidden>
+          <path
+            d="M8 11c0-1.1.9-2 2-2h4c1.1 0 2 .9 2 2v3c0 1.1-.9 2-2 2h-2l-3 2v-2H8c-1.1 0-2-.9-2-2v-3z"
+            stroke="#1a56db"
+            strokeWidth="1.7"
+            strokeLinejoin="round"
+          />
+          <path d="M7 9V7a5 5 0 0 1 10 0v2" stroke="#1a56db" strokeWidth="1.7" strokeLinecap="round" />
+        </svg>
+      </div>
+      <p className="text-[12.5px] font-semibold leading-[1.75] text-[#334155]">
+        御社の<span className="font-bold text-[#1a56db]">信頼関係を活かし</span>、NTSが専門家として裏側で支えます。
+        だから紹介先にも、<span className="font-bold text-[#1a56db]">御社にも負担が少ない</span>。
+      </p>
     </div>
   );
 }
 
 // ─────────────────────────────────────────────────────────────
-// PC専用：御社・NTS ⇒ 合流 ⇒ 01 SVGコネクター
-// viewBox内座標:
-//   上線（御社）: (0, 42) → (60, 42) → (60, 80) 右へ向かい中央へ
-//   下線（NTS）:  (0,118) → (60,118) → (60, 80) 左から中央へ
-//   合流→出口:   (60, 80) → (110, 80) → 矢印
+// PC帯ラベル（全工程横断）
 // ─────────────────────────────────────────────────────────────
-function MergeConnector() {
+function SpanLabel({ text, sub }: { text: string; sub: string }) {
   return (
-    <svg
-      className="h-full w-full"
-      viewBox="0 0 110 160"
-      preserveAspectRatio="xMidYMid meet"
-      fill="none"
-      aria-hidden
-    >
-      {/* 御社（上）から中央合流点へ */}
-      <path
-        d="M0 42 H58 V80"
-        stroke="#5b9fd8"
-        strokeWidth="2.2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeDasharray="4 3"
-      />
-      {/* NTS（下）から中央合流点へ */}
-      <path
-        d="M0 118 H58 V80"
-        stroke="#5b9fd8"
-        strokeWidth="2.2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeDasharray="4 3"
-      />
-      {/* 合流点: 外リング + 内丸で強調 */}
-      <circle cx="58" cy="80" r="5.5" fill="rgba(26,86,219,0.15)" />
-      <circle cx="58" cy="80" r="3.5" fill="#1a56db" />
-      {/* 合流→01カードへの矢印 */}
-      <path
-        d="M63 80 H104"
-        stroke="#5b9fd8"
-        strokeWidth="2.2"
-        strokeLinecap="round"
-        strokeDasharray="4 3"
-      />
-      <path
-        d="m101 75.5 5 4.5-5 4.5"
-        stroke="#1a56db"
-        strokeWidth="2.2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
+    <div className="mb-3 flex flex-col items-center gap-1">
+      <div className="flex w-full items-center gap-3">
+        <div className="h-px flex-1" style={{ background: "linear-gradient(to right, transparent, rgba(37,99,235,0.25))" }} />
+        <span
+          className="shrink-0 rounded-full px-5 py-[4px] text-[11.5px] font-bold tracking-[0.12em] text-[#1a56db]"
+          style={{
+            background: "rgba(219,234,254,0.7)",
+            border: "1px solid rgba(37,99,235,0.22)",
+          }}
+        >
+          {text}
+        </span>
+        <div className="h-px flex-1" style={{ background: "linear-gradient(to left, transparent, rgba(37,99,235,0.25))" }} />
+      </div>
+      <p className="text-[11px] font-semibold tracking-[0.08em] text-[#7ea3c6]">{sub}</p>
+    </div>
   );
 }
 
 // ─────────────────────────────────────────────────────────────
-// 御社 × NTS 合流フロー図解（メインエクスポート）
+// メインエクスポート
 // ─────────────────────────────────────────────────────────────
 export default function PartnerJointFlowDiagram() {
   const reduceMotion = useReducedMotion();
   const reveal = (delay: number) => (reduceMotion ? {} : fadeUp(delay));
+  const scale = (delay: number) => (reduceMotion ? {} : scaleIn(delay));
 
   return (
     <>
       {/* ════════════════════════════════════════════════════════
           PC（lg以上）: 横1行レイアウト
-          外側コンテナを min(92vw, 1680px) まで広げてフルードに対応
           ════════════════════════════════════════════════════════ */}
-      <motion.div
-        className="relative mt-10 hidden lg:block"
-        style={{ width: "min(92vw, 1520px)", marginLeft: "auto", marginRight: "auto" }}
-        {...reveal(0.06)}
+      <div
+        className="relative mt-8 hidden lg:block"
+        style={{ width: "min(94vw, 1520px)", marginLeft: "auto", marginRight: "auto" }}
       >
-        {/* 薄いグラデ背景 */}
-        <div
-          className="absolute inset-0 rounded-2xl"
-          style={{
-            background:
-              "radial-gradient(ellipse 100% 80% at 50% 50%, rgba(223,238,255,0.4) 0%, transparent 70%)",
-          }}
-          aria-hidden
-        />
+        {/* 帯ラベル */}
+        <motion.div {...reveal(0.05)}>
+          <SpanLabel
+            text="御社の信頼・顧客接点 × NTSの専門知見で、課題発見から提案後まで支援"
+            sub="紹介後も、NTSが伴走します"
+          />
+        </motion.div>
 
-        {/* ── 全工程を束ねる「御社 × NTS」帯ラベル ── */}
-        <div className="relative flex items-center gap-3 px-5 pb-2 pt-5">
-          <div className="h-px flex-1 bg-[#c5d9f0]" />
-          <span
-            className="shrink-0 rounded-full px-4 py-[3px] text-[11px] font-bold tracking-[0.18em] text-[#1a56db]"
-            style={{
-              background: "rgba(218,234,255,0.72)",
-              border: "1px solid rgba(147,197,253,0.6)",
-            }}
-          >
-            御社 × NTS
-          </span>
-          <div className="h-px flex-1 bg-[#c5d9f0]" />
-        </div>
-
-        {/* ── メイン横並びレイアウト ── */}
+        {/* メイン横並び */}
         <div
-          className="relative flex items-center rounded-2xl px-5 pb-8 pr-8 pt-4"
-          style={{ gap: "clamp(14px, 1.4vw, 28px)" }}
+          className="flex items-center"
+          style={{ gap: "clamp(12px, 1.2vw, 24px)" }}
         >
-          {/* ── 左: 御社 / NTS カード（gap込み） ── */}
-          <div
-            className="shrink-0 flex flex-col"
+          {/* ── 左: 御社 + 共同支援バッジ + NTS ── */}
+          <motion.div
+            className="relative shrink-0 flex items-center"
             style={{
-              width: "clamp(260px, 21vw, 380px)",
-              gap: "clamp(8px, 0.9vw, 16px)",
+              width: "clamp(270px, 22vw, 390px)",
+              gap: "clamp(6px, 0.6vw, 12px)",
             }}
+            {...reveal(0.1)}
           >
-            <ActorCard label="御社" isoImg={iso16} items={PARTNER_LABELS} />
-            <ActorCard label="NTS" isoImg={iso08} items={NTS_LABELS} />
-          </div>
+            {/* 御社カード */}
+            <div className="flex flex-1 flex-col" style={{ gap: "clamp(8px, 0.8vw, 14px)" }}>
+              <ActorCard label="御社" isoImg={iso16} items={PARTNER_LABELS} variant="partner" />
+              <ActorCard label="NTS" isoImg={iso08} items={NTS_LABELS} variant="nts" />
+            </div>
+            {/* 共同支援バッジ（2枚の右端に重ねる） */}
+            <motion.div
+              className="absolute right-[-26px] top-1/2 z-10 -translate-y-1/2"
+              {...scale(0.18)}
+            >
+              <JointBadge />
+            </motion.div>
+          </motion.div>
 
-          {/* ── 合流SVGコネクター ── */}
+          {/* ── 合流グラデーション矢印 ── */}
           <div
             className="shrink-0 self-stretch"
-            style={{ width: "clamp(50px, 4vw, 80px)" }}
+            style={{ width: "clamp(52px, 4.5vw, 80px)", minHeight: "180px" }}
           >
-            <MergeConnector />
+            <FlowArrow size="lg" />
           </div>
 
           {/* ── 右: 4工程カード ── */}
@@ -420,53 +610,84 @@ export default function PartnerJointFlowDiagram() {
             className="grid flex-1 items-center"
             style={{
               gridTemplateColumns: "1fr auto 1fr auto 1fr auto 1fr",
-              gap: "clamp(4px, 0.7vw, 10px)",
+              gap: "clamp(4px, 0.6vw, 10px)",
             }}
           >
-            <StepCard {...STEPS[0]} />
-            <StepArrow />
-            <StepCard {...STEPS[1]} />
-            <StepArrow />
-            <StepCard {...STEPS[2]} />
-            <StepArrow />
-            <StepCard {...STEPS[3]} />
+            {STEPS.map((step, i) => (
+              <>
+                <motion.div key={step.no} {...reveal(0.2 + i * 0.07)}>
+                  <StepCard {...step} />
+                </motion.div>
+                {i < STEPS.length - 1 && <FlowArrow key={`arrow-${i}`} size="sm" />}
+              </>
+            ))}
           </div>
         </div>
-      </motion.div>
+
+        {/* 補足ボックス */}
+        <motion.div {...reveal(0.42)}>
+          <FooterNote />
+        </motion.div>
+      </div>
 
       {/* ════════════════════════════════════════════════════════
           Tablet（md〜lg）: 2段構成
           ════════════════════════════════════════════════════════ */}
       <div className="mt-8 hidden md:block lg:hidden">
+        <motion.div {...reveal(0.06)}>
+          <SpanLabel
+            text="御社 × NTSの専門知見で、課題発見から提案後まで支援"
+            sub="紹介後も、NTSが伴走します"
+          />
+        </motion.div>
+
         <motion.div
-          className="rounded-2xl border border-[#d0e4f6] bg-white/95 p-5"
-          {...reveal(0.06)}
+          className="rounded-[18px] p-5"
+          style={{
+            background: "rgba(255,255,255,0.88)",
+            border: "1px solid rgba(37,99,235,0.12)",
+            boxShadow: "0 18px 40px rgba(15,23,42,0.08)",
+          }}
+          {...reveal(0.1)}
         >
-          {/* 御社 / NTS 横並び */}
           <div className="flex gap-3">
-            <ActorCard label="御社" isoImg={iso16} items={PARTNER_LABELS} />
-            <ActorCard label="NTS" isoImg={iso08} items={NTS_LABELS} />
+            <ActorCard label="御社" isoImg={iso16} items={PARTNER_LABELS} variant="partner" />
+            <ActorCard label="NTS" isoImg={iso08} items={NTS_LABELS} variant="nts" />
+          </div>
+          <div className="mt-3 flex justify-center">
+            <div
+              className="inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-[11px] font-bold text-[#1a56db]"
+              style={{ background: "rgba(219,234,254,0.7)", border: "1px solid rgba(37,99,235,0.18)" }}
+            >
+              <JointBadge />
+              <span>共同支援を起点に、4ステップで伴走</span>
+            </div>
           </div>
         </motion.div>
 
-        {/* 接続ライン */}
-        <motion.div className="flex flex-col items-center py-3" {...reveal(0.1)} aria-hidden>
-          <svg width="2" height="24" viewBox="0 0 2 24">
-            <path d="M1 0V24" stroke="#7eb3f0" strokeWidth="2" strokeDasharray="3 3" />
+        <motion.div className="flex flex-col items-center py-4" {...reveal(0.15)} aria-hidden>
+          <svg width="2" height="28" viewBox="0 0 2 28">
+            <defs>
+              <linearGradient id="v-line-tab" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="#60a5fa" />
+                <stop offset="100%" stopColor="#2563eb" />
+              </linearGradient>
+            </defs>
+            <path d="M1 0V28" stroke="url(#v-line-tab)" strokeWidth="2" strokeLinecap="round" />
           </svg>
-          <div className="rounded-full border border-[#cdddf0] bg-white px-4 py-1 shadow-sm">
-            <p className="text-[11px] font-bold tracking-widest text-[#1a56db]">合流して前進</p>
-          </div>
-          <svg width="2" height="24" viewBox="0 0 2 24">
-            <path d="M1 0V24" stroke="#7eb3f0" strokeWidth="2" strokeDasharray="3 3" />
+          <svg width="12" height="8" viewBox="0 0 12 8" fill="none" aria-hidden>
+            <path d="M1 1l5 5 5-5" stroke="#2563eb" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         </motion.div>
 
-        {/* 工程カード 2×2 */}
-        <motion.div className="grid grid-cols-2 gap-3" {...reveal(0.14)}>
+        <motion.div className="grid grid-cols-2 gap-3" {...reveal(0.2)}>
           {STEPS.map((step) => (
             <StepCard key={step.no} {...step} />
           ))}
+        </motion.div>
+
+        <motion.div {...reveal(0.28)}>
+          <FooterNote />
         </motion.div>
       </div>
 
@@ -474,50 +695,72 @@ export default function PartnerJointFlowDiagram() {
           Mobile（〜md）: 1カラム
           ════════════════════════════════════════════════════════ */}
       <div className="mt-8 md:hidden">
-        <motion.div
-          className="space-y-2.5 rounded-2xl border border-[#d0e4f6] bg-white/95 p-4"
-          {...reveal(0.06)}
-        >
-          <ActorCard label="御社" isoImg={iso16} items={PARTNER_LABELS} />
-          <div className="border-t border-[#e8f0fb]" />
-          <ActorCard label="NTS" isoImg={iso08} items={NTS_LABELS} />
+        <motion.div {...reveal(0.06)}>
+          <SpanLabel
+            text="御社 × NTSで、課題発見から伴走"
+            sub="紹介後も、NTSが伴走します"
+          />
         </motion.div>
 
-        {/* 接続ライン */}
-        <motion.div className="flex flex-col items-center py-3" {...reveal(0.1)} aria-hidden>
-          <svg width="2" height="24" viewBox="0 0 2 24">
-            <path d="M1 0V24" stroke="#7eb3f0" strokeWidth="2" strokeDasharray="3 3" />
+        <motion.div
+          className="space-y-3 rounded-[18px] p-4"
+          style={{
+            background: "rgba(255,255,255,0.92)",
+            border: "1px solid rgba(37,99,235,0.12)",
+            boxShadow: "0 14px 32px rgba(15,23,42,0.07)",
+          }}
+          {...reveal(0.08)}
+        >
+          <ActorCard label="御社" isoImg={iso16} items={PARTNER_LABELS} variant="partner" />
+
+          {/* 共同支援バッジ */}
+          <motion.div className="flex justify-center" {...scale(0.14)}>
+            <JointBadge />
+          </motion.div>
+
+          <ActorCard label="NTS" isoImg={iso08} items={NTS_LABELS} variant="nts" />
+        </motion.div>
+
+        {/* 縦接続ライン */}
+        <motion.div className="flex flex-col items-center py-3" {...reveal(0.18)} aria-hidden>
+          <svg width="2" height="28" viewBox="0 0 2 28">
+            <defs>
+              <linearGradient id="v-line-sp" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="#60a5fa" />
+                <stop offset="100%" stopColor="#2563eb" />
+              </linearGradient>
+            </defs>
+            <path d="M1 0V28" stroke="url(#v-line-sp)" strokeWidth="2" strokeLinecap="round" />
           </svg>
-          <div className="rounded-full border border-[#cdddf0] bg-white px-4 py-1 shadow-sm">
-            <p className="text-[11px] font-bold tracking-widest text-[#1a56db]">御社 × NTS</p>
-          </div>
-          <svg width="2" height="24" viewBox="0 0 2 24">
-            <path d="M1 0V24" stroke="#7eb3f0" strokeWidth="2" strokeDasharray="3 3" />
+          <svg width="12" height="8" viewBox="0 0 12 8" fill="none" aria-hidden>
+            <path d="M1 1l5 5 5-5" stroke="#2563eb" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         </motion.div>
 
         {/* 工程カード 縦並び */}
-        <motion.div className="space-y-3" {...reveal(0.14)}>
+        <motion.div className="space-y-3" {...reveal(0.22)}>
           {STEPS.map((step, i) => (
             <div key={step.no}>
               <StepCard {...step} />
               {i < STEPS.length - 1 && (
-                <div className="flex justify-center py-1.5" aria-hidden>
-                  <svg width="14" height="20" viewBox="0 0 14 20">
-                    <path d="M7 1v14" stroke="#93c5fd" strokeWidth="2" strokeLinecap="round" />
-                    <path
-                      d="m2 13 5 6 5-6"
-                      stroke="#1a56db"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      fill="none"
-                    />
+                <div className="flex justify-center py-2" aria-hidden>
+                  <svg width="2" height="20" viewBox="0 0 2 20">
+                    <defs>
+                      <linearGradient id={`vsp-${i}`} x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor="#60a5fa" />
+                        <stop offset="100%" stopColor="#2563eb" />
+                      </linearGradient>
+                    </defs>
+                    <path d="M1 0V20" stroke={`url(#vsp-${i})`} strokeWidth="2" strokeLinecap="round" />
                   </svg>
                 </div>
               )}
             </div>
           ))}
+        </motion.div>
+
+        <motion.div {...reveal(0.32)}>
+          <FooterNote />
         </motion.div>
       </div>
     </>
