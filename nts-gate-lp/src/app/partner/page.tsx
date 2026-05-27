@@ -8,7 +8,6 @@ import PartnerUseCasesSection from "@/components/gate-lp/partner/PartnerUseCases
 import PartnerSubsidySection from "@/components/gate-lp/partner/PartnerSubsidySection";
 import SubsidyCaseStudySection from "@/components/sections/SubsidyCaseStudySection";
 import PartnerFlowSection from "@/components/gate-lp/partner/PartnerFlowSection";
-import PartnerHandoffSection from "@/components/gate-lp/partner/PartnerHandoffSection";
 import PartnerConsultValueSection from "@/components/gate-lp/partner/PartnerConsultValueSection";
 import PartnerFaqSection from "@/components/gate-lp/partner/PartnerFaqSection";
 import RootIssueCaseSection from "@/components/sections/RootIssueCaseSection";
@@ -48,7 +47,6 @@ export default function PartnerPage() {
         <PartnerConsultValueSection />
         <NtsAiGapSection />
         <PartnerFlowSection />
-        <PartnerHandoffSection />
         <PartnerAboutSection />
         <PartnerFaqSection />
         <FinalCtaSection variant="partner" />
