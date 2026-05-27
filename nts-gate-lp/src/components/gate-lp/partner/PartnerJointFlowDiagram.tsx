@@ -388,40 +388,37 @@ export default function PartnerJointFlowDiagram() {
           <SpanLabel />
         </motion.div>
 
-        {/* Flow canvas */}
+        {/* Flow canvas — グリッドと矢印を同じ relative コンテナに収め中央揃え */}
         <div
-          className="relative"
+          className="relative mx-auto"
           style={{
             paddingTop: "clamp(36px, 3.5vw, 58px)",
             paddingBottom: "clamp(24px, 2.4vw, 46px)",
+            display: "grid",
+            gridTemplateColumns:
+              "clamp(270px, 17vw, 330px) repeat(4, clamp(220px, 14vw, 270px))",
+            gap: "clamp(26px, 2.7vw, 52px)",
+            /* fit-content でグリッドの実幅にコンテナが縮む → 矢印が追従 */
+            width: "fit-content",
           }}
         >
-          {/* 太いグラデーション矢印（背面 z-0） */}
+          {/* 太いグラデーション矢印（背面 z-0, グリッドと同幅の absolute） */}
           <ThickGradientArrow />
 
           {/* カード列（前面 z-1） */}
-          <div
-            className="relative z-[1] grid items-stretch"
-            style={{
-              gridTemplateColumns:
-                "clamp(270px, 17vw, 330px) repeat(4, clamp(220px, 14vw, 270px))",
-              gap: "clamp(26px, 2.7vw, 52px)",
-            }}
-          >
-            <motion.div {...reveal(0.08)} className="self-stretch">
-              <EntryCard />
-            </motion.div>
+          <motion.div {...reveal(0.08)} className="relative z-[1] self-stretch">
+            <EntryCard />
+          </motion.div>
 
-            {processSteps.map((step, i) => (
-              <motion.div
-                key={step.number}
-                {...reveal(0.14 + i * 0.07)}
-                className="self-stretch"
-              >
-                <StepCard step={step} />
-              </motion.div>
-            ))}
-          </div>
+          {processSteps.map((step, i) => (
+            <motion.div
+              key={step.number}
+              {...reveal(0.14 + i * 0.07)}
+              className="relative z-[1] self-stretch"
+            >
+              <StepCard step={step} />
+            </motion.div>
+          ))}
         </div>
 
         <Legend />
