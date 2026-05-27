@@ -1,7 +1,7 @@
 "use client";
 
 import ScrollTextReveal from "@/components/shared/ScrollTextReveal";
-import { useRef, useEffect, useCallback } from "react";
+import { useRef, useEffect, useCallback, useState } from "react";
 import { useReducedMotion } from "framer-motion";
 
 // ============================================================
@@ -21,7 +21,6 @@ type CaseData = {
   result: string;
 };
 
-// フォルダURLエンコード済みパス定数
 const F_JIGYOKIKAKU = "%E4%BA%8B%E6%A5%AD%E8%A8%88%E7%94%BB";
 const F_KENSETSU    = "%E5%BB%BA%E8%A8%AD";
 const F_SETSUBI     = "%E8%A8%AD%E5%82%99%E3%83%BB%E8%A8%AD%E5%82%99%E6%8A%95%E8%B3%87";
@@ -32,122 +31,86 @@ const CASES: CaseData[] = [
   {
     id: "case-1", industry: "宿泊業",
     photo: `/api/article-pictures/${F_JIGYOKIKAKU}/business-meeting-conference-concept.webp`,
-    schemeName: "新事業進出補助金",
-    business: "ホテルの経営",
-    issue: "単一事業への経営依存",
-    investment: "施設の建設、改装工事",
-    investmentAmount: "8,120万円", subsidyRate: "1/2", subsidyAmount: "4,000万円",
-    result: "売上22%増",
+    schemeName: "新事業進出補助金", business: "ホテルの経営",
+    issue: "単一事業への経営依存", investment: "施設の建設、改装工事",
+    investmentAmount: "8,120万円", subsidyRate: "1/2", subsidyAmount: "4,000万円", result: "売上22%増",
   },
   {
     id: "case-2", industry: "飲食業",
     photo: `/api/article-pictures/${F_JIGYOKIKAKU}/business-share-planing-strategy-brainstroming-concept.webp`,
-    schemeName: "事業再構築補助金",
-    business: "麻婆豆腐店の運営",
-    issue: "他ジャンルの飲食店の開業",
-    investment: "店舗改装工事、厨房設備の購入",
-    investmentAmount: "6,000万円", subsidyRate: "2/3", subsidyAmount: "4,000万円",
-    result: "売上33%増",
+    schemeName: "事業再構築補助金", business: "麻婆豆腐店の運営",
+    issue: "他ジャンルの飲食店の開業", investment: "店舗改装工事、厨房設備の購入",
+    investmentAmount: "6,000万円", subsidyRate: "2/3", subsidyAmount: "4,000万円", result: "売上33%増",
   },
   {
     id: "case-3", industry: "金属製品製造業",
     photo: `/api/article-pictures/${F_SETSUBI}/factory-workshop-interior-machines-glass-production-background.webp`,
-    schemeName: "事業再構築補助金",
-    business: "各種洗浄機の部品製造",
-    issue: "主要取引先への過度な依存",
-    investment: "溶接ロボットの導入",
-    investmentAmount: "7,000万円", subsidyRate: "2/3", subsidyAmount: "4,000万円",
-    result: "売上43%増",
+    schemeName: "事業再構築補助金", business: "各種洗浄機の部品製造",
+    issue: "主要取引先への過度な依存", investment: "溶接ロボットの導入",
+    investmentAmount: "7,000万円", subsidyRate: "2/3", subsidyAmount: "4,000万円", result: "売上43%増",
   },
   {
     id: "case-4", industry: "建設機械製造業",
     photo: `/api/article-pictures/${F_KENSETSU}/construction-worker-engineer-working-together-construction-site.webp`,
-    schemeName: "事業再構築補助金",
-    business: "産廃の仕分け・ふるい機の製造販売",
-    issue: "主要取引先への過度な依存",
-    investment: "油圧ショベル、トラックスケールなど",
-    investmentAmount: "6,000万円", subsidyRate: "2/3", subsidyAmount: "4,000万円",
-    result: "売上116%増",
+    schemeName: "事業再構築補助金", business: "産廃の仕分け・ふるい機の製造販売",
+    issue: "主要取引先への過度な依存", investment: "油圧ショベル、トラックスケールなど",
+    investmentAmount: "6,000万円", subsidyRate: "2/3", subsidyAmount: "4,000万円", result: "売上116%増",
   },
   {
     id: "case-5", industry: "建設業",
     photo: `/api/article-pictures/${F_KENSETSU}/working-construction-site.webp`,
-    schemeName: "省力化投資補助金",
-    business: "土木工事業",
-    issue: "人手不足",
-    investment: "油圧ショベル3台",
-    investmentAmount: "7,510万円", subsidyRate: "1/2", subsidyAmount: "3,000万円",
-    result: "掘削作業時間を1/5に短縮",
+    schemeName: "省力化投資補助金", business: "土木工事業",
+    issue: "人手不足", investment: "油圧ショベル3台",
+    investmentAmount: "7,510万円", subsidyRate: "1/2", subsidyAmount: "3,000万円", result: "掘削作業時間を1/5に短縮",
   },
   {
     id: "case-6", industry: "建設業",
     photo: `/api/article-pictures/${F_KENSETSU}/construction-site-working-japan.webp`,
-    schemeName: "事業再構築補助金",
-    business: "養生・クリーニング業",
-    issue: "外国人労働者の活用",
-    investment: "研修センター内装工事、専門研修受講",
-    investmentAmount: "約3,852万円", subsidyRate: "2/3", subsidyAmount: "2,701万円",
-    result: "売上27%増",
+    schemeName: "事業再構築補助金", business: "養生・クリーニング業",
+    issue: "外国人労働者の活用", investment: "研修センター内装工事、専門研修受講",
+    investmentAmount: "約3,852万円", subsidyRate: "2/3", subsidyAmount: "2,701万円", result: "売上27%増",
   },
   {
     id: "case-7", industry: "プラスチック製品製造業",
     photo: `/api/article-pictures/${F_SETSUBI}/plant-picture-clean-room-equipment-stainless-steel-machines.webp`,
-    schemeName: "事業再構築補助金",
-    business: "不織布の再生ペレット製造",
-    issue: "海外売上依存による貿易停止リスク",
-    investment: "PP押し出し機、測定器、粉砕機の導入",
-    investmentAmount: "約3,696万円", subsidyRate: "2/3", subsidyAmount: "約2,464万円",
-    result: "売上19%増",
+    schemeName: "事業再構築補助金", business: "不織布の再生ペレット製造",
+    issue: "海外売上依存による貿易停止リスク", investment: "PP押し出し機、測定器、粉砕機の導入",
+    investmentAmount: "約3,696万円", subsidyRate: "2/3", subsidyAmount: "約2,464万円", result: "売上19%増",
   },
   {
     id: "case-8", industry: "建設業",
     photo: `/api/article-pictures/${F_KENSETSU}/engineers-analyzing-data-digital-tablet.webp`,
-    schemeName: "省力化投資補助金",
-    business: "宅地造成業",
-    issue: "人手不足",
-    investment: "油圧ショベル、自動測量機、後付けマシンガイダンス",
-    investmentAmount: "約3,896万円", subsidyRate: "2/3", subsidyAmount: "2,000万円",
-    result: "作業時間を47.6h→27.8h/日に削減",
+    schemeName: "省力化投資補助金", business: "宅地造成業",
+    issue: "人手不足", investment: "油圧ショベル、自動測量機、後付けマシンガイダンス",
+    investmentAmount: "約3,896万円", subsidyRate: "2/3", subsidyAmount: "2,000万円", result: "作業時間を47.6h→27.8h/日に削減",
   },
   {
     id: "case-9", industry: "損害保険代理業",
     photo: `/api/article-pictures/${F_JINZAI}/handshake-close-up-executives.webp`,
-    schemeName: "事業再構築補助金",
-    business: "保険代理店業務",
-    issue: "単一事業への経営依存",
-    investment: "古民家改装工事、トレーラーハウス購入",
-    investmentAmount: "4,880万円", subsidyRate: "2/3", subsidyAmount: "2,000万円",
-    result: "売上131%増",
+    schemeName: "事業再構築補助金", business: "保険代理店業務",
+    issue: "単一事業への経営依存", investment: "古民家改装工事、トレーラーハウス購入",
+    investmentAmount: "4,880万円", subsidyRate: "2/3", subsidyAmount: "2,000万円", result: "売上131%増",
   },
   {
     id: "case-10", industry: "歯科診療所",
     photo: `/api/article-pictures/${F_JINZAI}/portrait-asian-businesswoman-presenting-her-plan-meeting.webp`,
-    schemeName: "事業再構築補助金",
-    business: "歯科医院",
-    issue: "新規事業への方向転換",
-    investment: "店舗改装工事、治療台の購入",
-    investmentAmount: "3,200万円", subsidyRate: "2/3", subsidyAmount: "2,000万円",
-    result: "売上170%増",
+    schemeName: "事業再構築補助金", business: "歯科医院",
+    issue: "新規事業への方向転換", investment: "店舗改装工事、治療台の購入",
+    investmentAmount: "3,200万円", subsidyRate: "2/3", subsidyAmount: "2,000万円", result: "売上170%増",
   },
   {
     id: "case-11", industry: "飲食業＋産廃業",
     photo: `/api/article-pictures/${F_JIGYOKIKAKU}/two-cropped-startuppers-developing-business-plan.webp`,
-    schemeName: "事業再構築補助金",
-    business: "居酒屋の運営＋空きビン回収・リサイクル",
-    issue: "経営リスク分散",
-    investment: "古民家の改装工事",
-    investmentAmount: "2,950万円", subsidyRate: "2/3", subsidyAmount: "2,000万円",
-    result: "売上28%増",
+    schemeName: "事業再構築補助金", business: "居酒屋の運営＋空きビン回収・リサイクル",
+    issue: "経営リスク分散", investment: "古民家の改装工事",
+    investmentAmount: "2,950万円", subsidyRate: "2/3", subsidyAmount: "2,000万円", result: "売上28%増",
   },
   {
     id: "case-12", industry: "経営コンサルタント業",
     photo: `/api/article-pictures/${F_DX}/businessman-with-digital-interface-data-growth.webp`,
-    schemeName: "事業再構築補助金",
-    business: "集客コンサル",
-    issue: "単一事業への経営依存",
-    investment: "教育動画・マニュアル管理プラットフォーム構築",
-    investmentAmount: "2,949万円", subsidyRate: "2/3", subsidyAmount: "1,966万円",
-    result: "売上33%増",
+    schemeName: "事業再構築補助金", business: "集客コンサル",
+    issue: "単一事業への経営依存", investment: "教育動画・マニュアル管理プラットフォーム構築",
+    investmentAmount: "2,949万円", subsidyRate: "2/3", subsidyAmount: "1,966万円", result: "売上33%増",
   },
 ];
 
@@ -160,8 +123,15 @@ const STATS = [
 const CARD_W = 320;
 const CARD_GAP = 20;
 const STRIDE = CARD_W + CARD_GAP;
-// 前後にコピーを3セット配置して無限ループを実現
-const CLONES_BEFORE = 3;
+// 前後に2セットずつコピー（合計5セット）— DOM枚数を最小化
+const COPIES_EACH = 2;
+const TOTAL_COPIES = COPIES_EACH * 2 + 1;
+const ONE_SET = CASES.length * STRIDE;
+// 本体開始位置 = 前コピー2セット分
+const BODY_START = COPIES_EACH * ONE_SET;
+
+// 自動スクロール速度 (px/frame @60fps ≈ 36px/s)
+const AUTO_SPEED = 0.6;
 
 export default function SubsidyCaseStudySection({ homeDepth = false }: { homeDepth?: boolean } = {}) {
   const trackRef = useRef<HTMLDivElement>(null);
@@ -170,43 +140,48 @@ export default function SubsidyCaseStudySection({ homeDepth = false }: { homeDep
   const scrollLeftStart = useRef(0);
   const sectionRef = useRef<HTMLElement>(null);
   const reduce = useReducedMotion();
+
   // rAFベース自動スクロール
   const rafId = useRef<number | null>(null);
   const autoActive = useRef(false);
-  // 小数精度のスクロール位置（rAFで加算）
-  const scrollPos = useRef(0);
+  // 小数精度スクロール位置
+  const scrollPos = useRef(BODY_START);
   const isJumping = useRef(false);
 
-  const ONE_SET = CASES.length * STRIDE;
-  const BODY_START = CLONES_BEFORE * ONE_SET;
-  const initialOffset = BODY_START;
+  // ── 画像プリロード（カルーセル内の全画像を事前fetch） ──────────────
+  useEffect(() => {
+    CASES.forEach((c) => {
+      const img = new Image();
+      img.src = c.photo;
+    });
+  }, []);
 
-  // ループ補正：本体の外に出たら瞬時に戻す
+  // ── ループ補正 ──────────────────────────────────────────────────────
   const correctLoop = useCallback((el: HTMLDivElement) => {
     if (isJumping.current) return;
     const sl = el.scrollLeft;
     if (sl < BODY_START - ONE_SET) {
-      const delta = ONE_SET * 2;
       isJumping.current = true;
-      el.scrollLeft = sl + delta;
-      scrollPos.current += delta;
+      const next = sl + ONE_SET * 2;
+      el.scrollLeft = next;
+      scrollPos.current = next;
       requestAnimationFrame(() => { isJumping.current = false; });
     } else if (sl >= BODY_START + ONE_SET * 2) {
-      const delta = ONE_SET * 2;
       isJumping.current = true;
-      el.scrollLeft = sl - delta;
-      scrollPos.current -= delta;
+      const next = sl - ONE_SET * 2;
+      el.scrollLeft = next;
+      scrollPos.current = next;
       requestAnimationFrame(() => { isJumping.current = false; });
     }
-  }, [BODY_START, ONE_SET]);
+  }, []);
 
-  // rAF自動スクロールループ（0.6px/frame ≈ 36px/s @60fps）
-  const AUTO_SPEED = 0.6;
+  // ── rAFループ ──────────────────────────────────────────────────────
   const rafLoop = useCallback(() => {
     const el = trackRef.current;
     if (!el || !autoActive.current) return;
     scrollPos.current += AUTO_SPEED;
-    el.scrollLeft = scrollPos.current;
+    // scrollLeft は整数に丸めて書き込む（サブピクセルのジャンプを防止）
+    el.scrollLeft = Math.round(scrollPos.current);
     correctLoop(el);
     rafId.current = requestAnimationFrame(rafLoop);
   }, [correctLoop]);
@@ -225,32 +200,42 @@ export default function SubsidyCaseStudySection({ homeDepth = false }: { homeDep
     rafId.current = requestAnimationFrame(rafLoop);
   }, [reduce, rafLoop]);
 
-  // 初期位置セット & 自動開始
+  // ── 初期化 ─────────────────────────────────────────────────────────
   useEffect(() => {
     const el = trackRef.current;
     if (!el) return;
-    el.scrollLeft = initialOffset;
-    scrollPos.current = initialOffset;
-    const t = setTimeout(startAuto, 1500);
+    // scrollLeft を即時セット（レイアウト確定後）
+    requestAnimationFrame(() => {
+      if (!trackRef.current) return;
+      trackRef.current.scrollLeft = BODY_START;
+      scrollPos.current = BODY_START;
+    });
+    const t = setTimeout(startAuto, 800);
     return () => clearTimeout(t);
-  }, [initialOffset, startAuto]);
+  }, [startAuto]);
 
-  // セクション外 → 停止
+  // ── セクション外 → 停止、再入 → 再開 ──────────────────────────────
   useEffect(() => {
     const section = sectionRef.current;
     if (!section) return;
     const obs = new IntersectionObserver(
-      ([entry]) => { if (!entry.isIntersecting) stopAuto(); },
-      { threshold: 0 }
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          startAuto();
+        } else {
+          stopAuto();
+        }
+      },
+      { threshold: 0.1 }
     );
     obs.observe(section);
     return () => obs.disconnect();
-  }, [stopAuto]);
+  }, [startAuto, stopAuto]);
 
-  // クリーンアップ
+  // ── クリーンアップ ──────────────────────────────────────────────────
   useEffect(() => () => stopAuto(), [stopAuto]);
 
-  // タッチパッド・ホイール → 横スクロール
+  // ── ホイール ────────────────────────────────────────────────────────
   const handleWheel = useCallback((e: React.WheelEvent<HTMLDivElement>) => {
     const el = trackRef.current;
     if (!el) return;
@@ -264,7 +249,7 @@ export default function SubsidyCaseStudySection({ homeDepth = false }: { homeDep
     stopAuto();
   }, [stopAuto, correctLoop]);
 
-  // ドラッグ
+  // ── ドラッグ ────────────────────────────────────────────────────────
   const handlePointerDown = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
     const el = trackRef.current;
     if (!el) return;
@@ -286,9 +271,14 @@ export default function SubsidyCaseStudySection({ homeDepth = false }: { homeDep
     correctLoop(el);
   }, [correctLoop]);
 
-  const handlePointerUp = useCallback(() => { isDragging.current = false; }, []);
+  const handlePointerUp = useCallback(() => {
+    isDragging.current = false;
+    // ドラッグ後 1.2 秒で自動再開
+    const t = setTimeout(startAuto, 1200);
+    return () => clearTimeout(t);
+  }, [startAuto]);
 
-  // スクロールイベントでもループ補正（スマホタッチ用）
+  // スマホタッチでのスクロール補正
   const handleScroll = useCallback(() => {
     const el = trackRef.current;
     if (!el || autoActive.current) return;
@@ -296,9 +286,7 @@ export default function SubsidyCaseStudySection({ homeDepth = false }: { homeDep
     correctLoop(el);
   }, [correctLoop]);
 
-  // 表示するカードリスト（前後コピー込み）
-  // コピー数を多めに（前後 CLONES_BEFORE セット）
-  const TOTAL_COPIES = CLONES_BEFORE * 2 + 1;
+  // 表示カードリスト（5セット）
   const displayCards = Array.from({ length: TOTAL_COPIES }, (_, setIdx) =>
     CASES.map((c) => ({ ...c, _key: `${setIdx}-${c.id}` }))
   ).flat();
@@ -361,9 +349,17 @@ export default function SubsidyCaseStudySection({ homeDepth = false }: { homeDep
       {/* ── カルーセル ── */}
       <div className="relative mt-3 overflow-hidden">
         {/* 左端フェード */}
-        <div className="pointer-events-none absolute bottom-0 left-0 top-0 z-10 w-10 sm:w-20" style={{ background: "linear-gradient(to right, #F4F8FC 30%, transparent)" }} aria-hidden />
+        <div
+          className="pointer-events-none absolute bottom-0 left-0 top-0 z-10 w-10 sm:w-20"
+          style={{ background: homeDepth ? undefined : "linear-gradient(to right, #F4F8FC 30%, transparent)" }}
+          aria-hidden
+        />
         {/* 右端フェード */}
-        <div className="pointer-events-none absolute bottom-0 right-0 top-0 z-10 w-10 sm:w-20" style={{ background: "linear-gradient(to left, #F4F8FC 30%, transparent)" }} aria-hidden />
+        <div
+          className="pointer-events-none absolute bottom-0 right-0 top-0 z-10 w-10 sm:w-20"
+          style={{ background: homeDepth ? undefined : "linear-gradient(to left, #F4F8FC 30%, transparent)" }}
+          aria-hidden
+        />
 
         <div
           ref={trackRef}
@@ -379,7 +375,9 @@ export default function SubsidyCaseStudySection({ homeDepth = false }: { homeDep
             scrollbarWidth: "none",
             msOverflowStyle: "none",
             cursor: "grab",
-            willChange: "scroll-position",
+            // GPU合成レイヤーに昇格してスクロールをスムーズに
+            willChange: "transform",
+            WebkitOverflowScrolling: "touch",
             touchAction: "pan-x",
           }}
           onWheel={handleWheel}
@@ -392,8 +390,13 @@ export default function SubsidyCaseStudySection({ homeDepth = false }: { homeDep
           role="region"
           aria-label="補助金採択事例カルーセル（横スワイプで操作・ループ）"
         >
-          {displayCards.map((c) => (
-            <CaseCard key={c._key} c={c} />
+          {displayCards.map((c, idx) => (
+            <CaseCard
+              key={c._key}
+              c={c}
+              // 最初の1セット（12枚）は eager、それ以降は lazy
+              priority={idx < CASES.length}
+            />
           ))}
         </div>
       </div>
@@ -411,7 +414,9 @@ export default function SubsidyCaseStudySection({ homeDepth = false }: { homeDep
 // ============================================================
 // CaseCard — ミニ事例レポート風
 // ============================================================
-function CaseCard({ c }: { c: CaseData }) {
+function CaseCard({ c, priority = false }: { c: CaseData; priority?: boolean }) {
+  const [imgLoaded, setImgLoaded] = useState(priority);
+
   return (
     <article
       data-case-card
@@ -420,22 +425,38 @@ function CaseCard({ c }: { c: CaseData }) {
         width: `${CARD_W}px`,
         border: "1px solid #DCE7F3",
         boxShadow: "0 3px 14px rgba(8,42,94,0.07)",
+        // カード自体をGPUレイヤーに（スクロール中の再描画を抑制）
+        contain: "layout style paint",
       }}
       aria-label={`${c.industry} — ${c.schemeName}`}
     >
       {/* ── 写真ヘッダー ── */}
-      <div className="relative h-[160px] w-full shrink-0 overflow-hidden">
+      <div className="relative h-[160px] w-full shrink-0 overflow-hidden bg-[#e8f0f8]">
+        {/* プレースホルダー（画像読み込み前の背景） */}
+        {!imgLoaded && (
+          <div className="absolute inset-0 animate-pulse bg-gradient-to-br from-[#dce9f5] to-[#c8ddf0]" aria-hidden />
+        )}
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={c.photo}
           alt={`${c.industry}の事例イメージ`}
-          className="absolute inset-0 h-full w-full object-cover"
-          loading="lazy"
+          className="absolute inset-0 h-full w-full object-cover transition-opacity duration-300"
+          style={{ opacity: imgLoaded ? 1 : 0 }}
+          loading={priority ? "eager" : "lazy"}
+          decoding="async"
           draggable={false}
+          onLoad={() => setImgLoaded(true)}
         />
-        <div className="pointer-events-none absolute inset-0" style={{ background: "linear-gradient(to bottom, rgba(8,42,94,0.15) 0%, rgba(8,42,94,0.58) 100%)" }} aria-hidden />
+        <div
+          className="pointer-events-none absolute inset-0"
+          style={{ background: "linear-gradient(to bottom, rgba(8,42,94,0.15) 0%, rgba(8,42,94,0.58) 100%)" }}
+          aria-hidden
+        />
         {/* 補助金額バッジ */}
-        <div className="absolute bottom-3 left-3 rounded-full px-3 py-1 text-[12px] font-black" style={{ background: "rgba(255,255,255,0.95)", color: "#0068B7" }}>
+        <div
+          className="absolute bottom-3 left-3 rounded-full px-3 py-1 text-[12px] font-black"
+          style={{ background: "rgba(255,255,255,0.95)", color: "#0068B7" }}
+        >
           {c.subsidyAmount}
         </div>
       </div>
