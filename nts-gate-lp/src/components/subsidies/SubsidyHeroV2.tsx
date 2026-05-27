@@ -270,8 +270,15 @@ export default function SubsidyHeroV2({
 
             {/* data-card A：公開直後に検知 */}
             <div
-              className="absolute flex flex-col gap-2 rounded-[18px] border border-[rgba(195,219,244,0.8)] bg-white p-4"
-              style={{ top: "42px", left: "22px", width: "260px", boxShadow: "0 20px 45px rgba(15,49,96,0.12),0 4px 14px rgba(15,49,96,0.06)" }}
+              className="absolute flex flex-col gap-2 rounded-[18px] p-4"
+              style={{
+                top: "42px", left: "22px", width: "260px",
+                background: "rgba(255,255,255,0.72)",
+                backdropFilter: "blur(18px) saturate(160%)",
+                WebkitBackdropFilter: "blur(18px) saturate(160%)",
+                border: "1px solid rgba(255,255,255,0.88)",
+                boxShadow: "0 8px 32px rgba(15,49,96,0.14), 0 2px 8px rgba(15,49,96,0.08), inset 0 1px 0 rgba(255,255,255,0.9)",
+              }}
             >
               <div className="flex items-center gap-2">
                 <span className="inline-flex items-center rounded-md bg-[#dbeafe] px-2 py-0.5 text-[11px] font-black text-[#1d4ed8]">NEW</span>
@@ -285,8 +292,15 @@ export default function SubsidyHeroV2({
 
             {/* data-card B：受付中だけを整理 */}
             <div
-              className="absolute flex flex-col gap-2 rounded-[18px] border border-[rgba(195,219,244,0.8)] bg-white p-4"
-              style={{ top: "168px", right: "86px", width: "285px", boxShadow: "0 20px 45px rgba(15,49,96,0.12),0 4px 14px rgba(15,49,96,0.06)" }}
+              className="absolute flex flex-col gap-2 rounded-[18px] p-4"
+              style={{
+                top: "168px", right: "86px", width: "285px",
+                background: "rgba(255,255,255,0.72)",
+                backdropFilter: "blur(18px) saturate(160%)",
+                WebkitBackdropFilter: "blur(18px) saturate(160%)",
+                border: "1px solid rgba(255,255,255,0.88)",
+                boxShadow: "0 8px 32px rgba(15,49,96,0.14), 0 2px 8px rgba(15,49,96,0.08), inset 0 1px 0 rgba(255,255,255,0.9)",
+              }}
             >
               <div className="flex items-center gap-2">
                 <span className="inline-flex items-center rounded-md bg-[#e0f2fe] px-2 py-0.5 text-[11px] font-black text-[#0369a1]">OPEN</span>
@@ -300,8 +314,15 @@ export default function SubsidyHeroV2({
 
             {/* data-card C：使える制度を届ける */}
             <div
-              className="absolute flex flex-col gap-2 rounded-[18px] border border-[rgba(195,219,244,0.8)] bg-white p-4"
-              style={{ left: "172px", bottom: "66px", width: "460px", boxShadow: "0 20px 45px rgba(15,49,96,0.12),0 4px 14px rgba(15,49,96,0.06)" }}
+              className="absolute flex flex-col gap-2 rounded-[18px] p-4"
+              style={{
+                left: "172px", bottom: "66px", width: "460px",
+                background: "rgba(255,255,255,0.72)",
+                backdropFilter: "blur(18px) saturate(160%)",
+                WebkitBackdropFilter: "blur(18px) saturate(160%)",
+                border: "1px solid rgba(255,255,255,0.88)",
+                boxShadow: "0 8px 32px rgba(15,49,96,0.14), 0 2px 8px rgba(15,49,96,0.08), inset 0 1px 0 rgba(255,255,255,0.9)",
+              }}
             >
               <div className="flex items-center gap-2">
                 <span className="inline-flex items-center rounded-md bg-[#d1fae5] px-2 py-0.5 text-[11px] font-black text-[#065f46]">MATCH</span>
@@ -440,9 +461,13 @@ export default function SubsidyHeroV2({
               initial={{ opacity: 0, y: 14 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.35 + i * 0.07, ease: EASE }}
-              className="grid min-h-[126px] rounded-[18px] border border-[rgba(222,232,244,0.9)] bg-white p-6"
+              className="grid min-h-[126px] rounded-[18px] p-6"
               style={{
-                boxShadow: "0 10px 26px rgba(15,49,96,0.06)",
+                background: "rgba(255,255,255,0.70)",
+                backdropFilter: "blur(16px) saturate(150%)",
+                WebkitBackdropFilter: "blur(16px) saturate(150%)",
+                border: "1px solid rgba(255,255,255,0.86)",
+                boxShadow: "0 8px 28px rgba(15,49,96,0.10), 0 2px 8px rgba(15,49,96,0.06), inset 0 1px 0 rgba(255,255,255,0.88)",
               }}
             >
               <div>
