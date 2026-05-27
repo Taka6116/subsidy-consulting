@@ -64,7 +64,7 @@ export function ArticleCTA({
           className="mb-2 text-xl font-bold leading-tight md:text-2xl"
           style={{ color: "#FFFFFF" }}
         >
-          最後の一歩は、怖くて構いません。
+          お話だけでも構いません。
         </h2>
         <p
           className="mb-8 text-sm leading-relaxed"
@@ -113,16 +113,16 @@ export function ArticleCTA({
           </a>
         </div>
 
-        {/* まずは気軽に相談エリア */}
+        {/* 補助金情報いち早く欲しい方エリア */}
         <div
           className="mt-8 pt-6"
           style={{ borderTop: "1px solid rgba(255,255,255,0.12)" }}
         >
           <p
-            className="mb-3 text-center text-xs"
-            style={{ color: "rgba(255,255,255,0.58)" }}
+            className="mb-4 text-center text-xs font-semibold"
+            style={{ color: "rgba(255,255,255,0.58)", letterSpacing: "0.06em" }}
           >
-            まずは気軽に相談したい方へ
+            補助金情報をいち早く欲しい方へ
           </p>
           <form
             action="/api/subscribe"
@@ -130,17 +130,34 @@ export function ArticleCTA({
             className="flex flex-col gap-2 sm:flex-row"
           >
             <input type="hidden" name="source" value="article-cta" />
-            <input
-              type="text"
-              name="message"
-              placeholder="ご相談内容や気になることを入力してください"
-              className="flex-1 rounded-full px-5 py-3 text-sm text-white placeholder:text-white/48 focus:outline-none focus:ring-2 focus:ring-white/30"
-              style={{
-                background: "rgba(255,255,255,0.06)",
-                border: "1px solid rgba(255,255,255,0.16)",
-                color: "#FFFFFF",
-              }}
-            />
+
+            {/* Floating Label Input */}
+            <div className="relative flex-1">
+              <input
+                id="article-cta-email"
+                type="email"
+                name="email"
+                required
+                placeholder=" "
+                className="peer w-full rounded-full px-5 pb-2.5 pt-5 text-sm text-white focus:outline-none focus:ring-2 focus:ring-white/30"
+                style={{
+                  background: "rgba(255,255,255,0.06)",
+                  border: "1px solid rgba(255,255,255,0.16)",
+                  color: "#FFFFFF",
+                }}
+              />
+              <label
+                htmlFor="article-cta-email"
+                className="pointer-events-none absolute left-5 top-1/2 -translate-y-1/2 text-sm transition-all duration-200
+                  peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:text-sm
+                  peer-focus:top-2.5 peer-focus:translate-y-0 peer-focus:text-[10px]
+                  peer-[&:not(:placeholder-shown)]:top-2.5 peer-[&:not(:placeholder-shown)]:translate-y-0 peer-[&:not(:placeholder-shown)]:text-[10px]"
+                style={{ color: "rgba(255,255,255,0.52)" }}
+              >
+                メールアドレスを入力してください
+              </label>
+            </div>
+
             <button
               type="submit"
               className="rounded-full px-6 py-3 text-sm font-bold text-white transition hover:-translate-y-px hover:brightness-110"
@@ -149,7 +166,7 @@ export function ArticleCTA({
                 boxShadow: "0 6px 18px rgba(18, 58, 107, 0.36)",
               }}
             >
-              相談する（無料）
+              登録する（無料）
             </button>
           </form>
           <p
