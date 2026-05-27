@@ -1,7 +1,6 @@
 "use client";
 
 import { motion, useReducedMotion } from "framer-motion";
-import { Users } from "lucide-react";
 import ScrollTextReveal from "@/components/shared/ScrollTextReveal";
 import PartnerJointFlowDiagram from "./PartnerJointFlowDiagram";
 
@@ -48,19 +47,11 @@ export default function PartnerHandoffSection() {
           className="mt-10 flex flex-col gap-4 rounded-2xl border border-[#d0e4f6] bg-white/95 px-5 py-5 shadow-[0_8px_28px_rgba(12,42,72,0.07)] sm:flex-row sm:items-center sm:justify-between sm:px-6"
           {...reveal(0.2)}
         >
-          <div className="flex items-start gap-3">
-            <span
-              className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#eef4ff] text-[#1a56db]"
-              aria-hidden
-            >
-              <Users className="h-5 w-5" />
-            </span>
-            <div>
-              <p className="text-base font-bold text-[#1a56db]">この案件、補助金が使えるか？からご相談ください。</p>
-              <p className="mt-1 text-sm leading-relaxed text-[var(--text-secondary)]">
-                提案中の案件や、今後の事業計画について、まずは気軽にご相談ください。
-              </p>
-            </div>
+          <div>
+            <p className="text-base font-bold text-[#1a56db]">この案件、補助金が使えるか？からご相談ください。</p>
+            <p className="mt-1 text-sm leading-relaxed text-[var(--text-secondary)]">
+              提案中の案件や、今後の事業計画について、まずは気軽にご相談ください。
+            </p>
           </div>
           <a
             href="#contact"

@@ -128,12 +128,12 @@ function Icon({ type, className = "h-4 w-4" }: { type: IconKey; className?: stri
 // データ
 // ─────────────────────────────────────────────────────────────
 const PARTNER_LABELS = [
-  { text: "信頼・関係性", icon: "people" as IconKey },
+  { text: "課題", icon: "people" as IconKey },
   { text: "現場課題の把握", icon: "chat" as IconKey },
   { text: "提案商材", icon: "chart" as IconKey },
 ];
 const NTS_LABELS = [
-  { text: "補助金活用", icon: "bulb" as IconKey },
+  { text: "現状課題の整理", icon: "bulb" as IconKey },
   { text: "投資背景把握", icon: "doc" as IconKey },
   { text: "専門家連携", icon: "net" as IconKey },
 ];
@@ -422,7 +422,9 @@ function StepCard({
     <div
       className="relative flex h-[228px] w-full flex-col items-center rounded-[18px] px-3 pb-3 pt-8 transition-all duration-300 hover:-translate-y-[3px]"
       style={{
-        background: "rgba(255,255,255,0.9)",
+        background: accent
+          ? "linear-gradient(160deg, #f0f7ff 0%, #e8f0fe 40%, #ffffff 100%)"
+          : "linear-gradient(160deg, #f8fbff 0%, #eef4ff 50%, #ffffff 100%)",
         border: accent
           ? "1px solid rgba(37,99,235,0.22)"
           : "1px solid rgba(37,99,235,0.10)",
@@ -553,11 +555,11 @@ export default function PartnerJointFlowDiagram() {
           >
             {/* グラデーション合流矢印 */}
             <FlowArrow size="lg" />
-            {/* 共同支援バッジ：合流点 cx=38/80=47.5%, cy=135/270=50% */}
+            {/* 共同支援バッジ：コネクター中央（左寄り）＝左カードと矢印の合流点に重ねる */}
             <motion.div
               className="absolute z-10"
               style={{
-                left: "47.5%",
+                left: "50%",
                 top: "50%",
                 transform: "translate(-50%, -50%)",
               }}
