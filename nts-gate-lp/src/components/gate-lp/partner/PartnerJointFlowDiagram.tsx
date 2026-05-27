@@ -28,7 +28,7 @@ type ProcessStep = {
 };
 
 const ENTRY_IMAGE = {
-  src: "/images/hero-digital-platform.png",
+  src: "/icon-assets/subsidy-lp/advisor.png",
   alt: "御社の顧客接点から課題を見つけるイメージ",
 };
 
@@ -41,7 +41,7 @@ const processSteps: ProcessStep[] = [
     title: "課題を見つける",
     description: "顧客接点から商談や現場の課題を捉える",
     tone: "partner",
-    image: "/icon-assets/subsidy-lp/advisor.png",
+    image: "/images/hero-digital-platform.png",
     imageAlt: "顧客課題を見つける相談イメージ",
     imageScale: 1.18,
   },
@@ -53,7 +53,7 @@ const processSteps: ProcessStep[] = [
     tone: "mixed-partner",
     image: "/icon-assets/subsidy-lp/meeting-wide.png",
     imageAlt: "御社とNTSが一緒に課題を深掘る会議イメージ",
-    imageScale: 1.45,
+    imageScale: 1.18,
   },
   {
     number: "03",
@@ -63,7 +63,7 @@ const processSteps: ProcessStep[] = [
     tone: "mixed-nts",
     image: "/icon-assets/subsidy-lp/hero-consulting.png",
     imageAlt: "補助金の選択肢を提示するイメージ",
-    imageScale: 1.42,
+    imageScale: 1.16,
   },
   {
     number: "04",
@@ -134,7 +134,7 @@ function EntryCard() {
   return (
     <div className="relative h-full" style={{ paddingTop: "22px" }}>
       <div
-        className="flex min-h-[340px] h-full flex-col overflow-hidden rounded-[20px] bg-white transition-all duration-300 hover:-translate-y-[3px]"
+        className="flex min-h-[408px] h-full flex-col overflow-hidden rounded-[20px] bg-white transition-all duration-300 hover:-translate-y-[3px]"
         style={{
           border: "1px solid rgba(16,185,129,0.26)",
           boxShadow: "0 20px 44px rgba(15,23,42,0.10), 0 4px 12px rgba(16,185,129,0.06)",
@@ -159,7 +159,7 @@ function EntryCard() {
         </div>
 
         <div className="flex items-center justify-center px-4 pt-5">
-          <div className="relative h-[135px] w-full max-w-[230px] overflow-visible">
+          <div className="relative h-[162px] w-full max-w-[230px] overflow-visible">
             <Image
               src={ENTRY_IMAGE.src}
               alt={ENTRY_IMAGE.alt}
@@ -218,7 +218,7 @@ function StepCard({ step }: { step: ProcessStep }) {
 
       {/* カード本体 */}
       <div
-        className="flex min-h-[340px] h-full flex-col overflow-hidden rounded-[20px] bg-white transition-all duration-300 hover:-translate-y-[3px]"
+        className="flex min-h-[408px] h-full flex-col overflow-hidden rounded-[20px] bg-white transition-all duration-300 hover:-translate-y-[3px]"
         style={{
           border: `1px solid ${palette.border}`,
           boxShadow: "0 20px 44px rgba(15,23,42,0.10), 0 4px 12px rgba(15,23,42,0.04)",
@@ -239,7 +239,7 @@ function StepCard({ step }: { step: ProcessStep }) {
 
         {/* 画像 + テキストエリア */}
         <div className="flex flex-1 flex-col items-center px-4 pb-5 pt-4 text-center">
-          <div className="relative mb-3 h-[150px] w-full overflow-visible">
+          <div className="relative mb-3 h-[180px] w-full overflow-visible">
             <Image
               src={step.image}
               alt={step.imageAlt}
