@@ -24,7 +24,15 @@ type ProcessStep = {
   tone: Tone;
   image: string;
   imageAlt: string;
+  imageScale?: number;
 };
+
+const ENTRY_IMAGE = {
+  src: "/images/hero-digital-platform.png",
+  alt: "御社の顧客接点から課題を見つけるイメージ",
+};
+
+const entryItems = ["顧客接点", "商談", "現場課題"];
 
 const processSteps: ProcessStep[] = [
   {
@@ -35,6 +43,7 @@ const processSteps: ProcessStep[] = [
     tone: "partner",
     image: "/icon-assets/subsidy-lp/advisor.png",
     imageAlt: "顧客課題を見つける相談イメージ",
+    imageScale: 1.18,
   },
   {
     number: "02",
@@ -44,6 +53,7 @@ const processSteps: ProcessStep[] = [
     tone: "mixed-partner",
     image: "/icon-assets/subsidy-lp/meeting-wide.png",
     imageAlt: "御社とNTSが一緒に課題を深掘る会議イメージ",
+    imageScale: 1.45,
   },
   {
     number: "03",
@@ -53,6 +63,7 @@ const processSteps: ProcessStep[] = [
     tone: "mixed-nts",
     image: "/icon-assets/subsidy-lp/hero-consulting.png",
     imageAlt: "補助金の選択肢を提示するイメージ",
+    imageScale: 1.42,
   },
   {
     number: "04",
@@ -62,6 +73,7 @@ const processSteps: ProcessStep[] = [
     tone: "nts",
     image: "/icon-assets/subsidy-lp/handshake.png",
     imageAlt: "成約後も伴走するイメージ",
+    imageScale: 1.18,
   },
 ];
 
@@ -116,14 +128,83 @@ const tonePalette: Record<Tone, {
 };
 
 // ─────────────────────────────────────────────────────────────
+// 入口カード（御社）
+// ─────────────────────────────────────────────────────────────
+function EntryCard() {
+  return (
+    <div className="relative h-full" style={{ paddingTop: "22px" }}>
+      <div
+        className="flex min-h-[340px] h-full flex-col overflow-hidden rounded-[20px] bg-white transition-all duration-300 hover:-translate-y-[3px]"
+        style={{
+          border: "1px solid rgba(16,185,129,0.26)",
+          boxShadow: "0 20px 44px rgba(15,23,42,0.10), 0 4px 12px rgba(16,185,129,0.06)",
+        }}
+      >
+        <div
+          className="h-[6px] w-full"
+          style={{ background: "linear-gradient(90deg, #10b981 0%, #34d399 100%)" }}
+          aria-hidden
+        />
+
+        <div
+          className="flex items-center justify-center px-4 py-3"
+          style={{
+            background: "linear-gradient(180deg, rgba(236,253,245,0.95) 0%, rgba(240,253,250,0.7) 100%)",
+            borderBottom: "1px solid rgba(16,185,129,0.14)",
+          }}
+        >
+          <span className="text-[15px] font-black tracking-[0.12em] text-[#065f46]">
+            御社
+          </span>
+        </div>
+
+        <div className="flex items-center justify-center px-4 pt-5">
+          <div className="relative h-[135px] w-full max-w-[230px] overflow-visible">
+            <Image
+              src={ENTRY_IMAGE.src}
+              alt={ENTRY_IMAGE.alt}
+              fill
+              sizes="230px"
+              className="object-contain drop-shadow-[0_16px_24px_rgba(15,23,42,0.12)]"
+              style={{ transform: "scale(1.08)" }}
+            />
+          </div>
+        </div>
+
+        <div className="mt-auto flex flex-col gap-2 px-4 pb-4">
+          {entryItems.map((item) => (
+            <div
+              key={item}
+              className="flex items-center gap-3 rounded-[10px] px-3 py-2.5"
+              style={{
+                background: "linear-gradient(135deg, #ecfdf5 0%, #ffffff 100%)",
+                border: "1px solid rgba(16,185,129,0.18)",
+              }}
+            >
+              <span
+                className="h-[10px] w-[10px] shrink-0 rounded-full"
+                style={{ background: "linear-gradient(135deg, #10b981, #34d399)" }}
+                aria-hidden
+              />
+              <span className="text-[13px] font-bold leading-tight text-[#064e3b]">
+                {item}
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────
 // ステップカード（番号バッジがカード上端に乗る）
 // ─────────────────────────────────────────────────────────────
 function StepCard({ step }: { step: ProcessStep }) {
   const palette = tonePalette[step.tone];
   return (
-    /* pt-[22px] = バッジ(44px)の半分、バッジがカード上端に半分乗る */
     <div className="relative h-full" style={{ paddingTop: "22px" }}>
-      {/* ── 丸い番号バッジ（中央上端に乗る） ── */}
+      {/* 丸い番号バッジ（中央上端に乗る） */}
       <div
         className="absolute left-1/2 top-0 z-10 flex h-[44px] w-[44px] -translate-x-1/2 items-center justify-center rounded-full"
         style={{
@@ -135,7 +216,7 @@ function StepCard({ step }: { step: ProcessStep }) {
         <span className="text-[15px] font-black leading-none text-white">{step.number}</span>
       </div>
 
-      {/* ── カード本体 ── */}
+      {/* カード本体 */}
       <div
         className="flex min-h-[340px] h-full flex-col overflow-hidden rounded-[20px] bg-white transition-all duration-300 hover:-translate-y-[3px]"
         style={{
@@ -158,13 +239,14 @@ function StepCard({ step }: { step: ProcessStep }) {
 
         {/* 画像 + テキストエリア */}
         <div className="flex flex-1 flex-col items-center px-4 pb-5 pt-4 text-center">
-          <div className="relative mb-3 h-[132px] w-full">
+          <div className="relative mb-3 h-[150px] w-full overflow-visible">
             <Image
               src={step.image}
               alt={step.imageAlt}
               fill
               sizes="260px"
               className="object-contain drop-shadow-[0_16px_24px_rgba(15,23,42,0.12)]"
+              style={{ transform: `scale(${step.imageScale ?? 1})` }}
             />
           </div>
 
@@ -192,7 +274,7 @@ function ThickGradientArrow() {
     "polygon(0 22%, calc(100% - 92px) 22%, calc(100% - 92px) 0, 100% 50%, calc(100% - 92px) 100%, calc(100% - 92px) 78%, 0 78%)";
 
   const sharedRect = {
-    left: "0",
+    left: "clamp(270px, 17vw, 330px)",
     right: "-72px",
     top: "50%",
     height: "clamp(74px, 6vw, 104px)",
@@ -306,13 +388,12 @@ export default function PartnerJointFlowDiagram() {
           <SpanLabel />
         </motion.div>
 
-        {/* Flow canvas — relative 基準、矢印 + カードを重ねる */}
+        {/* Flow canvas */}
         <div
           className="relative"
           style={{
-            /* バッジが上にはみ出る分 + 余白 */
-            paddingTop: "clamp(28px, 3vw, 48px)",
-            paddingBottom: "clamp(20px, 2vw, 40px)",
+            paddingTop: "clamp(36px, 3.5vw, 58px)",
+            paddingBottom: "clamp(24px, 2.4vw, 46px)",
           }}
         >
           {/* 太いグラデーション矢印（背面 z-0） */}
@@ -320,17 +401,21 @@ export default function PartnerJointFlowDiagram() {
 
           {/* カード列（前面 z-1） */}
           <div
-            className="relative z-[1] grid items-stretch justify-center"
+            className="relative z-[1] grid items-stretch"
             style={{
               gridTemplateColumns:
-                "repeat(4, clamp(220px, 14vw, 270px))",
+                "clamp(270px, 17vw, 330px) repeat(4, clamp(220px, 14vw, 270px))",
               gap: "clamp(26px, 2.7vw, 52px)",
             }}
           >
+            <motion.div {...reveal(0.08)} className="self-stretch">
+              <EntryCard />
+            </motion.div>
+
             {processSteps.map((step, i) => (
               <motion.div
                 key={step.number}
-                {...reveal(0.12 + i * 0.07)}
+                {...reveal(0.14 + i * 0.07)}
                 className="self-stretch"
               >
                 <StepCard step={step} />
@@ -356,12 +441,23 @@ export default function PartnerJointFlowDiagram() {
         </motion.div>
 
         <div className="relative space-y-3 px-2">
+          {/* 入口カード（Mobile） */}
+          <motion.div {...reveal(0.08)}>
+            <EntryCard />
+          </motion.div>
+
+          <div className="flex justify-center" aria-hidden>
+            <div
+              className="my-2 h-8 w-[6px] rounded-full"
+              style={{ background: "linear-gradient(180deg, #10b981 0%, #14b8a6 100%)" }}
+            />
+          </div>
+
           {processSteps.map((step, i) => {
             const palette = tonePalette[step.tone];
             return (
               <div key={step.number}>
                 <motion.div {...reveal(0.12 + i * 0.05)}>
-                  {/* Mobile StepCard: バッジは左上に小さく配置 */}
                   <div
                     className="flex flex-col overflow-hidden rounded-[20px] bg-white"
                     style={{
@@ -388,13 +484,14 @@ export default function PartnerJointFlowDiagram() {
                       </span>
                     </div>
                     <div className="flex items-center gap-4 px-4 pb-4">
-                      <div className="relative h-[96px] w-[112px] shrink-0">
+                      <div className="relative h-[96px] w-[112px] shrink-0 overflow-visible">
                         <Image
                           src={step.image}
                           alt={step.imageAlt}
                           fill
                           sizes="112px"
                           className="object-contain drop-shadow-[0_10px_18px_rgba(15,23,42,0.10)]"
+                          style={{ transform: `scale(${step.imageScale ?? 1})` }}
                         />
                       </div>
                       <div>
