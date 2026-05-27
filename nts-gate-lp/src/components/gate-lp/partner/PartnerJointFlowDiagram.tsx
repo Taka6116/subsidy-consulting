@@ -336,11 +336,15 @@ function FlowArrow({ size = "lg" }: { size?: "lg" | "sm" }) {
       </div>
     );
   }
+  // viewBox: width=80, height=270
+  // 上カード中央Y ≈ 62 (カード高さ約124px の半分)
+  // 下カード中央Y ≈ 208 (124 + 14gap + 124/2 ≈ 208)
+  // 合流点Y = (62 + 208) / 2 = 135
   return (
     <div className="flex shrink-0 items-center justify-center self-stretch" aria-hidden>
       <svg
         className="h-full w-full"
-        viewBox="0 0 80 160"
+        viewBox="0 0 80 270"
         preserveAspectRatio="xMidYMid meet"
         fill="none"
       >
@@ -364,7 +368,7 @@ function FlowArrow({ size = "lg" }: { size?: "lg" | "sm" }) {
         </defs>
         {/* 御社（上）→合流点 */}
         <path
-          d="M2 46 H44 V80"
+          d="M2 62 H38 V135"
           stroke="url(#merge-line-top)"
           strokeWidth="2.4"
           strokeLinecap="round"
@@ -373,7 +377,7 @@ function FlowArrow({ size = "lg" }: { size?: "lg" | "sm" }) {
         />
         {/* NTS（下）→合流点 */}
         <path
-          d="M2 114 H44 V80"
+          d="M2 208 H38 V135"
           stroke="url(#merge-line-bot)"
           strokeWidth="2.4"
           strokeLinecap="round"
@@ -381,12 +385,12 @@ function FlowArrow({ size = "lg" }: { size?: "lg" | "sm" }) {
           filter="url(#glow)"
         />
         {/* 合流点 外リング */}
-        <circle cx="44" cy="80" r="7" fill="rgba(37,99,235,0.12)" />
+        <circle cx="38" cy="135" r="7" fill="rgba(37,99,235,0.12)" />
         {/* 合流点 内丸 */}
-        <circle cx="44" cy="80" r="4" fill="#2563eb" />
+        <circle cx="38" cy="135" r="4" fill="#2563eb" />
         {/* 合流→出口 */}
         <path
-          d="M48 80 H72"
+          d="M42 135 H72"
           stroke="url(#merge-line-out)"
           strokeWidth="2.6"
           strokeLinecap="round"
@@ -394,7 +398,7 @@ function FlowArrow({ size = "lg" }: { size?: "lg" | "sm" }) {
         />
         {/* 矢印ヘッド */}
         <path
-          d="m68 75 6 5-6 5"
+          d="m68 130 6 5-6 5"
           stroke="#2563eb"
           strokeWidth="2.4"
           strokeLinecap="round"
@@ -521,23 +525,17 @@ function FooterNote() {
 }
 
 // ─────────────────────────────────────────────────────────────
-// PC帯ラベル（全工程横断）
+// PC帯ラベル（全工程横断）- 囲いなし
 // ─────────────────────────────────────────────────────────────
 function SpanLabel({ text, sub }: { text: string; sub: string }) {
   return (
     <div className="mb-3 flex flex-col items-center gap-1">
       <div className="flex w-full items-center gap-3">
-        <div className="h-px flex-1" style={{ background: "linear-gradient(to right, transparent, rgba(37,99,235,0.25))" }} />
-        <span
-          className="shrink-0 rounded-full px-5 py-[4px] text-[11.5px] font-bold tracking-[0.12em] text-[#1a56db]"
-          style={{
-            background: "rgba(219,234,254,0.7)",
-            border: "1px solid rgba(37,99,235,0.22)",
-          }}
-        >
+        <div className="h-px flex-1" style={{ background: "linear-gradient(to right, transparent, rgba(37,99,235,0.2))" }} />
+        <span className="shrink-0 text-[11.5px] font-bold tracking-[0.1em] text-[#1a56db]">
           {text}
         </span>
-        <div className="h-px flex-1" style={{ background: "linear-gradient(to left, transparent, rgba(37,99,235,0.25))" }} />
+        <div className="h-px flex-1" style={{ background: "linear-gradient(to left, transparent, rgba(37,99,235,0.2))" }} />
       </div>
       <p className="text-[11px] font-semibold tracking-[0.08em] text-[#7ea3c6]">{sub}</p>
     </div>
@@ -572,37 +570,35 @@ export default function PartnerJointFlowDiagram() {
         {/* メイン横並び */}
         <div
           className="flex items-center"
-          style={{ gap: "clamp(12px, 1.2vw, 24px)" }}
+          style={{ gap: "0" }}
         >
-          {/* ── 左: 御社 + 共同支援バッジ + NTS ── */}
+          {/* ── 左: 御社 / NTS カード列 ── */}
           <motion.div
-            className="relative shrink-0 flex items-center"
+            className="shrink-0 flex flex-col"
             style={{
-              width: "clamp(270px, 22vw, 390px)",
-              gap: "clamp(6px, 0.6vw, 12px)",
+              width: "clamp(270px, 22vw, 380px)",
+              gap: "clamp(8px, 0.8vw, 14px)",
             }}
             {...reveal(0.1)}
           >
-            {/* 御社カード */}
-            <div className="flex flex-1 flex-col" style={{ gap: "clamp(8px, 0.8vw, 14px)" }}>
-              <ActorCard label="御社" isoImg={iso16} items={PARTNER_LABELS} variant="partner" />
-              <ActorCard label="NTS" isoImg={iso08} items={NTS_LABELS} variant="nts" />
-            </div>
-            {/* 共同支援バッジ（2枚の右端に重ねる） */}
+            <ActorCard label="御社" isoImg={iso16} items={PARTNER_LABELS} variant="partner" />
+            <ActorCard label="NTS" isoImg={iso08} items={NTS_LABELS} variant="nts" />
+          </motion.div>
+
+          {/* ── 合流コネクター（共同支援バッジ込み） ── */}
+          <div
+            className="relative shrink-0 self-stretch"
+            style={{ width: "clamp(60px, 5vw, 96px)", minHeight: "190px" }}
+          >
+            {/* グラデーション合流矢印 */}
+            <FlowArrow size="lg" />
+            {/* 共同支援バッジ：SVGの合流点（cx=38/80≈47.5%、cy=135/270=50%）に重ねる */}
             <motion.div
-              className="absolute right-[-26px] top-1/2 z-10 -translate-y-1/2"
+              className="absolute left-[47%] top-1/2 z-10 -translate-x-1/2 -translate-y-1/2"
               {...scale(0.18)}
             >
               <JointBadge />
             </motion.div>
-          </motion.div>
-
-          {/* ── 合流グラデーション矢印 ── */}
-          <div
-            className="shrink-0 self-stretch"
-            style={{ width: "clamp(52px, 4.5vw, 80px)", minHeight: "180px" }}
-          >
-            <FlowArrow size="lg" />
           </div>
 
           {/* ── 右: 4工程カード ── */}
@@ -611,6 +607,7 @@ export default function PartnerJointFlowDiagram() {
             style={{
               gridTemplateColumns: "1fr auto 1fr auto 1fr auto 1fr",
               gap: "clamp(4px, 0.6vw, 10px)",
+              marginLeft: "clamp(8px, 0.8vw, 16px)",
             }}
           >
             {STEPS.map((step, i) => (
