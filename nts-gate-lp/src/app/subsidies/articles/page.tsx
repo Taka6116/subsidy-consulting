@@ -217,7 +217,7 @@ export default async function SubsidiesArticlesPage() {
   }
   const popularCategories = [...tagCounter.entries()]
     .sort((a, b) => b[1] - a[1])
-    .slice(0, 9)
+    .slice(0, 10)
     .map(([label, count]) => ({ label, count }));
 
   const deadlineRanking = validRows

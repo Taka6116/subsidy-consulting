@@ -118,6 +118,7 @@ export default function SubsidiesArticlesIndex({
   const [subscribeDone, setSubscribeDone] = useState(false);
   const [subscribeError, setSubscribeError] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const gridRef = useRef<HTMLDivElement>(null);
 
   const tagOptions = useMemo(() => buildTagOptions(articles), [articles]);
 
@@ -168,6 +169,10 @@ export default function SubsidiesArticlesIndex({
   function handleTagSelect(tag: string) {
     setSelectedTag(tag);
     setPage(1);
+    // カテゴリーカードからのクリック時はグリッドまでスムーズスクロール
+    requestAnimationFrame(() => {
+      gridRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
   }
 
   function handleQueryChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -445,11 +450,11 @@ export default function SubsidiesArticlesIndex({
             }}
           >
             <h3 className="mb-4 text-sm font-semibold tracking-wide" style={{ color: "#0f2747" }}>
-              人気カテゴリ
+              カテゴリー
             </h3>
             <div className="grid grid-cols-2 gap-1.5">
               {portalData.popularCategories.map((c, i) => {
-                const accents = ["#5da8ff", "#6c8fef", "#63c7e8", "#8b7cf6", "#4d8cff", "#58cfa0", "#f59e0b", "#10b981", "#ef4444"];
+                const accents = ["#5da8ff", "#6c8fef", "#63c7e8", "#8b7cf6", "#4d8cff", "#58cfa0", "#f59e0b", "#10b981", "#ef4444", "#f97316"];
                 const accent = accents[i % accents.length];
                 return (
                   <button
@@ -604,7 +609,7 @@ export default function SubsidiesArticlesIndex({
             </div>
           ) : (
             <>
-              <div className="mt-6 grid grid-cols-1 gap-5 md:grid-cols-2 2xl:grid-cols-3">
+              <div ref={gridRef} className="mt-6 grid grid-cols-1 gap-5 md:grid-cols-2 2xl:grid-cols-3">
                 {paginated.map((article) => {
                   const pills = visibleTags(article.tags);
                   return (
