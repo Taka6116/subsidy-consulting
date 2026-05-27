@@ -21,93 +21,89 @@ type CaseData = {
   result: string;
 };
 
-const F_JIGYOKIKAKU = "%E4%BA%8B%E6%A5%AD%E8%A8%88%E7%94%BB";
-const F_KENSETSU    = "%E5%BB%BA%E8%A8%AD";
-const F_SETSUBI     = "%E8%A8%AD%E5%82%99%E3%83%BB%E8%A8%AD%E5%82%99%E6%8A%95%E8%B3%87";
-const F_JINZAI      = "%E4%BA%BA%E6%9D%90%E3%83%BB%E6%8E%A1%E7%94%A8";
-const F_DX          = "DX%E3%83%BBIT";
+const P = "/case-images"; // public/case-images/ — Vercel静的配信
 
 const CASES: CaseData[] = [
   {
     id: "case-1", industry: "宿泊業",
-    photo: `/api/article-pictures/${F_JIGYOKIKAKU}/business-meeting-conference-concept.webp`,
+    photo: `${P}/business-meeting-conference-concept.webp`,
     schemeName: "新事業進出補助金", business: "ホテルの経営",
     issue: "単一事業への経営依存", investment: "施設の建設、改装工事",
     investmentAmount: "8,120万円", subsidyRate: "1/2", subsidyAmount: "4,000万円", result: "売上22%増",
   },
   {
     id: "case-2", industry: "飲食業",
-    photo: `/api/article-pictures/${F_JIGYOKIKAKU}/business-share-planing-strategy-brainstroming-concept.webp`,
+    photo: `${P}/business-share-planing-strategy-brainstroming-concept.webp`,
     schemeName: "事業再構築補助金", business: "麻婆豆腐店の運営",
     issue: "他ジャンルの飲食店の開業", investment: "店舗改装工事、厨房設備の購入",
     investmentAmount: "6,000万円", subsidyRate: "2/3", subsidyAmount: "4,000万円", result: "売上33%増",
   },
   {
     id: "case-3", industry: "金属製品製造業",
-    photo: `/api/article-pictures/${F_SETSUBI}/factory-workshop-interior-machines-glass-production-background.webp`,
+    photo: `${P}/factory-workshop-interior-machines-glass-production-background.webp`,
     schemeName: "事業再構築補助金", business: "各種洗浄機の部品製造",
     issue: "主要取引先への過度な依存", investment: "溶接ロボットの導入",
     investmentAmount: "7,000万円", subsidyRate: "2/3", subsidyAmount: "4,000万円", result: "売上43%増",
   },
   {
     id: "case-4", industry: "建設機械製造業",
-    photo: `/api/article-pictures/${F_KENSETSU}/construction-worker-engineer-working-together-construction-site.webp`,
+    photo: `${P}/construction-worker-engineer-working-together-construction-site.webp`,
     schemeName: "事業再構築補助金", business: "産廃の仕分け・ふるい機の製造販売",
     issue: "主要取引先への過度な依存", investment: "油圧ショベル、トラックスケールなど",
     investmentAmount: "6,000万円", subsidyRate: "2/3", subsidyAmount: "4,000万円", result: "売上116%増",
   },
   {
     id: "case-5", industry: "建設業",
-    photo: `/api/article-pictures/${F_KENSETSU}/working-construction-site.webp`,
+    photo: `${P}/working-construction-site.webp`,
     schemeName: "省力化投資補助金", business: "土木工事業",
     issue: "人手不足", investment: "油圧ショベル3台",
     investmentAmount: "7,510万円", subsidyRate: "1/2", subsidyAmount: "3,000万円", result: "掘削作業時間を1/5に短縮",
   },
   {
     id: "case-6", industry: "建設業",
-    photo: `/api/article-pictures/${F_KENSETSU}/construction-site-working-japan.webp`,
+    photo: `${P}/construction-site-working-japan.webp`,
     schemeName: "事業再構築補助金", business: "養生・クリーニング業",
     issue: "外国人労働者の活用", investment: "研修センター内装工事、専門研修受講",
     investmentAmount: "約3,852万円", subsidyRate: "2/3", subsidyAmount: "2,701万円", result: "売上27%増",
   },
   {
     id: "case-7", industry: "プラスチック製品製造業",
-    photo: `/api/article-pictures/${F_SETSUBI}/plant-picture-clean-room-equipment-stainless-steel-machines.webp`,
+    photo: `${P}/plant-picture-clean-room-equipment-stainless-steel-machines.webp`,
     schemeName: "事業再構築補助金", business: "不織布の再生ペレット製造",
     issue: "海外売上依存による貿易停止リスク", investment: "PP押し出し機、測定器、粉砕機の導入",
     investmentAmount: "約3,696万円", subsidyRate: "2/3", subsidyAmount: "約2,464万円", result: "売上19%増",
   },
   {
     id: "case-8", industry: "建設業",
-    photo: `/api/article-pictures/${F_KENSETSU}/engineers-analyzing-data-digital-tablet.webp`,
+    photo: `${P}/engineers-analyzing-data-digital-tablet.webp`,
     schemeName: "省力化投資補助金", business: "宅地造成業",
     issue: "人手不足", investment: "油圧ショベル、自動測量機、後付けマシンガイダンス",
     investmentAmount: "約3,896万円", subsidyRate: "2/3", subsidyAmount: "2,000万円", result: "作業時間を47.6h→27.8h/日に削減",
   },
   {
     id: "case-9", industry: "損害保険代理業",
-    photo: `/api/article-pictures/${F_JINZAI}/handshake-close-up-executives.webp`,
+    photo: `${P}/handshake-close-up-executives.webp`,
     schemeName: "事業再構築補助金", business: "保険代理店業務",
     issue: "単一事業への経営依存", investment: "古民家改装工事、トレーラーハウス購入",
     investmentAmount: "4,880万円", subsidyRate: "2/3", subsidyAmount: "2,000万円", result: "売上131%増",
   },
   {
     id: "case-10", industry: "歯科診療所",
-    photo: `/api/article-pictures/${F_JINZAI}/portrait-asian-businesswoman-presenting-her-plan-meeting.webp`,
+    photo: `${P}/portrait-asian-businesswoman-presenting-her-plan-meeting.webp`,
     schemeName: "事業再構築補助金", business: "歯科医院",
     issue: "新規事業への方向転換", investment: "店舗改装工事、治療台の購入",
     investmentAmount: "3,200万円", subsidyRate: "2/3", subsidyAmount: "2,000万円", result: "売上170%増",
   },
   {
     id: "case-11", industry: "飲食業＋産廃業",
-    photo: `/api/article-pictures/${F_JIGYOKIKAKU}/two-cropped-startuppers-developing-business-plan.webp`,
+    photo: `${P}/two-cropped-startuppers-developing-business-plan.webp`,
     schemeName: "事業再構築補助金", business: "居酒屋の運営＋空きビン回収・リサイクル",
     issue: "経営リスク分散", investment: "古民家の改装工事",
     investmentAmount: "2,950万円", subsidyRate: "2/3", subsidyAmount: "2,000万円", result: "売上28%増",
   },
   {
     id: "case-12", industry: "経営コンサルタント業",
-    photo: `/api/article-pictures/${F_DX}/businessman-with-digital-interface-data-growth.webp`,
+    photo: `${P}/businessman-with-digital-interface-data-growth.webp`,
     schemeName: "事業再構築補助金", business: "集客コンサル",
     issue: "単一事業への経営依存", investment: "教育動画・マニュアル管理プラットフォーム構築",
     investmentAmount: "2,949万円", subsidyRate: "2/3", subsidyAmount: "1,966万円", result: "売上33%増",
