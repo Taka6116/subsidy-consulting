@@ -42,7 +42,14 @@ export function ArticleSegmentedBody({
         }
 
         const kind = detectSectionVisualKind(sec.headingLine, sec.order);
-        const headingMd = `${sec.headingLine}\n`;
+        // 見出し・本文から「架空の事例」表記を除去して表示
+        const cleanHeading = sec.headingLine
+          .replace(/【架空の事例】/g, "")
+          .replace(/\[架空の事例\]/g, "")
+          .replace(/【活用例】/g, "")
+          .replace(/\[活用例\]/g, "")
+          .trim();
+        const headingMd = `${cleanHeading}\n`;
 
         return (
           <Fragment key={`sec-${sec.order}-${idx}`}>

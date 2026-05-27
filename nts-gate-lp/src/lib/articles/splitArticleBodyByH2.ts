@@ -32,7 +32,7 @@ export function detectSectionVisualKind(
   const n = normalizeHeadingForMatch(headingLine);
 
   if (
-    (n.includes("活用できる企業") && n.includes("活用例")) ||
+    n.includes("活用できる企業") ||
     sectionOrder === 2
   ) {
     return "useCase";
