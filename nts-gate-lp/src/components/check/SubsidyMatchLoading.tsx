@@ -39,9 +39,8 @@ const FRAMES = [
   },
   {
     lines: [
-      { text: "照合が完了しました。", large: true },
-      { text: "使える可能性のある制度が", large: false },
-      { text: "見つかりました。", large: false },
+      { text: "照合しています。", large: true },
+      { text: "もうしばらくお待ちください。", large: false },
     ],
   },
 ];
@@ -98,13 +97,12 @@ export default function SubsidyMatchLoading({
     };
   }, [frameIndex, apiComplete]);
 
-  // API 完了 → 最終フレーム → 親へ遷移依頼
+  // API 完了 → 短いホールド後そのまま遷移（完了フレームへのジャンプなし）
   useEffect(() => {
     if (!apiComplete || !onReadyToTransition) return;
     let cancelled = false;
     if (timerRef.current) clearTimeout(timerRef.current);
 
-    setFrameIndex(FRAMES.length - 1);
     setProgress(100);
 
     finaleHoldRef.current = setTimeout(() => {
