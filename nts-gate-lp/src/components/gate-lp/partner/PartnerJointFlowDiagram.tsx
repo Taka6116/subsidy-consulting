@@ -12,83 +12,8 @@ const fadeUp = (delay: number) => ({
 });
 
 // ─────────────────────────────────────────────────────────────
-// Icons (シンプルなインラインSVG)
-// ─────────────────────────────────────────────────────────────
-type IconKey = "people" | "chat" | "site" | "search" | "talk" | "stack" | "compass" | "building";
-
-function Icon({ type, className = "h-4 w-4" }: { type: IconKey; className?: string }) {
-  switch (type) {
-    case "people":
-      return (
-        <svg viewBox="0 0 24 24" className={className} fill="none" aria-hidden>
-          <circle cx="9" cy="8" r="2.5" stroke="currentColor" strokeWidth="1.7" />
-          <circle cx="16" cy="10" r="2" stroke="currentColor" strokeWidth="1.7" />
-          <path d="M4 18c.6-2.5 2.5-4 5-4s4.4 1.5 5 4M14 14c1.6.3 2.8 1.5 3.3 3" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
-        </svg>
-      );
-    case "chat":
-      return (
-        <svg viewBox="0 0 24 24" className={className} fill="none" aria-hidden>
-          <path d="M5 6h14v8H10L5 17V6Z" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" />
-        </svg>
-      );
-    case "site":
-      return (
-        <svg viewBox="0 0 24 24" className={className} fill="none" aria-hidden>
-          <path d="M4 20h16M6 20V10h4v10M14 20V6h4v14" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
-      );
-    case "search":
-      return (
-        <svg viewBox="0 0 24 24" className={className} fill="none" aria-hidden>
-          <circle cx="11" cy="11" r="6" stroke="currentColor" strokeWidth="1.8" />
-          <path d="m16 16 4 4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-          <path d="M9 11h4M11 9v4" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
-        </svg>
-      );
-    case "talk":
-      return (
-        <svg viewBox="0 0 24 24" className={className} fill="none" aria-hidden>
-          <path d="M4 6h11v8H9l-5 4V6Z" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" />
-          <path d="M9 10h6M20 16v-6h-3" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
-        </svg>
-      );
-    case "stack":
-      return (
-        <svg viewBox="0 0 24 24" className={className} fill="none" aria-hidden>
-          <rect x="4" y="4" width="7" height="7" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" />
-          <rect x="13" y="4" width="7" height="7" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" />
-          <rect x="4" y="13" width="7" height="7" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" />
-          <rect x="13" y="13" width="7" height="7" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" />
-        </svg>
-      );
-    case "compass":
-      return (
-        <svg viewBox="0 0 24 24" className={className} fill="none" aria-hidden>
-          <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="1.7" />
-          <path d="m9 15 2-5 5-2-2 5-5 2Z" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" />
-        </svg>
-      );
-    case "building":
-      return (
-        <svg viewBox="0 0 24 24" className={className} fill="none" aria-hidden>
-          <rect x="3" y="3" width="10" height="18" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" />
-          <rect x="13" y="9" width="8" height="12" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" />
-          <path d="M6 7h4M6 11h4M6 15h4M16 13h2M16 17h2" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-        </svg>
-      );
-  }
-}
-
-// ─────────────────────────────────────────────────────────────
 // データ定義
 // ─────────────────────────────────────────────────────────────
-const entryItems: { text: string; icon: IconKey }[] = [
-  { text: "顧客接点", icon: "people" },
-  { text: "商談", icon: "chat" },
-  { text: "現場課題", icon: "site" },
-];
-
 type Tone = "partner" | "mixed-partner" | "mixed-nts" | "nts";
 
 type ProcessStep = {
@@ -97,14 +22,8 @@ type ProcessStep = {
   title: string;
   description: string;
   tone: Tone;
-  icon: IconKey;
   image: string;
   imageAlt: string;
-};
-
-const ENTRY_IMAGE = {
-  src: "/images/hero-digital-platform.png",
-  alt: "顧客接点から課題を見つける御社のイメージ",
 };
 
 const processSteps: ProcessStep[] = [
@@ -114,7 +33,6 @@ const processSteps: ProcessStep[] = [
     title: "課題を見つける",
     description: "顧客接点から商談や現場の課題を捉える",
     tone: "partner",
-    icon: "search",
     image: "/icon-assets/subsidy-lp/advisor.png",
     imageAlt: "顧客課題を見つける相談イメージ",
   },
@@ -124,7 +42,6 @@ const processSteps: ProcessStep[] = [
     title: "一緒に課題を深掘る",
     description: "対話を通じて本質的な課題を整理する",
     tone: "mixed-partner",
-    icon: "talk",
     image: "/icon-assets/subsidy-lp/meeting-wide.png",
     imageAlt: "御社とNTSが一緒に課題を深掘る会議イメージ",
   },
@@ -134,7 +51,6 @@ const processSteps: ProcessStep[] = [
     title: "補助金の選択肢を提示する",
     description: "活用可能性を整理し、提案の幅を広げる",
     tone: "mixed-nts",
-    icon: "stack",
     image: "/icon-assets/subsidy-lp/hero-consulting.png",
     imageAlt: "補助金の選択肢を提示するイメージ",
   },
@@ -144,7 +60,6 @@ const processSteps: ProcessStep[] = [
     title: "成約後も伴走する",
     description: "導入後の次の一手まで支援する",
     tone: "nts",
-    icon: "compass",
     image: "/icon-assets/subsidy-lp/handshake.png",
     imageAlt: "成約後も伴走するイメージ",
   },
@@ -199,76 +114,6 @@ const tonePalette: Record<Tone, {
     numberBg: "linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)",
   },
 };
-
-// ─────────────────────────────────────────────────────────────
-// 入口カード（御社）
-// ─────────────────────────────────────────────────────────────
-function EntryCard() {
-  return (
-    /* pt-[22px] は StepCard と高さベースラインを揃えるためのスペーサー */
-    <div className="relative h-full" style={{ paddingTop: "22px" }}>
-      <div
-        className="flex min-h-[340px] h-full flex-col overflow-hidden rounded-[20px] bg-white transition-all duration-300 hover:-translate-y-1"
-        style={{
-          border: "1px solid rgba(16,185,129,0.28)",
-          boxShadow: "0 20px 44px rgba(15,23,42,0.10), 0 4px 12px rgba(16,185,129,0.08)",
-        }}
-      >
-        {/* 上端アクセント */}
-        <div
-          className="h-[6px] w-full"
-          style={{ background: "linear-gradient(90deg, #10b981 0%, #34d399 100%)" }}
-          aria-hidden
-        />
-        {/* ヘッダー */}
-        <div
-          className="flex items-center justify-center gap-2 px-4 py-2.5"
-          style={{
-            background: "linear-gradient(180deg, rgba(236,253,245,0.95) 0%, rgba(240,253,250,0.7) 100%)",
-            borderBottom: "1px solid rgba(16,185,129,0.14)",
-          }}
-        >
-          <span className="text-[15px] font-black tracking-[0.12em] text-[#065f46]">御社</span>
-        </div>
-
-        {/* 大きめのイラストエリア */}
-        <div className="flex items-center justify-center px-4 py-4">
-          <div className="relative h-[132px] w-full max-w-[230px]">
-            <Image
-              src={ENTRY_IMAGE.src}
-              alt={ENTRY_IMAGE.alt}
-              fill
-              sizes="230px"
-              className="object-contain drop-shadow-[0_16px_24px_rgba(15,23,42,0.12)]"
-            />
-          </div>
-        </div>
-
-        {/* 3項目リスト */}
-        <div className="flex flex-col gap-2 px-4 pb-4">
-          {entryItems.map((item) => (
-            <div
-              key={item.text}
-              className="flex items-center gap-3 rounded-[10px] px-3 py-2.5"
-              style={{
-                background: "linear-gradient(135deg, #ecfdf5 0%, #ffffff 100%)",
-                border: "1px solid rgba(16,185,129,0.18)",
-              }}
-            >
-              <span
-                className="flex h-[28px] w-[28px] shrink-0 items-center justify-center rounded-md"
-                style={{ background: "linear-gradient(135deg, #d1fae5, #ecfdf5)", color: "#059669" }}
-              >
-                <Icon type={item.icon} className="h-[15px] w-[15px]" />
-              </span>
-              <span className="text-[13px] font-bold leading-tight text-[#064e3b]">{item.text}</span>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-}
 
 // ─────────────────────────────────────────────────────────────
 // ステップカード（番号バッジがカード上端に乗る）
@@ -347,7 +192,7 @@ function ThickGradientArrow() {
     "polygon(0 22%, calc(100% - 92px) 22%, calc(100% - 92px) 0, 100% 50%, calc(100% - 92px) 100%, calc(100% - 92px) 78%, 0 78%)";
 
   const sharedRect = {
-    left: "clamp(270px, 18vw, 340px)",
+    left: "0",
     right: "-72px",
     top: "50%",
     height: "clamp(74px, 6vw, 104px)",
@@ -475,20 +320,17 @@ export default function PartnerJointFlowDiagram() {
 
           {/* カード列（前面 z-1） */}
           <div
-            className="relative z-[1] grid items-stretch"
+            className="relative z-[1] grid items-stretch justify-center"
             style={{
               gridTemplateColumns:
-                "clamp(270px, 17vw, 330px) repeat(4, clamp(220px, 14vw, 270px))",
+                "repeat(4, clamp(220px, 14vw, 270px))",
               gap: "clamp(26px, 2.7vw, 52px)",
             }}
           >
-            <motion.div {...reveal(0.1)} className="self-stretch">
-              <EntryCard />
-            </motion.div>
             {processSteps.map((step, i) => (
               <motion.div
                 key={step.number}
-                {...reveal(0.18 + i * 0.07)}
+                {...reveal(0.12 + i * 0.07)}
                 className="self-stretch"
               >
                 <StepCard step={step} />
@@ -514,54 +356,6 @@ export default function PartnerJointFlowDiagram() {
         </motion.div>
 
         <div className="relative space-y-3 px-2">
-          {/* 入口カード（Mobile版はpadding無しのシンプル版） */}
-          <motion.div {...reveal(0.08)}>
-            <div
-              className="flex flex-col overflow-hidden rounded-[20px] bg-white"
-              style={{
-                border: "1px solid rgba(16,185,129,0.28)",
-                boxShadow: "0 16px 36px rgba(15,23,42,0.09)",
-              }}
-            >
-              <div
-                className="h-[5px] w-full"
-                style={{ background: "linear-gradient(90deg, #10b981 0%, #34d399 100%)" }}
-                aria-hidden
-              />
-              <div
-                className="flex items-center justify-center py-2.5"
-                style={{ borderBottom: "1px solid rgba(16,185,129,0.14)" }}
-              >
-                <span className="text-[14px] font-black text-[#065f46]">御社</span>
-              </div>
-              <div className="flex flex-col gap-2 p-3">
-                {entryItems.map((item) => (
-                  <div
-                    key={item.text}
-                    className="flex items-center gap-2.5 rounded-[10px] px-3 py-2"
-                    style={{ background: "#f0fdf4", border: "1px solid rgba(16,185,129,0.15)" }}
-                  >
-                    <span
-                      className="flex h-[24px] w-[24px] shrink-0 items-center justify-center rounded-md"
-                      style={{ background: "#d1fae5", color: "#059669" }}
-                    >
-                      <Icon type={item.icon} className="h-[13px] w-[13px]" />
-                    </span>
-                    <span className="text-[12px] font-bold text-[#064e3b]">{item.text}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </motion.div>
-
-          {/* 縦の太いグラデーションライン */}
-          <div className="flex justify-center" aria-hidden>
-            <div
-              className="my-1 h-8 w-[6px] rounded-full"
-              style={{ background: "linear-gradient(180deg, #10b981 0%, #14b8a6 50%, #06b6d4 100%)" }}
-            />
-          </div>
-
           {processSteps.map((step, i) => {
             const palette = tonePalette[step.tone];
             return (
