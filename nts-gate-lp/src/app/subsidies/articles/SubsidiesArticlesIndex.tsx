@@ -447,16 +447,16 @@ export default function SubsidiesArticlesIndex({
             <h3 className="mb-4 text-sm font-semibold tracking-wide" style={{ color: "#0f2747" }}>
               人気カテゴリ
             </h3>
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-2 gap-1.5">
               {portalData.popularCategories.map((c, i) => {
-                const accents = ["#5da8ff", "#6c8fef", "#63c7e8", "#8b7cf6", "#4d8cff", "#58cfa0"];
+                const accents = ["#5da8ff", "#6c8fef", "#63c7e8", "#8b7cf6", "#4d8cff", "#58cfa0", "#f59e0b", "#10b981", "#ef4444"];
                 const accent = accents[i % accents.length];
                 return (
                   <button
                     key={c.label}
                     type="button"
                     onClick={() => handleTagSelect(c.label)}
-                    className="group rounded-[14px] px-3 py-2.5 text-left transition-all duration-[220ms] hover:-translate-y-0.5"
+                    className="group rounded-[12px] px-3 py-2 text-left transition-all duration-[220ms] hover:-translate-y-0.5"
                     style={{
                       background: "linear-gradient(180deg, #ffffff 0%, #fbfdff 100%)",
                       border: "1px solid rgba(15,39,71,0.06)",
