@@ -347,53 +347,161 @@ export default function SubsidiesArticlesIndex({
         </div>
 
         <div className="space-y-4 lg:col-span-5">
-          <div className="rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm">
-            <div className="mb-3 flex items-center justify-between">
-              <h3 className="text-sm font-bold text-neutral-900">最新の補助金動向</h3>
-              <span className="text-xs text-neutral-400">今週更新</span>
+          {/* ── 最新の補助金動向 ── */}
+          <div
+            className="rounded-[20px] p-5"
+            style={{
+              background:
+                "radial-gradient(circle at top right, rgba(56,189,248,0.06), transparent 26%), linear-gradient(180deg, #ffffff 0%, #f8fbff 100%)",
+              border: "1px solid rgba(15,39,71,0.08)",
+              boxShadow: "0 16px 40px rgba(15,23,42,0.05), 0 2px 8px rgba(15,23,42,0.02)",
+            }}
+          >
+            <div className="mb-4 flex items-center justify-between">
+              <h3 className="text-sm font-semibold tracking-wide" style={{ color: "#0f2747" }}>
+                最新の補助金動向
+              </h3>
+              <span
+                className="rounded-full px-3 py-[3px] text-[11px] font-semibold"
+                style={{
+                  background: "linear-gradient(180deg, #f2fffc 0%, #ecfbff 100%)",
+                  border: "1px solid rgba(45,212,191,0.22)",
+                  color: "#2a7c78",
+                  boxShadow: "0 4px 12px rgba(15,23,42,0.04)",
+                }}
+              >
+                今週更新
+              </span>
             </div>
-            <div className="grid grid-cols-2 gap-2 sm:gap-3">
-              <div className="rounded-lg bg-neutral-50 p-2.5 sm:p-3">
-                <p className="text-xs text-neutral-500">新着記事</p>
-                <p className="mt-1 text-xl font-black text-primary-700">
+            <div className="grid grid-cols-2 gap-2.5 sm:gap-3">
+              {/* 新着記事 */}
+              <div
+                className="rounded-[16px] p-2.5 transition-all duration-[220ms] hover:-translate-y-0.5 sm:p-3"
+                style={{
+                  background: "linear-gradient(180deg, #ffffff 0%, #fbfdff 100%)",
+                  border: "1px solid rgba(15,39,71,0.06)",
+                  boxShadow: "0 6px 18px rgba(15,23,42,0.03), 0 1px 4px rgba(15,23,42,0.02)",
+                }}
+              >
+                <p className="text-xs font-medium" style={{ color: "#5f6f86" }}>新着記事</p>
+                <p className="mt-1 text-xl font-black" style={{ color: "#1d4ed8" }}>
                   {portalData.stats.newArticlesCount}件
                 </p>
               </div>
-              <div className="rounded-lg bg-neutral-50 p-2.5 sm:p-3">
-                <p className="text-xs text-neutral-500">公募中補助金</p>
-                <p className="mt-1 text-xl font-black text-primary-700">
+              {/* 公募中補助金 */}
+              <div
+                className="rounded-[16px] p-2.5 transition-all duration-[220ms] hover:-translate-y-0.5 sm:p-3"
+                style={{
+                  background: "linear-gradient(180deg, #ffffff 0%, #fbfdff 100%)",
+                  border: "1px solid rgba(15,39,71,0.06)",
+                  boxShadow: "0 6px 18px rgba(15,23,42,0.03), 0 1px 4px rgba(15,23,42,0.02)",
+                }}
+              >
+                <p className="text-xs font-medium" style={{ color: "#5f6f86" }}>公募中補助金</p>
+                <p className="mt-1 text-xl font-black" style={{ color: "#1e40af" }}>
                   {portalData.stats.openCount}件
                 </p>
               </div>
-              <div className="rounded-lg bg-neutral-50 p-2.5 sm:p-3">
-                <p className="text-xs text-neutral-500">締切間近</p>
-                <p className="mt-1 text-xl font-black text-amber-600">
+              {/* 締切間近 */}
+              <div
+                className="rounded-[16px] p-2.5 transition-all duration-[220ms] hover:-translate-y-0.5 sm:p-3"
+                style={{
+                  background:
+                    "radial-gradient(circle at top right, rgba(245,158,11,0.08), transparent 24%), linear-gradient(180deg, #ffffff 0%, #fffcf6 100%)",
+                  border: "1px solid rgba(15,39,71,0.06)",
+                  boxShadow: "0 6px 18px rgba(15,23,42,0.03), 0 1px 4px rgba(15,23,42,0.02)",
+                }}
+              >
+                <p className="text-xs font-medium" style={{ color: "#5f6f86" }}>締切間近</p>
+                <p className="mt-1 text-xl font-black" style={{ color: "#c98900" }}>
                   {portalData.stats.closingSoonCount}件
                 </p>
               </div>
-              <div className="rounded-lg bg-neutral-50 p-2.5 sm:p-3">
-                <p className="text-xs text-neutral-500">総記事数</p>
-                <p className="mt-1 text-xl font-black text-primary-700">
+              {/* 総記事数 */}
+              <div
+                className="rounded-[16px] p-2.5 transition-all duration-[220ms] hover:-translate-y-0.5 sm:p-3"
+                style={{
+                  background: "linear-gradient(180deg, #ffffff 0%, #fbfdff 100%)",
+                  border: "1px solid rgba(15,39,71,0.06)",
+                  boxShadow: "0 6px 18px rgba(15,23,42,0.03), 0 1px 4px rgba(15,23,42,0.02)",
+                }}
+              >
+                <p className="text-xs font-medium" style={{ color: "#5f6f86" }}>総記事数</p>
+                <p className="mt-1 text-xl font-black" style={{ color: "#0f3b7a" }}>
                   {portalData.stats.totalCount}件
                 </p>
               </div>
             </div>
           </div>
 
-          <div className="rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm">
-            <h3 className="mb-3 text-sm font-bold text-neutral-900">人気カテゴリ</h3>
+          {/* ── 人気カテゴリ ── */}
+          <div
+            className="rounded-[20px] p-5"
+            style={{
+              background:
+                "radial-gradient(circle at top right, rgba(59,130,246,0.05), transparent 24%), linear-gradient(180deg, #ffffff 0%, #f9fbff 100%)",
+              border: "1px solid rgba(15,39,71,0.08)",
+              boxShadow: "0 14px 36px rgba(15,23,42,0.05), 0 2px 8px rgba(15,23,42,0.02)",
+            }}
+          >
+            <h3 className="mb-4 text-sm font-semibold tracking-wide" style={{ color: "#0f2747" }}>
+              人気カテゴリ
+            </h3>
             <div className="grid grid-cols-2 gap-2">
-              {portalData.popularCategories.map((c) => (
-                <button
-                  key={c.label}
-                  type="button"
-                  onClick={() => handleTagSelect(c.label)}
-                  className="rounded-lg border border-neutral-200 px-3 py-2 text-left text-xs text-neutral-700 transition hover:border-primary-300 hover:bg-primary-50"
-                >
-                  <p className="line-clamp-1 font-semibold">{c.label}</p>
-                  <p className="mt-0.5 text-[11px] text-neutral-400">{c.count}記事</p>
-                </button>
-              ))}
+              {portalData.popularCategories.map((c, i) => {
+                const accents = ["#5da8ff", "#6c8fef", "#63c7e8", "#8b7cf6", "#4d8cff", "#58cfa0"];
+                const accent = accents[i % accents.length];
+                return (
+                  <button
+                    key={c.label}
+                    type="button"
+                    onClick={() => handleTagSelect(c.label)}
+                    className="group rounded-[14px] px-3 py-2.5 text-left transition-all duration-[220ms] hover:-translate-y-0.5"
+                    style={{
+                      background: "linear-gradient(180deg, #ffffff 0%, #fbfdff 100%)",
+                      border: "1px solid rgba(15,39,71,0.06)",
+                      boxShadow: "0 8px 22px rgba(15,23,42,0.04), 0 1px 4px rgba(15,23,42,0.02)",
+                      borderBottom: `2px solid ${accent}33`,
+                    }}
+                    onMouseEnter={(e) => {
+                      const el = e.currentTarget;
+                      el.style.background = "linear-gradient(135deg, rgba(239,248,255,0.96), rgba(255,255,255,0.98))";
+                      el.style.borderColor = "rgba(37,99,235,0.18)";
+                      el.style.boxShadow = "0 14px 32px rgba(15,23,42,0.08), 0 2px 8px rgba(15,23,42,0.03)";
+                    }}
+                    onMouseLeave={(e) => {
+                      const el = e.currentTarget;
+                      el.style.background = "linear-gradient(180deg, #ffffff 0%, #fbfdff 100%)";
+                      el.style.borderColor = "rgba(15,39,71,0.06)";
+                      el.style.boxShadow = "0 8px 22px rgba(15,23,42,0.04), 0 1px 4px rgba(15,23,42,0.02)";
+                    }}
+                  >
+                    <div className="flex items-center justify-between gap-1">
+                      <p className="line-clamp-1 text-xs font-semibold" style={{ color: "#0f2747" }}>
+                        {c.label}
+                      </p>
+                      <svg
+                        className="h-3 w-3 shrink-0 transition-transform duration-[220ms] group-hover:translate-x-0.5"
+                        viewBox="0 0 12 12"
+                        fill="none"
+                        aria-hidden
+                        style={{ color: "#8a97aa" }}
+                      >
+                        <path
+                          d="M4 2l4 4-4 4"
+                          stroke="currentColor"
+                          strokeWidth="1.6"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                    </div>
+                    <p className="mt-0.5 text-[11px] font-medium" style={{ color: "#7a8798" }}>
+                      {c.count}記事
+                    </p>
+                  </button>
+                );
+              })}
             </div>
           </div>
         </div>
