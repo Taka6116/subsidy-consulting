@@ -48,16 +48,16 @@ export default function PartnerHandoffSection() {
           {...reveal(0.2)}
         >
           <div>
-            <p className="text-base font-bold text-[#1a56db]">この案件、補助金が使えるか？からご相談ください。</p>
-            <p className="mt-1 text-sm leading-relaxed text-[var(--text-secondary)]">
-              提案中の案件や、今後の事業計画について、まずは気軽にご相談ください。
-            </p>
+            <p className="text-base font-bold text-[#1a56db]">お話だけでも構いません。まずはご相談ください。</p>
+              <p className="mt-1 text-sm leading-relaxed text-[var(--text-secondary)]">
+                現状整理から一緒に始めましょう。
+              </p>
           </div>
           <a
             href="#contact"
             className="nts-cta-primary nts-cta-primary--xl shrink-0 gap-1 px-6 py-3 text-sm focus-visible:ring-2 focus-visible:ring-[#1368d8] focus-visible:ring-offset-2"
           >
-            補助金活用の可能性を相談する
+            無料相談予約はこちら
             <span aria-hidden>›</span>
           </a>
         </motion.div>
