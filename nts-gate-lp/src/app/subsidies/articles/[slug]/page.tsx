@@ -474,7 +474,7 @@ export default async function SubsidyArticlePage({ params }: PageProps) {
           )}
 
           {/* CTA */}
-          <ArticleCTA diagnosisHref="/diagnosis" subsidyName={article.title ?? undefined} />
+          <ArticleCTA diagnosisHref="/diagnosis" />
 
           {/* 関連記事 */}
           <RelatedArticles articles={relatedArticles} />
