@@ -102,12 +102,14 @@ export default function ConsultForm() {
           className={`${INPUT_CLASSES} resize-y`}
         />
       </div>
-      <button
-        type="submit"
-        className="w-full rounded-full bg-[var(--accent-navy)] px-6 py-4 text-base font-bold text-white shadow-sm transition-all hover:bg-[#1557a8] hover:shadow-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent-navy)] sm:w-auto sm:min-w-[220px]"
-      >
-        補助金活用について相談する
-      </button>
+      <div className="flex justify-center">
+        <button
+          type="submit"
+          className="min-w-[220px] rounded-full bg-gradient-to-r from-[#1a56db] via-[#1368d8] to-[#0e4fb5] px-8 py-4 text-base font-bold text-white shadow-[0_4px_16px_rgba(26,86,219,0.35)] transition-all hover:brightness-110 hover:shadow-[0_6px_22px_rgba(26,86,219,0.45)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1a56db]"
+        >
+          補助金活用について相談する
+        </button>
+      </div>
     </form>
 
       <SubsidyLegalDisclaimer variant="short" className="mt-4" />
