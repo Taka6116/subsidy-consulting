@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import Header from "@/components/shared/Header";
 import LpFooter from "@/components/gate-lp/LpFooter";
-import { prisma } from "@/lib/db/prisma";
 import SubsidiesGalaxyClientV2 from "@/components/subsidies/SubsidiesGalaxyClientV2";
+import { getPortalStats } from "@/lib/subsidies/portalStats";
 
 export const metadata: Metadata = {
   title: "補助金情報 | 日本提携支援",
@@ -10,28 +10,11 @@ export const metadata: Metadata = {
     "最新の補助金情報・解説をまとめてご覧いただけます。公募要領での最終確認をお願いします。",
 };
 
-export const revalidate = 300;
+export const revalidate = 0;
 
 export default async function SubsidiesTop2Page() {
-  const [grantCount, articleCount, videoCount, lpCount, prefectureRows] = await Promise.all([
-    prisma.subsidyGrant.count({ where: { status: "open" } }),
-    prisma.generatedContent.count({
-      where: { contentType: "article", status: "published" },
-    }),
-    prisma.generatedContent.count({
-      where: { contentType: "video", status: "published" },
-    }),
-    prisma.generatedContent.count({
-      where: { contentType: "lp", status: "published" },
-    }),
-    prisma.subsidyGrant.findMany({
-      where: { status: "open", prefecture: { not: null } },
-      select: { prefecture: true },
-      distinct: ["prefecture"],
-    }),
-  ]);
-
-  const activePrefectureCount = prefectureRows.length;
+  const { grantCount, articleCount, videoCount, lpCount, activePrefectureCount } =
+    await getPortalStats();
 
   return (
     <>
