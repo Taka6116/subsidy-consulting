@@ -48,7 +48,7 @@ export default function PartnerPage() {
         <PartnerConsultValueSection />
         <NtsAiGapSection />
         <PartnerFlowSection />
-        <SubsidyMatchCtaSection />
+        <SubsidyMatchCtaSection variant="partner" />
         <PartnerAboutSection />
         <PartnerFaqSection />
         <FinalCtaSection variant="partner" />

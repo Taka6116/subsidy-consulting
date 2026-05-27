@@ -11,8 +11,9 @@ import {
   fadeInUpViewport,
 } from "@/components/sections/sectionStyles";
 
-export default function SubsidyMatchCtaSection() {
+export default function SubsidyMatchCtaSection({ variant }: { variant?: "partner" } = {}) {
   const reduce = useReducedMotion();
+  const isPartner = variant === "partner";
 
   return (
     <section className="section-block bg-section-white" aria-labelledby="home-subsidy-match-heading">
@@ -30,9 +31,19 @@ export default function SubsidyMatchCtaSection() {
               id="home-subsidy-match-heading"
               className="font-heading text-3xl font-bold leading-tight text-[var(--text-primary)] md:text-4xl"
             >
-              まず、自社に使える制度を
-              <br />
-              確認してみてください。
+              {isPartner ? (
+                <>
+                  活用いただける補助金制度を
+                  <br />
+                  確認できます。
+                </>
+              ) : (
+                <>
+                  まず、自社に使える制度を
+                  <br />
+                  確認してみてください。
+                </>
+              )}
             </ScrollTextReveal>
             <p className="mx-auto max-w-2xl text-base leading-relaxed text-[var(--text-secondary)] md:text-lg lg:mx-0">
               会社名またはURLを入力するだけで、活用できる可能性のある補助金をご案内します。無料・1分で完了します。
