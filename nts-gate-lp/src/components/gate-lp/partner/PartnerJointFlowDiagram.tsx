@@ -13,7 +13,7 @@ const fadeUp = (delay: number) => ({
 // ─────────────────────────────────────────────────────────────
 // Icons (シンプルなインラインSVG)
 // ─────────────────────────────────────────────────────────────
-type IconKey = "people" | "chat" | "site" | "search" | "talk" | "stack" | "compass";
+type IconKey = "people" | "chat" | "site" | "search" | "talk" | "stack" | "compass" | "building";
 
 function Icon({ type, className = "h-4 w-4" }: { type: IconKey; className?: string }) {
   switch (type) {
@@ -42,6 +42,7 @@ function Icon({ type, className = "h-4 w-4" }: { type: IconKey; className?: stri
         <svg viewBox="0 0 24 24" className={className} fill="none" aria-hidden>
           <circle cx="11" cy="11" r="6" stroke="currentColor" strokeWidth="1.8" />
           <path d="m16 16 4 4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+          <path d="M9 11h4M11 9v4" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
         </svg>
       );
     case "talk":
@@ -67,6 +68,14 @@ function Icon({ type, className = "h-4 w-4" }: { type: IconKey; className?: stri
           <path d="m9 15 2-5 5-2-2 5-5 2Z" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" />
         </svg>
       );
+    case "building":
+      return (
+        <svg viewBox="0 0 24 24" className={className} fill="none" aria-hidden>
+          <rect x="3" y="3" width="10" height="18" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" />
+          <rect x="13" y="9" width="8" height="12" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" />
+          <path d="M6 7h4M6 11h4M6 15h4M16 13h2M16 17h2" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+        </svg>
+      );
   }
 }
 
@@ -87,7 +96,6 @@ type ProcessStep = {
   title: string;
   description: string;
   tone: Tone;
-  ratioLabel: string;
   icon: IconKey;
 };
 
@@ -98,7 +106,6 @@ const processSteps: ProcessStep[] = [
     title: "課題を見つける",
     description: "顧客接点から商談や現場の課題を捉える",
     tone: "partner",
-    ratioLabel: "御社 100%",
     icon: "search",
   },
   {
@@ -107,7 +114,6 @@ const processSteps: ProcessStep[] = [
     title: "一緒に課題を深掘る",
     description: "対話を通じて本質的な課題を整理する",
     tone: "mixed-partner",
-    ratioLabel: "御社 50% / NTS 50%",
     icon: "talk",
   },
   {
@@ -116,7 +122,6 @@ const processSteps: ProcessStep[] = [
     title: "補助金の選択肢を提示する",
     description: "活用可能性を整理し、提案の幅を広げる",
     tone: "mixed-nts",
-    ratioLabel: "御社 30% / NTS 70%",
     icon: "stack",
   },
   {
@@ -125,7 +130,6 @@ const processSteps: ProcessStep[] = [
     title: "成約後も伴走する",
     description: "導入後の次の一手まで支援する",
     tone: "nts",
-    ratioLabel: "NTS 100%",
     icon: "compass",
   },
 ];
@@ -139,7 +143,8 @@ const tonePalette: Record<Tone, {
   border: string;
   iconBg: string;
   iconText: string;
-  topAccent: string; // カード上端のアクセントライン
+  topAccent: string;
+  numberBg: string;
 }> = {
   partner: {
     badgeBg: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
@@ -148,6 +153,7 @@ const tonePalette: Record<Tone, {
     iconBg: "linear-gradient(135deg, #d1fae5 0%, #ecfdf5 100%)",
     iconText: "#059669",
     topAccent: "linear-gradient(90deg, #10b981, #34d399)",
+    numberBg: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
   },
   "mixed-partner": {
     badgeBg: "linear-gradient(135deg, #14b8a6 0%, #0d9488 100%)",
@@ -156,6 +162,7 @@ const tonePalette: Record<Tone, {
     iconBg: "linear-gradient(135deg, #ccfbf1 0%, #f0fdfa 100%)",
     iconText: "#0d9488",
     topAccent: "linear-gradient(90deg, #14b8a6, #06b6d4)",
+    numberBg: "linear-gradient(135deg, #14b8a6 0%, #0d9488 100%)",
   },
   "mixed-nts": {
     badgeBg: "linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%)",
@@ -164,6 +171,7 @@ const tonePalette: Record<Tone, {
     iconBg: "linear-gradient(135deg, #e0f2fe 0%, #f0f9ff 100%)",
     iconText: "#0284c7",
     topAccent: "linear-gradient(90deg, #06b6d4, #3b82f6)",
+    numberBg: "linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%)",
   },
   nts: {
     badgeBg: "linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)",
@@ -172,6 +180,7 @@ const tonePalette: Record<Tone, {
     iconBg: "linear-gradient(135deg, #dbeafe 0%, #eff6ff 100%)",
     iconText: "#1d4ed8",
     topAccent: "linear-gradient(90deg, #3b82f6, #1d4ed8)",
+    numberBg: "linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)",
   },
 };
 
@@ -180,105 +189,132 @@ const tonePalette: Record<Tone, {
 // ─────────────────────────────────────────────────────────────
 function EntryCard() {
   return (
-    <div
-      className="relative flex flex-col overflow-hidden rounded-[20px] bg-white transition-all duration-300 hover:-translate-y-1"
-      style={{
-        border: "1px solid rgba(16,185,129,0.28)",
-        boxShadow: "0 20px 44px rgba(15,23,42,0.10), 0 4px 12px rgba(16,185,129,0.08)",
-      }}
-    >
-      {/* 上端アクセント */}
+    /* pt-[22px] は StepCard と高さベースラインを揃えるためのスペーサー */
+    <div className="relative h-full" style={{ paddingTop: "22px" }}>
       <div
-        className="h-[6px] w-full"
-        style={{ background: "linear-gradient(90deg, #10b981 0%, #34d399 100%)" }}
-        aria-hidden
-      />
-      {/* ヘッダー */}
-      <div
-        className="flex items-center justify-center gap-2 px-4 py-3"
+        className="flex h-full flex-col overflow-hidden rounded-[20px] bg-white transition-all duration-300 hover:-translate-y-1"
         style={{
-          background: "linear-gradient(180deg, rgba(236,253,245,0.95) 0%, rgba(240,253,250,0.7) 100%)",
-          borderBottom: "1px solid rgba(16,185,129,0.14)",
+          border: "1px solid rgba(16,185,129,0.28)",
+          boxShadow: "0 20px 44px rgba(15,23,42,0.10), 0 4px 12px rgba(16,185,129,0.08)",
         }}
       >
-        <span className="text-[15px] font-black tracking-[0.12em] text-[#065f46]">御社</span>
-      </div>
-      {/* 本体 */}
-      <div className="flex flex-col gap-2 p-4">
-        {entryItems.map((item) => (
+        {/* 上端アクセント */}
+        <div
+          className="h-[6px] w-full"
+          style={{ background: "linear-gradient(90deg, #10b981 0%, #34d399 100%)" }}
+          aria-hidden
+        />
+        {/* ヘッダー */}
+        <div
+          className="flex items-center justify-center gap-2 px-4 py-2.5"
+          style={{
+            background: "linear-gradient(180deg, rgba(236,253,245,0.95) 0%, rgba(240,253,250,0.7) 100%)",
+            borderBottom: "1px solid rgba(16,185,129,0.14)",
+          }}
+        >
+          <span className="text-[15px] font-black tracking-[0.12em] text-[#065f46]">御社</span>
+        </div>
+
+        {/* 大きめのイラストエリア */}
+        <div className="flex items-center justify-center py-4">
           <div
-            key={item.text}
-            className="flex items-center gap-3 rounded-[10px] px-3 py-2.5"
+            className="flex h-[72px] w-[72px] items-center justify-center rounded-2xl"
             style={{
-              background: "linear-gradient(135deg, #ecfdf5 0%, #ffffff 100%)",
-              border: "1px solid rgba(16,185,129,0.18)",
+              background: "linear-gradient(135deg, #d1fae5 0%, #ecfdf5 100%)",
+              color: "#059669",
+              boxShadow: "0 4px 16px rgba(16,185,129,0.14)",
             }}
           >
-            <span
-              className="flex h-[28px] w-[28px] shrink-0 items-center justify-center rounded-md"
+            <Icon type="building" className="h-[38px] w-[38px]" />
+          </div>
+        </div>
+
+        {/* 3項目リスト */}
+        <div className="flex flex-col gap-2 px-4 pb-4">
+          {entryItems.map((item) => (
+            <div
+              key={item.text}
+              className="flex items-center gap-3 rounded-[10px] px-3 py-2.5"
               style={{
-                background: "linear-gradient(135deg, #d1fae5, #ecfdf5)",
-                color: "#059669",
+                background: "linear-gradient(135deg, #ecfdf5 0%, #ffffff 100%)",
+                border: "1px solid rgba(16,185,129,0.18)",
               }}
             >
-              <Icon type={item.icon} className="h-[15px] w-[15px]" />
-            </span>
-            <span className="text-[13px] font-bold leading-tight text-[#064e3b]">{item.text}</span>
-          </div>
-        ))}
+              <span
+                className="flex h-[28px] w-[28px] shrink-0 items-center justify-center rounded-md"
+                style={{ background: "linear-gradient(135deg, #d1fae5, #ecfdf5)", color: "#059669" }}
+              >
+                <Icon type={item.icon} className="h-[15px] w-[15px]" />
+              </span>
+              <span className="text-[13px] font-bold leading-tight text-[#064e3b]">{item.text}</span>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
 }
 
 // ─────────────────────────────────────────────────────────────
-// ステップカード
+// ステップカード（番号バッジがカード上端に乗る）
 // ─────────────────────────────────────────────────────────────
 function StepCard({ step }: { step: ProcessStep }) {
   const palette = tonePalette[step.tone];
   return (
-    <div
-      className="relative flex flex-col overflow-hidden rounded-[20px] bg-white transition-all duration-300 hover:-translate-y-[3px]"
-      style={{
-        border: `1px solid ${palette.border}`,
-        boxShadow: "0 20px 44px rgba(15,23,42,0.10), 0 4px 12px rgba(15,23,42,0.04)",
-      }}
-    >
-      {/* 上端アクセントライン */}
+    /* pt-[22px] = バッジ(44px)の半分、バッジがカード上端に半分乗る */
+    <div className="relative h-full" style={{ paddingTop: "22px" }}>
+      {/* ── 丸い番号バッジ（中央上端に乗る） ── */}
       <div
-        className="h-[6px] w-full"
-        style={{ background: palette.topAccent }}
+        className="absolute left-1/2 top-0 z-10 flex h-[44px] w-[44px] -translate-x-1/2 items-center justify-center rounded-full"
+        style={{
+          background: palette.numberBg,
+          boxShadow: "0 4px 16px rgba(0,0,0,0.18), 0 1px 4px rgba(0,0,0,0.10)",
+        }}
         aria-hidden
-      />
-      {/* バッジ + 番号 */}
-      <div className="flex items-center justify-between gap-2 px-3.5 pt-3.5">
-        <span
-          className="inline-flex items-center rounded-full px-2.5 py-1 text-[11px] font-bold tracking-wide"
-          style={{ background: palette.badgeBg, color: palette.badgeText }}
-        >
-          {step.role}
-        </span>
-        <span
-          className="font-heading text-[18px] font-black leading-none"
-          style={{ color: palette.iconText }}
-        >
-          {step.number}
-        </span>
+      >
+        <span className="text-[15px] font-black leading-none text-white">{step.number}</span>
       </div>
-      {/* 本体 */}
-      <div className="flex flex-1 flex-col items-center px-4 pb-4 pt-3 text-center">
-        <span
-          className="mb-3 flex h-[44px] w-[44px] items-center justify-center rounded-xl"
-          style={{ background: palette.iconBg, color: palette.iconText }}
-        >
-          <Icon type={step.icon} className="h-[22px] w-[22px]" />
-        </span>
-        <h4 className="line-clamp-2 h-[44px] text-[14px] font-bold leading-[1.55] text-[#071b46]">
-          {step.title}
-        </h4>
-        <p className="mt-1.5 line-clamp-2 h-[34px] text-[11.5px] leading-[1.55] text-[#5a7a9a]">
-          {step.description}
-        </p>
+
+      {/* ── カード本体 ── */}
+      <div
+        className="flex h-full flex-col overflow-hidden rounded-[20px] bg-white transition-all duration-300 hover:-translate-y-[3px]"
+        style={{
+          border: `1px solid ${palette.border}`,
+          boxShadow: "0 20px 44px rgba(15,23,42,0.10), 0 4px 12px rgba(15,23,42,0.04)",
+        }}
+      >
+        {/* 上端アクセントライン */}
+        <div className="h-[6px] w-full" style={{ background: palette.topAccent }} aria-hidden />
+
+        {/* ロールバッジ */}
+        <div className="flex items-center justify-center px-3.5 pt-4">
+          <span
+            className="inline-flex items-center rounded-full px-2.5 py-1 text-[11px] font-bold tracking-wide"
+            style={{ background: palette.badgeBg, color: palette.badgeText }}
+          >
+            {step.role}
+          </span>
+        </div>
+
+        {/* 大きめアイコンエリア */}
+        <div className="flex flex-1 flex-col items-center px-4 pb-4 pt-3 text-center">
+          <span
+            className="mb-3 flex h-[68px] w-[68px] items-center justify-center rounded-2xl"
+            style={{
+              background: palette.iconBg,
+              color: palette.iconText,
+              boxShadow: "0 4px 14px rgba(0,0,0,0.07)",
+            }}
+          >
+            <Icon type={step.icon} className="h-[34px] w-[34px]" />
+          </span>
+          <h4 className="line-clamp-2 text-[14px] font-bold leading-[1.55] text-[#071b46]">
+            {step.title}
+          </h4>
+          <p className="mt-1.5 line-clamp-2 text-[11.5px] leading-[1.55] text-[#5a7a9a]">
+            {step.description}
+          </p>
+        </div>
       </div>
     </div>
   );
@@ -288,42 +324,44 @@ function StepCard({ step }: { step: ProcessStep }) {
 // 太いグラデーション矢印（背面に敷く）
 // ─────────────────────────────────────────────────────────────
 function ThickGradientArrow() {
+  const sharedClip =
+    "polygon(0 22%, calc(100% - 68px) 22%, calc(100% - 68px) 0, 100% 50%, calc(100% - 68px) 100%, calc(100% - 68px) 78%, 0 78%)";
+
   return (
-    <div
-      className="pointer-events-none absolute left-0 right-0 z-0 flex items-center"
-      style={{
-        top: "50%",
-        transform: "translateY(-50%)",
-        height: "clamp(52px, 5.5vw, 88px)",
-      }}
-      aria-hidden
-    >
-      <div className="relative h-full w-full">
-        {/* 帯本体（右端を矢印形状にclip） */}
-        <div
-          className="absolute inset-0"
-          style={{
-            background:
-              "linear-gradient(90deg, #10b981 0%, #14b8a6 22%, #06b6d4 48%, #3b82f6 74%, #1d4ed8 100%)",
-            clipPath:
-              "polygon(0% 22%, calc(100% - 64px) 22%, calc(100% - 64px) 0%, 100% 50%, calc(100% - 64px) 100%, calc(100% - 64px) 78%, 0% 78%)",
-            opacity: 0.92,
-            filter: "drop-shadow(0 12px 28px rgba(37,99,235,0.18))",
-          }}
-        />
-        {/* 上にうっすらハイライト（立体感） */}
-        <div
-          className="absolute inset-0"
-          style={{
-            background:
-              "linear-gradient(180deg, rgba(255,255,255,0.32) 0%, rgba(255,255,255,0) 50%)",
-            clipPath:
-              "polygon(0% 22%, calc(100% - 64px) 22%, calc(100% - 64px) 0%, 100% 50%, calc(100% - 64px) 100%, calc(100% - 64px) 78%, 0% 78%)",
-            pointerEvents: "none",
-          }}
-        />
-      </div>
-    </div>
+    <>
+      {/* 本体グラデーション帯 */}
+      <div
+        className="pointer-events-none absolute z-0"
+        aria-hidden
+        style={{
+          left: "clamp(260px, 19vw, 340px)",
+          right: "clamp(24px, 3vw, 72px)",
+          top: "50%",
+          height: "clamp(58px, 5vw, 88px)",
+          transform: "translateY(-50%)",
+          background:
+            "linear-gradient(90deg, #20c58e 0%, #20c5b8 42%, #2396ee 70%, #145ee8 100%)",
+          clipPath: sharedClip,
+          opacity: 0.95,
+          filter: "drop-shadow(0 10px 24px rgba(37,99,235,0.22))",
+        }}
+      />
+      {/* 上面ハイライト（立体感） */}
+      <div
+        className="pointer-events-none absolute z-0"
+        aria-hidden
+        style={{
+          left: "clamp(260px, 19vw, 340px)",
+          right: "clamp(24px, 3vw, 72px)",
+          top: "50%",
+          height: "clamp(58px, 5vw, 88px)",
+          transform: "translateY(-50%)",
+          background:
+            "linear-gradient(180deg, rgba(255,255,255,0.30) 0%, rgba(255,255,255,0) 50%)",
+          clipPath: sharedClip,
+        }}
+      />
+    </>
   );
 }
 
@@ -357,22 +395,27 @@ function Legend() {
 }
 
 // ─────────────────────────────────────────────────────────────
-// 横断ラベル（カード上のミニラベル）
+// 横断ラベル（コピー + サブコピー）
 // ─────────────────────────────────────────────────────────────
 function SpanLabel() {
   return (
-    <div className="mb-4 flex items-center justify-center gap-3 px-2">
-      <div
-        className="h-px flex-1"
-        style={{ background: "linear-gradient(to right, transparent, rgba(37,99,235,0.22))" }}
-      />
-      <span className="shrink-0 text-[12px] font-bold tracking-[0.1em] text-[#1a56db]">
-        御社の信頼・顧客接点 × NTSの専門知見で、課題発見から提案後まで支援
+    <div className="mb-5 flex flex-col items-center gap-1 px-2">
+      <div className="flex w-full items-center justify-center gap-3">
+        <div
+          className="h-px flex-1"
+          style={{ background: "linear-gradient(to right, transparent, rgba(37,99,235,0.22))" }}
+        />
+        <span className="shrink-0 text-[12px] font-bold tracking-[0.1em] text-[#1a56db]">
+          御社の信頼・顧客接点 × NTSの専門知見で、課題発見から提案後まで支援
+        </span>
+        <div
+          className="h-px flex-1"
+          style={{ background: "linear-gradient(to left, transparent, rgba(37,99,235,0.22))" }}
+        />
+      </div>
+      <span className="text-[11px] font-medium tracking-wide text-[#64748b]">
+        紹介後も、NTSが伴走します
       </span>
-      <div
-        className="h-px flex-1"
-        style={{ background: "linear-gradient(to left, transparent, rgba(37,99,235,0.22))" }}
-      />
     </div>
   );
 }
@@ -399,24 +442,25 @@ export default function PartnerJointFlowDiagram() {
           <SpanLabel />
         </motion.div>
 
-        {/* Flow canvas */}
+        {/* Flow canvas — relative 基準、矢印 + カードを重ねる */}
         <div
           className="relative"
           style={{
-            paddingTop: "clamp(20px, 2vw, 40px)",
+            /* バッジが上にはみ出る分 + 余白 */
+            paddingTop: "clamp(28px, 3vw, 48px)",
             paddingBottom: "clamp(20px, 2vw, 40px)",
           }}
         >
-          {/* 太いグラデーション矢印（背面） */}
+          {/* 太いグラデーション矢印（背面 z-0） */}
           <ThickGradientArrow />
 
-          {/* カード列（前面） */}
+          {/* カード列（前面 z-1） */}
           <div
             className="relative z-[1] grid items-stretch"
             style={{
               gridTemplateColumns:
                 "clamp(250px, 18vw, 320px) repeat(4, minmax(0, 1fr))",
-              gap: "clamp(24px, 3vw, 56px)",
+              gap: "clamp(20px, 2.5vw, 48px)",
             }}
           >
             <motion.div {...reveal(0.1)} className="self-stretch">
@@ -446,48 +490,122 @@ export default function PartnerJointFlowDiagram() {
               <br />
               課題発見から提案後まで支援
             </span>
+            <p className="mt-1 text-[10.5px] text-[#64748b]">紹介後も、NTSが伴走します</p>
           </div>
         </motion.div>
 
         <div className="relative space-y-3 px-2">
-          {/* 入口カード */}
+          {/* 入口カード（Mobile版はpadding無しのシンプル版） */}
           <motion.div {...reveal(0.08)}>
-            <EntryCard />
+            <div
+              className="flex flex-col overflow-hidden rounded-[20px] bg-white"
+              style={{
+                border: "1px solid rgba(16,185,129,0.28)",
+                boxShadow: "0 16px 36px rgba(15,23,42,0.09)",
+              }}
+            >
+              <div
+                className="h-[5px] w-full"
+                style={{ background: "linear-gradient(90deg, #10b981 0%, #34d399 100%)" }}
+                aria-hidden
+              />
+              <div
+                className="flex items-center justify-center py-2.5"
+                style={{ borderBottom: "1px solid rgba(16,185,129,0.14)" }}
+              >
+                <span className="text-[14px] font-black text-[#065f46]">御社</span>
+              </div>
+              <div className="flex flex-col gap-2 p-3">
+                {entryItems.map((item) => (
+                  <div
+                    key={item.text}
+                    className="flex items-center gap-2.5 rounded-[10px] px-3 py-2"
+                    style={{ background: "#f0fdf4", border: "1px solid rgba(16,185,129,0.15)" }}
+                  >
+                    <span
+                      className="flex h-[24px] w-[24px] shrink-0 items-center justify-center rounded-md"
+                      style={{ background: "#d1fae5", color: "#059669" }}
+                    >
+                      <Icon type={item.icon} className="h-[13px] w-[13px]" />
+                    </span>
+                    <span className="text-[12px] font-bold text-[#064e3b]">{item.text}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
           </motion.div>
 
           {/* 縦の太いグラデーションライン */}
           <div className="flex justify-center" aria-hidden>
             <div
               className="my-1 h-8 w-[6px] rounded-full"
-              style={{
-                background:
-                  "linear-gradient(180deg, #10b981 0%, #14b8a6 50%, #06b6d4 100%)",
-              }}
+              style={{ background: "linear-gradient(180deg, #10b981 0%, #14b8a6 50%, #06b6d4 100%)" }}
             />
           </div>
 
-          {processSteps.map((step, i) => (
-            <div key={step.number}>
-              <motion.div {...reveal(0.12 + i * 0.05)}>
-                <StepCard step={step} />
-              </motion.div>
-              {i < processSteps.length - 1 && (
-                <div className="flex justify-center" aria-hidden>
+          {processSteps.map((step, i) => {
+            const palette = tonePalette[step.tone];
+            return (
+              <div key={step.number}>
+                <motion.div {...reveal(0.12 + i * 0.05)}>
+                  {/* Mobile StepCard: バッジは左上に小さく配置 */}
                   <div
-                    className="my-1 h-8 w-[6px] rounded-full"
+                    className="flex flex-col overflow-hidden rounded-[20px] bg-white"
                     style={{
-                      background:
-                        i === 0
-                          ? "linear-gradient(180deg, #14b8a6, #06b6d4)"
-                          : i === 1
-                            ? "linear-gradient(180deg, #06b6d4, #3b82f6)"
-                            : "linear-gradient(180deg, #3b82f6, #1d4ed8)",
+                      border: `1px solid ${palette.border}`,
+                      boxShadow: "0 16px 36px rgba(15,23,42,0.09)",
                     }}
-                  />
-                </div>
-              )}
-            </div>
-          ))}
+                  >
+                    <div className="h-[5px] w-full" style={{ background: palette.topAccent }} aria-hidden />
+                    <div className="flex items-center gap-3 px-4 pt-3.5 pb-2">
+                      <div
+                        className="flex h-[36px] w-[36px] shrink-0 items-center justify-center rounded-full"
+                        style={{
+                          background: palette.numberBg,
+                          boxShadow: "0 3px 10px rgba(0,0,0,0.15)",
+                        }}
+                      >
+                        <span className="text-[13px] font-black text-white">{step.number}</span>
+                      </div>
+                      <span
+                        className="inline-flex items-center rounded-full px-2.5 py-1 text-[11px] font-bold"
+                        style={{ background: palette.badgeBg, color: palette.badgeText }}
+                      >
+                        {step.role}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-4 px-4 pb-4">
+                      <span
+                        className="flex h-[56px] w-[56px] shrink-0 items-center justify-center rounded-xl"
+                        style={{ background: palette.iconBg, color: palette.iconText }}
+                      >
+                        <Icon type={step.icon} className="h-[28px] w-[28px]" />
+                      </span>
+                      <div>
+                        <h4 className="text-[14px] font-bold leading-[1.5] text-[#071b46]">{step.title}</h4>
+                        <p className="mt-1 text-[11.5px] leading-[1.5] text-[#5a7a9a]">{step.description}</p>
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+                {i < processSteps.length - 1 && (
+                  <div className="flex justify-center" aria-hidden>
+                    <div
+                      className="my-1 h-8 w-[6px] rounded-full"
+                      style={{
+                        background:
+                          i === 0
+                            ? "linear-gradient(180deg, #14b8a6, #06b6d4)"
+                            : i === 1
+                              ? "linear-gradient(180deg, #06b6d4, #3b82f6)"
+                              : "linear-gradient(180deg, #3b82f6, #1d4ed8)",
+                      }}
+                    />
+                  </div>
+                )}
+              </div>
+            );
+          })}
         </div>
 
         <Legend />
