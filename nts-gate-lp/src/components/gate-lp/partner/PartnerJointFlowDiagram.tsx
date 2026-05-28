@@ -274,7 +274,7 @@ function ThickGradientArrow() {
     "polygon(0 22%, calc(100% - 92px) 22%, calc(100% - 92px) 0, 100% 50%, calc(100% - 92px) 100%, calc(100% - 92px) 78%, 0 78%)";
 
   const sharedRect = {
-    left: "clamp(270px, 17vw, 330px)",
+    left: "clamp(240px, 17vw, 290px)",
     right: "-72px",
     top: "50%",
     height: "clamp(74px, 6vw, 104px)",
@@ -381,19 +381,20 @@ export default function PartnerJointFlowDiagram() {
           <SpanLabel />
         </motion.div>
 
-        {/* Flow canvas — グリッドと矢印を同じ relative コンテナに収め中央揃え */}
+        {/* Flow canvas — 親コンテナ幅に収まるグリッド、右余白で矢印を考慮して中央揃え */}
         <div
-          className="relative mx-auto"
+          className="relative w-full"
           style={{
             paddingTop: "clamp(36px, 3.5vw, 58px)",
             paddingBottom: "clamp(24px, 2.4vw, 46px)",
-            /* 右に 72px 追加し矢印ヘッドのはみ出し分を含めて mx-auto で中央揃え */
-            paddingRight: "72px",
+            /* 矢印ヘッド分(72px)を左右のバランスとして右に余白を持たせる */
+            paddingRight: "80px",
+            paddingLeft: "8px",
             display: "grid",
+            /* entry カードは固定幅、step カードは均等分割で絶対にはみ出さない */
             gridTemplateColumns:
-              "clamp(270px, 17vw, 330px) repeat(4, clamp(220px, 14vw, 270px))",
-            gap: "clamp(26px, 2.7vw, 52px)",
-            width: "fit-content",
+              "clamp(240px, 17vw, 290px) repeat(4, minmax(0, 1fr))",
+            gap: "clamp(20px, 2.2vw, 40px)",
           }}
         >
           {/* 太いグラデーション矢印（背面 z-0, グリッドと同幅の absolute） */}
