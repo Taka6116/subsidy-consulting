@@ -28,7 +28,7 @@ type ProcessStep = {
 };
 
 const ENTRY_IMAGE = {
-  src: "/icon-assets/subsidy-lp/advisor.png",
+  src: "/images/hero-digital-platform.png",
   alt: "御社の顧客接点から課題を見つけるイメージ",
 };
 
@@ -41,7 +41,7 @@ const processSteps: ProcessStep[] = [
     title: "課題を見つける",
     description: "顧客接点から商談や現場の課題を捉える",
     tone: "partner",
-    image: "/images/hero-digital-platform.png",
+    image: "/icon-assets/subsidy-lp/advisor.png",
     imageAlt: "顧客課題を見つける相談イメージ",
     imageScale: 1.18,
   },
