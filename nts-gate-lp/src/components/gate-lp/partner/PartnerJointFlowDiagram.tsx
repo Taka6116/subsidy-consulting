@@ -376,14 +376,7 @@ export default function PartnerJointFlowDiagram() {
   return (
     <>
       {/* ═══════════════════════ PC (md以上) 横並び ═══════════════════════ */}
-      <div
-        className="relative mt-8 hidden md:block"
-        style={{
-          width: "min(1680px, calc(100vw - clamp(32px, 7vw, 120px)))",
-          marginLeft: "auto",
-          marginRight: "auto",
-        }}
-      >
+      <div className="relative mt-8 hidden w-full md:block">
         <motion.div {...reveal(0.05)}>
           <SpanLabel />
         </motion.div>
