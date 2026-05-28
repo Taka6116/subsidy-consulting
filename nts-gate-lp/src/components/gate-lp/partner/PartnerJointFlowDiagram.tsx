@@ -387,11 +387,12 @@ export default function PartnerJointFlowDiagram() {
           style={{
             paddingTop: "clamp(36px, 3.5vw, 58px)",
             paddingBottom: "clamp(24px, 2.4vw, 46px)",
+            /* 右に 72px 追加し矢印ヘッドのはみ出し分を含めて mx-auto で中央揃え */
+            paddingRight: "72px",
             display: "grid",
             gridTemplateColumns:
               "clamp(270px, 17vw, 330px) repeat(4, clamp(220px, 14vw, 270px))",
             gap: "clamp(26px, 2.7vw, 52px)",
-            /* fit-content でグリッドの実幅にコンテナが縮む → 矢印が追従 */
             width: "fit-content",
           }}
         >
