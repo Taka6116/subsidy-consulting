@@ -28,11 +28,14 @@ type ProcessStep = {
 };
 
 const ENTRY_IMAGE = {
-  src: "/images/hero-digital-platform.png",
+  src: "/icon-assets/subsidy-lp/advisor.png",
   alt: "御社の顧客接点から課題を見つけるイメージ",
 };
 
-const entryItems = ["顧客接点", "商談", "現場課題"];
+const entryItems = [
+  "顧客情報など共有",
+  "商談内容などの共有",
+];
 
 const processSteps: ProcessStep[] = [
   {
@@ -41,7 +44,7 @@ const processSteps: ProcessStep[] = [
     title: "課題を見つける",
     description: "顧客接点から商談や現場の課題を捉える",
     tone: "partner",
-    image: "/icon-assets/subsidy-lp/advisor.png",
+    image: "/icon-assets/isometric_11.webp",
     imageAlt: "顧客課題を見つける相談イメージ",
     imageScale: 1.18,
   },
@@ -63,7 +66,7 @@ const processSteps: ProcessStep[] = [
     tone: "mixed-nts",
     image: "/icon-assets/subsidy-lp/hero-consulting.png",
     imageAlt: "補助金の選択肢を提示するイメージ",
-    imageScale: 1.16,
+    imageScale: 1.044,
   },
   {
     number: "04",
@@ -86,8 +89,6 @@ const tonePalette: Record<Tone, {
   border: string;
   iconBg: string;
   iconText: string;
-  topAccent: string;
-  numberBg: string;
 }> = {
   partner: {
     badgeBg: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
@@ -95,8 +96,6 @@ const tonePalette: Record<Tone, {
     border: "rgba(16,185,129,0.25)",
     iconBg: "linear-gradient(135deg, #d1fae5 0%, #ecfdf5 100%)",
     iconText: "#059669",
-    topAccent: "linear-gradient(90deg, #10b981, #34d399)",
-    numberBg: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
   },
   "mixed-partner": {
     badgeBg: "linear-gradient(135deg, #14b8a6 0%, #0d9488 100%)",
@@ -104,8 +103,6 @@ const tonePalette: Record<Tone, {
     border: "rgba(20,184,166,0.25)",
     iconBg: "linear-gradient(135deg, #ccfbf1 0%, #f0fdfa 100%)",
     iconText: "#0d9488",
-    topAccent: "linear-gradient(90deg, #14b8a6, #06b6d4)",
-    numberBg: "linear-gradient(135deg, #14b8a6 0%, #0d9488 100%)",
   },
   "mixed-nts": {
     badgeBg: "linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%)",
@@ -113,8 +110,6 @@ const tonePalette: Record<Tone, {
     border: "rgba(14,165,233,0.28)",
     iconBg: "linear-gradient(135deg, #e0f2fe 0%, #f0f9ff 100%)",
     iconText: "#0284c7",
-    topAccent: "linear-gradient(90deg, #06b6d4, #3b82f6)",
-    numberBg: "linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%)",
   },
   nts: {
     badgeBg: "linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)",
@@ -122,8 +117,6 @@ const tonePalette: Record<Tone, {
     border: "rgba(37,99,235,0.3)",
     iconBg: "linear-gradient(135deg, #dbeafe 0%, #eff6ff 100%)",
     iconText: "#1d4ed8",
-    topAccent: "linear-gradient(90deg, #3b82f6, #1d4ed8)",
-    numberBg: "linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)",
   },
 };
 
@@ -132,7 +125,7 @@ const tonePalette: Record<Tone, {
 // ─────────────────────────────────────────────────────────────
 function EntryCard() {
   return (
-    <div className="relative h-full" style={{ paddingTop: "22px" }}>
+    <div className="relative h-full">
       <div
         className="flex min-h-[408px] h-full flex-col overflow-hidden rounded-[20px] bg-white transition-all duration-300 hover:-translate-y-[3px]"
         style={{
@@ -140,12 +133,6 @@ function EntryCard() {
           boxShadow: "0 20px 44px rgba(15,23,42,0.10), 0 4px 12px rgba(16,185,129,0.06)",
         }}
       >
-        <div
-          className="h-[6px] w-full"
-          style={{ background: "linear-gradient(90deg, #10b981 0%, #34d399 100%)" }}
-          aria-hidden
-        />
-
         <div
           className="flex items-center justify-center px-4 py-3"
           style={{
@@ -203,19 +190,7 @@ function EntryCard() {
 function StepCard({ step }: { step: ProcessStep }) {
   const palette = tonePalette[step.tone];
   return (
-    <div className="relative h-full" style={{ paddingTop: "22px" }}>
-      {/* 丸い番号バッジ（中央上端に乗る） */}
-      <div
-        className="absolute left-1/2 top-0 z-10 flex h-[44px] w-[44px] -translate-x-1/2 items-center justify-center rounded-full"
-        style={{
-          background: palette.numberBg,
-          boxShadow: "0 4px 16px rgba(0,0,0,0.18), 0 1px 4px rgba(0,0,0,0.10)",
-        }}
-        aria-hidden
-      >
-        <span className="text-[15px] font-black leading-none text-white">{step.number}</span>
-      </div>
-
+    <div className="relative h-full">
       {/* カード本体 */}
       <div
         className="flex min-h-[408px] h-full flex-col overflow-hidden rounded-[20px] bg-white transition-all duration-300 hover:-translate-y-[3px]"
@@ -224,9 +199,6 @@ function StepCard({ step }: { step: ProcessStep }) {
           boxShadow: "0 20px 44px rgba(15,23,42,0.10), 0 4px 12px rgba(15,23,42,0.04)",
         }}
       >
-        {/* 上端アクセントライン */}
-        <div className="h-[6px] w-full" style={{ background: palette.topAccent }} aria-hidden />
-
         {/* ロールバッジ */}
         <div className="flex items-center justify-center px-3.5 pt-4">
           <span
@@ -457,17 +429,7 @@ export default function PartnerJointFlowDiagram() {
                       boxShadow: "0 16px 36px rgba(15,23,42,0.09)",
                     }}
                   >
-                    <div className="h-[5px] w-full" style={{ background: palette.topAccent }} aria-hidden />
                     <div className="flex items-center gap-3 px-4 pt-3.5 pb-2">
-                      <div
-                        className="flex h-[36px] w-[36px] shrink-0 items-center justify-center rounded-full"
-                        style={{
-                          background: palette.numberBg,
-                          boxShadow: "0 3px 10px rgba(0,0,0,0.15)",
-                        }}
-                      >
-                        <span className="text-[13px] font-black text-white">{step.number}</span>
-                      </div>
                       <span
                         className="inline-flex items-center rounded-full px-2.5 py-1 text-[11px] font-bold"
                         style={{ background: palette.badgeBg, color: palette.badgeText }}
