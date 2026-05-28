@@ -21,12 +21,10 @@ export default function PartnerConsultValueSection() {
             className="font-heading text-[clamp(1.8rem,3vw,3rem)] font-bold leading-[1.45] text-[var(--text-primary,#111827)]"
           >
             <ScrollTextReveal as="span" className="block">
-              紹介して頂くだけではありません。
-              <br />
-              経営課題を、
+              紹介だけで終わりません
             </ScrollTextReveal>
             <AuroraText className="block" animated={false}>
-              一緒に特定し深掘り、伴走をします。
+              経営課題を一緒に深掘り、伴走します。
             </AuroraText>
           </h2>
 
