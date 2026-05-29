@@ -1,182 +1,221 @@
 /**
  * 補助金LP内「この補助金を詳しく知る」セクション。
- * 「活用例（CaseStudiesSection）」直後・「流れ（FlowSection）」前に配置する。
+ * 「活用例（CaseStudiesSection）」直後・「流れ（FlowSection）」前に配置。
  *
- * ─── 検索戦略（優先度順） ─────────────────────────────────
- * 1. subsidyId FK 完全一致（動的LP: /subsidies/lp/[id] 専用）
- * 2. lpSlug 静的マッピング → grant.name OR 検索（静的LP専用）
+ * カードデザインは /subsidies/articles と同一（heroImage・補助上限・公募期限・都道府県）。
+ *
+ * ─── 検索戦略（優先度順） ────────────────────────────────────
+ * 1. subsidyId FK 完全一致（動的LP: /subsidies/lp/[id]）
+ * 2. lpSlug 静的マッピング → grant.name OR 検索（静的LP）
  *    src/lib/subsidy-lp/lpArticleKeywords.ts で定義
- * 3. grantNameContains → grant.name 部分一致（任意の追加呼び出し用）
- * 4. tags hasSome キーワード（Step 2/3 で0件のフォールバック）
+ * 3. grantNameContains → grant.name 部分一致
+ * 4. tags hasSome キーワード
  * 5. title contains キーワード（最終フォールバック）
- * ─────────────────────────────────────────────────────────
+ * ─────────────────────────────────────────────────────────────
  *
- * 0件時: セクション全体を非表示（null を返す）
- * 開発確認: console.warn で検索ステップ・件数をログ出力する
+ * 0件時: セクション全体を非表示（null）
+ * 開発確認: console.warn で検索ステップ・件数をログ出力
  */
 
 import Link from "next/link";
-import { BookOpen, ArrowRight, Calendar } from "lucide-react";
+import { ArrowRight } from "lucide-react";
+import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/db/prisma";
 import { LP_ARTICLE_KEYWORDS } from "@/lib/subsidy-lp/lpArticleKeywords";
+import { pickHeroImage } from "@/lib/content/imagePool";
 
-// ─── Props ────────────────────────────────────────────────
+// ─── Props ────────────────────────────────────────────────────
 type Props =
   | { subsidyId: string; lpSlug?: never; grantNameContains?: never }
   | { subsidyId?: never; lpSlug: string; grantNameContains?: never }
   | { subsidyId?: never; lpSlug?: never; grantNameContains: string };
 
-// ─── 型定義 ───────────────────────────────────────────────
-type ArticleRow = {
+// ─── DB 取得行の型 ─────────────────────────────────────────────
+type RawRow = {
+  id: string;
   slug: string | null;
   title: string | null;
   excerpt: string | null;
   publishedAt: Date | null;
   tags: string[];
+  subsidyId: string;
+  grant: {
+    maxAmountLabel: string | null;
+    subsidyAmount: bigint | null;
+    deadlineLabel: string | null;
+    deadline: Date | null;
+    rawPayload: unknown;
+    prefecture: string | null;
+    targetIndustries: string[];
+  } | null;
 };
 
-const BASE_WHERE = {
-  contentType: "article",
-  status: "published",
-  slug: { not: null },
+// ─── 整形後の記事型 ───────────────────────────────────────────
+type ArticleItem = {
+  slug: string;
+  title: string;
+  excerpt: string;
+  heroImagePath: string;
+  tags: string[];
+  publishedAt: string;
+  maxAmountLabel: string | null;
+  deadlineLabel: string | null;
+  prefecture: string | null;
+};
+
+// ─── ユーティリティ ───────────────────────────────────────────
+const DEADLINE_MAX = new Date("2050-01-01");
+
+function resolveDeadlineLabel(
+  deadlineLabel: string | null,
+  deadline: Date | null,
+  rawPayload: unknown,
+): string | null {
+  const raw = rawPayload as Record<string, unknown> | null;
+  const fromRaw = raw?.application_end_date ? new Date(String(raw.application_end_date)) : null;
+  for (const d of [deadline, fromRaw, deadlineLabel ? new Date(deadlineLabel) : null]) {
+    if (d instanceof Date && !Number.isNaN(d.getTime()) && d < DEADLINE_MAX) {
+      return `${d.getFullYear()}年${d.getMonth() + 1}月${d.getDate()}日`;
+    }
+  }
+  return null;
+}
+
+function resolveMaxAmount(label: string | null, amountYen: bigint | null): string | null {
+  if (label) return label.startsWith("最大") ? label : `最大 ${label}`;
+  if (amountYen == null) return null;
+  const n = Number(amountYen);
+  if (!Number.isFinite(n) || n <= 0) return null;
+  const man = n / 10_000;
+  if (man >= 10_000) return `最大 ${(man / 10_000).toFixed(man / 10_000 >= 10 ? 0 : 1)}億円`;
+  return `最大 ${Math.round(man).toLocaleString("ja-JP")}万円`;
+}
+
+function formatDate(d: Date | null): string {
+  if (!d) return "";
+  return `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, "0")}.${String(d.getDate()).padStart(2, "0")}`;
+}
+
+function visibleTags(tags: string[]): string[] {
+  return tags.filter((t) => t !== "お役立ち情報").slice(0, 1);
+}
+
+function toArticleItem(row: RawRow): ArticleItem | null {
+  if (!row.slug || !row.title) return null;
+  return {
+    slug: row.slug,
+    title: row.title,
+    excerpt: row.excerpt ?? "",
+    heroImagePath: pickHeroImage({
+      subsidyId: row.subsidyId,
+      seedKey: row.id,
+      tags: row.tags,
+      targetIndustries: row.grant?.targetIndustries ?? [],
+    }),
+    tags: row.tags,
+    publishedAt: formatDate(row.publishedAt),
+    maxAmountLabel: resolveMaxAmount(row.grant?.maxAmountLabel ?? null, row.grant?.subsidyAmount ?? null),
+    deadlineLabel: resolveDeadlineLabel(
+      row.grant?.deadlineLabel ?? null,
+      row.grant?.deadline ?? null,
+      row.grant?.rawPayload ?? null,
+    ),
+    prefecture: row.grant?.prefecture ?? null,
+  };
+}
+
+// ─── DB クエリ ────────────────────────────────────────────────
+const BASE_WHERE = { contentType: "article", status: "published", slug: { not: null } } as const;
+
+const GRANT_SELECT = {
+  maxAmountLabel: true,
+  subsidyAmount: true,
+  deadlineLabel: true,
+  deadline: true,
+  rawPayload: true,
+  prefecture: true,
+  targetIndustries: true,
 } as const;
 
-const SELECT = {
+const ROW_SELECT = {
+  id: true,
   slug: true,
   title: true,
   excerpt: true,
   publishedAt: true,
   tags: true,
+  subsidyId: true,
+  grant: { select: GRANT_SELECT },
 } as const;
 
-// ─── 検索関数 ─────────────────────────────────────────────
-
-async function bySubsidyId(id: string): Promise<ArticleRow[]> {
+async function queryRows(where: Prisma.GeneratedContentWhereInput): Promise<RawRow[]> {
   return prisma.generatedContent.findMany({
-    where: { ...BASE_WHERE, subsidyId: id },
+    where,
     orderBy: { publishedAt: "desc" },
     take: 3,
-    select: SELECT,
-  });
+    select: ROW_SELECT,
+  }) as Promise<RawRow[]>;
 }
 
-/** grant.name OR 検索（join 利用）＋ tags hasSome フォールバック */
-async function byGrantNameKeywords(
-  keywords: string[],
-  fallbackTitleKeywords?: string[],
-): Promise<{ articles: ArticleRow[]; step: string }> {
-  // Step A: grant.name に対する OR 検索
-  const grantNameOR = keywords.map((kw) => ({
-    grant: { name: { contains: kw } },
-  }));
-
-  const byName = await prisma.generatedContent.findMany({
-    where: { ...BASE_WHERE, OR: grantNameOR },
-    orderBy: { publishedAt: "desc" },
-    take: 3,
-    select: SELECT,
-  });
-  if (byName.length > 0) return { articles: byName, step: "grant.name OR" };
-
-  // Step B: tags hasSome
-  const byTags = await prisma.generatedContent.findMany({
-    where: { ...BASE_WHERE, tags: { hasSome: keywords } },
-    orderBy: { publishedAt: "desc" },
-    take: 3,
-    select: SELECT,
-  });
-  if (byTags.length > 0) return { articles: byTags, step: "tags hasSome" };
-
-  // Step C: title keyword fallback
-  const titleKws = fallbackTitleKeywords ?? keywords;
-  const titleOR = titleKws.map((kw) => ({ title: { contains: kw } }));
-  const byTitle = await prisma.generatedContent.findMany({
-    where: { ...BASE_WHERE, OR: titleOR },
-    orderBy: { publishedAt: "desc" },
-    take: 3,
-    select: SELECT,
-  });
-  if (byTitle.length > 0) return { articles: byTitle, step: "title OR" };
-
-  return { articles: [], step: "no match" };
-}
-
-async function fetchArticles(props: Props): Promise<ArticleRow[]> {
-  // ─── 1. FK 直接 ──────────────────────────────────────────
+async function fetchArticles(props: Props): Promise<ArticleItem[]> {
+  // ─ 1. FK 直接 ─────────────────────────────────────────────
   if (props.subsidyId) {
-    const rows = await bySubsidyId(props.subsidyId);
-    if (rows.length > 0) return rows;
-    // FK で0件 → grant name を取得してキーワード検索にフォールバック
-    const grant = await prisma.subsidyGrant.findUnique({
-      where: { id: props.subsidyId },
-      select: { name: true },
-    });
-    const grantName = grant?.name;
-    if (!grantName) {
-      console.warn("[ArticleRelatedSection] subsidyId found no grant:", props.subsidyId);
-      return [];
-    }
-    const { articles, step } = await byGrantNameKeywords([grantName]);
-    console.warn(
-      `[ArticleRelatedSection] subsidyId FK 0件 → fallback step="${step}" count=${articles.length} grantName="${grantName}"`,
-    );
-    return articles;
+    let rows = await queryRows({ ...BASE_WHERE, subsidyId: props.subsidyId });
+    if (rows.length > 0) return rows.map(toArticleItem).filter(Boolean) as ArticleItem[];
+    const grant = await prisma.subsidyGrant.findUnique({ where: { id: props.subsidyId }, select: { name: true } });
+    if (!grant?.name) { console.warn(`[ArticleRelatedSection] subsidyId=${props.subsidyId} → grant not found`); return []; }
+    rows = await queryByKeywords([grant.name]);
+    console.warn(`[ArticleRelatedSection] subsidyId FK 0件 → keyword fallback count=${rows.length}`);
+    return rows.map(toArticleItem).filter(Boolean) as ArticleItem[];
   }
 
-  // ─── 2. lpSlug 静的マッピング ────────────────────────────
+  // ─ 2. lpSlug 静的マッピング ────────────────────────────────
   if (props.lpSlug) {
     const entry = LP_ARTICLE_KEYWORDS[props.lpSlug];
-    if (!entry) {
-      console.warn(
-        `[ArticleRelatedSection] lpSlug "${props.lpSlug}" はマッピングに未定義です。lpArticleKeywords.ts に追加してください。`,
-      );
-      return [];
-    }
-    const { articles, step } = await byGrantNameKeywords(entry.keywords, entry.fallbackTitleKeywords);
-    if (articles.length === 0) {
-      console.warn(
-        `[ArticleRelatedSection] lpSlug="${props.lpSlug}" step="${step}" → 0件。キーワードを見直してください: ${JSON.stringify(entry.keywords)}`,
-      );
-    }
-    return articles;
+    if (!entry) { console.warn(`[ArticleRelatedSection] lpSlug="${props.lpSlug}" not in mapping`); return []; }
+    const rows = await queryByKeywordsWithFallback(entry.keywords, entry.fallbackTitleKeywords);
+    if (rows.length === 0) console.warn(`[ArticleRelatedSection] lpSlug="${props.lpSlug}" → 0件 keywords=${JSON.stringify(entry.keywords)}`);
+    return rows.map(toArticleItem).filter(Boolean) as ArticleItem[];
   }
 
-  // ─── 3. grantNameContains（任意の追加用） ────────────────
+  // ─ 3. grantNameContains ───────────────────────────────────
   if (props.grantNameContains) {
-    const { articles, step } = await byGrantNameKeywords([props.grantNameContains]);
-    if (articles.length === 0) {
-      console.warn(
-        `[ArticleRelatedSection] grantNameContains="${props.grantNameContains}" step="${step}" → 0件。`,
-      );
-    }
-    return articles;
+    const rows = await queryByKeywordsWithFallback([props.grantNameContains]);
+    if (rows.length === 0) console.warn(`[ArticleRelatedSection] grantNameContains="${props.grantNameContains}" → 0件`);
+    return rows.map(toArticleItem).filter(Boolean) as ArticleItem[];
   }
 
   return [];
 }
 
-// ─── 日付フォーマット ─────────────────────────────────────
-function formatDate(d: Date | null): string | null {
-  if (!d) return null;
-  return `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, "0")}.${String(d.getDate()).padStart(2, "0")}`;
+async function queryByKeywords(keywords: string[]): Promise<RawRow[]> {
+  const OR = keywords.map((kw) => ({ grant: { name: { contains: kw } } }));
+  return queryRows({ ...BASE_WHERE, OR });
 }
 
-// ─── コンポーネント ───────────────────────────────────────
+async function queryByKeywordsWithFallback(keywords: string[], fallback?: string[]): Promise<RawRow[]> {
+  // A: grant.name OR 検索
+  const byName = await queryRows({ ...BASE_WHERE, OR: keywords.map((kw) => ({ grant: { name: { contains: kw } } })) });
+  if (byName.length > 0) return byName;
+  // B: tags hasSome
+  const byTags = await queryRows({ ...BASE_WHERE, tags: { hasSome: keywords } });
+  if (byTags.length > 0) return byTags;
+  // C: title OR 検索（フォールバック）
+  const titleKws = fallback ?? keywords;
+  return queryRows({ ...BASE_WHERE, OR: titleKws.map((kw) => ({ title: { contains: kw } })) });
+}
+
+// ─── コンポーネント ───────────────────────────────────────────
 export default async function ArticleRelatedSection(props: Props) {
   const articles = await fetchArticles(props);
-  const visible = articles.filter((a) => a.slug);
-  if (visible.length === 0) return null;
+  if (articles.length === 0) return null;
 
   return (
-    <section className="bg-[#F3F6FA] py-16 md:py-20">
+    <section className="bg-[#F3F6FA] py-14 md:py-20">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
         {/* 見出し */}
-        <div className="mb-10 text-center">
-          <span className="mb-3 inline-flex items-center gap-2 rounded-full bg-[#E8F0FE] px-4 py-1.5 text-xs font-bold tracking-widest text-[#1a4c8e]">
-            <BookOpen className="h-3.5 w-3.5" />
-            解説記事
-          </span>
-          <h2 className="mt-3 text-2xl font-bold text-[#0B173A] md:text-3xl">
+        <div className="mb-8 text-center">
+          <h2 className="text-2xl font-bold text-[#0B173A] md:text-3xl">
             この補助金を詳しく知る
           </h2>
           <p className="mt-2 text-sm text-[#4B5563]">
@@ -184,58 +223,69 @@ export default async function ArticleRelatedSection(props: Props) {
           </p>
         </div>
 
-        {/* 記事カードグリッド */}
-        <div
-          className={`grid gap-5 ${
-            visible.length === 1
-              ? "mx-auto max-w-md grid-cols-1"
-              : visible.length === 2
-                ? "mx-auto max-w-2xl grid-cols-1 sm:grid-cols-2"
-                : "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
-          }`}
-        >
-          {visible.map((article) => {
-            const primaryTag = article.tags.find((t) => t !== "お役立ち情報") ?? article.tags[0];
-            const dateStr = formatDate(article.publishedAt);
+        {/* 記事カードグリッド（/articles と同一デザイン） */}
+        <div className="grid grid-cols-1 gap-5 md:grid-cols-2 2xl:grid-cols-3">
+          {articles.map((article) => {
+            const pills = visibleTags(article.tags);
             return (
               <Link
                 key={article.slug}
                 href={`/subsidies/articles/${article.slug}`}
-                className="group flex flex-col rounded-2xl border border-[#DDE3F0] bg-white p-6 shadow-sm transition-all duration-200 hover:-translate-y-1 hover:shadow-md"
+                className="group flex flex-col overflow-hidden rounded-xl border border-neutral-200 bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-lg"
               >
-                {/* カテゴリタグ */}
-                {primaryTag && (
-                  <span className="mb-3 inline-block rounded-md bg-[#EEF2FF] px-2.5 py-1 text-[11px] font-bold text-[#3B5FC7]">
-                    {primaryTag}
-                  </span>
-                )}
+                {/* Hero 画像エリア */}
+                <div
+                  className="relative h-40 bg-cover bg-center"
+                  style={{ backgroundImage: `url(${article.heroImagePath})` }}
+                >
+                  <div className="absolute inset-0 bg-black/20" />
+                  <div className="absolute left-3 top-3 flex gap-1.5">
+                    {pills.map((t) => (
+                      <span
+                        key={t}
+                        className="rounded bg-white/90 px-2 py-0.5 text-[10px] font-semibold text-neutral-700"
+                      >
+                        {t}
+                      </span>
+                    ))}
+                    {article.deadlineLabel && (
+                      <span className="rounded px-2 py-0.5 text-[10px] font-semibold text-white shadow-sm [background:var(--nts-gradient-check)]">
+                        公募中
+                      </span>
+                    )}
+                  </div>
+                </div>
 
-                {/* タイトル */}
-                <h3 className="mb-2 line-clamp-3 flex-1 text-[15px] font-bold leading-snug text-[#0B173A] group-hover:text-[#1a4c8e]">
-                  {article.title ?? "記事タイトル"}
-                </h3>
-
-                {/* 概要 */}
-                {article.excerpt && (
-                  <p className="mb-3 line-clamp-2 text-[12.5px] leading-relaxed text-[#6B7280]">
+                {/* テキストエリア */}
+                <div className="flex flex-1 flex-col p-4">
+                  <h3 className="line-clamp-2 text-[15px] font-bold leading-snug text-neutral-900 group-hover:text-primary-700">
+                    {article.title}
+                  </h3>
+                  <p className="mt-2 line-clamp-2 text-xs leading-relaxed text-neutral-500">
                     {article.excerpt}
                   </p>
-                )}
 
-                {/* 公開日 + CTA */}
-                <div className="mt-auto flex items-center justify-between pt-2">
-                  {dateStr ? (
-                    <span className="inline-flex items-center gap-1 text-[11px] text-[#9CA3AF]">
-                      <Calendar className="h-3 w-3" />
-                      {dateStr}
-                    </span>
-                  ) : (
-                    <span />
-                  )}
-                  <span className="inline-flex items-center gap-1 text-xs font-bold text-[#1a4c8e] transition-all group-hover:gap-2">
-                    記事を読む
-                    <ArrowRight className="h-3.5 w-3.5" />
-                  </span>
+                  {/* 補助上限 / 公募期限 */}
+                  <div className="mt-3 grid grid-cols-2 gap-2 text-[11px]">
+                    <div className="rounded bg-neutral-50 px-2 py-1.5">
+                      <p className="text-neutral-400">補助上限</p>
+                      <p className="line-clamp-1 font-semibold text-neutral-700">
+                        {article.maxAmountLabel ?? "要確認"}
+                      </p>
+                    </div>
+                    <div className="rounded bg-neutral-50 px-2 py-1.5">
+                      <p className="text-neutral-400">公募期限</p>
+                      <p className="line-clamp-1 font-semibold text-neutral-700">
+                        {article.deadlineLabel ?? "要確認"}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* 公開日 / 都道府県 */}
+                  <div className="mt-3 flex items-center justify-between text-[11px] text-neutral-400">
+                    <span>{article.publishedAt || "-"}</span>
+                    <span className="text-primary-700">{article.prefecture ?? "全国"}</span>
+                  </div>
                 </div>
               </Link>
             );
