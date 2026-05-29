@@ -6,6 +6,7 @@ import CheckerSection from "@/components/subsidy-lp/CheckerSection";
 import TargetIndustriesSection from "@/components/subsidy-lp/TargetIndustriesSection";
 import BeforeAfterSection from "@/components/subsidy-lp/BeforeAfterSection";
 import CaseStudiesSection from "@/components/subsidy-lp/CaseStudiesSection";
+import ArticleRelatedSection from "@/components/subsidy-lp/ArticleRelatedSection";
 import FlowSection from "@/components/subsidy-lp/FlowSection";
 import FinalCtaSection from "@/components/subsidy-lp/FinalCtaSection";
 import ContactSection from "@/components/subsidy-lp/ContactSection";
@@ -27,6 +28,7 @@ export default function LogisticsSupportLP() {
         <TargetIndustriesSection data={data} />
         <BeforeAfterSection data={data} />
         <CaseStudiesSection data={data} />
+        <ArticleRelatedSection grantNameContains="物流" />
         <FlowSection data={data} />
         <FinalCtaSection />
         <ContactSection source="logistics-support" grantName="物流・運送効率化補助金" />

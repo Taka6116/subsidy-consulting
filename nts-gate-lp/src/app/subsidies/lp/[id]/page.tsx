@@ -16,6 +16,7 @@ import CheckerSection from "@/components/subsidy-lp/CheckerSection";
 import TargetIndustriesSection from "@/components/subsidy-lp/TargetIndustriesSection";
 import BeforeAfterSection from "@/components/subsidy-lp/BeforeAfterSection";
 import CaseStudiesSection from "@/components/subsidy-lp/CaseStudiesSection";
+import ArticleRelatedSection from "@/components/subsidy-lp/ArticleRelatedSection";
 import FlowSection from "@/components/subsidy-lp/FlowSection";
 import FinalCtaSection from "@/components/subsidy-lp/FinalCtaSection";
 import ContactSection from "@/components/subsidy-lp/ContactSection";
@@ -109,6 +110,7 @@ export default async function SubsidyLpPage({ params }: Props) {
         <TargetIndustriesSection data={data} />
         <BeforeAfterSection data={data} />
         <CaseStudiesSection data={data} />
+        <ArticleRelatedSection subsidyId={id} />
         <FlowSection data={data} />
         <FinalCtaSection />
         <ContactSection source={`lp-${id}`} grantName={grant.name ?? undefined} />
