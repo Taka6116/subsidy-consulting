@@ -122,9 +122,9 @@ export default function CheckerSection({
           <a
             href="#contact"
             className={[
-              "inline-flex w-full flex-shrink-0 items-center justify-center rounded-xl px-7 py-3.5 text-sm font-bold text-white transition-colors md:w-auto",
+              "inline-flex w-full flex-shrink-0 items-center justify-center rounded-xl px-7 py-3.5 text-sm font-bold text-white transition-all md:w-auto",
               isEligible && checkedCount > 0
-                ? "bg-[#FEA00D] hover:bg-[#e8900a]"
+                ? "bg-gradient-to-r from-[#FFBE00] via-[#FEA00D] to-[#FF7A00] shadow-[0_4px_16px_rgba(254,160,13,0.40)] hover:brightness-110 hover:shadow-[0_6px_22px_rgba(254,160,13,0.50)]"
                 : "bg-[#0B173A] hover:bg-[#162340]",
             ].join(" ")}
           >

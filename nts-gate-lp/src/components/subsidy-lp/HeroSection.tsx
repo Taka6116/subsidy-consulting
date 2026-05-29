@@ -117,7 +117,7 @@ export default function HeroSection({
         <div className="mb-12 flex flex-wrap items-center gap-4">
           <Link
             href="#checker"
-            className="inline-flex items-center rounded-lg bg-[#FEA00D] px-7 py-3.5 text-sm font-bold text-white shadow-lg transition hover:bg-[#e8900a]"
+            className="inline-flex items-center rounded-lg bg-gradient-to-r from-[#FFBE00] via-[#FEA00D] to-[#FF7A00] px-7 py-3.5 text-sm font-bold text-white shadow-[0_4px_16px_rgba(254,160,13,0.45)] transition-all hover:brightness-110 hover:shadow-[0_6px_22px_rgba(254,160,13,0.55)]"
           >
             無料で対象診断してみる →
           </Link>

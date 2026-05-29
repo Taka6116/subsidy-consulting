@@ -168,7 +168,7 @@ export default function ContactSection({ source, grantName }: Props) {
                   <button
                     type="submit"
                     disabled={status === "sending"}
-                    className="flex w-full items-center justify-center gap-2 rounded-lg bg-[#FEA00D] px-6 py-4 text-sm font-bold text-white transition hover:bg-[#e8900a] disabled:opacity-60"
+                    className="flex w-full items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-[#FFBE00] via-[#FEA00D] to-[#FF7A00] px-6 py-4 text-sm font-bold text-white shadow-[0_4px_16px_rgba(254,160,13,0.40)] transition-all hover:brightness-110 hover:shadow-[0_6px_22px_rgba(254,160,13,0.50)] disabled:opacity-60"
                   >
                     {status === "sending" ? (
                       <>

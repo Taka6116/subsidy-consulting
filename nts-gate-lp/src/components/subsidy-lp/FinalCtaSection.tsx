@@ -46,7 +46,7 @@ export default function FinalCtaSection() {
             <a
               href="#contact"
               id="cta-main"
-              className="inline-flex w-64 items-center justify-center rounded-lg bg-[#FEA00D] px-8 py-4 text-base font-bold text-white transition-colors hover:bg-[#e8900a]"
+              className="inline-flex w-64 items-center justify-center rounded-lg bg-gradient-to-r from-[#FFBE00] via-[#FEA00D] to-[#FF7A00] px-8 py-4 text-base font-bold text-white shadow-[0_4px_16px_rgba(254,160,13,0.40)] transition-all hover:brightness-110 hover:shadow-[0_6px_22px_rgba(254,160,13,0.50)]"
             >
               無料相談を予約する →
             </a>

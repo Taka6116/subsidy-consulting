@@ -119,7 +119,7 @@ export default function TargetIndustriesSection({
           </div>
           <a
             href="#contact"
-            className="inline-flex flex-shrink-0 items-center whitespace-nowrap rounded-lg bg-[#FEA00D] px-6 py-3 text-sm font-bold text-white transition-colors hover:bg-[#e8900a]"
+            className="inline-flex flex-shrink-0 items-center whitespace-nowrap rounded-lg bg-gradient-to-r from-[#FFBE00] via-[#FEA00D] to-[#FF7A00] px-6 py-3 text-sm font-bold text-white shadow-[0_4px_14px_rgba(254,160,13,0.38)] transition-all hover:brightness-110 hover:shadow-[0_6px_20px_rgba(254,160,13,0.48)]"
           >
             今すぐ無料で相談する →
           </a>

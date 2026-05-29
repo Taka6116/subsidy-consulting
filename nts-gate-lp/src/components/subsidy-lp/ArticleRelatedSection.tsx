@@ -246,7 +246,7 @@ export default async function ArticleRelatedSection(props: Props) {
         <div className="mt-10 text-center">
           <Link
             href="/subsidies/articles"
-            className="inline-flex items-center gap-2 rounded-full border-2 border-[#0B173A] bg-white px-7 py-3 text-sm font-bold text-[#0B173A] transition-all hover:bg-[#0B173A] hover:text-white"
+            className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-[#FFBE00] via-[#FEA00D] to-[#FF7A00] px-7 py-3 text-sm font-bold text-white shadow-[0_4px_14px_rgba(254,160,13,0.35)] transition-all hover:brightness-110 hover:shadow-[0_6px_20px_rgba(254,160,13,0.45)]"
           >
             すべての解説記事を見る
             <ArrowRight className="h-4 w-4" />
