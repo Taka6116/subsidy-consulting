@@ -11,26 +11,56 @@ const LABEL_CLASSES = "block text-sm font-bold text-[var(--text-primary)]";
 
 export default function ConsultForm() {
   const [sent, setSent] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
-  function handleSubmit(e: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    setSent(true);
+    setErrorMsg(null);
+    setSubmitting(true);
+
+    const form = e.currentTarget;
+    const data = {
+      name: (form.elements.namedItem("name") as HTMLInputElement).value,
+      email: (form.elements.namedItem("email") as HTMLInputElement).value,
+      company: (form.elements.namedItem("company") as HTMLInputElement).value || undefined,
+      message: (form.elements.namedItem("message") as HTMLTextAreaElement).value,
+      source: "consult",
+    };
+
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+      const json = await res.json();
+      if (!res.ok) {
+        setErrorMsg(json.error ?? "送信に失敗しました。しばらく後でお試しください。");
+        return;
+      }
+      setSent(true);
+    } catch {
+      setErrorMsg("通信エラーが発生しました。しばらく後でお試しください。");
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   if (sent) {
     return (
       <div className="rounded-2xl border border-[var(--border-subtle)] bg-white p-6 shadow-[var(--shadow-card)] sm:p-8">
         <p className="font-heading text-lg font-bold text-[var(--text-primary)]">
-          お問い合わせ内容を受け付けました
+          お問い合わせを受け付けました
         </p>
         <p className="mt-3 text-sm leading-relaxed text-[var(--text-secondary)]">
-          内容は保存されました（デモ表示）。本番ではメール送信やCRM連携などに接続できます。
+          ご入力いただいた内容を確認のうえ、担当者より通常1〜2営業日以内にご連絡いたします。
         </p>
         <Link
-          href="/check"
+          href="/subsidies"
           className="mt-6 inline-flex items-center justify-center rounded-full border-2 border-[var(--accent-navy)] bg-white px-6 py-3 text-sm font-bold text-[var(--accent-navy)] transition hover:bg-[var(--accent-navy)] hover:text-white"
         >
-          補助金照会に戻る
+          補助金活用ページへ戻る
         </Link>
       </div>
     );
@@ -102,12 +132,18 @@ export default function ConsultForm() {
           className={`${INPUT_CLASSES} resize-y`}
         />
       </div>
+      {errorMsg && (
+        <p role="alert" className="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700">
+          {errorMsg}
+        </p>
+      )}
       <div className="flex justify-center">
         <button
           type="submit"
-          className="min-w-[220px] rounded-full bg-gradient-to-r from-[#1a56db] via-[#1368d8] to-[#0e4fb5] px-8 py-4 text-base font-bold text-white shadow-[0_4px_16px_rgba(26,86,219,0.35)] transition-all hover:brightness-110 hover:shadow-[0_6px_22px_rgba(26,86,219,0.45)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1a56db]"
+          disabled={submitting}
+          className="min-w-[220px] rounded-full bg-gradient-to-r from-[#1a56db] via-[#1368d8] to-[#0e4fb5] px-8 py-4 text-base font-bold text-white shadow-[0_4px_16px_rgba(26,86,219,0.35)] transition-all hover:brightness-110 hover:shadow-[0_6px_22px_rgba(26,86,219,0.45)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1a56db] disabled:opacity-60 disabled:cursor-not-allowed"
         >
-          補助金活用について相談する
+          {submitting ? "送信中…" : "補助金活用について相談する"}
         </button>
       </div>
     </form>
