@@ -1,9 +1,12 @@
 /**
  * 補助金LP内に挿入する「この補助金の解説記事」セクション。
  *
- * - subsidyId が渡された場合は直接 DB 検索（動的LP用）
- * - grantNameContains が渡された場合は補助金名で grant を引いてから記事を取得（静的LP用）
- * - 記事が0件の場合はセクション全体を非表示（null を返す）
+ * 検索ロジック（2段階）:
+ * 1. subsidyId の FK 完全一致（動的LP）または補助金名で grant を引いて FK 検索（静的LP）
+ * 2. 1 で0件の場合、キーワードで記事タイトルを検索（フォールバック）
+ *    → DB に FK リンクがなくても、タイトルに補助金名が含まれる記事を表示できる
+ *
+ * - 最終的に0件の場合はセクション全体を非表示（null を返す）
  */
 
 import Link from "next/link";
@@ -20,32 +23,60 @@ type ArticleRow = {
   excerpt: string | null;
 };
 
+const ARTICLE_SELECT = { slug: true, title: true, excerpt: true } as const;
+const ARTICLE_WHERE_BASE = {
+  contentType: "article",
+  status: "published",
+  slug: { not: null },
+} as const;
+
 async function fetchArticles(props: Props): Promise<ArticleRow[]> {
   let resolvedSubsidyId: string | null = null;
+  let fallbackKeyword: string | null = null;
 
   if (props.subsidyId) {
     resolvedSubsidyId = props.subsidyId;
+    // フォールバック用に補助金名を取得
+    const grant = await prisma.subsidyGrant.findUnique({
+      where: { id: props.subsidyId },
+      select: { name: true },
+    });
+    fallbackKeyword = grant?.name ?? null;
   } else if (props.grantNameContains) {
     const grant = await prisma.subsidyGrant.findFirst({
       where: { name: { contains: props.grantNameContains } },
       select: { id: true },
     });
     resolvedSubsidyId = grant?.id ?? null;
+    fallbackKeyword = props.grantNameContains;
   }
 
-  if (!resolvedSubsidyId) return [];
+  // ─── 1st try: subsidyId FK 完全一致 ───────────────────────
+  if (resolvedSubsidyId) {
+    const articles = await prisma.generatedContent.findMany({
+      where: { ...ARTICLE_WHERE_BASE, subsidyId: resolvedSubsidyId },
+      orderBy: { publishedAt: "desc" },
+      take: 3,
+      select: ARTICLE_SELECT,
+    });
+    if (articles.length > 0) return articles;
+  }
 
-  return prisma.generatedContent.findMany({
-    where: {
-      subsidyId: resolvedSubsidyId,
-      contentType: "article",
-      status: "published",
-      slug: { not: null },
-    },
-    orderBy: { publishedAt: "desc" },
-    take: 3,
-    select: { slug: true, title: true, excerpt: true },
-  });
+  // ─── 2nd try: 記事タイトルのキーワード一致（フォールバック） ──
+  if (fallbackKeyword) {
+    const articles = await prisma.generatedContent.findMany({
+      where: {
+        ...ARTICLE_WHERE_BASE,
+        title: { contains: fallbackKeyword },
+      },
+      orderBy: { publishedAt: "desc" },
+      take: 3,
+      select: ARTICLE_SELECT,
+    });
+    if (articles.length > 0) return articles;
+  }
+
+  return [];
 }
 
 export default async function ArticleRelatedSection(props: Props) {
