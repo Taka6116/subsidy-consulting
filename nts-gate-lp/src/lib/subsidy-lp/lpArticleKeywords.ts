@@ -19,35 +19,35 @@ export type LpArticleKeywordEntry = {
 
 export const LP_ARTICLE_KEYWORDS: Record<string, LpArticleKeywordEntry> = {
   "monodukuri-business": {
-    keywords: ["ものづくり", "ものづくり補助金"],
-    fallbackTitleKeywords: ["ものづくり補助金", "ものづくり"],
+    keywords: ["ものづくり", "ものづくり補助金", "生産性向上", "設備投資", "製造業"],
+    fallbackTitleKeywords: ["ものづくり", "ものづくり補助金", "生産性向上", "製造業"],
   },
   "dx-support": {
-    keywords: ["デジタル技術導入", "DX支援", "IT導入"],
-    fallbackTitleKeywords: ["DX", "デジタル", "IT導入"],
+    keywords: ["DX", "デジタル化", "IT導入", "デジタル技術導入", "業務効率化"],
+    fallbackTitleKeywords: ["DX", "デジタル化", "IT導入", "デジタル技術", "業務効率化"],
   },
   "construction-electrification": {
-    keywords: ["電動化促進", "建設機械", "高用車", "商用車"],
-    fallbackTitleKeywords: ["電動化", "建設機械補助金"],
+    keywords: ["電動化", "建設機械", "GX", "省エネ", "脱炭素"],
+    fallbackTitleKeywords: ["電動化", "建設機械", "GX補助金", "省エネ", "脱炭素"],
   },
   "wage-support": {
-    keywords: ["賃上げ", "最低賃金", "賃金引上げ"],
-    fallbackTitleKeywords: ["賃上げ補助金", "賃上げ"],
+    keywords: ["賃上げ", "人手不足", "職場環境", "省力化", "人材確保"],
+    fallbackTitleKeywords: ["賃上げ", "人手不足", "職場環境整備", "省力化", "人材確保"],
   },
   "equipment-investment": {
-    keywords: ["設備投資", "省力化", "老朽設備"],
-    fallbackTitleKeywords: ["設備投資補助金", "省力化"],
+    keywords: ["設備投資", "設備更新", "生産性向上", "省力化"],
+    fallbackTitleKeywords: ["設備投資", "設備更新", "生産性向上", "省力化"],
   },
   "equipment-productivity": {
     keywords: ["設備投資", "生産性向上", "設備更新"],
-    fallbackTitleKeywords: ["生産性向上補助金", "設備投資", "生産性向上"],
+    fallbackTitleKeywords: ["設備投資", "生産性向上", "設備更新"],
   },
   "human-resources": {
-    keywords: ["人材確保", "人手不足", "雇用", "人材育成"],
-    fallbackTitleKeywords: ["人材補助金", "人手不足", "人材確保"],
+    keywords: ["人材", "人手不足", "賃上げ", "採用", "定着", "職場環境"],
+    fallbackTitleKeywords: ["人材", "人手不足", "賃上げ", "採用支援", "定着", "職場環境"],
   },
   "logistics-support": {
-    keywords: ["物流", "運送", "輸送"],
-    fallbackTitleKeywords: ["物流補助金", "物流効率化"],
+    keywords: ["物流", "配送", "倉庫", "2024年問題", "省力化"],
+    fallbackTitleKeywords: ["物流", "配送", "倉庫", "2024年問題", "省力化"],
   },
 };
