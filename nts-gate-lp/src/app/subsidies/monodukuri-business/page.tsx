@@ -28,7 +28,7 @@ export default function MonodukuriBusinessLP() {
         <TargetIndustriesSection data={data} />
         <BeforeAfterSection data={data} />
         <CaseStudiesSection data={data} />
-        <ArticleRelatedSection grantNameContains="ものづくり・商業・サービス生産性向上促進補助金" />
+        <ArticleRelatedSection lpSlug="monodukuri-business" />
         <FlowSection data={data} />
         <FinalCtaSection />
         <ContactSection source="monodukuri-business" grantName="ものづくり・商業・サービス生産性向上促進補助金" />

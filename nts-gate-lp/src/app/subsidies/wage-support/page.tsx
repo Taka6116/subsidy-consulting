@@ -28,7 +28,7 @@ export default function WageSupportLP() {
         <TargetIndustriesSection data={data} />
         <BeforeAfterSection data={data} />
         <CaseStudiesSection data={data} />
-        <ArticleRelatedSection grantNameContains="賃上げ環境整備支援補助金" />
+        <ArticleRelatedSection lpSlug="wage-support" />
         <FlowSection data={data} />
         <FinalCtaSection />
         <ContactSection source="wage-support" grantName="中小・小規模事業者賃上げ環境整備支援補助金" />

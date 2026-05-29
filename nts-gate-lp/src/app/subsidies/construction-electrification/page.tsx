@@ -28,7 +28,7 @@ export default function ConstructionElectrificationLP() {
         <TargetIndustriesSection data={data} />
         <BeforeAfterSection data={data} />
         <CaseStudiesSection data={data} />
-        <ArticleRelatedSection grantNameContains="電動化促進事業（建設機械）" />
+        <ArticleRelatedSection lpSlug="construction-electrification" />
         <FlowSection data={data} />
         <FinalCtaSection />
         <ContactSection source="construction-electrification" grantName={data.category} />

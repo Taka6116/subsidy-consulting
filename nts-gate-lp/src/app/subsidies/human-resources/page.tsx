@@ -28,7 +28,7 @@ export default function HumanResourcesLP() {
         <TargetIndustriesSection data={data} />
         <BeforeAfterSection data={data} />
         <CaseStudiesSection data={data} />
-        <ArticleRelatedSection grantNameContains="賃上げ環境整備支援補助金" />
+        <ArticleRelatedSection lpSlug="human-resources" />
         <FlowSection data={data} />
         <FinalCtaSection />
         <ContactSection source="human-resources" grantName="中小・小規模事業者賃上げ環境整備支援補助金" />

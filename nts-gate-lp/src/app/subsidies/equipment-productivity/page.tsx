@@ -28,7 +28,7 @@ export default function EquipmentProductivityLP() {
         <TargetIndustriesSection data={data} />
         <BeforeAfterSection data={data} />
         <CaseStudiesSection data={data} />
-        <ArticleRelatedSection grantNameContains="設備投資・生産性向上促進補助金" />
+        <ArticleRelatedSection lpSlug="equipment-productivity" />
         <FlowSection data={data} />
         <FinalCtaSection />
         <ContactSection source="equipment-productivity" grantName="中小企業設備投資・生産性向上促進補助金" />

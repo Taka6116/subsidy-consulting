@@ -28,7 +28,7 @@ export default function DxSupportLP() {
         <TargetIndustriesSection data={data} />
         <BeforeAfterSection data={data} />
         <CaseStudiesSection data={data} />
-        <ArticleRelatedSection grantNameContains="デジタル技術導入" />
+        <ArticleRelatedSection lpSlug="dx-support" />
         <FlowSection data={data} />
         <FinalCtaSection />
         <ContactSection source="dx-support" grantName="中小・小規模企業デジタル技術導入支援" />

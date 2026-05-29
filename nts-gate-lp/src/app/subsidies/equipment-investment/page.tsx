@@ -28,7 +28,7 @@ export default function EquipmentInvestmentLP() {
         <TargetIndustriesSection data={data} />
         <BeforeAfterSection data={data} />
         <CaseStudiesSection data={data} />
-        <ArticleRelatedSection grantNameContains="設備投資・生産性向上" />
+        <ArticleRelatedSection lpSlug="equipment-investment" />
         <FlowSection data={data} />
         <FinalCtaSection />
         <ContactSection source="equipment-investment" grantName={data.headline + data.headlineAccent} />

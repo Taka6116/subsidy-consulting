@@ -28,7 +28,7 @@ export default function LogisticsSupportLP() {
         <TargetIndustriesSection data={data} />
         <BeforeAfterSection data={data} />
         <CaseStudiesSection data={data} />
-        <ArticleRelatedSection grantNameContains="物流" />
+        <ArticleRelatedSection lpSlug="logistics-support" />
         <FlowSection data={data} />
         <FinalCtaSection />
         <ContactSection source="logistics-support" grantName="物流・運送効率化補助金" />
