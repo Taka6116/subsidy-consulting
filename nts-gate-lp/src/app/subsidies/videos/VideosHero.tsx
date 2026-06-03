@@ -39,7 +39,7 @@ function MonitorFrame() {
           <span className="h-2.5 w-2.5 rounded-full bg-[#febc2e]" />
           <span className="h-2.5 w-2.5 rounded-full bg-[#28c840]" />
           <div className="mx-3 flex-1 rounded-md bg-[#0d1830] px-3 py-1 text-center text-[10px] text-white/40">
-            NTS Video Library
+            subsidy-consulting-nts.vercel.app/subsidies/videos
           </div>
           <span className="rounded bg-[#0d1830] px-2 py-0.5 text-[10px] text-white/50">Auto playing 1:04</span>
         </div>
@@ -53,8 +53,7 @@ function MonitorFrame() {
               {/* 動画タイトル */}
               <div className="px-0.5">
                 <p className="text-[10px] font-bold text-white/90 leading-snug sm:text-xs">
-                  資格取得サポート助成金<br />
-                  最大100万円の活用ポイント
+                  資格取得サポート助成金
                 </p>
                 <div className="mt-1 flex items-center gap-1.5 text-[9px] text-white/50">
                   <span className="rounded bg-white/10 px-1.5 py-0.5">専門家による制度解説</span>
@@ -73,17 +72,14 @@ function MonitorFrame() {
               </p>
               {/* 補助上限 */}
               <div className="mb-2 flex flex-col gap-0.5">
-                <span className="text-[9px] text-white/40">補助上限</span>
-                <span className="text-[11px] font-bold text-[#60a5fa]">最大100万円</span>
+                <span className="text-[11px] font-bold text-[#60a5fa]">補助上限</span>
               </div>
               {/* 申請期限 */}
               <div className="mb-3 flex flex-col gap-0.5">
-                <span className="text-[9px] text-white/40">申請期限</span>
-                <span className="text-[11px] font-bold text-white/90">公募中</span>
+                <span className="text-[11px] font-bold text-white/90">申請期限</span>
               </div>
               {/* チェックリスト */}
               {[
-                "建設・運輸分野の中小企業",
                 "資格取得費用の助成内容",
                 "申請前に確認する注意点",
               ].map((item) => (
