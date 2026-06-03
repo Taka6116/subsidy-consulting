@@ -193,13 +193,14 @@ export default function VideosHero() {
             {/* CTA */}
             <div className="mt-8 flex flex-wrap gap-3">
               <Link
-                href="#video-list"
+                href="/consult"
                 className="inline-flex h-[52px] items-center justify-center gap-2 rounded-xl px-6 text-sm font-black text-white shadow-[0_20px_42px_rgba(7,91,216,.30)] transition hover:-translate-y-0.5 hover:brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#075BD8] [background:var(--nts-gradient-primary)] sm:text-base"
               >
-                <svg viewBox="0 0 16 16" fill="currentColor" className="h-4 w-4">
-                  <path d="M8 0C3.58 0 0 3.58 0 8s3.58 8 8 8 8-3.58 8-8-3.58-8-8-8zm-1 11.5V4.5l5 3.5-5 3.5z" />
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4">
+                  <path d="M8 2H5a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V8l-6-6z"/>
+                  <polyline points="14 2 14 8 20 8"/>
                 </svg>
-                注目動画を見る
+                無料相談予約する
               </Link>
               <Link
                 href="/consult"
