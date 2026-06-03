@@ -1,339 +1,282 @@
 "use client";
 
+import type { StaticImageData } from "next/image";
 import Image from "next/image";
 import { motion, useReducedMotion } from "framer-motion";
+import isometricMeet from "../../../../icon-assets/isometric_04.png";
+import isometricWin from "../../../../icon-assets/isometric_07.png";
+import isometricSupport from "../../../../icon-assets/isometric_06.png";
 
 const EASE_OUT = [0.22, 1, 0.36, 1] as const;
 const fadeUp = (delay: number) => ({
-  initial: { opacity: 0, y: 18 },
+  initial: { opacity: 0, y: 22 },
   whileInView: { opacity: 1, y: 0 },
-  viewport: { once: true, amount: 0.1 },
-  transition: { duration: 0.55, ease: EASE_OUT, delay },
+  viewport: { once: true, amount: 0.15 },
+  transition: { duration: 0.6, ease: EASE_OUT, delay },
 });
 
 // ─────────────────────────────────────────────────────────────
-// データ定義
+// Tone palette（御社中心=グリーン → 協働 → NTS中心=ブルー）
 // ─────────────────────────────────────────────────────────────
-type Tone = "partner" | "mixed-partner" | "mixed-nts" | "nts";
+type Tone = "start" | "win" | "support";
 
-type ProcessStep = {
+const tonePalette: Record<
+  Tone,
+  {
+    badgeBg: string;
+    badgeText: string;
+    border: string;
+    titleColor: string;
+    chipBg: string;
+    chipBorder: string;
+    chipText: string;
+    dot: string;
+    glow: string;
+  }
+> = {
+  start: {
+    badgeBg: "linear-gradient(135deg, #10b981 0%, #0d9488 100%)",
+    badgeText: "#ffffff",
+    border: "rgba(16,185,129,0.26)",
+    titleColor: "#0f766e",
+    chipBg: "linear-gradient(135deg, #ecfdf5 0%, #ffffff 100%)",
+    chipBorder: "rgba(16,185,129,0.22)",
+    chipText: "#065f46",
+    dot: "linear-gradient(135deg, #10b981, #34d399)",
+    glow: "rgba(16,185,129,0.10)",
+  },
+  win: {
+    badgeBg: "linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%)",
+    badgeText: "#ffffff",
+    border: "rgba(14,165,233,0.30)",
+    titleColor: "#0369a1",
+    chipBg: "linear-gradient(135deg, #e0f2fe 0%, #ffffff 100%)",
+    chipBorder: "rgba(14,165,233,0.22)",
+    chipText: "#075985",
+    dot: "linear-gradient(135deg, #38bdf8, #0ea5e9)",
+    glow: "rgba(14,165,233,0.12)",
+  },
+  support: {
+    badgeBg: "linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)",
+    badgeText: "#ffffff",
+    border: "rgba(37,99,235,0.30)",
+    titleColor: "#1d4ed8",
+    chipBg: "linear-gradient(135deg, #dbeafe 0%, #ffffff 100%)",
+    chipBorder: "rgba(37,99,235,0.22)",
+    chipText: "#1e3a8a",
+    dot: "linear-gradient(135deg, #3b82f6, #1d4ed8)",
+    glow: "rgba(37,99,235,0.12)",
+  },
+};
+
+// ─────────────────────────────────────────────────────────────
+// データ定義（大きな3ステップ）
+// ─────────────────────────────────────────────────────────────
+type Step = {
   number: string;
+  label: string;
   role: string;
+  tone: Tone;
   title: string;
   description: string;
-  tone: Tone;
-  image: string;
+  items?: string[];
+  image: StaticImageData;
   imageAlt: string;
   imageScale?: number;
 };
 
-const ENTRY_IMAGE = {
-  src: "/icon-assets/subsidy-lp/advisor.png",
-  alt: "御社の顧客接点から課題を見つけるイメージ",
-};
-
-const entryItems = [
-  "顧客情報など共有",
-  "商談内容などの共有",
-];
-
-const processSteps: ProcessStep[] = [
+const STEPS: Step[] = [
   {
     number: "01",
-    role: "御社",
-    title: "課題を見つける",
-    description: "顧客接点から商談や現場の課題を捉える",
-    tone: "partner",
-    image: "/icon-assets/isometric_11.webp",
-    imageAlt: "顧客課題を見つける相談イメージ",
-    imageScale: 1.18,
+    label: "つながる",
+    role: "御社 × NTS",
+    tone: "start",
+    title: "提携・面談",
+    description:
+      "秘密保持契約（NDA）を結び、最適な提携先をご紹介。面談で課題を共有します。",
+    items: ["提携先契約の登録（NDA）", "提携先のご紹介", "紹介者との面談"],
+    image: isometricMeet,
+    imageAlt: "NDAを結び提携先と面談するイメージ",
+    imageScale: 1.04,
   },
   {
     number: "02",
-    role: "御社 × NTS",
-    title: "一緒に課題を深掘る",
-    description: "対話を通じて本質的な課題を整理する",
-    tone: "mixed-partner",
-    image: "/icon-assets/subsidy-lp/meeting-wide.png",
-    imageAlt: "御社とNTSが一緒に課題を深掘る会議イメージ",
-    imageScale: 1.18,
+    label: "獲得する",
+    role: "NTS主導",
+    tone: "win",
+    title: "補助金を獲得",
+    description:
+      "御社に最適な制度を選定し、申請から採択・獲得まで一貫して支援します。",
+    image: isometricWin,
+    imageAlt: "補助金を獲得して喜ぶイメージ",
+    imageScale: 1.08,
   },
   {
     number: "03",
-    role: "NTS主導",
-    title: "補助金の選択肢を提示する",
-    description: "活用可能性を整理し、提案の幅を広げる",
-    tone: "mixed-nts",
-    image: "/icon-assets/subsidy-lp/hero-consulting.png",
-    imageAlt: "補助金の選択肢を提示するイメージ",
-    imageScale: 1.044,
-  },
-  {
-    number: "04",
-    role: "NTS",
-    title: "成約後も伴走する",
-    description: "導入後の次の一手まで支援する",
-    tone: "nts",
-    image: "/icon-assets/subsidy-lp/handshake.png",
-    imageAlt: "成約後も伴走するイメージ",
-    imageScale: 1.18,
+    label: "伴走する",
+    role: "御社 × NTS",
+    tone: "support",
+    title: "長年の伴走支援",
+    description:
+      "獲得して終わりではなく、次の経営課題まで見据えて中長期で伴走し続けます。",
+    image: isometricSupport,
+    imageAlt: "獲得後も中長期で伴走支援するイメージ",
+    imageScale: 1.04,
   },
 ];
 
 // ─────────────────────────────────────────────────────────────
-// Tone palette
+// 吹き出しラベル
 // ─────────────────────────────────────────────────────────────
-const tonePalette: Record<Tone, {
-  badgeBg: string;
-  badgeText: string;
-  border: string;
-  iconBg: string;
-  iconText: string;
-}> = {
-  partner: {
-    badgeBg: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
-    badgeText: "#ffffff",
-    border: "rgba(16,185,129,0.25)",
-    iconBg: "linear-gradient(135deg, #d1fae5 0%, #ecfdf5 100%)",
-    iconText: "#059669",
-  },
-  "mixed-partner": {
-    badgeBg: "linear-gradient(135deg, #14b8a6 0%, #0d9488 100%)",
-    badgeText: "#ffffff",
-    border: "rgba(20,184,166,0.25)",
-    iconBg: "linear-gradient(135deg, #ccfbf1 0%, #f0fdfa 100%)",
-    iconText: "#0d9488",
-  },
-  "mixed-nts": {
-    badgeBg: "linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%)",
-    badgeText: "#ffffff",
-    border: "rgba(14,165,233,0.28)",
-    iconBg: "linear-gradient(135deg, #e0f2fe 0%, #f0f9ff 100%)",
-    iconText: "#0284c7",
-  },
-  nts: {
-    badgeBg: "linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)",
-    badgeText: "#ffffff",
-    border: "rgba(37,99,235,0.3)",
-    iconBg: "linear-gradient(135deg, #dbeafe 0%, #eff6ff 100%)",
-    iconText: "#1d4ed8",
-  },
+const BUBBLE_TIP_COLOR: Record<Tone, string> = {
+  start: "#0d9488",
+  win: "#0284c7",
+  support: "#1d4ed8",
 };
 
-// ─────────────────────────────────────────────────────────────
-// 入口カード（御社）
-// ─────────────────────────────────────────────────────────────
-function EntryCard() {
+function BubbleLabel({ tone, text }: { tone: Tone; text: string }) {
+  const palette = tonePalette[tone];
   return (
-    <div className="relative h-full">
-      <div
-        className="flex min-h-[408px] h-full flex-col overflow-hidden rounded-[20px] bg-white transition-all duration-300 hover:-translate-y-[3px]"
-        style={{
-          border: "1px solid rgba(16,185,129,0.26)",
-          boxShadow: "0 20px 44px rgba(15,23,42,0.10), 0 4px 12px rgba(16,185,129,0.06)",
-        }}
+    <div className="relative inline-flex">
+      <span
+        className="inline-flex items-center rounded-full px-4 py-1.5 text-[13px] font-black tracking-[0.04em]"
+        style={{ background: palette.badgeBg, color: palette.badgeText }}
       >
-        <div
-          className="flex items-center justify-center px-4 py-3"
-          style={{
-            background: "linear-gradient(180deg, rgba(236,253,245,0.95) 0%, rgba(240,253,250,0.7) 100%)",
-            borderBottom: "1px solid rgba(16,185,129,0.14)",
-          }}
-        >
-          <span className="text-[15px] font-black tracking-[0.12em] text-[#065f46]">
-            御社
-          </span>
-        </div>
-
-        <div className="flex items-center justify-center px-4 pt-5">
-          <div className="relative h-[162px] w-full max-w-[230px] overflow-visible">
-            <Image
-              src={ENTRY_IMAGE.src}
-              alt={ENTRY_IMAGE.alt}
-              fill
-              sizes="230px"
-              className="object-contain drop-shadow-[0_16px_24px_rgba(15,23,42,0.12)]"
-              style={{ transform: "scale(1.08)" }}
-            />
-          </div>
-        </div>
-
-        <div className="mt-auto flex flex-col gap-2 px-4 pb-4">
-          {entryItems.map((item) => (
-            <div
-              key={item}
-              className="flex items-center gap-3 rounded-[10px] px-3 py-2.5"
-              style={{
-                background: "linear-gradient(135deg, #ecfdf5 0%, #ffffff 100%)",
-                border: "1px solid rgba(16,185,129,0.18)",
-              }}
-            >
-              <span
-                className="h-[10px] w-[10px] shrink-0 rounded-full"
-                style={{ background: "linear-gradient(135deg, #10b981, #34d399)" }}
-                aria-hidden
-              />
-              <span className="text-[13px] font-bold leading-tight text-[#064e3b]">
-                {item}
-              </span>
-            </div>
-          ))}
-        </div>
-      </div>
+        {text}
+      </span>
+      {/* 吹き出しの三角 */}
+      <span
+        aria-hidden
+        className="absolute left-1/2 top-full h-0 w-0 -translate-x-1/2"
+        style={{
+          borderLeft: "6px solid transparent",
+          borderRight: "6px solid transparent",
+          borderTop: `7px solid ${BUBBLE_TIP_COLOR[tone]}`,
+        }}
+      />
     </div>
   );
 }
 
 // ─────────────────────────────────────────────────────────────
-// ステップカード（番号バッジがカード上端に乗る）
+// ステップカード
 // ─────────────────────────────────────────────────────────────
-function StepCard({ step }: { step: ProcessStep }) {
+function StepCard({ step }: { step: Step }) {
   const palette = tonePalette[step.tone];
   return (
     <div className="relative h-full">
-      {/* カード本体 */}
+      {/* 番号バッジ（カード上端に乗る） */}
+      <div className="absolute left-1/2 top-0 z-[3] -translate-x-1/2 -translate-y-1/2">
+        <span
+          className="flex h-12 w-12 items-center justify-center rounded-full text-[17px] font-black text-white shadow-[0_8px_18px_rgba(15,23,42,0.18)]"
+          style={{ background: palette.badgeBg }}
+        >
+          {step.number}
+        </span>
+      </div>
+
       <div
-        className="flex min-h-[408px] h-full flex-col overflow-hidden rounded-[20px] bg-white transition-all duration-300 hover:-translate-y-[3px]"
+        className="flex h-full flex-col overflow-hidden rounded-[22px] bg-white px-5 pb-6 pt-9 transition-all duration-300 hover:-translate-y-[3px]"
         style={{
           border: `1px solid ${palette.border}`,
-          boxShadow: "0 20px 44px rgba(15,23,42,0.10), 0 4px 12px rgba(15,23,42,0.04)",
+          boxShadow: `0 22px 48px rgba(15,23,42,0.10), 0 4px 12px ${palette.glow}`,
         }}
       >
-        {/* ロールバッジ */}
-        <div className="flex items-center justify-center px-3.5 pt-4">
+        {/* 吹き出しラベル + ロール */}
+        <div className="flex flex-col items-center gap-3 pb-2">
+          <BubbleLabel tone={step.tone} text={step.label} />
           <span
-            className="inline-flex items-center rounded-full px-2.5 py-1 text-[11px] font-bold tracking-wide"
-            style={{ background: palette.badgeBg, color: palette.badgeText }}
+            className="inline-flex items-center rounded-full px-2.5 py-0.5 text-[11px] font-bold tracking-wide"
+            style={{
+              background: palette.chipBg,
+              border: `1px solid ${palette.chipBorder}`,
+              color: palette.chipText,
+            }}
           >
             {step.role}
           </span>
         </div>
 
-        {/* 画像 + テキストエリア */}
-        <div className="flex flex-1 flex-col items-center px-4 pb-5 pt-4 text-center">
-          <div className="relative mb-3 h-[180px] w-full overflow-visible">
+        {/* 画像 */}
+        <div className="flex items-center justify-center px-2 pt-2">
+          <div className="relative h-[150px] w-full max-w-[230px] overflow-visible">
             <Image
               src={step.image}
               alt={step.imageAlt}
               fill
-              sizes="260px"
+              sizes="230px"
               className="object-contain drop-shadow-[0_16px_24px_rgba(15,23,42,0.12)]"
               style={{ transform: `scale(${step.imageScale ?? 1})` }}
             />
           </div>
-
-          <h4
-            className="line-clamp-2 text-[15px] font-black leading-[1.55]"
-            style={{ color: palette.iconText }}
-          >
-            {step.title}
-          </h4>
-
-          <p className="mt-2 line-clamp-2 text-[12px] leading-[1.65] text-[#4f6f8f]">
-            {step.description}
-          </p>
         </div>
+
+        {/* タイトル */}
+        <h4
+          className="mt-4 text-center text-[18px] font-black leading-[1.5]"
+          style={{ color: palette.titleColor }}
+        >
+          {step.title}
+        </h4>
+
+        {/* サブ項目（STEP 01 のみ） */}
+        {step.items && (
+          <div className="mt-3 flex flex-col gap-2">
+            {step.items.map((item, i) => (
+              <div key={item}>
+                <div
+                  className="flex items-center justify-center rounded-[10px] px-3 py-2"
+                  style={{
+                    background: palette.chipBg,
+                    border: `1px solid ${palette.chipBorder}`,
+                  }}
+                >
+                  <span className="text-center text-[12.5px] font-bold leading-tight" style={{ color: palette.chipText }}>
+                    {item}
+                  </span>
+                </div>
+                {i < step.items!.length - 1 && (
+                  <div className="flex justify-center py-0.5" aria-hidden>
+                    <span className="text-[15px] font-black leading-none" style={{ color: palette.titleColor }}>
+                      ＋
+                    </span>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* 説明 */}
+        <p className="mt-4 text-center text-[13px] leading-[1.8] text-[#4f6f8f]">
+          {step.description}
+        </p>
       </div>
     </div>
   );
 }
 
 // ─────────────────────────────────────────────────────────────
-// 太いグラデーション矢印（背面に敷く）
+// ステップ間の矢印（PC: 横向き）
 // ─────────────────────────────────────────────────────────────
-function ThickGradientArrow() {
-  const sharedClip =
-    "polygon(0 22%, calc(100% - 92px) 22%, calc(100% - 92px) 0, 100% 50%, calc(100% - 92px) 100%, calc(100% - 92px) 78%, 0 78%)";
-
-  const sharedRect = {
-    left: "clamp(240px, 17vw, 290px)",
-    right: "-72px",
-    top: "50%",
-    height: "clamp(74px, 6vw, 104px)",
-    transform: "translateY(-50%)",
-  } as const;
-
+function ArrowDivider() {
   return (
-    <>
-      {/* 本体グラデーション帯 */}
-      <div
-        className="pointer-events-none absolute z-0"
-        aria-hidden
-        style={{
-          ...sharedRect,
-          background:
-            "linear-gradient(90deg, #20c58e 0%, #1fc5b7 38%, #248fe8 70%, #135be8 100%)",
-          clipPath: sharedClip,
-          opacity: 0.96,
-          filter: "drop-shadow(0 16px 30px rgba(37,99,235,0.24))",
-        }}
-      />
-      {/* 上面ハイライト（立体感） */}
-      <div
-        className="pointer-events-none absolute z-0"
-        aria-hidden
-        style={{
-          ...sharedRect,
-          background:
-            "linear-gradient(180deg, rgba(255,255,255,0.30) 0%, rgba(255,255,255,0) 50%)",
-          clipPath: sharedClip,
-        }}
-      />
-    </>
-  );
-}
-
-// ─────────────────────────────────────────────────────────────
-// レジェンド（凡例）
-// ─────────────────────────────────────────────────────────────
-function Legend() {
-  return (
-    <div className="mt-8 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-[11.5px]">
-      <span className="flex items-center gap-2">
-        <span
-          className="inline-block h-2.5 w-8 rounded-full"
-          style={{ background: "linear-gradient(90deg, #10b981, #34d399)" }}
+    <div className="flex items-center justify-center" aria-hidden>
+      <svg width="34" height="34" viewBox="0 0 34 34" fill="none">
+        <path
+          d="M6 17h18M18 9l9 8-9 8"
+          stroke="url(#flowArrow)"
+          strokeWidth="3"
+          strokeLinecap="round"
+          strokeLinejoin="round"
         />
-        <span className="font-semibold text-[#065f46]">御社の関与が中心</span>
-      </span>
-      <span className="flex items-center gap-2 text-[#94a3b8]">
-        <svg width="14" height="10" viewBox="0 0 14 10" fill="none" aria-hidden>
-          <path d="M1 5h11M9 1l4 4-4 4" stroke="#94a3b8" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
-      </span>
-      <span className="flex items-center gap-2">
-        <span
-          className="inline-block h-2.5 w-8 rounded-full"
-          style={{ background: "linear-gradient(90deg, #3b82f6, #1d4ed8)" }}
-        />
-        <span className="font-semibold text-[#1e3a8a]">NTSの関与が中心</span>
-      </span>
-    </div>
-  );
-}
-
-// ─────────────────────────────────────────────────────────────
-// 横断ラベル（コピー + サブコピー）
-// ─────────────────────────────────────────────────────────────
-function SpanLabel() {
-  return (
-    <div className="mb-5 flex flex-col items-center gap-1 px-2">
-      <div className="flex w-full items-center justify-center gap-3">
-        <div
-          className="h-px flex-1"
-          style={{ background: "linear-gradient(to right, transparent, rgba(37,99,235,0.22))" }}
-        />
-        <span className="shrink-0 text-[12px] font-bold tracking-[0.1em] text-[#1a56db]">
-          御社の信頼・顧客接点 × NTSの専門知見で、課題発見から提案後まで支援
-        </span>
-        <div
-          className="h-px flex-1"
-          style={{ background: "linear-gradient(to left, transparent, rgba(37,99,235,0.22))" }}
-        />
-      </div>
-      <span className="text-[11px] font-medium tracking-wide text-[#64748b]">
-        紹介後も、NTSが伴走します
-      </span>
+        <defs>
+          <linearGradient id="flowArrow" x1="6" y1="17" x2="28" y2="17" gradientUnits="userSpaceOnUse">
+            <stop stopColor="#14b8a6" />
+            <stop offset="1" stopColor="#2563eb" />
+          </linearGradient>
+        </defs>
+      </svg>
     </div>
   );
 }
@@ -348,134 +291,61 @@ export default function PartnerJointFlowDiagram() {
   return (
     <>
       {/* ═══════════════════════ PC (md以上) 横並び ═══════════════════════ */}
-      <div className="relative mt-8 hidden w-full md:block">
-        <motion.div {...reveal(0.05)}>
-          <SpanLabel />
-        </motion.div>
-
-        {/* Flow canvas — 親コンテナ幅に収まるグリッド、右余白で矢印を考慮して中央揃え */}
+      <div className="relative mt-10 hidden md:block">
         <div
-          className="relative w-full"
+          className="items-stretch"
           style={{
-            paddingTop: "clamp(36px, 3.5vw, 58px)",
-            paddingBottom: "clamp(24px, 2.4vw, 46px)",
-            /* 矢印ヘッド分(72px)を左右のバランスとして右に余白を持たせる */
-            paddingRight: "80px",
-            paddingLeft: "8px",
             display: "grid",
-            /* entry カードは固定幅、step カードは均等分割で絶対にはみ出さない */
-            gridTemplateColumns:
-              "clamp(240px, 17vw, 290px) repeat(4, minmax(0, 1fr))",
-            gap: "clamp(20px, 2.2vw, 40px)",
+            gridTemplateColumns: "1fr auto 1fr auto 1fr",
+            gap: "clamp(8px, 1vw, 18px)",
+            alignItems: "stretch",
           }}
         >
-          {/* 太いグラデーション矢印（背面 z-0, グリッドと同幅の absolute） */}
-          <ThickGradientArrow />
-
-          {/* カード列（前面 z-1） */}
-          <motion.div {...reveal(0.08)} className="relative z-[1] self-stretch">
-            <EntryCard />
-          </motion.div>
-
-          {processSteps.map((step, i) => (
-            <motion.div
-              key={step.number}
-              {...reveal(0.14 + i * 0.07)}
-              className="relative z-[1] self-stretch"
-            >
-              <StepCard step={step} />
-            </motion.div>
+          {STEPS.map((step, i) => (
+            <div key={step.number} className="contents">
+              <motion.div {...reveal(0.08 + i * 0.12)} className="relative self-stretch pt-6">
+                <StepCard step={step} />
+              </motion.div>
+              {i < STEPS.length - 1 && (
+                <motion.div {...reveal(0.16 + i * 0.12)} className="self-center pt-6">
+                  <ArrowDivider />
+                </motion.div>
+              )}
+            </div>
           ))}
         </div>
-
-        <Legend />
       </div>
 
       {/* ═══════════════════════ Mobile (md未満) 縦積み ═══════════════════════ */}
-      <div className="mt-6 md:hidden">
-        <motion.div {...reveal(0.05)}>
-          <div className="mb-4 px-2 text-center">
-            <span className="text-[11.5px] font-bold tracking-[0.08em] text-[#1a56db]">
-              御社の信頼・顧客接点 × NTSの専門知見で、
-              <br />
-              課題発見から提案後まで支援
-            </span>
-            <p className="mt-1 text-[10.5px] text-[#64748b]">紹介後も、NTSが伴走します</p>
-          </div>
-        </motion.div>
-
-        <div className="relative space-y-3 px-2">
-          {/* 入口カード（Mobile） */}
-          <motion.div {...reveal(0.08)}>
-            <EntryCard />
-          </motion.div>
-
-          <div className="flex justify-center" aria-hidden>
-            <div
-              className="my-2 h-8 w-[6px] rounded-full"
-              style={{ background: "linear-gradient(180deg, #10b981 0%, #14b8a6 100%)" }}
-            />
-          </div>
-
-          {processSteps.map((step, i) => {
-            const palette = tonePalette[step.tone];
-            return (
-              <div key={step.number}>
-                <motion.div {...reveal(0.12 + i * 0.05)}>
-                  <div
-                    className="flex flex-col overflow-hidden rounded-[20px] bg-white"
-                    style={{
-                      border: `1px solid ${palette.border}`,
-                      boxShadow: "0 16px 36px rgba(15,23,42,0.09)",
-                    }}
-                  >
-                    <div className="flex items-center gap-3 px-4 pt-3.5 pb-2">
-                      <span
-                        className="inline-flex items-center rounded-full px-2.5 py-1 text-[11px] font-bold"
-                        style={{ background: palette.badgeBg, color: palette.badgeText }}
-                      >
-                        {step.role}
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-4 px-4 pb-4">
-                      <div className="relative h-[96px] w-[112px] shrink-0 overflow-visible">
-                        <Image
-                          src={step.image}
-                          alt={step.imageAlt}
-                          fill
-                          sizes="112px"
-                          className="object-contain drop-shadow-[0_10px_18px_rgba(15,23,42,0.10)]"
-                          style={{ transform: `scale(${step.imageScale ?? 1})` }}
-                        />
-                      </div>
-                      <div>
-                        <h4 className="text-[14px] font-bold leading-[1.5] text-[#071b46]">{step.title}</h4>
-                        <p className="mt-1 text-[11.5px] leading-[1.5] text-[#5a7a9a]">{step.description}</p>
-                      </div>
-                    </div>
-                  </div>
-                </motion.div>
-                {i < processSteps.length - 1 && (
-                  <div className="flex justify-center" aria-hidden>
-                    <div
-                      className="my-1 h-8 w-[6px] rounded-full"
-                      style={{
-                        background:
-                          i === 0
-                            ? "linear-gradient(180deg, #14b8a6, #06b6d4)"
-                            : i === 1
-                              ? "linear-gradient(180deg, #06b6d4, #3b82f6)"
-                              : "linear-gradient(180deg, #3b82f6, #1d4ed8)",
-                      }}
+      <div className="mt-8 md:hidden">
+        <div className="relative space-y-2 px-1">
+          {STEPS.map((step, i) => (
+            <div key={step.number}>
+              <motion.div {...reveal(0.08 + i * 0.08)} className="pt-6">
+                <StepCard step={step} />
+              </motion.div>
+              {i < STEPS.length - 1 && (
+                <div className="flex justify-center pt-2" aria-hidden>
+                  <svg width="26" height="30" viewBox="0 0 26 30" fill="none">
+                    <path
+                      d="M13 4v18M5 14l8 8 8-8"
+                      stroke="url(#flowArrowV)"
+                      strokeWidth="3"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
                     />
-                  </div>
-                )}
-              </div>
-            );
-          })}
+                    <defs>
+                      <linearGradient id="flowArrowV" x1="13" y1="4" x2="13" y2="22" gradientUnits="userSpaceOnUse">
+                        <stop stopColor="#14b8a6" />
+                        <stop offset="1" stopColor="#2563eb" />
+                      </linearGradient>
+                    </defs>
+                  </svg>
+                </div>
+              )}
+            </div>
+          ))}
         </div>
-
-        <Legend />
       </div>
     </>
   );
