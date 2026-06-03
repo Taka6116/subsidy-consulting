@@ -3,47 +3,21 @@
 import Link from "next/link";
 
 // ────────────────────────────────────────────────────────────
-// PCモニター内のフェイク動画プレイヤー
+// PCモニター内の動画プレイヤー（HeyGen 生成動画）
 // ────────────────────────────────────────────────────────────
+const HERO_VIDEO_URL =
+  "https://files2.heygen.ai/aws_pacific/avatar_tmp/d3fd9697697e4c37a6ac077b210511e5/a2e5a50ed8144740b3ac0060ffb74abe.mp4?Expires=1780891017&Signature=btj5YyoJm35S7BGvpfLIct~Xebv04T79fC9KL1KqZwBD8~DTzO121buS72A-hLdL3rZUe93buVhX-Irm~v39e3wm7g6FpYr9Y7yyzSI7Pwz~R30XSoi~sCNXP8dJAAXzOf5J~gkMQsIRuzPU29B57raF2q63Qg-x1h1oLquCA2dTd4R62R-FhtWG0yo2kjo-j0fXuaKQxWlYfzEdHiTGScHlPbEvnAAvbWa9eCC8I6TlvNYSPgDMq5GgTUHGiDcxxgkDqJYIGPvFEg0LUlpNOaxTtM7AyAtonQE1VSjWf8QJyjytsck2OAFKiryi6e6-R8-SHWLOEYu24vhaOtewIA__&Key-Pair-Id=K38HBHX5LX3X2H";
+
 function VideoPlayer() {
   return (
-    <div
-      className="relative overflow-hidden rounded-lg"
-      style={{ background: "linear-gradient(135deg,#0b2a6a 0%,#0e3a8a 60%,#0a2557 100%)" }}
-    >
-      {/* 字幕風テキスト */}
-      <div className="absolute bottom-10 left-0 right-0 flex justify-center px-4">
-        <p className="rounded bg-black/70 px-3 py-1 text-center text-[11px] leading-snug text-white/90 sm:text-xs">
-          海外で特許・商標を守りたい企業向けに、対象・金額・申請前の注意点を整理します。
-        </p>
-      </div>
-
-      {/* 進捗バー */}
-      <div className="absolute bottom-0 left-0 right-0 h-1 bg-white/20">
-        <div className="h-full w-[38%] bg-[#60a5fa]" />
-      </div>
-
-      {/* 再生中ラベル + 時間 */}
-      <div className="absolute left-3 top-3 flex items-center gap-1.5">
-        <span className="flex h-5 items-center gap-1 rounded bg-red-600/90 px-2 text-[10px] font-bold uppercase text-white">
-          <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-white" />
-          再生中
-        </span>
-        <span className="text-[10px] text-white/70">1:04 / 2:44</span>
-      </div>
-
-      {/* 中央 再生ボタン（半透明）*/}
-      <div className="flex aspect-video items-center justify-center">
-        <button
-          type="button"
-          aria-label="動画を再生する"
-          className="flex h-14 w-14 items-center justify-center rounded-full bg-white/20 ring-2 ring-white/40 backdrop-blur-sm transition hover:bg-white/30 sm:h-16 sm:w-16"
-        >
-          <svg viewBox="0 0 24 24" fill="white" className="ml-1 h-6 w-6 sm:h-7 sm:w-7">
-            <path d="M8 5v14l11-7z" />
-          </svg>
-        </button>
-      </div>
+    <div className="relative overflow-hidden rounded-lg bg-black">
+      <video
+        src={HERO_VIDEO_URL}
+        controls
+        playsInline
+        className="aspect-video w-full rounded-lg object-cover"
+        poster=""
+      />
     </div>
   );
 }
@@ -79,8 +53,8 @@ function MonitorFrame() {
               {/* 動画タイトル */}
               <div className="px-0.5">
                 <p className="text-[10px] font-bold text-white/90 leading-snug sm:text-xs">
-                  海外出願支援補助金<br />
-                  最大300万円の活用ポイント
+                  資格取得サポート助成金<br />
+                  最大100万円の活用ポイント
                 </p>
                 <div className="mt-1 flex items-center gap-1.5 text-[9px] text-white/50">
                   <span className="rounded bg-white/10 px-1.5 py-0.5">専門家による制度解説</span>
@@ -100,17 +74,17 @@ function MonitorFrame() {
               {/* 補助上限 */}
               <div className="mb-2 flex flex-col gap-0.5">
                 <span className="text-[9px] text-white/40">補助上限</span>
-                <span className="text-[11px] font-bold text-[#60a5fa]">最大300万円</span>
+                <span className="text-[11px] font-bold text-[#60a5fa]">最大100万円</span>
               </div>
               {/* 申請期限 */}
               <div className="mb-3 flex flex-col gap-0.5">
                 <span className="text-[9px] text-white/40">申請期限</span>
-                <span className="text-[11px] font-bold text-white/90">2026/5/29</span>
+                <span className="text-[11px] font-bold text-white/90">公募中</span>
               </div>
               {/* チェックリスト */}
               {[
-                "対象になりやすい企業",
-                "特許・商標出願の活用例",
+                "建設・運輸分野の中小企業",
+                "資格取得費用の助成内容",
                 "申請前に確認する注意点",
               ].map((item) => (
                 <div key={item} className="mb-1.5 flex items-start gap-1.5">
