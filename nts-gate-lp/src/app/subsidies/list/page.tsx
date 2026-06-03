@@ -3,6 +3,7 @@ import Header from "@/components/shared/Header";
 import LpFooter from "@/components/gate-lp/LpFooter";
 import SubsidiesListClient from "./SubsidiesListClient";
 import { prisma } from "@/lib/db/prisma";
+import { LISTED_GRANT_WHERE } from "@/lib/subsidies/portalStats";
 
 export const revalidate = 3600;
 
@@ -11,19 +12,10 @@ export const metadata: Metadata = {
   description: "補助金制度の一覧・検索をご案内します。公募要領での最終確認をお願いします。",
 };
 
-// 実在する個別補助金データのみを対象とする
-// chusho / maff / meti はニュース記事・カテゴリページで補助金個別情報ではないため除外
-// manual にはプレースホルダーが含まれるため除外
-const TRUSTED_SOURCES = ["jgrants", "municipality"];
-
 export default async function SubsidiesListPage() {
   const [raw, lpGrantIds] = await Promise.all([
     prisma.subsidyGrant.findMany({
-      where: {
-        status: "open",
-        source: { in: TRUSTED_SOURCES },
-        name: { not: null },
-      },
+      where: LISTED_GRANT_WHERE,
       select: {
         id: true,
         name: true,

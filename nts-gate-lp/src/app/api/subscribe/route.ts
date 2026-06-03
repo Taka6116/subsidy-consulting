@@ -1,8 +1,7 @@
-// ========== [NEW 2026-04-30] メール購読 Route Handler ==========
-// TODO: 将来的に SES 経由でウェルカムメールを送信する
-
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db/prisma";
+import { createUnsubscribeToken } from "@/lib/email/newsletter/subscribers";
+import { sendWelcomeEmail } from "@/lib/email/newsletter/sendWelcomeEmail";
 
 export async function POST(req: NextRequest) {
   try {
@@ -18,7 +17,6 @@ export async function POST(req: NextRequest) {
       source = typeof body.source === "string" ? body.source : null;
       subsidyId = typeof body.subsidyId === "string" ? body.subsidyId : null;
     } else {
-      // form の POST（application/x-www-form-urlencoded）
       const form = await req.formData();
       const raw = form.get("email");
       email = typeof raw === "string" ? raw.trim().toLowerCase() : null;
@@ -32,22 +30,35 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "メールアドレスが無効です。" }, { status: 400 });
     }
 
-    // upsert: 同一メールは重複登録しない
+    const existing = await prisma.subscriber.findUnique({
+      where: { email },
+      select: { id: true, unsubscribeToken: true },
+    });
+
+    const unsubscribeToken = existing?.unsubscribeToken ?? createUnsubscribeToken();
+
     await prisma.subscriber.upsert({
       where: { email },
       update: {
-        // 既存レコードの unsubscribedAt をクリア（再登録扱い）
         unsubscribedAt: null,
         source: source ?? undefined,
+        subsidyId: subsidyId ?? undefined,
       },
       create: {
         email,
         source: source ?? undefined,
         subsidyId: subsidyId ?? undefined,
+        unsubscribeToken,
       },
     });
 
-    // フォームからのリクエストはリダイレクト
+    if (!existing) {
+      sendWelcomeEmail({ email, unsubscribeToken }).catch((err) => {
+        const message = err instanceof Error ? err.message : String(err);
+        console.error(`[subscribe] welcome email failed: ${message}`);
+      });
+    }
+
     if (!contentType.includes("application/json")) {
       const referer = req.headers.get("referer") ?? "/";
       return NextResponse.redirect(new URL(`${referer}?subscribed=1`, req.url), 303);
@@ -56,6 +67,9 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ ok: true });
   } catch (err) {
     console.error("[subscribe] error:", err);
-    return NextResponse.json({ error: "登録に失敗しました。しばらく後でお試しください。" }, { status: 500 });
+    return NextResponse.json(
+      { error: "登録に失敗しました。しばらく後でお試しください。" },
+      { status: 500 },
+    );
   }
 }

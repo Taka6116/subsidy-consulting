@@ -202,6 +202,16 @@ export async function runContentJob(
       `${LOG_PREFIX} done subsidyId=${subsidyId} contentId=${saved.id} slug=${uniqueSlug} status=${effectiveStatus} violations=${violations.length}`,
     );
 
+    if (effectiveStatus === "published") {
+      const { sendArticleNotification } = await import(
+        "@/lib/email/newsletter/sendArticleNotification"
+      );
+      void sendArticleNotification(saved.id).catch((err) => {
+        const message = err instanceof Error ? err.message : String(err);
+        console.error(`${LOG_PREFIX} newsletter send failed contentId=${saved.id}: ${message}`);
+      });
+    }
+
     return {
       contentId: saved.id,
       slug: uniqueSlug,

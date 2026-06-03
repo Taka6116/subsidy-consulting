@@ -8,7 +8,7 @@
  * - 将来の CRM 連携はこの関数の実装を差し替えるだけでよい
  */
 
-import { SESClient, SendEmailCommand } from "@aws-sdk/client-ses";
+import { sendEmail } from "@/lib/email/sendEmail";
 
 export type ContactPayload = {
   name: string;
@@ -20,18 +20,18 @@ export type ContactPayload = {
 
 /** DB 保存後に呼び出す通知処理。CRM への差し替えはこの関数のみ変更する */
 export async function notifyContact(payload: ContactPayload): Promise<void> {
-  const to = process.env.CONTACT_NOTIFY_TO;
-  const from = process.env.CONTACT_NOTIFY_FROM;
+  const to = process.env.CONTACT_NOTIFY_TO?.trim();
+  const from =
+    process.env.CONTACT_NOTIFY_FROM?.trim() ||
+    process.env.NEWSLETTER_FROM?.trim();
 
   if (!to) {
     if (process.env.NODE_ENV === "production") {
-      // 本番で未設定の場合は検知可能なエラーとする
       throw new Error(
         "[notifyContact] CONTACT_NOTIFY_TO is not configured. " +
           "Set this environment variable before accepting live inquiries.",
       );
     }
-    // 開発環境ではスキップ（ログは PII を含まない）
     console.warn("[notifyContact] CONTACT_NOTIFY_TO is not set. Skipping notification (dev mode).");
     return;
   }
@@ -47,27 +47,18 @@ export async function notifyContact(payload: ContactPayload): Promise<void> {
     return;
   }
 
-  const region = process.env.AWS_REGION ?? "ap-northeast-1";
-  const ses = new SESClient({ region });
-
   const subject = `[NTS] 無料相談フォーム 新着問い合わせ`;
   const body = buildEmailBody(payload);
 
   try {
-    await ses.send(
-      new SendEmailCommand({
-        Source: from,
-        Destination: { ToAddresses: [to] },
-        Message: {
-          Subject: { Data: subject, Charset: "UTF-8" },
-          Body: { Text: { Data: body, Charset: "UTF-8" } },
-        },
-      }),
-    );
-    // 送信成功ログ: 個人情報は含めない
-    console.info("[notifyContact] Notification sent successfully.");
+    await sendEmail({
+      to,
+      from,
+      subject,
+      text: body,
+      context: "notifyContact",
+    });
   } catch (err) {
-    // 送信失敗: スタックトレースのみ記録（メール本文・個人情報はログに出さない）
     const message = err instanceof Error ? err.message : String(err);
     throw new Error(`[notifyContact] SES send failed: ${message}`);
   }

@@ -111,8 +111,9 @@ model GeneratedContent {
   thumbnailPath   String?   @map("thumbnail_path")
   duration        Int?
   status          String    @default("draft")
-  publishedAt     DateTime? @map("published_at")
-  createdAt       DateTime  @default(now()) @map("created_at")
+  publishedAt      DateTime? @map("published_at")
+  newsletterSentAt DateTime? @map("newsletter_sent_at")
+  createdAt        DateTime  @default(now()) @map("created_at")
 
   grant SubsidyGrant @relation(fields: [subsidyId], references: [id], onDelete: Cascade)
 
@@ -176,10 +177,12 @@ model Subscriber {
   email          String    @unique
   source         String?   @db.VarChar(100) // "article-cta" / "lp-subscribe" / "exit-intent" など
   subsidyId      String?   @map("subsidy_id") @db.VarChar(100) // 紐づく補助金ID（任意）
-  createdAt      DateTime  @default(now()) @map("created_at")
-  unsubscribedAt DateTime? @map("unsubscribed_at")
+  unsubscribeToken String    @unique @map("unsubscribe_token") @db.Uuid
+  createdAt        DateTime  @default(now()) @map("created_at")
+  unsubscribedAt   DateTime? @map("unsubscribed_at")
 
   @@index([email])
+  @@index([unsubscribedAt])
   @@map("subscribers")
 }
 

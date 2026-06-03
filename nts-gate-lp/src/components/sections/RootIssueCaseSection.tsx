@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import {
   ArrowRight,
+  ChevronDown,
   ChevronRight,
   Target,
   ClipboardList,
@@ -271,34 +272,16 @@ export default function RootIssueCaseSection({
             {/* 比較本体（PC）— 5行：左2+100万 / 右01〜05（04は活用余地）      */}
             {/* ====================================================== */}
             <div className="relative mt-6 hidden md:block md:mt-8">
-              <div
-                aria-hidden
-                className="pointer-events-none absolute bottom-0 right-0 top-0 z-0 rounded-[14px]"
-                style={{
-                  left: "calc(50% + clamp(12px, 2vw, 28px))",
-                  background: NAVY_GRADIENT_PANEL,
-                  boxShadow: "inset 0 0 0 1px rgba(26,76,142,0.10)",
-                }}
-              />
-              <div
-                aria-hidden
-                className="pointer-events-none absolute left-1/2 top-0 z-0 hidden md:block"
-                style={{
-                  width: "2px",
-                  height: "100%",
-                  background: `linear-gradient(to bottom, ${LINE_COLOR} 0%, ${LINE_COLOR} 88%, ${LINE_COLOR_SOFT} 100%)`,
-                  transform: "translateX(-1px)",
-                }}
-              />
-
-              <div
-                className="relative z-[1] grid"
-                style={{
-                  gridTemplateColumns: "minmax(0,1fr) auto minmax(0,1fr)",
-                  columnGap: "clamp(28px, 4vw, 56px)",
-                  rowGap: "16px",
-                }}
-              >
+              {/* ─── グリッドラッパー ─── */}
+              <div className="relative">
+                <div
+                  className="relative z-[1] grid"
+                  style={{
+                    gridTemplateColumns: "minmax(0,1fr) auto minmax(0,1fr)",
+                    columnGap: "clamp(28px, 4vw, 56px)",
+                    rowGap: "16px",
+                  }}
+                >
                 {/* row 1 */}
                 <BadgeColumn side="left" slot="start">
                   <StepCard step={LEFT_STEPS[0]} tone="left" />
@@ -385,7 +368,7 @@ export default function RootIssueCaseSection({
                         lineHeight: 1.45,
                       }}
                     >
-                      追加で確認できる可能性
+                      追加で獲得できた可能性
                     </p>
                     <p
                       className="font-heading mt-2 text-center"
@@ -420,12 +403,77 @@ export default function RootIssueCaseSection({
                   />
                 </BadgeColumn>
 
-                {/* row 5 — 右のみ05 */}
+                {/* row 5 — 右のみ04 */}
                 <div aria-hidden />
                 <div aria-hidden />
-                <BadgeColumn side="right" slot="end">
+                <BadgeColumn side="right" slot="between">
                   <StepCard step={RIGHT_STEPS[3]} tone="right" />
                 </BadgeColumn>
+                </div>
+
+                {/* ─── PC: L字コネクター（04横 → 下 → サイクル図） ─── */}
+                <div
+                  aria-hidden
+                  className="pointer-events-none absolute inset-0 z-[2] hidden md:block"
+                >
+                  {/* 横線: コーナー(左50%) → 04カード左端(≈62%) */}
+                  <span
+                    style={{
+                      position: "absolute",
+                      bottom: "48px",
+                      left: "50%",
+                      right: "38%",
+                      borderTop: `1.5px solid ${LINE_COLOR}`,
+                    }}
+                  />
+                  {/* 縦線: コーナー(50%) → グリッド下56pxまで */}
+                  <span
+                    style={{
+                      position: "absolute",
+                      left: "50%",
+                      top: "calc(100% - 48px)",
+                      height: "calc(48px + 56px)",
+                      width: "1.5px",
+                      background: LINE_COLOR,
+                    }}
+                  />
+                  {/* 下向き矢印 */}
+                  <span
+                    style={{
+                      position: "absolute",
+                      left: "calc(50% - 4px)",
+                      top: "calc(100% + 50px)",
+                      width: 0,
+                      height: 0,
+                      borderLeft: "5px solid transparent",
+                      borderRight: "5px solid transparent",
+                      borderTop: `7px solid ${LINE_COLOR}`,
+                    }}
+                  />
+                </div>
+                {/* ラベル（縦線の左・中ほど。可読テキストなので aria 有効の別要素） */}
+                <span
+                  className="font-heading absolute z-[2] hidden md:block"
+                  style={{
+                    top: "calc(100% + 6px)",
+                    transform: "translateY(-50%)",
+                    right: "calc(50% + 14px)",
+                    fontSize: "0.72rem",
+                    fontWeight: 700,
+                    color: "var(--accent-navy)",
+                    letterSpacing: "0.04em",
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  ここから中長期伴走へ
+                </span>
+              </div>
+
+              {/* ─── PC: 全幅サイクル図（左右中央） ─────────────────── */}
+              <div className="flex justify-center mt-16 pb-2">
+                <div className="relative z-[2] w-full max-w-4xl">
+                  <CycleDiagram />
+                </div>
               </div>
             </div>
 
@@ -487,7 +535,7 @@ export default function RootIssueCaseSection({
                       lineHeight: 1.45,
                     }}
                   >
-                    追加で確認できる可能性
+                    追加で獲得できた可能性
                   </p>
                   <p
                     className="font-heading mt-2 text-center"
@@ -546,6 +594,32 @@ export default function RootIssueCaseSection({
                 </div>
                 <div className="relative mt-4 pl-5">
                   <StepCard step={RIGHT_STEPS[3]} tone="right" />
+                </div>
+
+                {/* SP: 中長期伴走ブリッジ */}
+                <div className="mt-3 flex items-center gap-1.5 pl-5">
+                  <ChevronDown
+                    size={14}
+                    strokeWidth={2}
+                    aria-hidden
+                    style={{ color: "var(--accent-navy)", flexShrink: 0 }}
+                  />
+                  <span
+                    className="font-heading"
+                    style={{
+                      fontSize: "0.73rem",
+                      fontWeight: 700,
+                      color: "var(--accent-navy)",
+                      letterSpacing: "0.04em",
+                    }}
+                  >
+                    ここから中長期伴走へ
+                  </span>
+                </div>
+
+                {/* SP: サイクル図 */}
+                <div className="mt-2">
+                  <CycleDiagram />
                 </div>
               </div>
             </div>
@@ -952,6 +1026,164 @@ function ActivationCard({
           {caption}
         </p>
       </div>
+  );
+}
+
+// ============================================================
+// CycleDiagram — 中長期伴走サイクル（4 ノード + ループ矢印）
+// ============================================================
+const CYCLE_NODES = [
+  { label: "次の課題発見",   emphasis: true  },
+  { label: "補助金制度提案", emphasis: false },
+  { label: "実行支援",       emphasis: false },
+  { label: "年次フォロー",   emphasis: true  },
+] as const;
+
+const LOOP_LINE_COLOR = "rgba(26,76,142,0.38)";
+
+function CycleDiagram() {
+  return (
+    <div
+      className="relative z-[2] overflow-hidden rounded-[14px] p-4 md:p-5"
+      style={{
+        background: NAVY_GRADIENT_CARD_EMPHASIZED,
+        border: "2px solid var(--accent-navy)",
+        boxShadow: "0 10px 28px rgba(26,76,142,0.16)",
+      }}
+    >
+      {/* ─── タイトル ─── */}
+      <div className="mb-3 flex items-center gap-2">
+        <p
+          className="font-heading shrink-0"
+          style={{
+            fontSize: "0.72rem",
+            fontWeight: 700,
+            letterSpacing: "0.1em",
+            color: "var(--accent-navy)",
+          }}
+        >
+          中長期伴走サイクル
+        </p>
+        <span
+          aria-hidden
+          className="h-px flex-1"
+          style={{ background: "rgba(26,76,142,0.2)" }}
+        />
+      </div>
+
+      {/* ─── PC: 横 4 ノード + U 字ループ矢印 ─── */}
+      <div className="hidden md:block">
+        {/* ノード列 */}
+        <div className="flex items-center gap-3">
+          {CYCLE_NODES.flatMap((node, i) => {
+            const nodeEl = (
+              <div
+                key={`node-${node.label}`}
+                className="font-heading flex flex-1 items-center justify-center rounded-full text-center"
+                style={{
+                  fontSize: "0.82rem",
+                  fontWeight: 700,
+                  letterSpacing: "0.04em",
+                  lineHeight: 1.4,
+                  background: node.emphasis ? NAVY_GRADIENT_SOLID : "#ffffff",
+                  color: node.emphasis ? "#ffffff" : "var(--accent-navy)",
+                  border: node.emphasis
+                    ? "none"
+                    : "1.5px solid rgba(26,76,142,0.28)",
+                  boxShadow: node.emphasis
+                    ? "0 4px 14px rgba(26,76,142,0.26)"
+                    : "0 2px 6px rgba(26,76,142,0.08)",
+                  minWidth: 0,
+                  padding: "12px 10px",
+                }}
+              >
+                {node.label}
+              </div>
+            );
+            if (i < CYCLE_NODES.length - 1) {
+              return [
+                nodeEl,
+                <ChevronRight
+                  key={`arrow-${i}`}
+                  size={16}
+                  strokeWidth={2}
+                  aria-hidden
+                  style={{ color: "rgba(26,76,142,0.45)", flexShrink: 0 }}
+                />,
+              ];
+            }
+            return [nodeEl];
+          })}
+        </div>
+
+        {/* U 字ループ矢印（年次フォロー → 次の課題発見） */}
+        <div
+          aria-hidden
+          className="relative mt-2"
+          style={{
+            marginLeft: "4%",
+            marginRight: "4%",
+            height: "16px",
+            borderLeft: `1.5px solid ${LOOP_LINE_COLOR}`,
+            borderBottom: `1.5px solid ${LOOP_LINE_COLOR}`,
+            borderRight: `1.5px solid ${LOOP_LINE_COLOR}`,
+            borderRadius: "0 0 6px 6px",
+          }}
+        >
+          {/* 左向き矢印先端 */}
+          <span
+            style={{
+              position: "absolute",
+              top: "-4px",
+              left: "-1px",
+              width: 0,
+              height: 0,
+              borderTop: "4px solid transparent",
+              borderBottom: "4px solid transparent",
+              borderRight: `5px solid ${LOOP_LINE_COLOR}`,
+            }}
+          />
+        </div>
+      </div>
+
+      {/* ─── SP: 2×2 グリッド ─── */}
+      <div className="grid grid-cols-2 gap-2 md:hidden">
+        {CYCLE_NODES.map((node) => (
+          <div
+            key={node.label}
+            className="font-heading flex items-center justify-center rounded-full px-2 py-2 text-center"
+            style={{
+              fontSize: "0.64rem",
+              fontWeight: 700,
+              letterSpacing: "0.02em",
+              lineHeight: 1.35,
+              background: node.emphasis ? NAVY_GRADIENT_SOLID : "#ffffff",
+              color: node.emphasis ? "#ffffff" : "var(--accent-navy)",
+              border: node.emphasis
+                ? "none"
+                : "1.5px solid rgba(26,76,142,0.28)",
+              boxShadow: node.emphasis
+                ? "0 3px 8px rgba(26,76,142,0.2)"
+                : "0 1px 3px rgba(26,76,142,0.06)",
+            }}
+          >
+            {node.label}
+          </div>
+        ))}
+      </div>
+
+      {/* ─── キャプション ─── */}
+      <p
+        className="font-body mt-3"
+        style={{
+          fontSize: "0.68rem",
+          lineHeight: 1.65,
+          color: "#365578",
+        }}
+      >
+        補助金獲得後も継続的に伴走。次の課題を特定し、最適な支援策を提案し続けます。
+      </p>
+    </div>
   );
 }
 
