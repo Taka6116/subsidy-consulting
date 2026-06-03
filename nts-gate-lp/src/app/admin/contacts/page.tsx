@@ -1,41 +1,16 @@
-/**
- * /admin/contacts — 問い合わせ一覧管理ページ
- *
- * アクセス制限: クエリパラメータ ?token=ADMIN_TOKEN で簡易保護
- * 例: /admin/contacts?token=your_secret_token
- *
- * 環境変数: ADMIN_TOKEN（未設定時は本番でアクセス拒否）
- */
-
 import { prisma } from "@/lib/db/prisma";
-import { headers } from "next/headers";
-import { redirect } from "next/navigation";
 import ContactsTable from "./ContactsTable";
 
 type PageProps = {
-  searchParams: Promise<{ token?: string; page?: string }>;
+  searchParams: Promise<{ page?: string }>;
 };
 
 const PAGE_SIZE = 50;
 
 export default async function AdminContactsPage({ searchParams }: PageProps) {
   const params = await searchParams;
-  const token = params.token ?? "";
   const page = Math.max(1, Number(params.page ?? "1"));
 
-  // ── 簡易アクセス制限 ──────────────────────────────────────
-  const adminToken = process.env.ADMIN_TOKEN;
-  if (!adminToken || token !== adminToken) {
-    // ヘッダーを読んで本番かどうか確認（開発環境は緩和）
-    const h = await headers();
-    const host = h.get("host") ?? "";
-    const isLocalhost = host.startsWith("localhost") || host.startsWith("127.");
-    if (!isLocalhost) {
-      redirect("/");
-    }
-  }
-
-  // ── データ取得 ────────────────────────────────────────────
   const [total, rows] = await Promise.all([
     prisma.contactInquiry.count(),
     prisma.contactInquiry.findMany({
@@ -67,7 +42,7 @@ export default async function AdminContactsPage({ searchParams }: PageProps) {
           </div>
           {/* CSV ダウンロードボタン */}
           <a
-            href={`/api/admin/contacts/csv?token=${token}`}
+            href="/api/admin/contacts/csv"
             className="inline-flex items-center gap-2 rounded-lg bg-[#0B173A] px-4 py-2 text-sm font-bold text-white transition hover:opacity-80"
           >
             <svg viewBox="0 0 20 20" fill="currentColor" className="h-4 w-4">
@@ -78,7 +53,7 @@ export default async function AdminContactsPage({ searchParams }: PageProps) {
         </div>
 
         {/* テーブル */}
-        <ContactsTable rows={rows} token={token} page={page} totalPages={totalPages} />
+        <ContactsTable rows={rows} page={page} totalPages={totalPages} />
       </div>
     </main>
   );

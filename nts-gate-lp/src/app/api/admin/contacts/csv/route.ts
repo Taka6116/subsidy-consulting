@@ -1,14 +1,8 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db/prisma";
 
-export async function GET(req: NextRequest) {
-  // トークン認証
-  const token = req.nextUrl.searchParams.get("token") ?? "";
-  const adminToken = process.env.ADMIN_TOKEN;
-
-  if (!adminToken || token !== adminToken) {
-    return new NextResponse("Unauthorized", { status: 401 });
-  }
+export async function GET() {
+  // 認証は middleware (nts_admin_session Cookie) で保護済み
 
   const rows = await prisma.contactInquiry.findMany({
     orderBy: { createdAt: "desc" },
@@ -23,7 +17,6 @@ export async function GET(req: NextRequest) {
     },
   });
 
-  // CSV 生成（BOM付きUTF-8 → Excel で文字化けしない）
   const BOM = "\uFEFF";
   const header = ["受信日時", "お名前", "会社名", "メール", "流入元", "お問い合わせ内容"].join(",");
 
