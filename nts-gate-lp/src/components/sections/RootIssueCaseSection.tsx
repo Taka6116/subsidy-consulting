@@ -1053,6 +1053,11 @@ function CycleDiagram() {
     >
       {/* ─── タイトル ─── */}
       <div className="mb-3 flex items-center gap-2">
+        <span
+          aria-hidden
+          className="h-px flex-1"
+          style={{ background: "rgba(26,76,142,0.2)" }}
+        />
         <p
           className="font-heading shrink-0"
           style={{
@@ -1130,17 +1135,17 @@ function CycleDiagram() {
             borderRadius: "0 0 6px 6px",
           }}
         >
-          {/* 左向き矢印先端 */}
+          {/* 上向き矢印先端 */}
           <span
             style={{
               position: "absolute",
-              top: "-4px",
-              left: "-1px",
+              top: "-7px",
+              left: "-5px",
               width: 0,
               height: 0,
-              borderTop: "4px solid transparent",
-              borderBottom: "4px solid transparent",
-              borderRight: `5px solid ${LOOP_LINE_COLOR}`,
+              borderLeft: "5px solid transparent",
+              borderRight: "5px solid transparent",
+              borderBottom: `7px solid ${LOOP_LINE_COLOR}`,
             }}
           />
         </div>
