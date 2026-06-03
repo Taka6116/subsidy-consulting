@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRef, useState } from "react";
 
 // ────────────────────────────────────────────────────────────
 // PCモニター内の動画プレイヤー（HeyGen 生成動画）
@@ -9,15 +10,66 @@ const HERO_VIDEO_URL =
   "https://files2.heygen.ai/aws_pacific/avatar_tmp/d3fd9697697e4c37a6ac077b210511e5/a2e5a50ed8144740b3ac0060ffb74abe.mp4?Expires=1780891017&Signature=btj5YyoJm35S7BGvpfLIct~Xebv04T79fC9KL1KqZwBD8~DTzO121buS72A-hLdL3rZUe93buVhX-Irm~v39e3wm7g6FpYr9Y7yyzSI7Pwz~R30XSoi~sCNXP8dJAAXzOf5J~gkMQsIRuzPU29B57raF2q63Qg-x1h1oLquCA2dTd4R62R-FhtWG0yo2kjo-j0fXuaKQxWlYfzEdHiTGScHlPbEvnAAvbWa9eCC8I6TlvNYSPgDMq5GgTUHGiDcxxgkDqJYIGPvFEg0LUlpNOaxTtM7AyAtonQE1VSjWf8QJyjytsck2OAFKiryi6e6-R8-SHWLOEYu24vhaOtewIA__&Key-Pair-Id=K38HBHX5LX3X2H";
 
 function VideoPlayer() {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [muted, setMuted] = useState(true);
+
+  function toggleMute() {
+    const v = videoRef.current;
+    if (!v) return;
+    v.muted = !v.muted;
+    setMuted(v.muted);
+  }
+
   return (
     <div className="relative overflow-hidden rounded-lg bg-black">
       <video
+        ref={videoRef}
         src={HERO_VIDEO_URL}
-        controls
+        autoPlay
+        muted
         playsInline
+        loop
         className="aspect-video w-full rounded-lg object-cover"
-        poster=""
       />
+
+      {/* ミュート切替ボタン */}
+      <button
+        type="button"
+        onClick={toggleMute}
+        aria-label={muted ? "音声をオンにする" : "音声をオフにする"}
+        className="absolute bottom-2.5 right-2.5 flex h-7 w-7 items-center justify-center rounded-full transition hover:scale-110"
+        style={{
+          background: "rgba(0,0,0,0.55)",
+          backdropFilter: "blur(4px)",
+          border: "1px solid rgba(255,255,255,0.2)",
+        }}
+      >
+        {muted ? (
+          /* ミュート中: スラッシュ付きスピーカー */
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+            <line x1="23" y1="9" x2="17" y2="15"/>
+            <line x1="17" y1="9" x2="23" y2="15"/>
+          </svg>
+        ) : (
+          /* 音あり: スピーカー＋波形 */
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+            <path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>
+            <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
+          </svg>
+        )}
+      </button>
+
+      {/* ミュート中の視覚的ヒント（初回のみ） */}
+      {muted && (
+        <div
+          className="absolute bottom-2.5 right-11 flex items-center gap-1 rounded-full px-2 py-0.5 text-[9px] font-semibold text-white/80 pointer-events-none"
+          style={{ background: "rgba(0,0,0,0.45)", backdropFilter: "blur(4px)" }}
+        >
+          タップで音声ON
+        </div>
+      )}
     </div>
   );
 }
