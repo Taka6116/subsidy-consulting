@@ -87,6 +87,19 @@ export async function notifyContact(payload: ContactPayload): Promise<void> {
   }
 }
 
+/** source 値を人間が読みやすいラベルに変換 */
+function formatSource(source: string | null): string {
+  if (!source) return "（不明）";
+  const map: Record<string, string> = {
+    consult:     "補助金サービスページ（/consult）",
+    subsidies:   "補助金一覧ページ（/subsidies）",
+    lp:          "トップLP",
+    check:       "補助金診断ページ",
+    partner:     "パートナーページ",
+  };
+  return map[source] ?? source;
+}
+
 /** 担当者向け社内通知メール本文 */
 function buildNotifyBody(p: ContactPayload): string {
   const lines = [
@@ -96,7 +109,7 @@ function buildNotifyBody(p: ContactPayload): string {
     `お名前    : ${p.name}`,
     `会社名    : ${p.company ?? "（未入力）"}`,
     `メール    : ${p.email}`,
-    `流入元    : ${p.source ?? "（不明）"}`,
+    `流入元    : ${formatSource(p.source)}`,
     "",
     "お問い合わせ内容:",
     p.message,
