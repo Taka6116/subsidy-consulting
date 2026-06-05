@@ -2,7 +2,9 @@
  * お問い合わせ通知ロジック
  *
  * - CONTACT_NOTIFY_TO / CONTACT_NOTIFY_FROM を環境変数で管理
- * - 本番 (NODE_ENV === "production") で CONTACT_NOTIFY_TO 未設定 → エラーをスローしてDB保存後に検知可能にする
+ * - CONTACT_NOTIFY_TO はカンマ区切りで複数アドレス指定可能
+ *   例: info@nihon-teikei.com,your@email.com
+ * - 本番 (NODE_ENV === "production") で必須変数未設定 → エラーをスロー
  * - 開発環境では未設定時は警告ログのみ（ソフトスキップ）
  * - 個人情報を console.log しない
  * - 将来の CRM 連携はこの関数の実装を差し替えるだけでよい
@@ -20,12 +22,12 @@ export type ContactPayload = {
 
 /** DB 保存後に呼び出す通知処理。CRM への差し替えはこの関数のみ変更する */
 export async function notifyContact(payload: ContactPayload): Promise<void> {
-  const to = process.env.CONTACT_NOTIFY_TO?.trim();
+  const toRaw = process.env.CONTACT_NOTIFY_TO?.trim();
   const from =
     process.env.CONTACT_NOTIFY_FROM?.trim() ||
     process.env.NEWSLETTER_FROM?.trim();
 
-  if (!to) {
+  if (!toRaw) {
     if (process.env.NODE_ENV === "production") {
       throw new Error(
         "[notifyContact] CONTACT_NOTIFY_TO is not configured. " +
@@ -47,25 +49,44 @@ export async function notifyContact(payload: ContactPayload): Promise<void> {
     return;
   }
 
-  const subject = `[NTS] 無料相談フォーム 新着問い合わせ`;
-  const body = buildEmailBody(payload);
+  // カンマ区切りを分割して重複除去（担当者・テスト用アドレス複数対応）
+  const toAddresses = [...new Set(
+    toRaw.split(",").map((s) => s.trim()).filter((s) => s.length > 0)
+  )];
 
-  try {
-    await sendEmail({
-      to,
+  // ① 担当者への社内通知 ＋ ② 問い合わせ者への自動返信 を並列送信
+  const sends: Promise<unknown>[] = [
+    ...toAddresses.map((to) =>
+      sendEmail({
+        to,
+        from,
+        subject: `[NTS] 無料相談フォーム 新着問い合わせ`,
+        text: buildNotifyBody(payload),
+        context: "notifyContact",
+      })
+    ),
+    sendEmail({
+      to: payload.email,
       from,
-      subject,
-      text: body,
-      context: "notifyContact",
-    });
-  } catch (err) {
-    const message = err instanceof Error ? err.message : String(err);
-    throw new Error(`[notifyContact] SES send failed: ${message}`);
+      subject: `【日本提携支援】無料相談のお申し込みを受け付けました`,
+      text: buildAutoReplyBody(payload),
+      context: "autoReply",
+    }),
+  ];
+
+  const results = await Promise.allSettled(sends);
+
+  const failures = results.filter((r) => r.status === "rejected");
+  if (failures.length > 0) {
+    const messages = failures
+      .map((r) => (r as PromiseRejectedResult).reason?.message ?? String((r as PromiseRejectedResult).reason))
+      .join(", ");
+    throw new Error(`[notifyContact] SES send failed: ${messages}`);
   }
 }
 
-/** メール本文を組み立てる（個人情報はメール本文にのみ含まれ、ログには出力しない） */
-function buildEmailBody(p: ContactPayload): string {
+/** 担当者向け社内通知メール本文 */
+function buildNotifyBody(p: ContactPayload): string {
   const lines = [
     "NTS 無料相談フォームに新しいお問い合わせが届きました。",
     "",
@@ -75,11 +96,43 @@ function buildEmailBody(p: ContactPayload): string {
     `メール    : ${p.email}`,
     `流入元    : ${p.source ?? "（不明）"}`,
     "",
-    `お問い合わせ内容:`,
+    "お問い合わせ内容:",
     p.message,
     "────────────────────────────────────────",
     "",
     "このメールは自動送信です。返信しないでください。",
+  ];
+  return lines.join("\n");
+}
+
+/** 問い合わせ者向け自動返信メール本文 */
+function buildAutoReplyBody(p: ContactPayload): string {
+  const lines = [
+    `${p.name} 様`,
+    "",
+    "この度は日本提携支援の無料相談フォームにお申し込みいただき、",
+    "誠にありがとうございます。",
+    "",
+    "以下の内容でお問い合わせを受け付けました。",
+    "担当者より改めてご連絡差し上げますので、",
+    "今しばらくお待ちいただけますようお願いいたします。",
+    "",
+    "── お申し込み内容（控え）────────────────",
+    `お名前    : ${p.name}`,
+    `会社名    : ${p.company ?? "（未入力）"}`,
+    `メール    : ${p.email}`,
+    "",
+    "お問い合わせ内容:",
+    p.message,
+    "────────────────────────────────────────",
+    "",
+    "※ このメールは自動送信です。このメールへの返信はお受けできません。",
+    "　 ご不明な点は info@nihon-teikei.com までお気軽にお問い合わせください。",
+    "",
+    "──────────────────────────────",
+    "日本提携支援",
+    "https://subsidy-nts-v2.vercel.app/",
+    "──────────────────────────────",
   ];
   return lines.join("\n");
 }
