@@ -95,7 +95,6 @@ const CASE_CARDS = [
 
 // 線の共通色
 const LINE_COLOR = "rgba(11,79,138,0.4)";
-const LINE_COLOR_SOFT = "rgba(11,79,138,0.22)";
 
 export default function RootIssueCaseSection({
   heading,
