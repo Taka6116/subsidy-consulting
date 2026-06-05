@@ -81,6 +81,8 @@ export async function notifyContact(payload: ContactPayload): Promise<void> {
     const messages = failures
       .map((r) => (r as PromiseRejectedResult).reason?.message ?? String((r as PromiseRejectedResult).reason))
       .join(", ");
+    // デバッグ用：どのアドレスで失敗したか記録（PII注意・解決後削除）
+    console.error(`[notifyContact] from="${from}" toAddresses=${JSON.stringify(toAddresses)} userEmail="${payload.email}"`);
     throw new Error(`[notifyContact] SES send failed: ${messages}`);
   }
 }
