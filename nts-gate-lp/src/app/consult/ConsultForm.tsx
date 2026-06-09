@@ -111,7 +111,7 @@ export default function ConsultForm() {
               {/* 画像下テキスト */}
               <div className="absolute bottom-4 left-4 right-4">
                 <p className="text-lg font-bold text-white drop-shadow">
-                  補助金情報を、探す時代を終わらせ"最速"で届ける
+                  補助金情報を、探す時代を終わらせ&quot;最速&quot;で届ける
                 </p>
               </div>
             </Link>

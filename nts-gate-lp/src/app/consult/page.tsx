@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { Suspense } from "react";
 import CheckPortalHeader from "@/components/check/CheckPortalHeader";
 import ConsultForm from "./ConsultForm";
 
@@ -24,7 +25,9 @@ export default function ConsultPage() {
             ご希望の内容をご記入ください。担当者よりご連絡いたします。
           </p>
           <div className="mt-10">
-            <ConsultForm />
+            <Suspense fallback={<div className="py-8 text-center text-sm text-[var(--text-secondary)]">読み込み中...</div>}>
+              <ConsultForm />
+            </Suspense>
           </div>
         </div>
       </main>

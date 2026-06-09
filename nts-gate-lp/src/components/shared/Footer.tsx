@@ -2,40 +2,42 @@ import Link from "next/link";
 import FooterPartnerLink from "./FooterPartnerLink";
 import SubsidyLegalDisclaimer from "./SubsidyLegalDisclaimer";
 
+const CORPORATE_BASE = "https://nihon-teikei.co.jp";
+
 const NAV_COLUMNS: {
   heading: string;
-  links: { label: string; href: string }[];
+  links: { label: string; href: string; external?: boolean }[];
 }[] = [
   {
     heading: "About us",
     links: [
-      { label: "日本提携支援について", href: "#" },
-      { label: "理念", href: "#" },
-      { label: "代表挨拶", href: "#" },
-      { label: "会社概要", href: "#" },
+      { label: "日本提携支援について", href: `${CORPORATE_BASE}/about/`, external: true },
+      { label: "理念", href: `${CORPORATE_BASE}/about/#a-philosophy`, external: true },
+      { label: "代表挨拶", href: `${CORPORATE_BASE}/about/#a-message`, external: true },
+      { label: "会社概要", href: `${CORPORATE_BASE}/about/#a-company`, external: true },
     ],
   },
   {
     heading: "Service",
     links: [
-      { label: "事業内容", href: "#" },
-      { label: "M&Aオファー", href: "#" },
-      { label: "M&A買収サポート", href: "#" },
-      { label: "M&A提案サポート", href: "#" },
+      { label: "事業内容", href: `${CORPORATE_BASE}/service/`, external: true },
+      { label: "M&Aオファー", href: `${CORPORATE_BASE}/service/#js-sync-content01`, external: true },
+      { label: "M&A買収サポート", href: `${CORPORATE_BASE}/service/#js-sync-content02`, external: true },
+      { label: "M&A提案サポート", href: `${CORPORATE_BASE}/service/#js-sync-content03`, external: true },
     ],
   },
   {
     heading: "Case Study & Column",
     links: [
-      { label: "導入事例", href: "#" },
-      { label: "お役立ち情報", href: "#" },
+      { label: "導入事例", href: `${CORPORATE_BASE}/news/casestudy/`, external: true },
+      { label: "お役立ち情報", href: `${CORPORATE_BASE}/news/column/`, external: true },
     ],
   },
   {
     heading: "News & Recruit",
     links: [
-      { label: "お知らせ", href: "#" },
-      { label: "採用情報", href: "#" },
+      { label: "お知らせ", href: `${CORPORATE_BASE}/news/`, external: true },
+      { label: "採用情報", href: "https://nihon-teikei.com/intern/", external: true },
     ],
   },
 ];
@@ -93,6 +95,19 @@ export default function Footer() {
                 </span>
               </Link>
             </div>
+            <div className="mt-4">
+              <a
+                href="https://nihon-teikei.co.jp/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 text-sm text-white/80 underline-offset-4 transition-colors hover:text-white hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white rounded-sm"
+              >
+                運営会社（コーポレートサイト）
+                <span aria-hidden className="text-base">
+                  ↗
+                </span>
+              </a>
+            </div>
 
             <div className="mt-8 flex items-center gap-5">
               <a
@@ -137,9 +152,20 @@ export default function Footer() {
                   <ul className="space-y-3">
                     {col.links.map((l) => (
                       <li key={l.label}>
-                        <Link href={l.href} className={linkClass}>
-                          {l.label}
-                        </Link>
+                        {l.external ? (
+                          <a
+                            href={l.href}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={linkClass}
+                          >
+                            {l.label}
+                          </a>
+                        ) : (
+                          <Link href={l.href} className={linkClass}>
+                            {l.label}
+                          </Link>
+                        )}
                       </li>
                     ))}
                   </ul>

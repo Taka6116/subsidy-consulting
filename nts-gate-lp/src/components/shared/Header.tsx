@@ -116,6 +116,14 @@ export default function Header() {
             >
               補助金詳細
             </Link>
+            <a
+              href="https://nihon-teikei.co.jp/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={`${navLinkClass(heroStyle)} shrink-0`}
+            >
+              運営会社
+            </a>
             <HeaderCtaGroup />
           </div>
         </div>
