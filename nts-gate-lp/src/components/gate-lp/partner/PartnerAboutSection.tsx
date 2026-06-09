@@ -83,6 +83,18 @@ export default function PartnerAboutSection() {
                 日本提携支援は、補助金の活用戦略設計から採択、そして採択後1年間の伴走までを一貫して支援する専門チームです。
                 提携先の皆様からご紹介いただいた案件には、私たちが責任を持って対応します。
               </motion.p>
+
+              <motion.div className="mt-6" {...fadeUp(0.24)}>
+                <a
+                  href="https://nihon-teikei.co.jp/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 text-sm font-semibold text-[var(--accent-navy)] underline-offset-4 transition-colors hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent-navy)] rounded-sm"
+                >
+                  株式会社日本提携支援について詳しく見る
+                  <span aria-hidden>↗</span>
+                </a>
+              </motion.div>
             </div>
 
             <motion.div
