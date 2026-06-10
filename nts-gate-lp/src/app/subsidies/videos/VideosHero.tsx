@@ -4,10 +4,9 @@ import Link from "next/link";
 import { useRef, useState } from "react";
 
 // ────────────────────────────────────────────────────────────
-// PCモニター内の動画プレイヤー（HeyGen 生成動画）
+// PCモニター内の動画プレイヤー（HeyGen 生成動画・public/videos からローカル配信）
 // ────────────────────────────────────────────────────────────
-const HERO_VIDEO_URL =
-  "https://files2.heygen.ai/aws_pacific/avatar_tmp/d3fd9697697e4c37a6ac077b210511e5/a2e5a50ed8144740b3ac0060ffb74abe.mp4?Expires=1780891017&Signature=btj5YyoJm35S7BGvpfLIct~Xebv04T79fC9KL1KqZwBD8~DTzO121buS72A-hLdL3rZUe93buVhX-Irm~v39e3wm7g6FpYr9Y7yyzSI7Pwz~R30XSoi~sCNXP8dJAAXzOf5J~gkMQsIRuzPU29B57raF2q63Qg-x1h1oLquCA2dTd4R62R-FhtWG0yo2kjo-j0fXuaKQxWlYfzEdHiTGScHlPbEvnAAvbWa9eCC8I6TlvNYSPgDMq5GgTUHGiDcxxgkDqJYIGPvFEg0LUlpNOaxTtM7AyAtonQE1VSjWf8QJyjytsck2OAFKiryi6e6-R8-SHWLOEYu24vhaOtewIA__&Key-Pair-Id=K38HBHX5LX3X2H";
+const HERO_VIDEO_URL = "/videos/hero-shimane-logistics.mp4";
 
 function VideoPlayer() {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -93,7 +92,7 @@ function MonitorFrame() {
           <div className="mx-3 flex-1 rounded-md bg-[#0d1830] px-3 py-1 text-center text-[10px] text-white/40">
             subsidy-consulting-nts.vercel.app/subsidies/videos
           </div>
-          <span className="rounded bg-[#0d1830] px-2 py-0.5 text-[10px] text-white/50">Auto playing 1:04</span>
+          <span className="rounded bg-[#0d1830] px-2 py-0.5 text-[10px] text-white/50">Auto playing 1:16</span>
         </div>
 
         {/* 画面本体 */}
@@ -105,7 +104,7 @@ function MonitorFrame() {
               {/* 動画タイトル */}
               <div className="px-0.5">
                 <p className="text-[10px] font-bold text-white/90 leading-snug sm:text-xs">
-                  資格取得サポート助成金
+                  島根県地域物流効率化・連携促進補助金
                 </p>
                 <div className="mt-1 flex items-center gap-1.5 text-[9px] text-white/50">
                   <span className="rounded bg-white/10 px-1.5 py-0.5">専門家による制度解説</span>
@@ -124,15 +123,17 @@ function MonitorFrame() {
               </p>
               {/* 補助上限 */}
               <div className="mb-2 flex flex-col gap-0.5">
-                <span className="text-[11px] font-bold text-[#60a5fa]">補助上限</span>
+                <span className="text-[9px] text-white/50">補助上限</span>
+                <span className="text-[11px] font-bold text-[#60a5fa]">最大500万円</span>
               </div>
               {/* 申請期限 */}
               <div className="mb-3 flex flex-col gap-0.5">
-                <span className="text-[11px] font-bold text-white/90">申請期限</span>
+                <span className="text-[9px] text-white/50">申請期限</span>
+                <span className="text-[11px] font-bold text-white/90">2026年12月25日</span>
               </div>
               {/* チェックリスト */}
               {[
-                "資格取得費用の助成内容",
+                "物流効率化・連携への活用例",
                 "申請前に確認する注意点",
               ].map((item) => (
                 <div key={item} className="mb-1.5 flex items-start gap-1.5">
