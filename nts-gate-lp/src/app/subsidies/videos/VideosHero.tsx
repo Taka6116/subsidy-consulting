@@ -97,53 +97,17 @@ function MonitorFrame() {
 
         {/* 画面本体 */}
         <div className="rounded-b-xl p-3" style={{ background: "#0e1f45" }}>
-          <div className="grid grid-cols-[1fr_auto] gap-3">
-            {/* 左: 動画エリア */}
-            <div className="flex min-w-0 flex-col gap-2">
-              <VideoPlayer />
-              {/* 動画タイトル */}
-              <div className="px-0.5">
-                <p className="text-[10px] font-bold text-white/90 leading-snug sm:text-xs">
-                  島根県地域物流効率化・連携促進補助金
-                </p>
-                <div className="mt-1 flex items-center gap-1.5 text-[9px] text-white/50">
-                  <span className="rounded bg-white/10 px-1.5 py-0.5">専門家による制度解説</span>
-                  <span>NTS補助金活用アドバイザー 桜庭</span>
-                </div>
-              </div>
-            </div>
-
-            {/* 右: この動画でわかることパネル */}
-            <div
-              className="hidden w-[130px] shrink-0 flex-col rounded-xl p-3 sm:flex xl:w-[148px]"
-              style={{ background: "#0a1730", border: "1px solid rgba(255,255,255,0.08)" }}
-            >
-              <p className="mb-2.5 text-[9px] font-bold uppercase tracking-wider text-white/50">
-                この動画でわかること
+          <div className="flex flex-col gap-2">
+            <VideoPlayer />
+            {/* 動画タイトル */}
+            <div className="px-0.5">
+              <p className="text-[10px] font-bold text-white/90 leading-snug sm:text-xs">
+                島根県地域物流効率化・連携促進補助金
               </p>
-              {/* 補助上限 */}
-              <div className="mb-2 flex flex-col gap-0.5">
-                <span className="text-[9px] text-white/50">補助上限</span>
-                <span className="text-[11px] font-bold text-[#60a5fa]">最大500万円</span>
+              <div className="mt-1 flex items-center gap-1.5 text-[9px] text-white/50">
+                <span className="rounded bg-white/10 px-1.5 py-0.5">専門家による制度解説</span>
+                <span>NTS補助金活用アドバイザー 桜庭</span>
               </div>
-              {/* 申請期限 */}
-              <div className="mb-3 flex flex-col gap-0.5">
-                <span className="text-[9px] text-white/50">申請期限</span>
-                <span className="text-[11px] font-bold text-white/90">2026年12月25日</span>
-              </div>
-              {/* チェックリスト */}
-              {[
-                "物流効率化・連携への活用例",
-                "申請前に確認する注意点",
-              ].map((item) => (
-                <div key={item} className="mb-1.5 flex items-start gap-1.5">
-                  <svg viewBox="0 0 12 12" fill="none" className="mt-0.5 h-3 w-3 shrink-0">
-                    <circle cx="6" cy="6" r="6" fill="#22c55e" />
-                    <path d="M3.5 6l1.8 1.8L8.5 4.5" stroke="white" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
-                  </svg>
-                  <span className="text-[9px] leading-snug text-white/75">{item}</span>
-                </div>
-              ))}
             </div>
           </div>
         </div>
