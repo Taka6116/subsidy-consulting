@@ -153,7 +153,7 @@ export default function SubsidyHeroV2({
         {/* ── 3カラムグリッド ── */}
         <div
           ref={badgeRef}
-          className="mx-auto grid items-center gap-[clamp(1.25rem,2.8vw,3rem)]"
+          className="subsidies-hero-grid mx-auto grid items-center gap-[clamp(1.25rem,2.8vw,3rem)]"
           style={{
             maxWidth: "1840px",
             minHeight: "clamp(560px, 35vw, 650px)",
@@ -182,7 +182,7 @@ export default function SubsidyHeroV2({
             {/* h1 */}
             <h1
               id="hero-title"
-              className="font-heading font-black leading-[1.14] tracking-[0] text-[#101827]"
+              className="subsidies-hero-title font-heading font-black leading-[1.14] tracking-[0] text-[#101827]"
               style={{ fontSize: "clamp(2.875rem, 4.1vw, 4.5rem)", margin: "30px 0 26px" }}
             >
               <span className="block whitespace-nowrap">補助金情報を、</span>
@@ -373,7 +373,7 @@ export default function SubsidyHeroV2({
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: EASE, delay: 0.25 }}
-          className="mx-auto mt-[-2px] grid items-center gap-[18px] rounded-[18px] border border-[#cfe2f7] bg-white/90 px-[18px] py-3 backdrop-blur-[10px]"
+          className="subsidies-breaking-bar mx-auto mt-[-2px] grid items-center gap-[18px] rounded-[18px] border border-[#cfe2f7] bg-white/90 px-[18px] py-3 backdrop-blur-[10px]"
           style={{
             maxWidth: "1840px",
             minHeight: "70px",
@@ -451,7 +451,7 @@ export default function SubsidyHeroV2({
 
         {/* ── 3機能カード (proof-cards) ── */}
         <div
-          className="mx-auto mt-[22px] grid gap-[18px] pb-4"
+          className="subsidies-feature-grid mx-auto mt-[22px] grid gap-[18px] pb-4"
           style={{ maxWidth: "1840px", gridTemplateColumns: "repeat(3,1fr)" }}
         >
           {FEATURES.map((f, i) => (

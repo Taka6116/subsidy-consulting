@@ -50,3 +50,43 @@
   }
 
 }
+
+/**
+ * /subsidies ポータルページ モバイル上書き（〜767px のみ）
+ * SubsidyHeroV2 のインラインstyle固定グリッドを !important で上書き。
+ * .subsidies-portal 配下に限定。768px以上には一切影響させない。
+ */
+@media (max-width: 767px) {
+
+  /* 横スクロール抑止 */
+  .subsidies-portal {
+    overflow-x: hidden;
+  }
+
+  /* ヒーロー3カラム → 1カラム（横スクロール解消の主対策） */
+  .subsidies-portal .subsidies-hero-grid {
+    grid-template-columns: 1fr !important;
+    min-height: 0 !important;
+  }
+
+  /* 見出し: nowrap解除＋サイズ調整 */
+  .subsidies-portal .subsidies-hero-title {
+    font-size: clamp(1.85rem, 8vw, 2.6rem) !important;
+  }
+  .subsidies-portal .subsidies-hero-title span {
+    white-space: normal !important;
+  }
+
+  /* 3機能カード: 3列 → 1列 */
+  .subsidies-portal .subsidies-feature-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* 速報バー: 余白を詰めて窮屈さを緩和 */
+  .subsidies-portal .subsidies-breaking-bar {
+    gap: 10px !important;
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+  }
+
+}
