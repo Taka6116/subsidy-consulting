@@ -357,28 +357,16 @@ body {
   z-index: 1;
 }
 
-/* /subsidies/videos ヒーロー背景 — 127deg 高精度リニアグラデーション（水色版） */
+/* /subsidies/videos ヒーロー背景 — ベースグラデーション（装飾は KnowledgeLightBackground） */
 .videos-hero-gradient {
   position: relative;
   isolation: isolate;
   background: var(--nts-gradient-videos-hero);
 }
 
-.videos-hero-gradient::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  background:
-    radial-gradient(ellipse 80% 60% at 12% 18%, rgba(56, 189, 248, 0.14) 0%, transparent 62%),
-    radial-gradient(ellipse 70% 55% at 88% 78%, rgba(14, 165, 233, 0.10) 0%, transparent 58%),
-    radial-gradient(ellipse 55% 45% at 52% 50%, rgba(186, 230, 253, 0.16) 0%, transparent 70%);
-}
-
-.videos-hero-gradient > * {
+.videos-hero-gradient > .relative.z-10 {
   position: relative;
-  z-index: 1;
+  z-index: 10;
 }
 
 .section-white {

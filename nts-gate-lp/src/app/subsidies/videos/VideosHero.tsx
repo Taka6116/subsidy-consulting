@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useRef, useState } from "react";
+import KnowledgeLightBackground from "./KnowledgeLightBackground";
 
 // ────────────────────────────────────────────────────────────
 // PCモニター内の動画プレイヤー（公開済み動画を S3 から配信）
@@ -144,10 +145,11 @@ export default function VideosHero({ heroVideo }: { heroVideo?: HeroVideo | null
   return (
     <section
       aria-labelledby="videos-hero-heading"
-      className="videos-hero-gradient overflow-hidden"
+      className="videos-hero-gradient relative overflow-hidden"
     >
+      <KnowledgeLightBackground />
 
-      <div className="relative mx-auto w-full max-w-[1780px] px-[clamp(1.75rem,3.4vw,4rem)] py-14 sm:py-16 lg:py-20">
+      <div className="relative z-10 mx-auto w-full max-w-[1780px] px-[clamp(1.75rem,3.4vw,4rem)] py-14 sm:py-16 lg:py-20">
         <div className="grid items-center gap-10 lg:grid-cols-[minmax(0,0.46fr)_minmax(0,0.54fr)] lg:gap-10 xl:gap-12">
 
           {/* ── 左: テキスト（大画面でも幅を確保） ── */}

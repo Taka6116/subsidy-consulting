@@ -18,7 +18,8 @@
     "article:drain": "tsx scripts/run-pending-article-jobs.ts",
     "jgrants:sync": "node scripts/sync-jgrants.mjs",
     "video:heygen": "tsx --tsconfig tsconfig.json scripts/heygen/generate-heygen-agent.ts",
-    "video:heygen:debug": "tsx --tsconfig tsconfig.json scripts/heygen/generate-heygen-agent.ts -- --dry-run"
+    "video:heygen:debug": "tsx --tsconfig tsconfig.json scripts/heygen/generate-heygen-agent.ts -- --dry-run",
+    "video:heygen:batch-abcd": "tsx --tsconfig tsconfig.json scripts/heygen/generate-batch-patterns.ts"
   },
   "dependencies": {
     "@aws-sdk/client-bedrock-runtime": "^3.787.0",
@@ -36,6 +37,8 @@
     "framer-motion": "^12.38.0",
     "gsap": "^3.14.2",
     "iconv-lite": "^0.7.2",
+    "kuroshiro": "^1.2.0",
+    "kuroshiro-analyzer-kuromoji": "^1.1.0",
     "lucide-react": "^1.7.0",
     "next": "15.3.9",
     "pg": "^8.20.0",
