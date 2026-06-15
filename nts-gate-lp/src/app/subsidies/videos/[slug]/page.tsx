@@ -114,6 +114,11 @@ export default async function SubsidyVideoPage({ params }: PageProps) {
           deadlineLabel: true,
           deadline: true,
           rawPayload: true,
+          contents: {
+            where: { contentType: "article", status: "published" },
+            select: { slug: true },
+            take: 1,
+          },
         },
       },
     },
@@ -129,6 +134,7 @@ export default async function SubsidyVideoPage({ params }: PageProps) {
   const grantDeadline = video.grant
     ? resolveDeadlineLabel(video.grant.deadlineLabel, video.grant.deadline)
     : null;
+  const articleSlug = video.grant?.contents?.[0]?.slug ?? null;
   const dur = formatDuration(video.duration);
 
   return (
@@ -275,10 +281,14 @@ export default async function SubsidyVideoPage({ params }: PageProps) {
                 )}
               </dl>
               <Link
-                href={`/subsidies/list/${video.grant.id}`}
+                href={
+                  articleSlug
+                    ? `/subsidies/articles/${articleSlug}`
+                    : `/subsidies/list/${video.grant.id}`
+                }
                 className="mt-6 inline-flex items-center justify-center rounded-lg bg-primary-700 px-5 py-3 text-sm font-semibold text-white transition hover:bg-primary-500"
               >
-                この補助金の詳細を見る
+                解説記事を見る
               </Link>
             </section>
           )}
