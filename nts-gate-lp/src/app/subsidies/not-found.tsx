@@ -2,7 +2,7 @@ import Link from "next/link";
 import Header from "@/components/shared/Header";
 import LpFooter from "@/components/gate-lp/LpFooter";
 
-export default function NotFound() {
+export default function SubsidiesNotFound() {
   return (
     <>
       <Header />
@@ -13,8 +13,8 @@ export default function NotFound() {
           ページが見つかりませんでした
         </h1>
         <p className="mt-3 max-w-sm text-center text-sm leading-relaxed text-neutral-500">
-          お探しのページは削除されたか、URLが変更された可能性があります。
-          以下のページからお探しください。
+          補助金情報は更新・整理されることがあります。
+          以下から最新情報をご確認ください。
         </p>
 
         {/* プライマリCTA */}
@@ -42,18 +42,18 @@ export default function NotFound() {
             解説記事
           </Link>
           <Link
+            href="/subsidies/lp"
+            className="flex flex-col items-center gap-1 rounded-xl border border-gray-200 p-4 text-sm text-gray-700 transition hover:border-blue-400 hover:bg-blue-50"
+          >
+            <span className="text-lg">📖</span>
+            活用ガイド
+          </Link>
+          <Link
             href="/subsidies/videos"
             className="flex flex-col items-center gap-1 rounded-xl border border-gray-200 p-4 text-sm text-gray-700 transition hover:border-blue-400 hover:bg-blue-50"
           >
             <span className="text-lg">🎬</span>
             解説動画
-          </Link>
-          <Link
-            href="/check"
-            className="flex flex-col items-center gap-1 rounded-xl border border-gray-200 p-4 text-sm text-gray-700 transition hover:border-blue-400 hover:bg-blue-50"
-          >
-            <span className="text-lg">🔍</span>
-            補助金を診断
           </Link>
         </div>
       </main>

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { trackCTAClick, trackPartnerLinkClick } from "@/lib/analytics";
 import { getPartnerUrl } from "@/lib/partnerUrl";
+import { CTA } from "@/lib/constants";
 
 const navLinkClass = (heroStyle: boolean) =>
   `rounded-sm text-sm font-medium transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent-navy)] sm:text-[0.9375rem] ${
@@ -20,7 +21,7 @@ function HeaderCtaGroup() {
         onClick={() => trackCTAClick("header_consult")}
         className="header-cta header-cta--primary sm:min-w-[11rem] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent-navy)]"
       >
-        無料相談予約する
+        {CTA.PRIMARY}
       </Link>
     </div>
   );
