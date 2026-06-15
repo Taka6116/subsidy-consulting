@@ -4,11 +4,24 @@ import Link from "next/link";
 import { useRef, useState } from "react";
 
 // ────────────────────────────────────────────────────────────
-// PCモニター内の動画プレイヤー（HeyGen 生成動画・public/videos からローカル配信）
+// PCモニター内の動画プレイヤー（公開済み動画を S3 から配信）
 // ────────────────────────────────────────────────────────────
-const HERO_VIDEO_URL = "/videos/hero-shimane-logistics.mp4";
+const FALLBACK_HERO_VIDEO = "/videos/hero-shimane-logistics.mp4";
 
-function VideoPlayer() {
+export type HeroVideo = {
+  videoPath: string;
+  title: string;
+  duration: number | null;
+};
+
+function formatDurationLabel(sec: number | null): string {
+  if (!sec) return "Auto playing";
+  const m = Math.floor(sec / 60);
+  const s = sec % 60;
+  return `Auto playing ${m}:${String(s).padStart(2, "0")}`;
+}
+
+function VideoPlayer({ videoUrl }: { videoUrl: string }) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [muted, setMuted] = useState(true);
 
@@ -23,7 +36,7 @@ function VideoPlayer() {
     <div className="relative overflow-hidden rounded-lg bg-black">
       <video
         ref={videoRef}
-        src={HERO_VIDEO_URL}
+        src={videoUrl}
         autoPlay
         muted
         playsInline
@@ -76,7 +89,11 @@ function VideoPlayer() {
 // ────────────────────────────────────────────────────────────
 // PCモニターフレーム
 // ────────────────────────────────────────────────────────────
-function MonitorFrame() {
+function MonitorFrame({ heroVideo }: { heroVideo: HeroVideo | null }) {
+  const videoUrl = heroVideo?.videoPath ?? FALLBACK_HERO_VIDEO;
+  const title = heroVideo?.title ?? "島根県地域物流効率化・連携促進補助金";
+  const durationLabel = formatDurationLabel(heroVideo?.duration ?? null);
+
   return (
     <div className="relative mx-auto w-full">
       {/* モニター外枠 */}
@@ -92,17 +109,17 @@ function MonitorFrame() {
           <div className="mx-3 flex-1 rounded-md bg-[#0d1830] px-3 py-1 text-center text-[10px] text-white/40">
             subsidy-consulting-nts.vercel.app/subsidies/videos
           </div>
-          <span className="rounded bg-[#0d1830] px-2 py-0.5 text-[10px] text-white/50">Auto playing 1:16</span>
+          <span className="rounded bg-[#0d1830] px-2 py-0.5 text-[10px] text-white/50">{durationLabel}</span>
         </div>
 
         {/* 画面本体 */}
         <div className="rounded-b-xl p-3" style={{ background: "#0e1f45" }}>
           <div className="flex flex-col gap-2">
-            <VideoPlayer />
+            <VideoPlayer videoUrl={videoUrl} />
             {/* 動画タイトル */}
             <div className="px-0.5">
               <p className="text-[10px] font-bold text-white/90 leading-snug sm:text-xs">
-                島根県地域物流効率化・連携促進補助金
+                {title}
               </p>
               <div className="mt-1 flex items-center gap-1.5 text-[9px] text-white/50">
                 <span className="rounded bg-white/10 px-1.5 py-0.5">専門家による制度解説</span>
@@ -123,7 +140,7 @@ function MonitorFrame() {
 // ────────────────────────────────────────────────────────────
 // メインヒーローコンポーネント
 // ────────────────────────────────────────────────────────────
-export default function VideosHero() {
+export default function VideosHero({ heroVideo }: { heroVideo?: HeroVideo | null }) {
   return (
     <section
       aria-labelledby="videos-hero-heading"
@@ -179,7 +196,7 @@ export default function VideosHero() {
           {/* ── 右: PCモニタービジュアル（右カラム幅いっぱいに近いサイズまで拡大） ── */}
           <div className="flex w-full min-w-0 justify-center lg:justify-end">
             <div className="w-full max-w-[560px] sm:max-w-[620px] lg:max-w-[min(100%,760px)] xl:max-w-[min(100%,860px)] 2xl:max-w-[min(100%,960px)]">
-              <MonitorFrame />
+              <MonitorFrame heroVideo={heroVideo ?? null} />
             </div>
           </div>
         </div>

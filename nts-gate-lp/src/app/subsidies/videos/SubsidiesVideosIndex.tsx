@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useMemo, useState } from "react";
 import FilterBar, { type StatusTab } from "@/components/subsidies/FilterBar";
-import VideosHero from "./VideosHero";
+import VideosHero, { type HeroVideo } from "./VideosHero";
 import VideosTicker from "./VideosTicker";
 
 const ALL = "__all__";
@@ -64,8 +64,10 @@ function buildTagOptions(videos: VideoCard[]): TagOption[] {
 
 export default function SubsidiesVideosIndex({
   videos,
+  heroVideo,
 }: {
   videos: VideoCard[];
+  heroVideo?: HeroVideo | null;
 }) {
   const [selectedTag, setSelectedTag] = useState<string>(ALL);
   const [showAllTags, setShowAllTags] = useState(false);
@@ -127,7 +129,7 @@ export default function SubsidiesVideosIndex({
   return (
     <>
       {/* FVヒーロー */}
-      <VideosHero />
+      <VideosHero heroVideo={heroVideo ?? null} />
 
       {/* ティッカー帯 */}
       <VideosTicker videos={videos.slice(0, 10)} />

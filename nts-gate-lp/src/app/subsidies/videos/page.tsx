@@ -86,6 +86,8 @@ export default async function SubsidiesVideosPage() {
     },
   });
 
+  const heroSource = rows.find((r) => r.slug && r.title && r.videoPath);
+
   const videos: VideoCard[] = rows
     .filter((r) => r.slug && r.title)
     .map((r) => ({
@@ -113,11 +115,19 @@ export default async function SubsidiesVideosPage() {
       thumbnailPath: r.thumbnailPath ?? null,
     }));
 
+  const heroVideo = heroSource?.videoPath
+    ? {
+        videoPath: heroSource.videoPath,
+        title: heroSource.title as string,
+        duration: heroSource.duration ?? null,
+      }
+    : null;
+
   return (
     <>
       <Header />
       <main className="subsidies-portal relative z-[2] min-h-[100svh] bg-[#f8faff] pt-16 font-body sm:pt-20">
-        <SubsidiesVideosIndex videos={videos} />
+        <SubsidiesVideosIndex videos={videos} heroVideo={heroVideo} />
       </main>
       <LpFooter />
     </>
