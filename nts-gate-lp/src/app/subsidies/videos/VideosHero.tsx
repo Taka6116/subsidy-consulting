@@ -138,7 +138,7 @@ export default function VideosHero() {
             {/* H1 */}
             <h1
               id="videos-hero-heading"
-              className="font-heading text-[clamp(2.875rem,3.5vw,4rem)] font-black leading-[1.14] tracking-tight text-[#081C44]"
+              className="videos-hero-title font-heading text-[clamp(2.875rem,3.5vw,4rem)] font-black leading-[1.14] tracking-tight text-[#081C44]"
             >
               使える補助金を、
               <br />
