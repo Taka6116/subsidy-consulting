@@ -910,7 +910,7 @@ function slide1Intro(d: SlideData, ff: string, t: SlideTheme): string {
   // ── Pattern C: 左テキスト + 右ホワイトカード（補助上限＋3アイコン）──
   if (t.id === "C") {
     const nameLines = wrapTextByChars(d.name, 14).slice(0, 2);
-    const descLines = wrapTextByChars(d.description, 22).slice(0, 2);
+    const descLines = wrapTextByChars(trimDescription(d.description, 42), 22).slice(0, 2);
     const targetLines = wrapTextByChars(d.industries.slice(0, 16), 8).slice(0, 2);
     const uc1Lines   = wrapTextByChars(
       d.useCase1.replace(/に活用.*$/, "").replace(/の導入費用.*$/, "").slice(0, 14),
@@ -1102,7 +1102,7 @@ function slide1Intro(d: SlideData, ff: string, t: SlideTheme): string {
 
 // 2. What（制度概要）
 function slide2What(d: SlideData, ff: string, t: SlideTheme): string {
-  const desc2 = wrapTextByChars(d.description, 24).slice(0, 5);
+  const desc2 = wrapTextByChars(trimDescription(d.description, 115), 24).slice(0, 5);
 
   // ── Pattern B: マガジン見出し＋左縦帯 ────────────────────────
   if (t.id === "B") {
@@ -1123,7 +1123,7 @@ function slide2What(d: SlideData, ff: string, t: SlideTheme): string {
 
   // ── Pattern C: 明るい制度概要カード ───────────────────────────
   if (t.id === "C") {
-    const descC = wrapTextByChars(d.description, 22).slice(0, 5);
+    const descC = wrapTextByChars(trimDescription(d.description, 105), 22).slice(0, 5);
     return `<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
   ${ff}
@@ -1144,7 +1144,7 @@ function slide2What(d: SlideData, ff: string, t: SlideTheme): string {
 
   // ── Pattern D: シンプルボックス＋テキスト ─────────────────────────
   if (t.id === "D") {
-    const descD = wrapTextByChars(d.description, 30).slice(0, 5);
+    const descD = wrapTextByChars(trimDescription(d.description, 145), 30).slice(0, 5);
     return `<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
   ${ff}
