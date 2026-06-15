@@ -235,7 +235,9 @@ function toUnifiedFromRow(row: LpRow): UnifiedCard {
   const soon = !expired && isSoon(grant.deadline);
   const amountLabel = formatMaxAmount(grant.maxAmountLabel, grant.subsidyAmount);
   const deadlineLabel = formatDeadlineLabel(grant.deadlineLabel, grant.deadline);
-  const copy = parseHeroCopy(row.body) ?? "この補助金を、自社の投資判断に活かすためのガイドです。";
+  const subsidyTitle = grant.name ?? row.title ?? "この補助金";
+  const copy = parseHeroCopy(row.body)
+    ?? `${subsidyTitle}について、対象条件・補助上限・申請の流れをまとめた活用ガイドです。`;
 
   return {
     key: `row:${row.id}`,

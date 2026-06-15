@@ -260,6 +260,15 @@ export default async function SubsidiesArticlesPage() {
         publishedAtIso: featuredSource.publishedAt
           ? featuredSource.publishedAt.toISOString()
           : null,
+        isNew: featuredSource.publishedAt
+          ? now.getTime() - featuredSource.publishedAt.getTime() <= 7 * DAY_MS
+          : false,
+        isDeadlineSoon: (() => {
+          const d = featuredSource.grant?.deadline;
+          if (!d) return false;
+          const ms = d.getTime() - now.getTime();
+          return ms >= 0 && ms <= 14 * DAY_MS;
+        })(),
       }
     : null;
 

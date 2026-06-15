@@ -11,15 +11,38 @@ function formatDuration(sec: number | null): string {
   return `${m}:${String(s).padStart(2, "0")}`;
 }
 
-function TickerCard({ video }: { video: VideoCard }) {
+function TickerCard({
+  video,
+  isActive,
+  onSelect,
+}: {
+  video: VideoCard;
+  isActive: boolean;
+  onSelect?: (video: VideoCard) => void;
+}) {
   const dur = formatDuration(video.duration);
   const category = video.tags.find((t) => t !== "お役立ち情報") ?? "";
+  const hasVideo = Boolean(video.videoPath);
+
+  const handleClick = (e: React.MouseEvent) => {
+    if (hasVideo && onSelect) {
+      e.preventDefault();
+      onSelect(video);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  };
 
   return (
     <Link
       href={`/subsidies/videos/${video.slug}`}
-      className="flex w-[220px] shrink-0 items-center gap-2.5 rounded-xl border border-[#dbeafe] bg-white px-3 py-2.5 shadow-sm transition hover:border-[#0e357f]/30 hover:shadow-md"
+      onClick={handleClick}
+      className={`flex w-[220px] shrink-0 items-center gap-2.5 rounded-xl border px-3 py-2.5 shadow-sm transition hover:shadow-md ${
+        isActive
+          ? "border-[#0e357f] bg-[#eff6ff]"
+          : "border-[#dbeafe] bg-white hover:border-[#0e357f]/30"
+      }`}
       tabIndex={-1}
+      aria-pressed={isActive}
     >
       {/* サムネイル */}
       <div className="relative h-12 w-[84px] shrink-0 overflow-hidden rounded-lg bg-gradient-to-br from-[#0e357f] to-[#1a4fa0]">
@@ -51,6 +74,11 @@ function TickerCard({ video }: { video: VideoCard }) {
             {dur}
           </span>
         )}
+        {isActive && (
+          <span className="absolute left-1 top-1 rounded bg-[#0e357f] px-1 py-px text-[8px] font-bold text-white">
+            再生中
+          </span>
+        )}
       </div>
 
       {/* テキスト */}
@@ -66,7 +94,15 @@ function TickerCard({ video }: { video: VideoCard }) {
   );
 }
 
-export default function VideosTicker({ videos }: { videos: VideoCard[] }) {
+export default function VideosTicker({
+  videos,
+  activeVideoId,
+  onVideoSelect,
+}: {
+  videos: VideoCard[];
+  activeVideoId?: string | null;
+  onVideoSelect?: (video: VideoCard) => void;
+}) {
   if (videos.length === 0) return null;
 
   // 十分な長さにするため最低2ループ分確保
@@ -108,7 +144,12 @@ export default function VideosTicker({ videos }: { videos: VideoCard[] }) {
             {/* 2ループで途切れなく */}
             {[...items, ...items].map((v, i) => (
               // biome-ignore lint/suspicious/noArrayIndexKey: ticker loop
-              <TickerCard key={`${v.id}-${i}`} video={v} />
+              <TickerCard
+                key={`${v.id}-${i}`}
+                video={v}
+                isActive={Boolean(v.videoPath && v.videoPath === activeVideoId)}
+                onSelect={v.videoPath ? onVideoSelect : undefined}
+              />
             ))}
           </div>
         </div>

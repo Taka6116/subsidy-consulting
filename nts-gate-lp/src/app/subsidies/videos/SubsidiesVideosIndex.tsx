@@ -64,7 +64,7 @@ function buildTagOptions(videos: VideoCard[]): TagOption[] {
 
 export default function SubsidiesVideosIndex({
   videos,
-  heroVideo,
+  heroVideo: heroVideoProp,
 }: {
   videos: VideoCard[];
   heroVideo?: HeroVideo | null;
@@ -74,13 +74,15 @@ export default function SubsidiesVideosIndex({
   const [page, setPage] = useState(1);
   const [query, setQuery] = useState("");
   const [tab, setTab] = useState<StatusTab>("all");
+  const [heroVideo, setHeroVideo] = useState<HeroVideo | null>(heroVideoProp ?? null);
 
   const tagOptions = useMemo(() => buildTagOptions(videos), [videos]);
+  const TOP_TAG_COUNT = 10;
   const visibleTagOpts = useMemo(
-    () => (showAllTags ? tagOptions : tagOptions.filter((o) => o.count >= 2)),
+    () => (showAllTags ? tagOptions : tagOptions.slice(0, TOP_TAG_COUNT)),
     [tagOptions, showAllTags],
   );
-  const hiddenCount = tagOptions.length - visibleTagOpts.length;
+  const hiddenCount = tagOptions.length - TOP_TAG_COUNT;
 
   const counts = useMemo(
     () => ({
@@ -135,10 +137,16 @@ export default function SubsidiesVideosIndex({
   return (
     <>
       {/* FVヒーロー */}
-      <VideosHero heroVideo={heroVideo ?? null} />
+      <VideosHero heroVideo={heroVideo} />
 
       {/* ティッカー帯 */}
-      <VideosTicker videos={videos.slice(0, 10)} />
+      <VideosTicker
+        videos={videos.slice(0, 10)}
+        activeVideoId={heroVideo?.videoPath ?? null}
+        onVideoSelect={(v) =>
+          setHeroVideo({ videoPath: v.videoPath!, title: v.title, duration: v.duration })
+        }
+      />
 
       {/* 一覧本体 */}
     <div id="video-list" className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:py-14">
@@ -252,20 +260,14 @@ export default function SubsidiesVideosIndex({
                 </li>
               ))}
             </ul>
-            {hiddenCount > 0 && (
+            {tagOptions.length > TOP_TAG_COUNT && (
               <button
-                onClick={() => setShowAllTags(true)}
+                onClick={() => setShowAllTags((v) => !v)}
                 className="mt-2 w-full rounded-lg px-3 py-2 text-left text-xs text-primary-700 transition hover:bg-primary-50"
               >
-                もっと見る（{hiddenCount}個）
-              </button>
-            )}
-            {showAllTags && hiddenCount > 0 && (
-              <button
-                onClick={() => setShowAllTags(false)}
-                className="mt-1 w-full rounded-lg px-3 py-2 text-left text-xs text-neutral-500 transition hover:bg-neutral-50"
-              >
-                閉じる
+                {showAllTags
+                  ? "▲ 閉じる"
+                  : `▼ もっと見る（${hiddenCount}個）`}
               </button>
             )}
           </div>
@@ -359,8 +361,17 @@ function VideoCardItem({ video }: { video: VideoCard }) {
         {video.subsidyName && (
           <p className="mt-1 line-clamp-1 text-xs text-neutral-500">{video.subsidyName}</p>
         )}
-        <div className="mt-auto flex items-center justify-between pt-3">
-          <span className="text-xs text-neutral-400">{video.publishedAt}</span>
+        <div className="mt-auto flex flex-wrap items-center justify-between gap-1 pt-3">
+          <div className="flex flex-col gap-0.5">
+            <span className="text-xs text-neutral-400">更新 {video.publishedAt}</span>
+            {video.deadlineLabel ? (
+              <span className={`text-xs ${expired ? "text-neutral-400 line-through" : "text-orange-600 font-medium"}`}>
+                締切 {video.deadlineLabel}
+              </span>
+            ) : (
+              <span className="text-xs text-neutral-400">締切 随時</span>
+            )}
+          </div>
           {video.maxAmountLabel && (
             <span className="rounded-full bg-neutral-100 px-2 py-0.5 text-xs font-medium text-neutral-600">
               {video.maxAmountLabel}

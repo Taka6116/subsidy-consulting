@@ -79,6 +79,8 @@ export type ArticlesPortalData = {
     subsidyName: string;
     imagePath: string | null;
     publishedAtIso: string | null;
+    isNew?: boolean;
+    isDeadlineSoon?: boolean;
   } | null;
 };
 
@@ -121,12 +123,6 @@ export default function SubsidiesArticlesIndex({
   const gridRef = useRef<HTMLDivElement>(null);
 
   const tagOptions = useMemo(() => buildTagOptions(articles), [articles]);
-
-  const visibleTagOpts = useMemo(
-    () => (showAllTags ? tagOptions : tagOptions.filter((o) => o.count >= 3)),
-    [tagOptions, showAllTags],
-  );
-  const hiddenCount = tagOptions.length - visibleTagOpts.length;
 
   const filtered: ArticleCard[] = useMemo(() => {
     let list = articles;
@@ -277,10 +273,23 @@ export default function SubsidiesArticlesIndex({
                     <div className="absolute inset-0 bg-gradient-to-br from-[#0e357f] to-[#28a4a3]" />
                   )}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/45 to-black/20" />
-                  <div className="absolute bottom-0 left-0 right-0 p-5 text-white sm:p-6">
-                    <span className="inline-flex rounded bg-red-500 px-2 py-0.5 text-[10px] font-bold">
+                  {/* 選定理由バッジ（左上） */}
+                  <div className="absolute left-3 top-3 flex gap-1.5">
+                    {portalData.featured.isDeadlineSoon && (
+                      <span className="rounded bg-orange-500 px-2 py-1 text-[10px] font-bold text-white">
+                        締切間近
+                      </span>
+                    )}
+                    <span className="rounded bg-blue-700 px-2 py-1 text-[10px] font-bold text-white">
                       注目解説
                     </span>
+                    {portalData.featured.isNew && (
+                      <span className="rounded bg-green-600 px-2 py-1 text-[10px] font-bold text-white">
+                        新着
+                      </span>
+                    )}
+                  </div>
+                  <div className="absolute bottom-0 left-0 right-0 p-5 text-white sm:p-6">
                     <p className="mt-2 text-sm text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.7)]">
                       {portalData.featured.subsidyName}
                     </p>
@@ -366,17 +375,19 @@ export default function SubsidiesArticlesIndex({
               <h3 className="text-sm font-semibold tracking-wide" style={{ color: "#0f2747" }}>
                 最新の補助金動向
               </h3>
-              <span
-                className="rounded-full px-3 py-[3px] text-[11px] font-semibold"
-                style={{
-                  background: "linear-gradient(180deg, #f2fffc 0%, #ecfbff 100%)",
-                  border: "1px solid rgba(45,212,191,0.22)",
-                  color: "#2a7c78",
-                  boxShadow: "0 4px 12px rgba(15,23,42,0.04)",
-                }}
-              >
-                今週更新
-              </span>
+              {portalData.stats.newArticlesCount > 0 && (
+                <span
+                  className="rounded-full px-3 py-[3px] text-[11px] font-semibold"
+                  style={{
+                    background: "linear-gradient(180deg, #f2fffc 0%, #ecfbff 100%)",
+                    border: "1px solid rgba(45,212,191,0.22)",
+                    color: "#2a7c78",
+                    boxShadow: "0 4px 12px rgba(15,23,42,0.04)",
+                  }}
+                >
+                  今週更新
+                </span>
+              )}
             </div>
             <div className="grid grid-cols-2 gap-2.5 sm:gap-3">
               {/* 新着記事 */}
@@ -388,9 +399,11 @@ export default function SubsidiesArticlesIndex({
                   boxShadow: "0 6px 18px rgba(15,23,42,0.03), 0 1px 4px rgba(15,23,42,0.02)",
                 }}
               >
-                <p className="text-xs font-medium" style={{ color: "#5f6f86" }}>新着記事</p>
+                <p className="text-xs font-medium" style={{ color: "#5f6f86" }}>最新記事</p>
                 <p className="mt-1 text-xl font-black" style={{ color: "#1d4ed8" }}>
-                  {portalData.stats.newArticlesCount}件
+                  {portalData.stats.newArticlesCount > 0
+                    ? `${portalData.stats.newArticlesCount}件`
+                    : "随時更新中"}
                 </p>
               </div>
               {/* 公募中補助金 */}
@@ -537,7 +550,8 @@ export default function SubsidiesArticlesIndex({
                   </button>
                 )}
               </div>
-              <div className="flex items-center gap-2 overflow-x-auto whitespace-nowrap">
+              {/* タグフィルタ：折りたたみ表示（件数上位10個を常時表示） */}
+              <div className="flex flex-wrap gap-2">
                 <button
                   type="button"
                   onClick={() => handleTagSelect(ALL)}
@@ -549,7 +563,7 @@ export default function SubsidiesArticlesIndex({
                 >
                   すべてのタグ
                 </button>
-                {visibleTagOpts.slice(0, 5).map((opt) => (
+                {tagOptions.slice(0, 10).map((opt) => (
                   <button
                     key={opt.label}
                     type="button"
@@ -563,27 +577,7 @@ export default function SubsidiesArticlesIndex({
                     {opt.label}
                   </button>
                 ))}
-              </div>
-            </div>
-
-            <div className="mt-3 flex flex-wrap items-center gap-3 text-xs text-neutral-500">
-              <span>
-                全{articles.length}件中 <span className="font-semibold text-neutral-800">{filtered.length}</span>件表示
-              </span>
-              {hiddenCount > 0 && (
-                <button
-                  type="button"
-                  onClick={() => setShowAllTags((v) => !v)}
-                  className="text-primary-700 hover:underline"
-                >
-                  {showAllTags ? "タグを閉じる" : `タグをもっと見る（${hiddenCount}個）`}
-                </button>
-              )}
-            </div>
-
-            {showAllTags && (
-              <div className="mt-3 flex flex-wrap gap-2">
-                {tagOptions.map((opt) => (
+                {showAllTags && tagOptions.slice(10).map((opt) => (
                   <button
                     key={opt.label}
                     type="button"
@@ -598,7 +592,22 @@ export default function SubsidiesArticlesIndex({
                   </button>
                 ))}
               </div>
-            )}
+              {tagOptions.length > 10 && (
+                <button
+                  type="button"
+                  onClick={() => setShowAllTags((v) => !v)}
+                  className="mt-2 text-sm text-primary-700 hover:underline"
+                >
+                  {showAllTags ? "▲ 閉じる" : `▼ タグをもっと見る（${tagOptions.length - 10}個）`}
+                </button>
+              )}
+            </div>
+
+            <div className="mt-3 flex flex-wrap items-center gap-3 text-xs text-neutral-500">
+              <span>
+                全{articles.length}件中 <span className="font-semibold text-neutral-800">{filtered.length}</span>件表示
+              </span>
+            </div>
           </section>
 
           {articles.length === 0 ? (
