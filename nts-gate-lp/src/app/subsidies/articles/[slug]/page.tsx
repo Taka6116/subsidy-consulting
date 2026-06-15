@@ -94,6 +94,14 @@ function resolveAmountLabel(
   return null;
 }
 
+const CURRENT_YEAR = new Date().getFullYear();
+const DEADLINE_YEAR_MIN = CURRENT_YEAR - 1;
+const DEADLINE_YEAR_MAX = CURRENT_YEAR + 10;
+
+function isValidDeadlineYear(year: number): boolean {
+  return year >= DEADLINE_YEAR_MIN && year <= DEADLINE_YEAR_MAX;
+}
+
 function resolveDeadlineLabel(
   deadlineLabel: string | null,
   deadline: Date | null,
@@ -104,7 +112,11 @@ function resolveDeadlineLabel(
       ? new Date(deadlineLabel)
       : null;
   if (date && !Number.isNaN(date.getTime())) {
-    return `${date.getFullYear()}年${date.getMonth() + 1}月${date.getDate()}日`;
+    const year = date.getFullYear();
+    if (!isValidDeadlineYear(year)) {
+      return "要確認（公式情報をご確認ください）";
+    }
+    return `${year}年${date.getMonth() + 1}月${date.getDate()}日`;
   }
   if (deadlineLabel && !/^\s*(?:要確認|—|null)\s*$/i.test(deadlineLabel)) {
     return deadlineLabel;
@@ -285,7 +297,7 @@ export default async function SubsidyArticlePage({ params }: PageProps) {
   return (
     <>
       <Header />
-      <main className="relative z-[2] min-h-[100svh] bg-white pt-16 font-body sm:pt-20">
+      <main className="relative z-[2] min-h-[100svh] bg-white pt-16 pb-20 font-body sm:pt-20 lg:pb-0">
 
         {/* ─── ヒーロー帯 ─── */}
         <div className="bg-[#f5f7fa] border-b border-gray-200">
@@ -374,8 +386,12 @@ export default async function SubsidyArticlePage({ params }: PageProps) {
           </div>
         </div>
 
-        {/* ─── 記事本体 ─── */}
-        <div className="mx-auto max-w-[960px] px-5 py-10 sm:px-6 lg:py-14">
+        {/* ─── 記事本体（2カラム：本文 + スティッキーサイドバー） ─── */}
+        <div className="mx-auto max-w-[1200px] px-5 py-10 sm:px-6 lg:py-14">
+          <div className="flex items-start gap-8">
+
+            {/* ─── 左: 本文エリア ─── */}
+            <article className="min-w-0 flex-1">
 
           {/* 速報バッジ */}
           {article.publishedAt && (
@@ -392,11 +408,15 @@ export default async function SubsidyArticlePage({ params }: PageProps) {
             />
           </div>
 
-          {/* ── 図解ブロック①: SummaryCards ── */}
-          <SummaryCards data={visualData} />
+          {/* ── 図解ブロック①: SummaryCards（モバイルのみ・PCはサイドバー） ── */}
+          <div className="lg:hidden">
+            <SummaryCards data={visualData} />
+          </div>
 
-          {/* 目次 */}
-          <ArticleToc contentContainerId="article-body" />
+          {/* 目次（モバイルのみ・PCはサイドバー） */}
+          <div className="lg:hidden">
+            <ArticleToc contentContainerId="article-body" />
+          </div>
 
           {/* 本文 */}
           <div
@@ -488,7 +508,63 @@ export default async function SubsidyArticlePage({ params }: PageProps) {
               ← 解説記事一覧に戻る
             </Link>
           </div>
+
+            </article>{/* /本文エリア */}
+
+            {/* ─── 右: スティッキーサイドバー（PCのみ） ─── */}
+            <aside className="hidden lg:flex w-72 flex-shrink-0 flex-col gap-4 self-start sticky top-24">
+
+              {/* 補助金サマリーカード */}
+              <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
+                <p className="mb-3 text-xs font-bold uppercase tracking-wider text-gray-400">この補助金のポイント</p>
+                <div className="space-y-3 text-sm">
+                  {grantAmount && (
+                    <div>
+                      <span className="text-xs text-gray-500">補助上限</span>
+                      <p className="mt-0.5 text-lg font-bold text-[#0e357f]">最大 {grantAmount}</p>
+                    </div>
+                  )}
+                  {grantDeadline && (
+                    <div>
+                      <span className="text-xs text-gray-500">申請期限</span>
+                      <p className="mt-0.5 font-medium text-gray-800">{grantDeadline}</p>
+                    </div>
+                  )}
+                  {visualData.region && (
+                    <div>
+                      <span className="text-xs text-gray-500">対象地域</span>
+                      <p className="mt-0.5 font-medium text-gray-800">{visualData.region}</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* 無料相談CTA */}
+              <Link
+                href={`/consult${article.grant ? `?subsidyId=${article.grant.id}` : ""}`}
+                className="block w-full rounded-xl bg-gradient-to-r from-[#0EA5E9] to-[#006FE6] py-3 text-center text-sm font-bold text-white shadow-sm transition hover:opacity-90"
+              >
+                無料相談する →
+              </Link>
+
+              {/* 目次（PCサイドバー） */}
+              <ArticleToc contentContainerId="article-body" />
+
+            </aside>
+
+          </div>{/* /2カラム flex */}
         </div>
+
+        {/* モバイル専用・画面下部固定CTA */}
+        <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-gray-200 bg-white p-3 shadow-lg lg:hidden">
+          <Link
+            href={`/consult${article.grant ? `?subsidyId=${article.grant.id}` : ""}`}
+            className="block w-full rounded-xl bg-gradient-to-r from-[#0EA5E9] to-[#006FE6] py-3 text-center text-sm font-bold text-white"
+          >
+            無料相談する →
+          </Link>
+        </div>
+
       </main>
       <LpFooter />
     </>

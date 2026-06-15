@@ -28,7 +28,7 @@ const HEADERS = {
 /** Kenji アバター（HeyGen 公式） */
 const KENJI_AVATAR_ID = "d23aaf20be1c43b490381f567ce779d4";
 /** 桜庭さんのボイスクローン */
-const SAKURABA_VOICE_ID = "625b342f002045da9f24df8f1b5cf3d3";
+const SAKURABA_VOICE_ID = "6c2b2c234a604057a90578e18e10c211";
 /**
  * NTS コーポレート背景画像（public/heygen/bg-nts-corporate.png）
  * Vercel デプロイ後の公開 URL を指定。ローカル実行時はデプロイ済み URL を使用。

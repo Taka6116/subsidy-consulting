@@ -7,6 +7,7 @@ import SubsidyAmountHeroRow from "@/components/subsidies/SubsidyAmountHeroRow";
 import SubsidyDeadlineRail, {
   type DeadlineRailItem,
 } from "@/components/subsidies/SubsidyDeadlineRail";
+import Pagination from "@/components/shared/Pagination";
 
 type StatusTab = "all" | "open" | "soon" | "closed";
 type SortKey = "newest" | "deadline" | "amount";
@@ -199,6 +200,7 @@ export default function SubsidiesListClient({
   const [industryFilter, setIndustryFilter] = useState<string>("");
   const [sortKey, setSortKey] = useState<SortKey>("newest");
   const [page, setPage] = useState(1);
+  const listTopRef = useRef<HTMLDivElement>(null);
 
   const FALLBACK_INDUSTRIES = [
     "製造業", "建設業", "小売・サービス業", "IT・情報通信",
@@ -294,9 +296,9 @@ export default function SubsidiesListClient({
     setPage(1);
   }, [filtered]);
 
-  const visibleGrants = filtered.slice(0, page * PAGE_SIZE);
-  const hasMore = filtered.length > page * PAGE_SIZE;
   const totalPages = Math.ceil(filtered.length / PAGE_SIZE);
+  const safePage = Math.min(Math.max(1, page), totalPages || 1);
+  const visibleGrants = filtered.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE);
 
   const latestUpdated = useMemo(() => {
     if (grants.length === 0) return "-";
@@ -498,7 +500,7 @@ export default function SubsidiesListClient({
       </section>
 
       {/* 件数表示 */}
-      <div className="flex flex-wrap items-center justify-between gap-2">
+      <div ref={listTopRef} className="flex flex-wrap items-center justify-between gap-2">
         <p className="text-sm text-[#4f5b73]">
           <span className="font-extrabold text-[#0d2640]">{filtered.length.toLocaleString("ja-JP")}</span>
           <span className="ml-1">件中</span>
@@ -506,7 +508,7 @@ export default function SubsidiesListClient({
           <span>件を表示</span>
           {totalPages > 1 ? (
             <span className="ml-2 text-[11px] text-[#6b7a99]">
-              （{page} / {totalPages} ページ）
+              （{safePage} / {totalPages} ページ）
             </span>
           ) : null}
         </p>
@@ -541,23 +543,15 @@ export default function SubsidiesListClient({
                 ))}
               </div>
 
-              {/* Load More */}
-              {hasMore ? (
-                <div className="mt-6 flex flex-col items-center gap-2">
-                  <button
-                    type="button"
-                    onClick={() => setPage((p) => p + 1)}
-                    className="rounded-xl border border-[#d6e1f4] bg-white px-8 py-3 text-sm font-bold text-[#1f4dab] shadow-sm transition hover:bg-[#f1f5fb]"
-                  >
-                    次の{Math.min(PAGE_SIZE, filtered.length - page * PAGE_SIZE)}件を表示する
-                  </button>
-                  <p className="text-[11px] text-[#6b7a99]">
-                    残り {filtered.length - page * PAGE_SIZE} 件
-                  </p>
-                </div>
-              ) : filtered.length > PAGE_SIZE ? (
-                <p className="mt-6 text-center text-xs text-[#6b7a99]">すべての件を表示しました</p>
-              ) : null}
+              {/* ページネーション */}
+              <Pagination
+                currentPage={safePage}
+                totalPages={totalPages}
+                onPageChange={(p) => {
+                  setPage(p);
+                  listTopRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+                }}
+              />
             </>
           )}
         </div>
@@ -846,7 +840,7 @@ function SubsidyResultCard({ grant }: { grant: SubsidyCard }) {
         />
 
         {/* アクションボタン */}
-        <div className="mt-4 flex flex-wrap items-center gap-2 border-t border-[#eef2f8] pt-3">
+        <div className="mt-4 flex items-stretch gap-2 border-t border-[#eef2f8] pt-3">
           {/* 主CTA: 解説記事を見る（articleSlugあり） / 詳細を見る（なし） */}
           <Link
             href={
@@ -860,25 +854,25 @@ function SubsidyResultCard({ grant }: { grant: SubsidyCard }) {
               isExpired ? "pointer-events-none opacity-60" : ""
             }`}
           >
-            {grant.articleSlug ? "解説記事を見る" : "詳細を見る"}
-            <ArrowRight className="h-4 w-4" />
+            {grant.articleSlug ? "解説記事を見る →" : "詳細を見る →"}
           </Link>
-          {/* 補助CTA: 専門LP（存在する場合のみ） */}
-          {grant.hasLp ? (
+          {/* サブCTA群：右側に縦並び */}
+          <div className="flex flex-col gap-1">
+            {grant.hasLp && (
+              <Link
+                href={`/subsidies/lp/${grant.id}`}
+                className="inline-flex items-center justify-center rounded-xl border border-[#d6e1f4] bg-white px-3 py-1.5 text-xs font-semibold text-[#5b6b8c] transition hover:bg-[#f7faff] whitespace-nowrap"
+              >
+                活用ガイド
+              </Link>
+            )}
             <Link
-              href={`/subsidies/lp/${grant.id}`}
-              className="inline-flex items-center justify-center rounded-xl border border-[#d6e1f4] bg-white px-3 py-2.5 text-xs font-semibold text-[#5b6b8c] transition hover:bg-[#f7faff]"
+              href={`/consult?subsidyId=${grant.id}`}
+              className="inline-flex items-center justify-center rounded-xl border border-[#d6e1f4] bg-white px-3 py-1.5 text-xs font-semibold text-[#1a7b6f] transition hover:bg-[#f3faf8] whitespace-nowrap"
             >
-              専門LP
+              無料相談
             </Link>
-          ) : null}
-          {/* 補助CTA: 相談 */}
-          <Link
-            href={`/consult?subsidyId=${grant.id}`}
-            className="inline-flex items-center justify-center rounded-xl border border-[#d6e1f4] bg-white px-3 py-2.5 text-xs font-semibold text-[#1a7b6f] transition hover:bg-[#f3faf8]"
-          >
-            相談する
-          </Link>
+          </div>
         </div>
       </div>
     </article>

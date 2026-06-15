@@ -1,6 +1,30 @@
 import type { GeneratedContent, SubsidyGrant } from "@prisma/client";
+import QRCode from "qrcode";
 import { buildSubsidyLpData } from "@/lib/subsidy-lp/buildSubsidyLpData";
 import { cleanSubsidyName } from "@/lib/subsidyCheckResultHelpers";
+
+/**
+ * lpUrl から QR コードを SVG 文字列で生成する。
+ * 動画テンプレートにインライン埋め込みするため path のみを取り出す。
+ * 失敗時は null（テンプレ側で URL テキストにフォールバック）。
+ */
+async function buildQrSvg(url: string): Promise<string | null> {
+  try {
+    const svg = await QRCode.toString(url, {
+      type: "svg",
+      margin: 0,
+      errorCorrectionLevel: "M",
+      color: { dark: "#10233f", light: "#00000000" },
+    });
+    // <svg ...>...</svg> の中身（path 群）だけ抜き出して viewBox 付きで返す
+    const viewBoxMatch = svg.match(/viewBox="([^"]+)"/);
+    const inner = svg.replace(/^[\s\S]*?<svg[^>]*>/, "").replace(/<\/svg>\s*$/, "");
+    const viewBox = viewBoxMatch ? viewBoxMatch[1] : "0 0 33 33";
+    return `<svg class="qr-svg" viewBox="${viewBox}" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">${inner}</svg>`;
+  } catch {
+    return null;
+  }
+}
 
 export type HyperframesSceneType =
   | "hook"
@@ -25,6 +49,8 @@ export type HyperframesMetric = {
   label: string;
   value: string;
   note?: string;
+  /** カードのアクセント役割（額・率・期限で値の色を出し分ける） */
+  accent?: "amount" | "rate" | "deadline";
 };
 
 export type HyperframesScene = {
@@ -39,6 +65,16 @@ export type HyperframesScene = {
   metrics?: HyperframesMetric[];
   useCases?: HyperframesUseCase[];
   steps?: string[];
+  /** hook シーン: 補足説明文（背景説明） */
+  summary?: string;
+  /** hook/overview/cta: 目立たせる注意喚起ピル */
+  alert?: string;
+  /** overview: 対象者ラベル */
+  target?: string;
+  /** cta: QR コードの SVG 文字列（生成失敗時 null） */
+  qrSvg?: string | null;
+  /** cta: QR が指す URL（テキスト表示・フォールバック用） */
+  qrUrl?: string;
 };
 
 export type HyperframesVideoData = {
@@ -137,15 +173,16 @@ function limitVoiceover(text: string, sceneId: keyof typeof VOICEOVER_CHAR_LIMIT
   return result.trim() || cleaned.slice(0, limit);
 }
 
-export function buildHyperframesVideoData(
+export async function buildHyperframesVideoData(
   grant: GrantForLpVideo,
   lpContent: GeneratedContent | null,
-): HyperframesVideoData {
+): Promise<HyperframesVideoData> {
   const lpData = buildSubsidyLpData(grant, lpContent);
   const subsidyName = cleanSubsidyName(lpData.name);
   const shortName = shortSubsidyName(subsidyName);
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") || "https://subsidy-consulting-nts.vercel.app";
   const lpUrl = `${siteUrl}/subsidies/lp/${lpData.id}`;
+  const qrSvg = await buildQrSvg(lpUrl);
 
   const useCases = lpData.useCases.slice(0, 3).map((useCase, index) => ({
     persona: truncate(useCase.persona ?? `活用イメージ${index + 1}`, 16),
@@ -154,21 +191,26 @@ export function buildHyperframesVideoData(
     image: USE_CASE_IMAGES[index % USE_CASE_IMAGES.length],
   }));
 
+  const targetLabel = truncate(lpData.targetArea || "中小・小規模企業等", 28);
+
   const metrics: HyperframesMetric[] = [
     {
       label: "補助上限",
       value: lpData.amountLabel,
       note: "枠・条件により異なる場合があります",
+      accent: "amount",
     },
     {
       label: "補助率",
       value: lpData.rateLabel,
       note: "類型・要件により異なる場合があります",
+      accent: "rate",
     },
     {
       label: "公募期限",
       value: lpData.deadlineLabel,
-      note: lpData.remainingDays !== null ? `残り ${lpData.remainingDays} 日` : "公募要領で確認が必要です",
+      note: "公募要領で確認が必要です",
+      accent: "deadline",
     },
   ];
 
@@ -223,6 +265,8 @@ export function buildHyperframesVideoData(
       kicker: "SUBSIDY ACTION GUIDE",
       title: truncate(lpData.heroCopy, 34),
       lines: [shortName, `補助上限 ${lpData.amountLabel} ／ 補助率 ${lpData.rateLabel}`],
+      summary: truncate(shortName, 40),
+      alert: "多くの事業者が知らないまま申請期限を迎えています",
       voiceover: hookVoiceover,
       captions: [
         caption(0, hookDuration / 2, shortName),
@@ -237,6 +281,8 @@ export function buildHyperframesVideoData(
       title: "数字で見る制度概要",
       lines: metrics.map((m) => `${m.label}: ${m.value}`),
       metrics,
+      target: targetLabel,
+      alert: "※詳細は公式の公募要領で最終確認ください",
       voiceover: overviewVoiceover,
       captions: [
         caption(overviewStart, overviewStart + overviewDuration / 3, `補助上限 ${lpData.amountLabel}`),
@@ -268,6 +314,9 @@ export function buildHyperframesVideoData(
       kicker: "無料相談",
       title: "自社で使えるか、まずは無料で確認できます",
       lines: [truncate(subsidyName, 42), "日本提携支援が活用設計から伴走します"],
+      qrSvg,
+      qrUrl: lpUrl,
+      alert: "スマホでQRを読み取り、そのまま無料診断ページへ",
       voiceover: ctaVoiceover,
       captions: [
         caption(ctaStart, ctaStart + ctaDuration / 2, "自社で使えるか無料で確認"),

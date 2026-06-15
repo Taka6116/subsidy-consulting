@@ -261,7 +261,7 @@ export async function runVideoJob(
         where: { subsidyId, contentType: "lp", status: "published" },
         orderBy: { createdAt: "desc" },
       });
-      const videoData = buildHyperframesVideoData(grant, lpContent);
+      const videoData = await buildHyperframesVideoData(grant, lpContent);
       const hyperframesValidation = validateHyperframesVideoData(videoData);
       if (!hyperframesValidation.isValid) {
         throw new Error(`HyperFrames video data validation failed: ${hyperframesValidation.errors.join("; ")}`);

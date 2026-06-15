@@ -1,0 +1,239 @@
+/* ================================================
+   NTS プラットフォームサービス紹介セクション
+   本体サイト nihon-teikei.co.jp のトークンに準拠
+   Google Fonts: Noto Sans JP（既存ロード済み前提）
+================================================ */
+
+/* --- セクション全体 --- */
+.nts-platforms-section {
+  background-color: #F4F2E9; /* --nts-ivory: 本体サイト top-column セクションと同色 */
+  padding: 100px 0 120px;
+  font-family: 'Noto Sans JP', sans-serif;
+  overflow: hidden;
+}
+
+/* --- コンテナ --- */
+.nts-platforms-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 40px;
+}
+
+/* --- ヘッダー --- */
+.nts-platforms-header {
+  text-align: center;
+  margin-bottom: 72px;
+}
+
+.nts-platforms-label {
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: 0.15em;
+  color: #28A4A3;
+  margin: 0 0 4px;
+  text-transform: uppercase;
+}
+
+.nts-platforms-en-title {
+  font-size: clamp(56px, 8vw, 90px);
+  font-weight: 900;
+  color: #28A4A3;
+  line-height: 1;
+  letter-spacing: 0.05em;
+  margin: 0 0 6px;
+}
+
+.nts-platforms-ja-title {
+  font-size: 16px;
+  font-weight: 500;
+  color: #313131;
+  letter-spacing: 0.12em;
+  margin: 0 0 24px;
+}
+
+.nts-platforms-desc {
+  font-size: 15px;
+  font-weight: 400;
+  color: #555;
+  line-height: 1.9;
+  margin: 0;
+}
+
+/* --- カードグリッド --- */
+.nts-platforms-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+/* --- カード基本 --- */
+.nts-platform-card {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 48px 36px 44px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  box-shadow: 0 4px 24px rgba(14, 53, 127, 0.06);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.nts-platform-card::before {
+  /* 上部のティールアクセントライン（左ボーダーカラーラインではなく上辺のみ） */
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: #28A4A3;
+  border-radius: 16px 16px 0 0;
+}
+
+.nts-platform-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 40px rgba(14, 53, 127, 0.12);
+}
+
+/* --- カード②：フィーチャード（ティール背景） --- */
+.nts-platform-card--featured {
+  background: #28A4A3;
+  color: #ffffff;
+}
+
+.nts-platform-card--featured::before {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.nts-platform-card--featured .nts-platform-card__index,
+.nts-platform-card--featured .nts-platform-card__label,
+.nts-platform-card--featured .nts-platform-card__title,
+.nts-platform-card--featured .nts-platform-card__body {
+  color: #ffffff;
+}
+
+/* --- カード内要素 --- */
+.nts-platform-card__index {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: #28A4A3;
+  margin-bottom: 20px;
+}
+
+.nts-platform-card--featured .nts-platform-card__index {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.nts-platform-card__icon {
+  margin-bottom: 20px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+}
+
+.nts-platform-card__label {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  color: #28A4A3;
+  margin-bottom: 12px;
+}
+
+.nts-platform-card__title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #0E357F;
+  line-height: 1.6;
+  letter-spacing: 0.04em;
+  margin: 0 0 20px;
+}
+
+.nts-platform-card--featured .nts-platform-card__title {
+  color: #ffffff;
+}
+
+.nts-platform-card__body {
+  font-size: 14px;
+  font-weight: 400;
+  color: #555;
+  line-height: 1.85;
+  margin: 0 0 32px;
+  flex-grow: 1;
+}
+
+.nts-platform-card--featured .nts-platform-card__body {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+/* --- CTAボタン（本体サイトのティールボタンに準拠: border-radius: 25px） --- */
+.nts-platform-card__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #28A4A3;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  padding: 14px 28px;
+  border-radius: 25px; /* 本体サイト実測値 */
+  text-decoration: none;
+  transition: background 0.2s ease, opacity 0.2s ease;
+  align-self: flex-start;
+  white-space: nowrap;
+}
+
+.nts-platform-card__cta:hover {
+  background: #1e9190;
+  opacity: 0.95;
+  text-decoration: none;
+  color: #ffffff;
+}
+
+/* フィーチャードカードのCTAは白ボタン */
+.nts-platform-card__cta--white {
+  background: #ffffff;
+  color: #28A4A3;
+}
+
+.nts-platform-card__cta--white:hover {
+  background: rgba(255, 255, 255, 0.9);
+  color: #28A4A3;
+}
+
+/* --- レスポンシブ --- */
+@media (max-width: 1024px) {
+  .nts-platforms-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .nts-platform-card:last-child {
+    grid-column: 1 / -1;
+    max-width: 560px;
+    margin: 0 auto;
+  }
+}
+
+@media (max-width: 640px) {
+  .nts-platforms-section {
+    padding: 64px 0 80px;
+  }
+  .nts-platforms-inner {
+    padding: 0 20px;
+  }
+  .nts-platforms-grid {
+    grid-template-columns: 1fr;
+  }
+  .nts-platform-card:last-child {
+    grid-column: auto;
+    max-width: none;
+  }
+  .nts-platform-card {
+    padding: 36px 28px 32px;
+  }
+  .nts-platforms-en-title {
+    font-size: 52px;
+  }
+}
