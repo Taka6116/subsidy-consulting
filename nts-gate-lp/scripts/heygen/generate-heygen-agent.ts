@@ -48,8 +48,8 @@ if (!API_KEY) {
 const SAKURABA_VOICE_ID = "6c2b2c234a604057a90578e18e10c211";
 
 /** 遷移先（QR・表示）— 正しい本番URL */
-const SITE_URL_FULL = "https://subsidy-nts-v2.vercel.app/subsidies";
-const SITE_URL_DISPLAY = "subsidy-nts-v2.vercel.app/subsidies";
+const SITE_URL_FULL = "https://subsidy-consulting-nts.vercel.app/subsidies";
+const SITE_URL_DISPLAY = "";
 
 const HEYGEN_BASE = "https://api.heygen.com";
 const HEADERS_JSON = {
@@ -576,9 +576,9 @@ function buildNarrations(d: SlideData): string[] {
     // 3. Numbers（読み上げは補助上限のみ・期限と対象は画面で提示）
     `数字でご説明します。補助の上限は${amountReading}です。公募期限と対象は、ご覧のとおりです。詳細は、にほんていけいしえんまで、ご連絡ください。`,
     // 4. Flow（日本提携支援のサポートの流れ）
-    `にほんていけいしえんのサポートの流れをご紹介します。まずは無料相談で現状をお伺いし、経営課題を特定。御社に最適な補助金をご紹介し、さいたくまで専門家がサポートします。さらにさいたく後の活用設計から、その後の伴走まで、一貫してご支援しますのでご安心ください。`,
+    `にほんていけいしえんのサポートの流れをご紹介します。まずは無料相談で現状をお伺いし、経営課題を特定。おんしゃに最適な補助金をご紹介し、さいたくまで専門家がサポートします。さらにさいたく後の活用設計から、その後の伴走まで、一貫してご支援しますのでご安心ください。`,
     // 5. Before/After（活用イメージ）
-    `${toNarrationText(d.useCase1)}。また、${toNarrationText(d.useCase2)}など、手作業や属人化といった導入前の課題を大きく改善できます。御社の状況に合わせて、最適な使い方をご提案します。`,
+    `${toNarrationText(d.useCase1)}。また、${toNarrationText(d.useCase2)}など、手作業や属人化といった導入前の課題を大きく改善できます。おんしゃの状況に合わせて、最適な使い方をご提案します。`,
     // 6. CTA（固有名詞・英数字をすべてひらがな化）
     `補助金のご相談は、にほんていけいしえんまで、お気軽にどうぞ。画面のきゅーあーるこーどをスマホで読み取り、むりょうしんだんぺーじへどうぞ。`,
   ];
@@ -1606,7 +1606,7 @@ function slide5BeforeAfter(d: SlideData, ff: string, t: SlideTheme): string {  /
   ${dataRows}
   <line x1="${divX}" y1="${TBL_Y}" x2="${divX}" y2="${tblBotY}" stroke="#e2e8f0" stroke-width="1.5"/>
   <rect x="57" y="${tblBotY}" width="${TBL_W}" height="1" fill="#e2e8f0"/>
-  <text x="${W / 2}" y="${tblBotY + 42}" text-anchor="middle" font-family="${FONT},sans-serif" font-size="17" fill="${t.noteText}">御社の状況に合わせて最適な使い方をご提案します</text>
+  <text x="${W / 2}" y="${tblBotY + 42}" text-anchor="middle" font-family="${FONT},sans-serif" font-size="17" fill="${t.noteText}">おんしゃの状況に合わせて最適な使い方をご提案します</text>
   ${slideFooter(t, 4)}
 </svg>`;
   }
@@ -1695,7 +1695,7 @@ function slide5BeforeAfter(d: SlideData, ff: string, t: SlideTheme): string {  /
   <line x1="${RX + 36}" y1="${CARD_Y + 66}" x2="${RX + CARD_W - 36}" y2="${CARD_Y + 66}" stroke="${t.afterLine}" stroke-width="1.5"/>
   ${items(RX, afters, "check")}
   <!-- 下部注記 -->
-  <text x="${W / 2}" y="${CARD_Y + CARD_H + 44}" text-anchor="middle" font-family="${FONT},sans-serif" font-size="18" fill="${t.noteText}">御社の状況に合わせて最適な使い方をご提案します</text>
+  <text x="${W / 2}" y="${CARD_Y + CARD_H + 44}" text-anchor="middle" font-family="${FONT},sans-serif" font-size="18" fill="${t.noteText}">おんしゃの状況に合わせて最適な使い方をご提案します</text>
   ${slideFooter(t, 4)}
 </svg>`;
 }
@@ -1757,7 +1757,7 @@ function slide6CTA(d: SlideData, ff: string, qrDataUrl: string, photoDataUrl: st
     <circle cx="9" cy="-3" r="4.5"/>
     <path d="M 2 10 a 7 7 0 0 1 14 0 Z"/>
   </g>
-  <text x="124" y="${iconY + 6}" font-family="${FONT},sans-serif" font-size="18" font-weight="600" fill="${t.bodyText}">補助金の専門家チームが、御社をサポートします</text>
+  <text x="124" y="${iconY + 6}" font-family="${FONT},sans-serif" font-size="18" font-weight="600" fill="${t.bodyText}">補助金の専門家チームが、おんしゃをサポートします</text>
   <!-- 左：メインCTA -->
   <text x="57" y="${ctaY}" font-family="${FONT},sans-serif" font-size="44" font-weight="900" fill="${greenDark}">「お気軽にご相談ください」</text>
   <text x="57" y="${footY}" font-family="${FONT},sans-serif" font-size="21" font-weight="700" fill="${t.bodyText}">ご相談は <tspan font-weight="900" fill="${greenDark}">日本提携支援</tspan> まで</text>
@@ -1774,7 +1774,6 @@ function slide6CTA(d: SlideData, ff: string, qrDataUrl: string, photoDataUrl: st
     <text x="26" y="10" font-family="${FONT},sans-serif" font-size="17" font-weight="700" fill="${greenDark}">スマホでQRを読み取り</text>
     <text x="26" y="34" font-family="${FONT},sans-serif" font-size="15" font-weight="600" fill="${t.bodyText}">そのまま無料相談ページへ</text>
   </g>
-  <text x="${QCX}" y="${QY + QH - 28}" text-anchor="middle" font-family="${FONT},sans-serif" font-size="13" font-weight="600" fill="${greenMid}">${esc(d.siteUrlDisplay)}</text>
   ${slideFooter(t, 5)}
 </svg>`;
   }
@@ -1805,7 +1804,7 @@ function slide6CTA(d: SlideData, ff: string, qrDataUrl: string, photoDataUrl: st
   <text x="152" y="75" text-anchor="middle" font-family="${FONT},sans-serif" font-size="18" font-weight="800" fill="#fff">NTS 日本提携支援</text>
   <image x="${PX}" y="${PY}" width="${PW}" height="${PH}" preserveAspectRatio="xMidYMid slice" clip-path="url(#photoClip)" xlink:href="${photoDataUrl}"/>
   <rect x="${PX}" y="${PY}" width="${PW}" height="${PH}" rx="22" fill="none" stroke="${frameStroke}" stroke-width="2" opacity="0.50"/>
-  <text x="${pcx}" y="${PY + PH + 42}" text-anchor="middle" font-family="${FONT},sans-serif" font-size="19" fill="${t.noteText}">補助金の専門家チームが、御社をサポートします</text>
+  <text x="${pcx}" y="${PY + PH + 42}" text-anchor="middle" font-family="${FONT},sans-serif" font-size="19" fill="${t.noteText}">補助金の専門家チームが、おんしゃをサポートします</text>
   <text x="${pcx}" y="${PY + PH + 104}" text-anchor="middle" font-family="${FONT},sans-serif" font-size="42" font-weight="900" fill="${t.ink}">お気軽にご相談ください</text>
   <text x="${pcx}" y="${PY + PH + 150}" text-anchor="middle" font-family="${FONT},sans-serif" font-size="21" font-weight="800" fill="${t.rule1}">補助金のご相談は 日本提携支援まで</text>
   <!-- 右側: テキストCTA -->
@@ -1816,7 +1815,6 @@ function slide6CTA(d: SlideData, ff: string, qrDataUrl: string, photoDataUrl: st
   <text x="987" y="410" text-anchor="middle" font-family="${FONT},sans-serif" font-size="28" font-weight="700" fill="${t.rule1}">へご相談ください</text>
   <line x1="820" y1="442" x2="1154" y2="442" stroke="#e0f2fe" stroke-width="1.5"/>
   <text x="987" y="492" text-anchor="middle" font-family="${FONT},sans-serif" font-size="16" fill="${t.noteText}">まずは無料でご相談を</text>
-  <text x="987" y="534" text-anchor="middle" font-family="${FONT},sans-serif" font-size="20" font-weight="800" fill="${t.ink}">${esc(d.siteUrlDisplay)}</text>
   ${slideFooter(t, 5)}
 </svg>`;
     }
@@ -1840,7 +1838,7 @@ function slide6CTA(d: SlideData, ff: string, qrDataUrl: string, photoDataUrl: st
   <text x="152" y="75" text-anchor="middle" font-family="${FONT},sans-serif" font-size="18" font-weight="800" fill="#fff">NTS 日本提携支援</text>
   <image x="${PX}" y="${PY}" width="${PW}" height="${PH}" preserveAspectRatio="xMidYMid slice" clip-path="url(#photoClip)" xlink:href="${photoDataUrl}"/>
   <rect x="${PX}" y="${PY}" width="${PW}" height="${PH}" rx="22" fill="none" stroke="${frameStroke}" stroke-width="2" opacity="0.65"/>
-  <text x="${pcx}" y="${PY + PH + 42}" text-anchor="middle" font-family="${FONT},sans-serif" font-size="19" fill="${t.noteText}">補助金の専門家チームが、御社をサポートします</text>
+  <text x="${pcx}" y="${PY + PH + 42}" text-anchor="middle" font-family="${FONT},sans-serif" font-size="19" fill="${t.noteText}">補助金の専門家チームが、おんしゃをサポートします</text>
   <text x="${pcx}" y="${PY + PH + 104}" text-anchor="middle" font-family="${FONT},sans-serif" font-size="42" font-weight="900" fill="${t.ink}">お気軽にご相談ください</text>
   <text x="${pcx}" y="${PY + PH + 150}" text-anchor="middle" font-family="${FONT},sans-serif" font-size="21" font-weight="800" fill="${t.rule1}">補助金のご相談は 日本提携支援まで</text>
   <rect x="788" y="126" width="384" height="454" rx="26" fill="#ffffff" stroke="${frameStroke}" stroke-width="1.5" filter="url(#sh2)"/>
@@ -1848,7 +1846,6 @@ function slide6CTA(d: SlideData, ff: string, qrDataUrl: string, photoDataUrl: st
   <image x="830" y="170" width="300" height="300" xlink:href="${qrDataUrl}"/>
   <text x="980" y="520" text-anchor="middle" font-family="${FONT},sans-serif" font-size="20" font-weight="800" fill="${t.ink}">スマホでQRを読み取り</text>
   <text x="980" y="552" text-anchor="middle" font-family="${FONT},sans-serif" font-size="16" fill="${t.noteText}">そのまま無料診断ページへ</text>
-  <text x="980" y="572" text-anchor="middle" font-family="${FONT},sans-serif" font-size="14" fill="rgba(18,50,79,0.38)">${esc(d.siteUrlDisplay)}</text>
   ${slideFooter(t, 5)}
 </svg>`;
   }
@@ -1870,7 +1867,7 @@ function slide6CTA(d: SlideData, ff: string, qrDataUrl: string, photoDataUrl: st
   <text x="152" y="75" text-anchor="middle" font-family="${FONT},sans-serif" font-size="18" font-weight="800" fill="#fff">NTS 日本提携支援</text>
   <image x="${PX}" y="${PY}" width="${PW}" height="${PH}" preserveAspectRatio="xMidYMid slice" clip-path="url(#photoClip)" xlink:href="${photoDataUrl}"/>
   <rect x="${PX}" y="${PY}" width="${PW}" height="${PH}" rx="22" fill="none" stroke="rgba(255,255,255,0.45)" stroke-width="2"/>
-  <text x="${pcx}" y="${PY + PH + 40}" text-anchor="middle" font-family="${FONT},sans-serif" font-size="19" fill="rgba(255,255,255,0.78)">補助金の専門家チームが、御社をサポートします</text>
+  <text x="${pcx}" y="${PY + PH + 40}" text-anchor="middle" font-family="${FONT},sans-serif" font-size="19" fill="rgba(255,255,255,0.78)">補助金の専門家チームが、おんしゃをサポートします</text>
   <text x="${pcx}" y="${PY + PH + 104}" text-anchor="middle" font-family="${FONT},sans-serif" font-size="44" font-weight="900" fill="#ffffff">お気軽にご相談ください</text>
   <text x="${pcx}" y="${PY + PH + 152}" text-anchor="middle" font-family="${FONT},sans-serif" font-size="22" font-weight="700" fill="${t.introSub}">補助金のご相談は 日本提携支援まで</text>
   <line x1="740" y1="150" x2="740" y2="570" stroke="rgba(255,255,255,0.25)" stroke-width="1.5" stroke-dasharray="6,4"/>
@@ -1878,7 +1875,6 @@ function slide6CTA(d: SlideData, ff: string, qrDataUrl: string, photoDataUrl: st
   <image x="830" y="170" width="300" height="300" xlink:href="${qrDataUrl}"/>
   <text x="980" y="524" text-anchor="middle" font-family="${FONT},sans-serif" font-size="20" font-weight="700" fill="rgba(255,255,255,0.9)">スマホでQRを読み取り</text>
   <text x="980" y="554" text-anchor="middle" font-family="${FONT},sans-serif" font-size="16" fill="rgba(255,255,255,0.65)">そのまま無料診断ページへ</text>
-  <text x="980" y="588" text-anchor="middle" font-family="${FONT},sans-serif" font-size="14" fill="rgba(255,255,255,0.45)">${esc(d.siteUrlDisplay)}</text>
   ${slideFooter(t, 5, true)}
 </svg>`;
 }
