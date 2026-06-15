@@ -1,5 +1,3 @@
-import "./knowledge-light-background.css";
-
 /** 資料シルエット（罫線・チェック欄・表のみ・文字なし） */
 function DocSilhouette({ className }: { className: string }) {
   return (
