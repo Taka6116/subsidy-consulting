@@ -856,16 +856,14 @@ function SubsidyResultCard({ grant }: { grant: SubsidyCard }) {
           >
             {grant.articleSlug ? "解説記事を見る →" : "詳細を見る →"}
           </Link>
-          {/* サブCTA群：右側に縦並び */}
+          {/* サブCTA群：右側に縦並び（全件で活用ガイド＋無料相談を表示） */}
           <div className="flex flex-col gap-1">
-            {grant.hasLp && (
-              <Link
-                href={`/subsidies/lp/${grant.id}`}
-                className="inline-flex items-center justify-center rounded-xl border border-[#d6e1f4] bg-white px-3 py-1.5 text-xs font-semibold text-[#5b6b8c] transition hover:bg-[#f7faff] whitespace-nowrap"
-              >
-                活用ガイド
-              </Link>
-            )}
+            <Link
+              href={`/subsidies/lp/${grant.id}`}
+              className="inline-flex items-center justify-center rounded-xl border border-[#d6e1f4] bg-white px-3 py-1.5 text-xs font-semibold text-[#5b6b8c] transition hover:bg-[#f7faff] whitespace-nowrap"
+            >
+              活用ガイド
+            </Link>
             <Link
               href={`/consult?subsidyId=${grant.id}`}
               className="inline-flex items-center justify-center rounded-xl border border-[#d6e1f4] bg-white px-3 py-1.5 text-xs font-semibold text-[#1a7b6f] transition hover:bg-[#f3faf8] whitespace-nowrap"
