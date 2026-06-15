@@ -112,6 +112,12 @@ export default function SubsidiesVideosIndex({
       );
     }
 
+    // 受付終了を末尾へ（同一ステータス内の順序は維持）
+    list = [
+      ...list.filter((v) => !isExpired(v.deadlineIso)),
+      ...list.filter((v) => isExpired(v.deadlineIso)),
+    ];
+
     return list;
   }, [videos, tab, selectedTag, query]);
 
