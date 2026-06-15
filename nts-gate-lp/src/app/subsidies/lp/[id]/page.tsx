@@ -11,6 +11,7 @@ import { notFound, redirect } from "next/navigation";
 import { prisma } from "@/lib/db/prisma";
 import Header from "@/components/shared/Header";
 import LpFooter from "@/components/gate-lp/LpFooter";
+import Breadcrumb from "@/components/shared/Breadcrumb";
 import HeroSection from "@/components/subsidy-lp/HeroSection";
 import CheckerSection from "@/components/subsidy-lp/CheckerSection";
 import TargetIndustriesSection from "@/components/subsidy-lp/TargetIndustriesSection";
@@ -105,6 +106,9 @@ export default async function SubsidyLpPage({ params }: Props) {
     <>
       <Header />
       <main className="bg-white pt-16 sm:pt-20">
+        <div className="mx-auto max-w-[1200px] px-5 pt-4 sm:px-6">
+          <Breadcrumb pageTitle={grant.name ?? "活用ガイド"} />
+        </div>
         <HeroSection data={data} />
         <CheckerSection data={data} />
         <TargetIndustriesSection data={data} />

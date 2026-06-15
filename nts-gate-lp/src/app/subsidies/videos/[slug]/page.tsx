@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 
 import Header from "@/components/shared/Header";
 import LpFooter from "@/components/gate-lp/LpFooter";
+import Breadcrumb from "@/components/shared/Breadcrumb";
 import { prisma } from "@/lib/db/prisma";
 
 export const revalidate = 300;
@@ -143,17 +144,7 @@ export default async function SubsidyVideoPage({ params }: PageProps) {
       <main className="relative z-[2] min-h-[100svh] bg-[#f9f7f2] pt-16 font-body sm:pt-20">
         <article className="mx-auto max-w-3xl px-5 py-10 sm:px-6 lg:py-14">
           {/* パンくず */}
-          <nav className="mb-6 text-xs text-neutral-500 sm:text-sm" aria-label="breadcrumb">
-            <Link href="/subsidies" className="transition hover:text-neutral-700">
-              補助金一覧
-            </Link>
-            <span className="mx-2 text-neutral-300" aria-hidden>
-              /
-            </span>
-            <Link href="/subsidies/videos" className="transition hover:text-neutral-700">
-              解説動画
-            </Link>
-          </nav>
+          <Breadcrumb pageTitle={video.title ?? "解説動画"} className="mb-6" />
 
           {/* ヘッダー */}
           <header className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary-900 via-primary-800 to-primary-700 p-6 shadow-sm sm:p-8 lg:p-10">

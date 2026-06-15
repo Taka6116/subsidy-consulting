@@ -68,21 +68,31 @@ export default function Header() {
             className="flex min-w-0 flex-1 items-center justify-end gap-x-3 overflow-hidden sm:ml-2 lg:ml-6 lg:gap-x-5"
             aria-label="補助金プラットフォーム"
           >
-            <Link href="/subsidies" className="shrink-0 whitespace-nowrap text-xs font-medium text-[var(--text-secondary)] transition-colors hover:text-[var(--accent-navy)] lg:text-sm">
-              トップへ
-            </Link>
-            <Link href="/subsidies/list" className="shrink-0 whitespace-nowrap text-xs font-medium text-[var(--text-secondary)] transition-colors hover:text-[var(--accent-navy)] lg:text-sm">
-              補助金一覧
-            </Link>
-            <Link href="/subsidies/articles" className="shrink-0 whitespace-nowrap text-xs font-medium text-[var(--text-secondary)] transition-colors hover:text-[var(--accent-navy)] lg:text-sm">
-              解説記事
-            </Link>
-            <Link href="/subsidies/lp" className="shrink-0 whitespace-nowrap text-xs font-medium text-[var(--text-secondary)] transition-colors hover:text-[var(--accent-navy)] lg:text-sm">
-              補助金ページ
-            </Link>
-            <Link href="/subsidies/videos" className="shrink-0 whitespace-nowrap text-xs font-medium text-[var(--text-secondary)] transition-colors hover:text-[var(--accent-navy)] lg:text-sm">
-              動画
-            </Link>
+            {[
+              { label: "補助金TOP",  href: "/subsidies",          exact: true  },
+              { label: "補助金一覧", href: "/subsidies/list",     exact: false },
+              { label: "解説記事",   href: "/subsidies/articles", exact: false },
+              { label: "活用ガイド", href: "/subsidies/lp",       exact: false },
+              { label: "解説動画",   href: "/subsidies/videos",   exact: false },
+            ].map(({ label, href, exact }) => {
+              const isActive = exact
+                ? pathname === href
+                : pathname === href || pathname.startsWith(href + "/");
+              return (
+                <Link
+                  key={href}
+                  href={href}
+                  className={`shrink-0 whitespace-nowrap text-xs transition-colors lg:text-sm ${
+                    isActive
+                      ? "border-b-2 border-[#1e40af] font-bold text-[#1e40af]"
+                      : "font-medium text-[var(--text-secondary)] hover:text-[var(--accent-navy)]"
+                  }`}
+                  aria-current={isActive ? "page" : undefined}
+                >
+                  {label}
+                </Link>
+              );
+            })}
             <Link
               href={partnerHref}
               onClick={() => trackPartnerLinkClick("header_subsidies")}

@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 
 import Header from "@/components/shared/Header";
 import LpFooter from "@/components/gate-lp/LpFooter";
+import Breadcrumb from "@/components/shared/Breadcrumb";
 import { prisma } from "@/lib/db/prisma";
 import { pickHeroImage } from "@/lib/content/imagePool";
 
@@ -289,6 +290,8 @@ export default async function SubsidyArticlePage({ params }: PageProps) {
         {/* ─── ヒーロー帯 ─── */}
         <div className="bg-[#f5f7fa] border-b border-gray-200">
           <div className="mx-auto max-w-[960px] px-5 py-8 sm:px-6">
+            {/* パンくず */}
+            <Breadcrumb pageTitle={article.title ?? "解説記事"} className="mb-4" />
             {/* 日付 + カテゴリ */}
             <div className="mb-3 flex flex-wrap items-center gap-3">
               <time className="text-sm text-neutral-500">

@@ -39,6 +39,17 @@ export type SubsidyCard = {
 
 const NATIONWIDE_LABEL = "全国";
 
+const PREFECTURE_GROUPS: { label: string; prefectures: string[] }[] = [
+  { label: "全国", prefectures: ["全国"] },
+  { label: "北海道・東北", prefectures: ["北海道", "青森県", "岩手県", "宮城県", "秋田県", "山形県", "福島県"] },
+  { label: "関東", prefectures: ["茨城県", "栃木県", "群馬県", "埼玉県", "千葉県", "東京都", "神奈川県"] },
+  { label: "中部", prefectures: ["新潟県", "富山県", "石川県", "福井県", "山梨県", "長野県", "岐阜県", "静岡県", "愛知県"] },
+  { label: "近畿", prefectures: ["三重県", "滋賀県", "京都府", "大阪府", "兵庫県", "奈良県", "和歌山県"] },
+  { label: "中国", prefectures: ["鳥取県", "島根県", "岡山県", "広島県", "山口県"] },
+  { label: "四国", prefectures: ["徳島県", "香川県", "愛媛県", "高知県"] },
+  { label: "九州・沖縄", prefectures: ["福岡県", "佐賀県", "長崎県", "熊本県", "大分県", "宮崎県", "鹿児島県", "沖縄県"] },
+];
+
 function parseDeadlineDate(deadline: string | null): Date | null {
   if (!deadline) return null;
   const date = new Date(deadline);
@@ -189,18 +200,10 @@ export default function SubsidiesListClient({
   const [sortKey, setSortKey] = useState<SortKey>("newest");
   const [page, setPage] = useState(1);
 
-  const prefectureOptions = useMemo(() => {
-    const set = new Set<string>();
-    for (const g of grants) {
-      const p = formatPrefecture(g.prefecture);
-      if (p) set.add(p);
-    }
-    return Array.from(set).sort((a, b) => {
-      if (a === NATIONWIDE_LABEL) return -1;
-      if (b === NATIONWIDE_LABEL) return 1;
-      return a.localeCompare(b, "ja");
-    });
-  }, [grants]);
+  const FALLBACK_INDUSTRIES = [
+    "製造業", "建設業", "小売・サービス業", "IT・情報通信",
+    "物流・運輸", "農林水産業", "医療・福祉", "飲食業", "観光・宿泊", "その他",
+  ];
 
   const industryOptions = useMemo(() => {
     const set = new Set<string>();
@@ -210,7 +213,8 @@ export default function SubsidiesListClient({
         if (trimmed) set.add(trimmed);
       }
     }
-    return Array.from(set).sort((a, b) => a.localeCompare(b, "ja")).slice(0, 60);
+    const dynamic = Array.from(set).sort((a, b) => a.localeCompare(b, "ja")).slice(0, 60);
+    return dynamic.length > 0 ? dynamic : FALLBACK_INDUSTRIES;
   }, [grants]);
 
   const counts = useMemo(() => {
@@ -391,10 +395,12 @@ export default function SubsidiesListClient({
             aria-label="対象地域で絞り込み"
           >
             <option value="">対象地域：すべて</option>
-            {prefectureOptions.map((p) => (
-              <option key={p} value={p}>
-                {p}
-              </option>
+            {PREFECTURE_GROUPS.map((group) => (
+              <optgroup key={group.label} label={group.label}>
+                {group.prefectures.map((p) => (
+                  <option key={p} value={p}>{p}</option>
+                ))}
+              </optgroup>
             ))}
           </select>
           <select
