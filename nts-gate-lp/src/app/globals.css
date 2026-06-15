@@ -3,6 +3,7 @@
 @tailwind utilities;
 
 @import "../styles/home-lp-depth.css";
+@import "../styles/mobile-overrides.css";
 
 :root {
   /* === LP refresh — カラートークン === */

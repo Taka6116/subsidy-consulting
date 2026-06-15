@@ -168,7 +168,7 @@ export default function NtsAiGapSection({ homeDepth = false }: { homeDepth?: boo
             aria-hidden
             className="h-12 w-px bg-[var(--border-subtle)] md:h-16"
           />
-          <span className="my-4 inline-flex items-center gap-3 rounded-full border-2 border-[rgba(0,184,148,0.55)] bg-white px-7 py-3 font-heading text-[1rem] font-bold tracking-[0.04em] text-[var(--accent-teal)] shadow-[0_12px_28px_rgba(0,184,148,0.25)] md:px-9 md:py-4 md:text-[1.15rem]">
+          <span className="nts-bridge-badge my-4 inline-flex items-center gap-3 rounded-full border-2 border-[rgba(0,184,148,0.55)] bg-white px-7 py-3 font-heading text-[1rem] font-bold tracking-[0.04em] text-[var(--accent-teal)] shadow-[0_12px_28px_rgba(0,184,148,0.25)] md:px-9 md:py-4 md:text-[1.15rem]">
             <span>だから、</span>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img

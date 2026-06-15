@@ -159,7 +159,7 @@ export default function WhatIsNtsSection() {
             </div>
 
             {/* 下段: 担当者写真 — 5枚横並び */}
-            <div className="grid h-[260px] grid-cols-5 gap-3 md:h-[320px]">
+            <div className="nts-photo-grid grid h-[260px] grid-cols-5 gap-3 md:h-[320px]">
               {PANA_ALL.map((photo) => (
                 <div
                   key={photo.src}

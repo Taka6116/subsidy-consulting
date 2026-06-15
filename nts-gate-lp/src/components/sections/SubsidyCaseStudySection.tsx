@@ -310,7 +310,7 @@ export default function SubsidyCaseStudySection({ homeDepth = false }: { homeDep
         </div>
 
         {/* 実績サマリー */}
-        <div className="mt-8 mx-auto grid max-w-[680px] grid-cols-3 gap-3 sm:gap-4">
+        <div className="mx-auto mt-8 grid max-w-[680px] grid-cols-3 gap-3 max-md:grid-cols-1 max-md:max-w-xs sm:gap-4">
           {STATS.map((s) => (
             <div
               key={s.label}
