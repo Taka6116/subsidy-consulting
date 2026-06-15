@@ -255,26 +255,26 @@ export default async function SubsidyVideoPage({ params }: PageProps) {
 
           {/* 関連補助金 CTA */}
           {video.grant && (
-            <section className="mt-8 overflow-hidden rounded-xl bg-gradient-to-br from-[#0EA5E9] to-[#006FE6] p-6 shadow-sm">
-              <p className="text-xs font-semibold uppercase tracking-wider text-white/70">
+            <section className="mt-8 overflow-hidden rounded-xl border border-sky-200 bg-gradient-to-br from-sky-50 to-blue-50 p-6 shadow-sm">
+              <p className="text-xs font-semibold uppercase tracking-wider text-sky-600">
                 関連する補助金
               </p>
-              <h2 className="font-heading mt-2 text-lg font-bold text-white sm:text-xl">
+              <h2 className="font-heading mt-2 text-lg font-bold text-neutral-900 sm:text-xl">
                 {video.grant.name ?? "補助金詳細"}
               </h2>
               <dl className="mt-4 grid grid-cols-1 gap-3 text-sm sm:grid-cols-2">
                 {grantAmount && (
-                  <div className="rounded-lg bg-white/15 px-4 py-3">
-                    <dt className="text-xs text-white/70">上限補助額</dt>
-                    <dd className="mt-1 font-semibold text-white">
+                  <div className="rounded-lg bg-white px-4 py-3 ring-1 ring-sky-100">
+                    <dt className="text-xs text-neutral-500">上限補助額</dt>
+                    <dd className="mt-1 font-semibold text-neutral-900">
                       最大 {grantAmount}
                     </dd>
                   </div>
                 )}
                 {grantDeadline && (
-                  <div className="rounded-lg bg-white/15 px-4 py-3">
-                    <dt className="text-xs text-white/70">公募期限</dt>
-                    <dd className="mt-1 font-semibold text-white">
+                  <div className="rounded-lg bg-white px-4 py-3 ring-1 ring-sky-100">
+                    <dt className="text-xs text-neutral-500">公募期限</dt>
+                    <dd className="mt-1 font-semibold text-neutral-900">
                       {grantDeadline}
                     </dd>
                   </div>
@@ -286,7 +286,7 @@ export default async function SubsidyVideoPage({ params }: PageProps) {
                     ? `/subsidies/articles/${articleSlug}`
                     : `/subsidies/list/${video.grant.id}`
                 }
-                className="mt-6 inline-flex items-center justify-center rounded-lg bg-white px-5 py-3 text-sm font-semibold text-[#006FE6] shadow-sm transition hover:bg-sky-50"
+                className="mt-6 inline-flex items-center justify-center rounded-lg bg-gradient-to-r from-[#0EA5E9] to-[#006FE6] px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:opacity-90"
               >
                 解説記事を見る
               </Link>
@@ -294,7 +294,7 @@ export default async function SubsidyVideoPage({ params }: PageProps) {
           )}
 
           {/* NTS 無料相談 CTA */}
-          <section className="mt-10 overflow-hidden rounded-xl bg-gradient-to-br from-[#0EA5E9] to-[#006FE6] p-8 text-white shadow-sm">
+          <section className="mt-10 overflow-hidden rounded-xl bg-gradient-to-br from-[#0EA5E9] via-[#006FE6] to-[#1E3A8A] p-8 text-white shadow-sm">
             <h2 className="font-heading text-xl font-bold text-white drop-shadow-sm sm:text-2xl">
               補助金活用の戦略設計は、NTS にご相談ください
             </h2>
