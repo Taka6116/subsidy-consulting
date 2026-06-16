@@ -11,7 +11,6 @@ import { pickHeroImage } from "@/lib/content/imagePool";
 // ========== [NEW 2026-04-30] 追加コンポーネント ==========
 import { LivePublishedBadge } from "@/components/articles/LivePublishedBadge";
 import { ArticleToc } from "@/components/articles/ArticleToc";
-import { ConsultantComment } from "@/components/articles/ConsultantComment";
 import { ArticleCTA } from "@/components/articles/ArticleCTA";
 import { RelatedArticles } from "@/components/articles/RelatedArticles";
 import { ArticleSegmentedBody } from "@/components/articles/ArticleSegmentedBody";
@@ -437,9 +436,6 @@ export default async function SubsidyArticlePage({ params }: PageProps) {
           >
             <ArticleSegmentedBody body={article.body} visualData={visualData} />
           </div>
-
-          {/* コンサルタントコメント */}
-          <ConsultantComment />
 
           {/* SNSシェア（フッター） */}
           <div className="mt-12 border-t border-gray-100 pt-8">
