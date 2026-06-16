@@ -1178,7 +1178,7 @@ function CycleDiagram() {
 
       {/* ─── キャプション ─── */}
       <p
-        className="font-body mt-3"
+        className="font-body mt-3 text-center"
         style={{
           fontSize: "0.68rem",
           lineHeight: 1.65,
