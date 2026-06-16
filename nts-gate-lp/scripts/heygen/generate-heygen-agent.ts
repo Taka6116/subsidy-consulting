@@ -425,7 +425,8 @@ async function fetchGrant(subsidyId?: string, skip = 0): Promise<Grant> {
 // ─────────────────────────────────────────────────────────────
 type SlideData = {
   name: string;
-  nameReading: string;     // ナレーション用（長い名前は短縮）
+  nameReading: string;      // ナレーション用（kuroshiro でひらがな化された正式名）
+  shortNameReading: string; // Slide1 ナレーション用の短縮名（令和〇年度等を除去）
   description: string;
   amount: string;
   deadline: string;
@@ -574,10 +575,13 @@ function buildSlideData(g: Grant): SlideData {
 
   // ナレーション用の名前（main() で kuroshiro によりひらがな読みへ変換される）
   const nameReading = fullName;
+  // Slide1 用の短縮名（令和〇年度等を除去した自然な読み上げ向け）
+  const shortNameReading = shortenNameForNarration(fullName);
 
   return {
     name: fullName.slice(0, 38),
     nameReading,
+    shortNameReading,
     description,
     amount,
     deadline: `申請期限: ${deadline}`,
@@ -603,6 +607,40 @@ function toNarrationText(s: string): string {
   return s.replace(/採択/g, "さいたく");
 }
 
+/**
+ * 補助金正式名称からナレーション向けの短縮名を生成する
+ *  - 「令和〇年度」「第〇回以降」等の接頭語を除去
+ *  - 末尾の「補助金」「補助事業」「助成金」は残す
+ *  - 括弧内の補足（共同申請者）等を除去
+ *  - 結果が長すぎる場合は核心部分を残して短縮
+ * 例: "令和8年度中小企業生産性向上促進事業費補助金"
+ *   → "中小企業生産性向上促進のための補助金"
+ */
+function shortenNameForNarration(name: string): string {
+  let s = name;
+  // 「令和〇年度」「平成〇年度」を除去
+  s = s.replace(/^(令和|平成|昭和)\d+年度\s*/g, "");
+  // 「第〇回以降」「第〇期」等を除去
+  s = s.replace(/^第\d+[回期次][^\s　]*\s*/g, "");
+  // 「【〇〇】」「〔〇〇〕」を除去
+  s = s.replace(/[【【〔]\s*[^\】\】〕]*[\】\】〕]/g, "").trim();
+  // 「（〇〇申請者）」「（共同申請者）」等の括弧補足を除去
+  s = s.replace(/[（(][^）)]*[）)]/g, "").trim();
+  // 「〇〇事業費補助金」→「〇〇のための補助金」に読みやすく
+  s = s.replace(/事業費補助金$/, "のための補助金");
+  s = s.replace(/事業補助金$/, "のための補助金");
+  s = s.replace(/支援補助金$/, "を支援する補助金");
+  // 長すぎる場合（20文字超）は最初の区切りで短縮
+  if (s.length > 20) {
+    const cut = s.slice(0, 20);
+    // 補助金・助成金が含まれている場合はその部分まで含める
+    const m = cut.match(/^(.{8,})(補助金|助成金|補助事業)/);
+    if (m) return m[1] + m[2];
+    return cut + "など";
+  }
+  return s || name.slice(0, 20);
+}
+
 function buildNarrations(d: SlideData): string[] {
   // 金額をひらがなに変換してTTS誤読を防止
   const amountReading = amountToNarration(d.amount);
@@ -611,8 +649,8 @@ function buildNarrations(d: SlideData): string[] {
   const descSentence = /(です|ます)$/.test(descBody) ? `${descBody}。` : `${descBody}です。`;
 
   return [
-    // 1. Intro
-    `本動画では、${d.nameReading}について、わかりやすくご説明します。`,
+    // 1. Intro（短縮名で自然な読み上げ）
+    `本動画では、${d.shortNameReading}についてご説明します。`,
     // 2. What
     `こちらの制度は、${descSentence}`,
     // 3. Numbers（読み上げは補助上限のみ・期限と対象は画面で提示）
@@ -2340,9 +2378,17 @@ async function main() {
   const kana = await nameToKana(d.nameReading);
   if (kana) {
     d.nameReading = kana;
-    console.log(`  読み: ${kana}`);
+    console.log(`  正式名読み: ${kana}`);
   } else {
     d.nameReading = d.nameReading.slice(0, 24);
+  }
+  // Slide1 用の短縮名もひらがな変換
+  const shortKana = await nameToKana(d.shortNameReading);
+  if (shortKana) {
+    d.shortNameReading = shortKana;
+    console.log(`  短縮名読み: ${shortKana}`);
+  } else {
+    d.shortNameReading = d.shortNameReading;
   }
 
   // ── Step 1: スライドPNG生成 ──
