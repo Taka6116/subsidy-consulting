@@ -147,16 +147,58 @@ function trimDescription(desc: string, maxLen: number): string {
   return slice + "…";
 }
 
-/** 句読点・最大文字数で改行する */
+/** 行頭禁則文字（これらが行頭に来てはいけない） */
+const LINE_HEAD_FORBIDDEN = new Set([..."、。）」』】，．・"]);
+
+/**
+ * 自然な位置で折り返すテキストラッパー
+ * - 句読点（。、）の直後を優先的な折り返しポイントとする
+ * - 行頭禁則文字が先頭に来ないよう直前行に繰り越す
+ * - maxChars に達した際は直前の句読点・助詞後で折り返す
+ */
 function wrapTextByChars(text: string, maxChars: number): string[] {
   if (!text) return [];
   const out: string[] = [];
   let row = "";
-  for (const ch of text) {
+
+  const flush = () => {
+    if (row) { out.push(row); row = ""; }
+  };
+
+  for (let i = 0; i < text.length; i++) {
+    const ch = text[i];
     row += ch;
-    if (row.length >= maxChars || /[、。]/.test(ch)) {
-      out.push(row);
-      row = "";
+
+    // 句読点の直後 → 即改行
+    if (/[。、]/.test(ch)) {
+      flush();
+      continue;
+    }
+
+    // maxChars に達した
+    if (row.length >= maxChars) {
+      const next = text[i + 1];
+      // 次の文字が行頭禁則なら今の行に含めて改行
+      if (next && LINE_HEAD_FORBIDDEN.has(next)) {
+        row += next;
+        i++;
+        flush();
+        continue;
+      }
+      // 現在の行の中で直近の句読点・助詞後を探す
+      const breakAt = (() => {
+        for (let j = row.length - 1; j >= Math.floor(maxChars * 0.5); j--) {
+          if (/[。、]/.test(row[j])) return j + 1;
+          if (/[はがをにでとの]/.test(row[j]) && j < row.length - 1) return j + 1;
+        }
+        return -1;
+      })();
+      if (breakAt > 0) {
+        out.push(row.slice(0, breakAt));
+        row = row.slice(breakAt);
+      } else {
+        flush();
+      }
     }
   }
   if (row) out.push(row);
