@@ -1291,19 +1291,28 @@ function slide3Numbers(d: SlideData, ff: string, t: SlideTheme): string {
 
   // ── 対象 ────────────────────────────────────────────────────
   const targetRaw = d.industries.replace(/^対象[：:]\s*/, "");
-  // 括弧書き除去 → 20文字以内でカード表示
-  const targetForCard = targetRaw
+  // 括弧書き・空白除去し、自然な区切りで短縮
+  const targetClean = targetRaw
     .replace(/[（(][^）)]*[）)]/g, "")
     .replace(/\s+/g, "")
-    .trim()
-    .slice(0, 20);
-  // 11文字以内なら1行・それ以上は中央で均等に2行へ分割（語中での不自然な改行を回避）
-  const tgLines = targetForCard.length <= 11
+    .trim();
+  // 「・」「、」「など」「全般」等の区切りで自然に短縮（最大16文字優先）
+  function shortenTarget(s: string, maxLen: number): string {
+    if (s.length <= maxLen) return s;
+    // 「など」「全般」の手前で切る
+    const nado = s.search(/など|全般/);
+    if (nado > 0 && nado <= maxLen) return s.slice(0, nado) + "など";
+    // 「・」「、」の直前で切る
+    for (let i = Math.min(maxLen, s.length) - 1; i >= Math.floor(maxLen * 0.5); i--) {
+      if (/[・、]/.test(s[i])) return s.slice(0, i) + "など";
+    }
+    return s.slice(0, maxLen);
+  }
+  const targetForCard = shortenTarget(targetClean, 16);
+  // 自然な折り返し: 8文字以内は1行、それ以上は wrapTextByChars で自然分割
+  const tgLines = targetForCard.length <= 8
     ? [targetForCard]
-    : [
-        targetForCard.slice(0, Math.ceil(targetForCard.length / 2)),
-        targetForCard.slice(Math.ceil(targetForCard.length / 2)),
-      ];
+    : wrapTextByChars(targetForCard, 9).slice(0, 2);
 
   // ── 全パターン共通：3列カード（Pattern A と同一レイアウト） ──────
   // ── Pattern D のみ: 3行横並び統計ロウ ────────────────────────
@@ -1406,8 +1415,9 @@ ${valueSvg}`;
   <rect x="${ICX3 - 8}" y="${ICYO3 + 1}" width="5" height="5" rx="1" fill="${t.target.accent}" opacity="0.65"/>
   <rect x="${ICX3 + 3}" y="${ICYO3 + 1}" width="5" height="5" rx="1" fill="${t.target.accent}" opacity="0.65"/>
   <rect x="${ICX3 - 3}" y="${ICYO3 + 6}" width="6" height="4" rx="1" fill="${t.target.accent}" opacity="0.80"/>`;
+  const tgFontSize = tgLines.length === 1 ? 34 : tgLines.some(l => l.length >= 8) ? 26 : 28;
   const tgSvg = tgLines.map((line, i) =>
-    `  <text x="${cx3}" y="${CY + (tgLines.length === 1 ? 206 : 162 + i * 74)}" text-anchor="middle" font-family="${FONT},sans-serif" font-size="${tgLines.length === 1 ? 34 : 30}" font-weight="900" fill="${t.target.value}">${esc(line)}</text>`,
+    `  <text x="${cx3}" y="${CY + (tgLines.length === 1 ? 206 : 158 + i * 72)}" text-anchor="middle" font-family="${FONT},sans-serif" font-size="${tgFontSize}" font-weight="900" fill="${t.target.value}">${esc(line)}</text>`,
   ).join("\n");
 
   // ── 補助率バー（rate があるときのみ） ─────────────────────────
