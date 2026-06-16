@@ -807,18 +807,12 @@ export default function RootIssueCaseSection({
 // BadgeColumn — カード左に番号バッジ + 縦線
 // ============================================================
 function BadgeColumn({
-  side,
-  slot,
   children,
 }: {
-  side: "left" | "right";
-  /** start: 先頭 / between: 中間 / end: 末尾（下方向の線なし） */
-  slot: "start" | "between" | "end";
+  side?: "left" | "right";
+  slot?: "start" | "between" | "end";
   children: React.ReactNode;
 }) {
-  const isRight = side === "right";
-  const lineColor = isRight ? "rgba(26,76,142,0.35)" : "rgba(120,140,165,0.30)";
-
   return (
     <div className="relative pl-5 md:pl-6">
       {children}
