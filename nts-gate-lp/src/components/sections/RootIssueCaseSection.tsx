@@ -821,32 +821,6 @@ function BadgeColumn({
 
   return (
     <div className="relative pl-5 md:pl-6">
-      {slot !== "start" && (
-        <span
-          aria-hidden
-          className="pointer-events-none absolute"
-          style={{
-            left: "calc(0.75rem - 0.5px)",
-            top: "-20px",
-            height: "calc(20px + 14px)",
-            width: "1.5px",
-            background: lineColor,
-          }}
-        />
-      )}
-      {slot !== "end" && (
-        <span
-          aria-hidden
-          className="pointer-events-none absolute"
-          style={{
-            left: "calc(0.75rem - 0.5px)",
-            top: "44px",
-            bottom: "-20px",
-            width: "1.5px",
-            background: lineColor,
-          }}
-        />
-      )}
       {children}
     </div>
   );
