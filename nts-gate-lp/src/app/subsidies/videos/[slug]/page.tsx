@@ -147,14 +147,14 @@ export default async function SubsidyVideoPage({ params }: PageProps) {
           <Breadcrumb pageTitle={video.title ?? "解説動画"} className="mb-6" />
 
           {/* ヘッダー */}
-          <header className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary-900 via-primary-800 to-primary-700 p-6 shadow-sm sm:p-8 lg:p-10">
+          <header className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#0EA5E9] via-[#006FE6] to-[#1E3A8A] p-6 shadow-sm sm:p-8 lg:p-10">
             <div
               aria-hidden
-              className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full bg-white/10 blur-3xl"
+              className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full bg-white/15 blur-3xl"
             />
             <div
               aria-hidden
-              className="pointer-events-none absolute -bottom-12 -left-10 h-36 w-36 rounded-full bg-accent-400/20 blur-3xl"
+              className="pointer-events-none absolute -bottom-12 -left-10 h-36 w-36 rounded-full bg-white/10 blur-3xl"
             />
             <div className="relative">
               <p className="text-xs font-medium text-white/60 sm:text-sm">
