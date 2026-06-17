@@ -979,10 +979,10 @@ function ActivationCard({
 // ============================================================
 // ノード順（時計回り）: 上=次の課題発見 → 右=補助金制度提案 → 下=実行支援 → 左=実行後フォロー
 const CYCLE_NODES = [
-  { label: "次の課題発見",   emphasis: true,  angle: 270 }, // 上
-  { label: "補助金制度提案", emphasis: false, angle: 0   }, // 右
-  { label: "実行支援",       emphasis: false, angle: 90  }, // 下
-  { label: "実行後フォロー", emphasis: true,  angle: 180 }, // 左
+  { label: "次の課題発見",   lines: ["次の課題", "発見"],     emphasis: true,  angle: 270 }, // 上
+  { label: "補助金制度提案", lines: ["補助金制度", "提案"],   emphasis: false, angle: 0   }, // 右
+  { label: "実行支援",       lines: ["実行支援"],             emphasis: false, angle: 90  }, // 下
+  { label: "実行後フォロー", lines: ["実行後", "フォロー"],   emphasis: true,  angle: 180 }, // 左
 ] as const;
 
 /** 角度（度）と軌道半径から SVG 座標を計算 */
@@ -1028,14 +1028,9 @@ function CycleDiagram() {
       }}
     >
       {/* ─── タイトル ─── */}
-      <div className="mb-3 flex items-center gap-2">
-        <span
-          aria-hidden
-          className="h-px flex-1"
-          style={{ background: "rgba(26,76,142,0.2)" }}
-        />
+      <div className="mb-3 flex items-center justify-center">
         <p
-          className="font-heading shrink-0"
+          className="font-heading"
           style={{
             fontSize: "0.72rem",
             fontWeight: 700,
@@ -1045,11 +1040,6 @@ function CycleDiagram() {
         >
           中長期伴走サイクル
         </p>
-        <span
-          aria-hidden
-          className="h-px flex-1"
-          style={{ background: "rgba(26,76,142,0.2)" }}
-        />
       </div>
 
       {/* ─── SVG 円形ループ図（PC / SP 共通・width=100% でレスポンシブ） ─── */}
@@ -1101,9 +1091,7 @@ function CycleDiagram() {
         {/* ─── ノード円 + テキスト ─── */}
         {CYCLE_NODES.map((node) => {
           const { x, y } = polarToCart(CX, CY, ORBIT_R, node.angle);
-          const lines = node.label.length <= 5
-            ? [node.label]
-            : [node.label.slice(0, 5), node.label.slice(5)];
+          const lines = node.lines as readonly string[];
           return (
             <g key={node.label}>
               {/* 影 */}
