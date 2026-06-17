@@ -146,7 +146,7 @@ function buildAutoReplyBody(p: ContactPayload): string {
     "",
     "──────────────────────────────",
     "日本提携支援",
-    "https://subsidy-nts-v2.vercel.app/",
+    "https://subsidy.nihon-teikei.co.jp/",
     "──────────────────────────────",
   ];
   return lines.join("\n");

@@ -53,7 +53,7 @@ const HEADERS = {
 
 /** サイトのベースURL（CTA に表示） */
 const SITE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL ?? "subsidy-consulting-nts.vercel.app";
+  process.env.NEXT_PUBLIC_SITE_URL ?? "subsidy.nihon-teikei.co.jp";
 
 // ─────────────────────────────────────────────────────────────
 // DB から補助金データを取得

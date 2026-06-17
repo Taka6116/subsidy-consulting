@@ -108,7 +108,7 @@ function MonitorFrame({ heroVideo }: { heroVideo: HeroVideo | null }) {
           <span className="h-2.5 w-2.5 rounded-full bg-[#febc2e]" />
           <span className="h-2.5 w-2.5 rounded-full bg-[#28c840]" />
           <div className="mx-3 flex-1 rounded-md bg-[#0d1830] px-3 py-1 text-center text-[10px] text-white/40">
-            subsidy-consulting-nts.vercel.app/subsidies/videos
+            subsidy.nihon-teikei.co.jp/subsidies/videos
           </div>
           <span className="rounded bg-[#0d1830] px-2 py-0.5 text-[10px] text-white/50">{durationLabel}</span>
         </div>

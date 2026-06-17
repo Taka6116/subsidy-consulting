@@ -7,6 +7,7 @@
  *   --pattern=A|B|C|D  スライドデザインパターンを明示指定（省略時は subsidyId のハッシュで自動選択）
  *   --publish        動画完成後に S3 アップロード + GeneratedContent 登録 → /subsidies/videos に表示
  *   --skip=N         subsidyId 省略時の候補スキップ数
+ *   --voice=polly    音声を AWS Polly (Kazuha・女性・neural) で生成し HeyGen に audio として渡す
  *
  * 処理フロー:
  *   1. DB から補助金データを取得・補助金名をひらがな読みに変換（kuroshiro）
@@ -34,6 +35,7 @@ import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import { prisma } from "@/lib/db/prisma";
 import { cleanSubsidyName, cleanSubsidyDescription } from "@/lib/subsidyCheckResultHelpers";
 import { resolveVideoFontPath } from "@/lib/video/fonts";
+import { synthesizeAndUpload } from "@/lib/aws/pollyTts";
 
 // ─────────────────────────────────────────────────────────────
 // 設定
@@ -48,7 +50,7 @@ if (!API_KEY) {
 const SAKURABA_VOICE_ID = "6c2b2c234a604057a90578e18e10c211";
 
 /** 遷移先（QR・表示）— 正しい本番URL */
-const SITE_URL_FULL = "https://subsidy-consulting-nts.vercel.app/subsidies";
+const SITE_URL_FULL = "https://subsidy.nihon-teikei.co.jp/";
 const SITE_URL_DISPLAY = "";
 
 const HEYGEN_BASE = "https://api.heygen.com";
@@ -1873,7 +1875,12 @@ function slide6CTA(d: SlideData, ff: string, qrDataUrl: string, photoDataUrl: st
     const bgTo   = t.id === "D" ? "#fff7ed" : "#edf6ff";
     const frameStroke = t.id === "D" ? `${t.rule1}` : "#dbeafe";
     if (t.id === "D") {
-      // Pattern D: QRなし・右側テキストCTA
+      // Pattern D: 右側QRカード付きCTA
+      const dQX = 752, dQY = 104, dQW = 471, dQH = 494;
+      const dQCX = dQX + dQW / 2;
+      const dQrSize = 220;
+      const dQrX = dQCX - dQrSize / 2;
+      const dQrY = dQY + 52;
       return `<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
   ${ff}
@@ -1897,14 +1904,13 @@ function slide6CTA(d: SlideData, ff: string, qrDataUrl: string, photoDataUrl: st
   <text x="${pcx}" y="${PY + PH + 42}" text-anchor="middle" font-family="${FONT},sans-serif" font-size="19" fill="${t.noteText}">補助金の専門家チームが、おんしゃをサポートします</text>
   <text x="${pcx}" y="${PY + PH + 104}" text-anchor="middle" font-family="${FONT},sans-serif" font-size="42" font-weight="900" fill="${t.ink}">お気軽にご相談ください</text>
   <text x="${pcx}" y="${PY + PH + 150}" text-anchor="middle" font-family="${FONT},sans-serif" font-size="21" font-weight="800" fill="${t.rule1}">補助金のご相談は 日本提携支援まで</text>
-  <!-- 右側: テキストCTA -->
-  <rect x="752" y="126" width="471" height="454" rx="26" fill="#ffffff" stroke="${t.rule2}" stroke-width="1.5" filter="url(#sh2)"/>
-  <text x="987" y="234" text-anchor="middle" font-family="${FONT},sans-serif" font-size="17" fill="${t.noteText}">補助金の申請をお考えなら</text>
-  <line x1="820" y1="260" x2="1154" y2="260" stroke="#e0f2fe" stroke-width="1.5"/>
-  <text x="987" y="348" text-anchor="middle" font-family="${FONT},sans-serif" font-size="46" font-weight="900" fill="${t.ink}">日本提携支援</text>
-  <text x="987" y="410" text-anchor="middle" font-family="${FONT},sans-serif" font-size="28" font-weight="700" fill="${t.rule1}">へご相談ください</text>
-  <line x1="820" y1="442" x2="1154" y2="442" stroke="#e0f2fe" stroke-width="1.5"/>
-  <text x="987" y="492" text-anchor="middle" font-family="${FONT},sans-serif" font-size="16" fill="${t.noteText}">まずは無料でご相談を</text>
+  <!-- 右側: QRカード -->
+  <rect x="${dQX}" y="${dQY}" width="${dQW}" height="${dQH}" rx="26" fill="#ffffff" stroke="${t.rule2}" stroke-width="1.5" filter="url(#sh2)"/>
+  <text x="${dQCX}" y="${dQY + 38}" text-anchor="middle" font-family="${FONT},sans-serif" font-size="15" fill="${t.noteText}">補助金の申請をお考えなら</text>
+  <rect x="${dQrX}" y="${dQrY}" width="${dQrSize}" height="${dQrSize}" rx="14" fill="#ffffff"/>
+  <image x="${dQrX + 6}" y="${dQrY + 6}" width="${dQrSize - 12}" height="${dQrSize - 12}" xlink:href="${qrDataUrl}"/>
+  <text x="${dQCX}" y="${dQrY + dQrSize + 44}" text-anchor="middle" font-family="${FONT},sans-serif" font-size="19" font-weight="800" fill="${t.ink}">スマホでQRを読み取り</text>
+  <text x="${dQCX}" y="${dQrY + dQrSize + 72}" text-anchor="middle" font-family="${FONT},sans-serif" font-size="15" fill="${t.noteText}">そのまま無料相談ページへ</text>
   ${slideFooter(t, 5)}
 </svg>`;
     }
@@ -2151,22 +2157,31 @@ async function uploadAsset(pngBuf: Buffer, filename: string): Promise<{ assetId:
 }
 
 // ─────────────────────────────────────────────────────────────
-// HeyGen /v2/video.generate: スライド背景 + 桜庭ボイスのみ（アバターなし）
+// HeyGen /v2/video.generate: スライド背景 + 音声（アバターなし）
+// pollyAudioUrls が渡された場合は Polly 音声（type:"audio"）を使用
 // ─────────────────────────────────────────────────────────────
 async function generateSlideVideo(
   narrations: string[],
   assetInfos: { assetId: string; url: string }[],
+  pollyAudioUrls?: string[],
 ): Promise<string> {
   console.log("\n━━━ Step 3: /v2/video.generate でスライド動画生成 ━━━");
+  const usePolly = Array.isArray(pollyAudioUrls) && pollyAudioUrls.length === narrations.length;
+  console.log(`  音声モード  : ${usePolly ? "AWS Polly (Kazuha)" : "HeyGen TTS (桜庭)"}`);
 
   const video_inputs = narrations.map((text, i) => ({
     character: null,   // アバターなし
-    voice: {
-      type: "text",
-      input_text: text,
-      voice_id: SAKURABA_VOICE_ID,
-      speed: 1.0,
-    },
+    voice: usePolly
+      ? {
+          type: "audio",
+          audio_url: pollyAudioUrls![i],
+        }
+      : {
+          type: "text",
+          input_text: text,
+          voice_id: SAKURABA_VOICE_ID,
+          speed: 1.0,
+        },
     background: {
       type: "image",
       // URL が取れていればURLを優先、なければ asset_id フォールバック
@@ -2183,7 +2198,6 @@ async function generateSlideVideo(
   };
 
   console.log(`  scenes      : ${video_inputs.length}`);
-  console.log(`  voice_id    : ${SAKURABA_VOICE_ID}`);
 
   const res = await fetch(`${HEYGEN_BASE}/v2/video/generate`, {
     method: "POST",
@@ -2373,6 +2387,7 @@ async function main() {
   const skip = skipArg ? parseInt(skipArg.replace("--skip=", ""), 10) : 0;
   const patternArg = args.find((a) => a.startsWith("--pattern="))?.replace("--pattern=", "");
   const shouldPublish = args.includes("--publish");
+  const usePollyVoice = args.includes("--voice=polly");
 
   console.log("\n🔍 補助金データを取得中...");
   const grant = await fetchGrant(subsidyId, skip);
@@ -2463,12 +2478,27 @@ async function main() {
     console.log(`  Slide ${i + 1}: asset_id=${info.assetId} url=${info.url || "(なし)"}`);
   }
 
-  // ── Step 3: /v2/video.generate でスライド動画生成 ──
+  // ── Step 2.5: AWS Polly で音声生成（--voice=polly 時のみ） ──
+  let pollyAudioUrls: string[] | undefined;
   const narrations = buildNarrations(d);
   console.log("\n📝 ナレーション原稿:");
   narrations.forEach((n, i) => console.log(`  ${i + 1}. ${n}`));
 
-  const videoId = await generateSlideVideo(narrations, assetInfos);
+  if (usePollyVoice) {
+    console.log("\n━━━ Step 2.5: AWS Polly (Kazuha) で音声生成 ━━━");
+    const urls: string[] = [];
+    for (let i = 0; i < narrations.length; i++) {
+      const result = await synthesizeAndUpload(narrations[i], grant.id, "Kazuha", i);
+      if (!result) throw new Error(`Polly 音声生成に失敗しました（スライド ${i + 1}）`);
+      urls.push(result.publicUrl);
+      console.log(`  Slide ${i + 1}: ${result.publicUrl} (~${result.durationSec}s)`);
+    }
+    pollyAudioUrls = urls;
+    console.log("✅ Polly 音声生成完了");
+  }
+
+  // ── Step 3: /v2/video.generate でスライド動画生成 ──
+  const videoId = await generateSlideVideo(narrations, assetInfos, pollyAudioUrls);
 
   // ── Step 4: 動画完成待ち ──
   const videoUrl = await pollVideo(videoId);

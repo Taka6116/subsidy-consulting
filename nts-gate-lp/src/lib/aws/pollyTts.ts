@@ -36,11 +36,13 @@ export type PollyTtsResult = {
  * @param text       ナレーションテキスト
  * @param subsidyId  補助金 ID（S3 キーのパスに使用）
  * @param voiceId    "Takumi"（男性・デフォルト）または "Kazuha"（女性）
+ * @param slideIndex スライド番号（0始まり）。指定時は slide-{n}.mp3 として保存
  */
 export async function synthesizeAndUpload(
   text: string,
   subsidyId: string,
   voiceId: VoiceId = "Takumi",
+  slideIndex?: number,
 ): Promise<PollyTtsResult | null> {
   // Polly の日本語 neural 音声は ap-northeast-1 でのみ利用可能
   const pollyRegion = process.env.VIDEO_S3_REGION ?? "ap-northeast-1";
@@ -56,7 +58,8 @@ export async function synthesizeAndUpload(
   const polly = new PollyClient({ region: pollyRegion });
   const s3 = new S3Client({ region: s3Region });
 
-  const s3Key = `videos/${subsidyId}/audio.mp3`;
+  const filename = slideIndex !== undefined ? `slide-${slideIndex}.mp3` : "audio.mp3";
+  const s3Key = `videos/${subsidyId}/${filename}`;
 
   try {
     const pollyCommand = new SynthesizeSpeechCommand({

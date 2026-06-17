@@ -130,7 +130,7 @@
       : (
           '<div class="url-box reveal" style="--d:2">' +
           '<div class="url-label">QRコードから無料診断ページへ</div>' +
-          '<div class="url-value">' + esc(scene.qrUrl || data.lpUrl) + "</div>" +
+          '<div class="url-value">subsidy.nihon-teikei.co.jp</div>' +
           "</div>"
         );
 

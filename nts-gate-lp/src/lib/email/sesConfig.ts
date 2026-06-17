@@ -24,7 +24,7 @@ export function getSiteUrl(): string {
   const raw =
     process.env.NEXT_PUBLIC_SITE_URL?.trim() ||
     process.env.VERCEL_APP_URL?.trim() ||
-    "https://subsidy-consulting-nts.vercel.app";
+    "https://subsidy.nihon-teikei.co.jp";
   return raw.replace(/\/$/, "");
 }
 

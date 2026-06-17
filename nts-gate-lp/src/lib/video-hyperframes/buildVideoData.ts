@@ -180,8 +180,7 @@ export async function buildHyperframesVideoData(
   const lpData = buildSubsidyLpData(grant, lpContent);
   const subsidyName = cleanSubsidyName(lpData.name);
   const shortName = shortSubsidyName(subsidyName);
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") || "https://subsidy-consulting-nts.vercel.app";
-  const lpUrl = `${siteUrl}/subsidies/lp/${lpData.id}`;
+  const lpUrl = "https://subsidy.nihon-teikei.co.jp/";
   const qrSvg = await buildQrSvg(lpUrl);
 
   const useCases = lpData.useCases.slice(0, 3).map((useCase, index) => ({

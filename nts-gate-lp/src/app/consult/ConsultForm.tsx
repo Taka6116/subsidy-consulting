@@ -139,7 +139,7 @@ export default function ConsultForm() {
                 </svg>
               </Link>
               <Link
-                href="https://subsidy-consulting-nts.vercel.app/check"
+                href="https://subsidy.nihon-teikei.co.jp/check"
                 className="inline-flex min-w-[180px] items-center justify-center gap-2 rounded-full bg-gradient-to-r from-[#059669] via-[#10b981] to-[#34d399] px-6 py-3 text-sm font-bold text-white shadow-[0_4px_16px_rgba(16,185,129,0.35)] transition hover:brightness-110"
               >
                 無料診断を試す
