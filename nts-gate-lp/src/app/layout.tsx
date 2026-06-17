@@ -36,6 +36,14 @@ export const metadata: Metadata = {
     "人手不足、設備の老朽化、事業承継でお悩みの経営者へ。会社名と業種から、御社に活用できる可能性のある補助金制度のイメージを無料で照会できます。個人情報の入力は不要です。",
   keywords:
     "補助金 照会, 人手不足 解決策, 設備投資 補助金, 事業承継 補助金, 省力化補助金, 中小企業 支援",
+  icons: {
+    icon: [
+      { url: "/favicon.ico", sizes: "32x32", type: "image/png" },
+      { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+      { url: "/favicon.webp", type: "image/webp" },
+    ],
+    apple: "/apple-icon.png",
+  },
   openGraph: {
     title: "あなたの経営課題に、使える補助金があるかもしれません。",
     description: "会社名と業種から無料で照会。個人情報の入力は不要です。",
