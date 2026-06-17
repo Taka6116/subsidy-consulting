@@ -408,48 +408,49 @@ export default function RootIssueCaseSection({
                 <BadgeColumn side="right" slot="between">
                   <StepCard step={RIGHT_STEPS[3]} tone="right" />
                 </BadgeColumn>
+
+                {/* row 6 — 右カラムのみ：04真下の矢印＋サイクル図 */}
+                <div aria-hidden />
+                <div aria-hidden />
+                <div className="flex flex-col items-center pb-4">
+                  {/* ラベル */}
+                  <span
+                    className="font-heading"
+                    style={{
+                      fontSize: "0.72rem",
+                      fontWeight: 700,
+                      color: "var(--accent-navy)",
+                      letterSpacing: "0.04em",
+                      whiteSpace: "nowrap",
+                      marginBottom: "6px",
+                    }}
+                  >
+                    ここから中長期伴走へ
+                  </span>
+                  {/* 縦線 */}
+                  <div
+                    aria-hidden
+                    style={{ width: "1.5px", height: "36px", background: LINE_COLOR }}
+                  />
+                  {/* 下向き矢印 */}
+                  <div
+                    aria-hidden
+                    style={{
+                      width: 0,
+                      height: 0,
+                      borderLeft: "5px solid transparent",
+                      borderRight: "5px solid transparent",
+                      borderTop: `7px solid ${LINE_COLOR}`,
+                      marginBottom: "8px",
+                    }}
+                  />
+                  {/* サイクル図 */}
+                  <div className="w-full">
+                    <CycleDiagram />
+                  </div>
+                </div>
                 </div>
 
-              </div>
-
-              {/* ─── PC: 04カード真下 → サイクル図への接続 ─── */}
-              <div className="hidden md:flex flex-col items-center mt-6 mb-2">
-                <span
-                  className="font-heading"
-                  style={{
-                    fontSize: "0.72rem",
-                    fontWeight: 700,
-                    color: "var(--accent-navy)",
-                    letterSpacing: "0.04em",
-                    whiteSpace: "nowrap",
-                    marginBottom: "6px",
-                  }}
-                >
-                  ここから中長期伴走へ
-                </span>
-                {/* 縦線 */}
-                <div
-                  aria-hidden
-                  style={{ width: "1.5px", height: "40px", background: LINE_COLOR }}
-                />
-                {/* 下向き矢印 */}
-                <div
-                  aria-hidden
-                  style={{
-                    width: 0,
-                    height: 0,
-                    borderLeft: "5px solid transparent",
-                    borderRight: "5px solid transparent",
-                    borderTop: `7px solid ${LINE_COLOR}`,
-                  }}
-                />
-              </div>
-
-              {/* ─── PC: 全幅サイクル図（左右中央） ─────────────────── */}
-              <div className="flex justify-center pb-2">
-                <div className="relative z-[2] w-full max-w-4xl">
-                  <CycleDiagram />
-                </div>
               </div>
             </div>
 
@@ -976,12 +977,12 @@ function ActivationCard({
 // ============================================================
 // CycleDiagram — 中長期伴走サイクル（SVG 円形 4 ノード + 時計回り矢印）
 // ============================================================
-// ノード順（時計回り）: 上=次の課題発見 → 右=補助金制度提案 → 下=実行支援 → 左=年次フォロー
+// ノード順（時計回り）: 上=次の課題発見 → 右=補助金制度提案 → 下=実行支援 → 左=実行後フォロー
 const CYCLE_NODES = [
   { label: "次の課題発見",   emphasis: true,  angle: 270 }, // 上
   { label: "補助金制度提案", emphasis: false, angle: 0   }, // 右
   { label: "実行支援",       emphasis: false, angle: 90  }, // 下
-  { label: "年次フォロー",   emphasis: true,  angle: 180 }, // 左
+  { label: "実行後フォロー", emphasis: true,  angle: 180 }, // 左
 ] as const;
 
 /** 角度（度）と軌道半径から SVG 座標を計算 */
