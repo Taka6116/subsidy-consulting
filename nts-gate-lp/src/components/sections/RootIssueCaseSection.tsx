@@ -410,66 +410,43 @@ export default function RootIssueCaseSection({
                 </BadgeColumn>
                 </div>
 
-                {/* ─── PC: L字コネクター（04横 → 下 → サイクル図） ─── */}
-                <div
-                  aria-hidden
-                  className="pointer-events-none absolute inset-0 z-[2] hidden md:block"
-                >
-                  {/* 横線: コーナー(左50%) → 04カード左端(≈62%) */}
-                  <span
-                    style={{
-                      position: "absolute",
-                      bottom: "48px",
-                      left: "50%",
-                      right: "38%",
-                      borderTop: `1.5px solid ${LINE_COLOR}`,
-                    }}
-                  />
-                  {/* 縦線: コーナー(50%) → グリッド下56pxまで */}
-                  <span
-                    style={{
-                      position: "absolute",
-                      left: "50%",
-                      top: "calc(100% - 48px)",
-                      height: "calc(48px + 56px)",
-                      width: "1.5px",
-                      background: LINE_COLOR,
-                    }}
-                  />
-                  {/* 下向き矢印 */}
-                  <span
-                    style={{
-                      position: "absolute",
-                      left: "calc(50% - 4px)",
-                      top: "calc(100% + 50px)",
-                      width: 0,
-                      height: 0,
-                      borderLeft: "5px solid transparent",
-                      borderRight: "5px solid transparent",
-                      borderTop: `7px solid ${LINE_COLOR}`,
-                    }}
-                  />
-                </div>
-                {/* ラベル（縦線の左・中ほど。可読テキストなので aria 有効の別要素） */}
+              </div>
+
+              {/* ─── PC: 04カード真下 → サイクル図への接続 ─── */}
+              <div className="hidden md:flex flex-col items-center mt-6 mb-2">
                 <span
-                  className="font-heading absolute z-[2] hidden md:block"
+                  className="font-heading"
                   style={{
-                    top: "calc(100% + 6px)",
-                    transform: "translateY(-50%)",
-                    right: "calc(50% + 14px)",
                     fontSize: "0.72rem",
                     fontWeight: 700,
                     color: "var(--accent-navy)",
                     letterSpacing: "0.04em",
                     whiteSpace: "nowrap",
+                    marginBottom: "6px",
                   }}
                 >
                   ここから中長期伴走へ
                 </span>
+                {/* 縦線 */}
+                <div
+                  aria-hidden
+                  style={{ width: "1.5px", height: "40px", background: LINE_COLOR }}
+                />
+                {/* 下向き矢印 */}
+                <div
+                  aria-hidden
+                  style={{
+                    width: 0,
+                    height: 0,
+                    borderLeft: "5px solid transparent",
+                    borderRight: "5px solid transparent",
+                    borderTop: `7px solid ${LINE_COLOR}`,
+                  }}
+                />
               </div>
 
               {/* ─── PC: 全幅サイクル図（左右中央） ─────────────────── */}
-              <div className="flex justify-center mt-16 pb-2">
+              <div className="flex justify-center pb-2">
                 <div className="relative z-[2] w-full max-w-4xl">
                   <CycleDiagram />
                 </div>
@@ -997,18 +974,49 @@ function ActivationCard({
 }
 
 // ============================================================
-// CycleDiagram — 中長期伴走サイクル（4 ノード + ループ矢印）
+// CycleDiagram — 中長期伴走サイクル（SVG 円形 4 ノード + 時計回り矢印）
 // ============================================================
+// ノード順（時計回り）: 上=次の課題発見 → 右=補助金制度提案 → 下=実行支援 → 左=年次フォロー
 const CYCLE_NODES = [
-  { label: "次の課題発見",   emphasis: true  },
-  { label: "補助金制度提案", emphasis: false },
-  { label: "実行支援",       emphasis: false },
-  { label: "年次フォロー",   emphasis: true  },
+  { label: "次の課題発見",   emphasis: true,  angle: 270 }, // 上
+  { label: "補助金制度提案", emphasis: false, angle: 0   }, // 右
+  { label: "実行支援",       emphasis: false, angle: 90  }, // 下
+  { label: "年次フォロー",   emphasis: true,  angle: 180 }, // 左
 ] as const;
 
-const LOOP_LINE_COLOR = "rgba(26,76,142,0.38)";
+/** 角度（度）と軌道半径から SVG 座標を計算 */
+function polarToCart(cx: number, cy: number, r: number, deg: number) {
+  const rad = ((deg - 90) * Math.PI) / 180;
+  return { x: cx + r * Math.cos(rad), y: cy + r * Math.sin(rad) };
+}
+
+/**
+ * ノード i → ノード j へ向かう弧矢印の <path> を生成
+ * ノード外周（nodeR）から出発し、相手のノード外周手前で終わる
+ */
+function arcArrowPath(
+  cx: number, cy: number,
+  orbitR: number, nodeR: number,
+  fromDeg: number, toDeg: number,
+): string {
+  const gap = (Math.asin(nodeR / orbitR) * 180) / Math.PI + 4;
+  const startDeg = fromDeg + gap;
+  const endDeg   = toDeg   - gap;
+  const start = polarToCart(cx, cy, orbitR, startDeg);
+  const end   = polarToCart(cx, cy, orbitR, endDeg);
+  // 時計回り (sweep-flag=1)
+  return `M ${start.x} ${start.y} A ${orbitR} ${orbitR} 0 0 1 ${end.x} ${end.y}`;
+}
 
 function CycleDiagram() {
+  // SVG 寸法
+  const SIZE    = 320;
+  const CX      = SIZE / 2;  // 160
+  const CY      = SIZE / 2;  // 160
+  const ORBIT_R = 108;       // ノード中心の軌道半径
+  const NODE_R  = 42;        // ノード円の半径
+  const ARROW_COLOR = "rgba(26,76,142,0.55)";
+
   return (
     <div
       className="relative z-[2] overflow-hidden rounded-[14px] p-4 md:p-5"
@@ -1043,106 +1051,126 @@ function CycleDiagram() {
         />
       </div>
 
-      {/* ─── PC: 横 4 ノード + U 字ループ矢印 ─── */}
-      <div className="hidden md:block">
-        {/* ノード列 */}
-        <div className="flex items-center gap-3">
-          {CYCLE_NODES.flatMap((node, i) => {
-            const nodeEl = (
-              <div
-                key={`node-${node.label}`}
-                className="font-heading flex flex-1 items-center justify-center rounded-full text-center"
-                style={{
-                  fontSize: "0.82rem",
-                  fontWeight: 700,
-                  letterSpacing: "0.04em",
-                  lineHeight: 1.4,
-                  background: node.emphasis ? NAVY_GRADIENT_SOLID : "#ffffff",
-                  color: node.emphasis ? "#ffffff" : "var(--accent-navy)",
-                  border: node.emphasis
-                    ? "none"
-                    : "1.5px solid rgba(26,76,142,0.28)",
-                  boxShadow: node.emphasis
-                    ? "0 4px 14px rgba(26,76,142,0.26)"
-                    : "0 2px 6px rgba(26,76,142,0.08)",
-                  minWidth: 0,
-                  padding: "12px 10px",
-                }}
-              >
-                {node.label}
-              </div>
-            );
-            if (i < CYCLE_NODES.length - 1) {
-              return [
-                nodeEl,
-                <ChevronRight
-                  key={`arrow-${i}`}
-                  size={16}
-                  strokeWidth={2}
-                  aria-hidden
-                  style={{ color: "rgba(26,76,142,0.45)", flexShrink: 0 }}
-                />,
-              ];
-            }
-            return [nodeEl];
-          })}
-        </div>
-
-        {/* U 字ループ矢印（年次フォロー → 次の課題発見） */}
-        <div
-          aria-hidden
-          className="relative mt-2"
-          style={{
-            marginLeft: "4%",
-            marginRight: "4%",
-            height: "16px",
-            borderLeft: `1.5px solid ${LOOP_LINE_COLOR}`,
-            borderBottom: `1.5px solid ${LOOP_LINE_COLOR}`,
-            borderRight: `1.5px solid ${LOOP_LINE_COLOR}`,
-            borderRadius: "0 0 6px 6px",
-          }}
-        >
-          {/* 上向き矢印先端 */}
-          <span
-            style={{
-              position: "absolute",
-              top: "-7px",
-              left: "-5px",
-              width: 0,
-              height: 0,
-              borderLeft: "5px solid transparent",
-              borderRight: "5px solid transparent",
-              borderBottom: `7px solid ${LOOP_LINE_COLOR}`,
-            }}
-          />
-        </div>
-      </div>
-
-      {/* ─── SP: 2×2 グリッド ─── */}
-      <div className="grid grid-cols-2 gap-2 md:hidden">
-        {CYCLE_NODES.map((node) => (
-          <div
-            key={node.label}
-            className="font-heading flex items-center justify-center rounded-full px-2 py-2 text-center"
-            style={{
-              fontSize: "0.64rem",
-              fontWeight: 700,
-              letterSpacing: "0.02em",
-              lineHeight: 1.35,
-              background: node.emphasis ? NAVY_GRADIENT_SOLID : "#ffffff",
-              color: node.emphasis ? "#ffffff" : "var(--accent-navy)",
-              border: node.emphasis
-                ? "none"
-                : "1.5px solid rgba(26,76,142,0.28)",
-              boxShadow: node.emphasis
-                ? "0 3px 8px rgba(26,76,142,0.2)"
-                : "0 1px 3px rgba(26,76,142,0.06)",
-            }}
+      {/* ─── SVG 円形ループ図（PC / SP 共通・width=100% でレスポンシブ） ─── */}
+      <svg
+        viewBox={`0 0 ${SIZE} ${SIZE}`}
+        width="100%"
+        aria-hidden
+        style={{ display: "block", maxWidth: "360px", margin: "0 auto" }}
+      >
+        <defs>
+          {/* 矢印マーカー */}
+          <marker
+            id="arrowHead"
+            markerWidth="7"
+            markerHeight="7"
+            refX="5"
+            refY="3.5"
+            orient="auto"
           >
-            {node.label}
-          </div>
-        ))}
-      </div>
+            <polygon
+              points="0 0, 7 3.5, 0 7"
+              fill={ARROW_COLOR}
+            />
+          </marker>
+          {/* emphasis ノード用グラデーション */}
+          <linearGradient id="navyGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%"   stopColor="#143a6f" />
+            <stop offset="48%"  stopColor="#1a4c8e" />
+            <stop offset="100%" stopColor="#2162a5" />
+          </linearGradient>
+        </defs>
+
+        {/* ─── 弧矢印（時計回り4本） ─── */}
+        {CYCLE_NODES.map((node, i) => {
+          const next = CYCLE_NODES[(i + 1) % CYCLE_NODES.length];
+          const d = arcArrowPath(CX, CY, ORBIT_R, NODE_R, node.angle, next.angle);
+          return (
+            <path
+              key={`arc-${i}`}
+              d={d}
+              fill="none"
+              stroke={ARROW_COLOR}
+              strokeWidth="2"
+              markerEnd="url(#arrowHead)"
+            />
+          );
+        })}
+
+        {/* ─── ノード円 + テキスト ─── */}
+        {CYCLE_NODES.map((node) => {
+          const { x, y } = polarToCart(CX, CY, ORBIT_R, node.angle);
+          const lines = node.label.length <= 5
+            ? [node.label]
+            : [node.label.slice(0, 5), node.label.slice(5)];
+          return (
+            <g key={node.label}>
+              {/* 影 */}
+              <circle
+                cx={x} cy={y} r={NODE_R + 2}
+                fill="rgba(26,76,142,0.10)"
+              />
+              {/* ノード本体 */}
+              <circle
+                cx={x} cy={y} r={NODE_R}
+                fill={node.emphasis ? "url(#navyGrad)" : "#ffffff"}
+                stroke={node.emphasis ? "none" : "rgba(26,76,142,0.30)"}
+                strokeWidth="1.5"
+              />
+              {/* ラベル（1〜2行） */}
+              {lines.map((line, li) => (
+                <text
+                  key={li}
+                  x={x}
+                  y={y + (lines.length === 1 ? 5 : -4 + li * 18)}
+                  textAnchor="middle"
+                  fontSize="13"
+                  fontWeight="700"
+                  fontFamily="var(--font-heading, sans-serif)"
+                  fill={node.emphasis ? "#ffffff" : "#1a4c8e"}
+                  letterSpacing="0.03em"
+                >
+                  {line}
+                </text>
+              ))}
+            </g>
+          );
+        })}
+
+        {/* ─── 中央：¥ アイコン + テキスト ─── */}
+        <text
+          x={CX} y={CY - 18}
+          textAnchor="middle"
+          fontSize="26"
+          fontWeight="900"
+          fill="#1a4c8e"
+          opacity="0.85"
+        >
+          ¥
+        </text>
+        <text
+          x={CX} y={CY + 8}
+          textAnchor="middle"
+          fontSize="10"
+          fontWeight="700"
+          fill="#1a4c8e"
+          letterSpacing="0.04em"
+          opacity="0.8"
+        >
+          継続的な
+        </text>
+        <text
+          x={CX} y={CY + 22}
+          textAnchor="middle"
+          fontSize="10"
+          fontWeight="700"
+          fill="#1a4c8e"
+          letterSpacing="0.04em"
+          opacity="0.8"
+        >
+          紹介報酬
+        </text>
+      </svg>
 
       {/* ─── キャプション ─── */}
       <p
