@@ -101,12 +101,13 @@ const STEPS: Step[] = [
   },
   {
     number: "02",
-    label: "申請支援",
+    label: "実現する",
     role: "NTS主導",
     tone: "win",
     title: "補助金申請支援",
     description:
       "御社の課題を把握・明確化した上で最適な制度を選定し、申請から採択まで一貫して伴走します。",
+    items: ["最適な補助金制度の提案", "必要書類のサポート"],
     image: isometricWin,
     imageAlt: "補助金申請を支援するイメージ",
     imageScale: 1.08,
@@ -119,6 +120,7 @@ const STEPS: Step[] = [
     title: "中長期の伴走支援",
     description:
       "申請支援で終わりではなく、次の経営課題まで見据えた御社とNTSによる中長期にわたる伴走支援を続けます。",
+    items: ["補助金活用の支援", "採択後のフォロー"],
     image: isometricSupport,
     imageAlt: "中長期で伴走支援するイメージ",
     imageScale: 1.04,
@@ -168,10 +170,19 @@ function StepCard({ step }: { step: Step }) {
       {/* 番号バッジ（カード上端に乗る） */}
       <div className="absolute left-1/2 top-0 z-[3] -translate-x-1/2 -translate-y-1/2">
         <span
-          className="flex h-12 w-12 items-center justify-center rounded-full text-[17px] font-black text-white shadow-[0_8px_18px_rgba(15,23,42,0.18)]"
-          style={{ background: palette.badgeBg }}
+          className="flex flex-col items-center justify-center rounded-full px-1 shadow-[0_8px_18px_rgba(15,23,42,0.18)]"
+          style={{
+            background: palette.badgeBg,
+            width: "56px",
+            height: "56px",
+          }}
         >
-          {step.number}
+          <span className="text-[9px] font-black tracking-[0.12em] text-white/80 leading-none">
+            STEP
+          </span>
+          <span className="text-[18px] font-black text-white leading-tight">
+            {step.number}
+          </span>
         </span>
       </div>
 
