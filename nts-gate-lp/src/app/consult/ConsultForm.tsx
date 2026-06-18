@@ -1,6 +1,12 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
+
+declare global {
+  interface Window {
+    dataLayer?: Record<string, unknown>[];
+  }
+}
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
@@ -43,6 +49,10 @@ export default function ConsultForm() {
         return;
       }
       setSent(true);
+      if (typeof window !== "undefined") {
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push({ event: "consult_complete" });
+      }
     } catch {
       setErrorMsg("通信エラーが発生しました。しばらく後でお試しください。");
     } finally {
