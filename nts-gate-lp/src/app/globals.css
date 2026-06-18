@@ -674,12 +674,6 @@ body {
   backdrop-filter: blur(4px);
 }
 
-nav {
-  background: rgba(255, 255, 255, 0.92);
-  -webkit-backdrop-filter: blur(12px);
-  backdrop-filter: blur(12px);
-}
-
 header.lp-site-header:not([data-hero-transparent]) {
   background: rgba(255, 255, 255, 0.92);
   -webkit-backdrop-filter: blur(12px);

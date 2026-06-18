@@ -40,7 +40,9 @@ export async function POST(req: NextRequest) {
   } catch (err) {
     // 個人情報を含む変数は console に出力しない
     const message = err instanceof Error ? err.message : "unknown error";
+    const stack = err instanceof Error ? err.stack : undefined;
     console.error("[contact] error:", message);
+    if (stack) console.error("[contact] stack:", stack);
     return NextResponse.json(
       { error: "送信に失敗しました。しばらく後でお試しください。" },
       { status: 500 },
