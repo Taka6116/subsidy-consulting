@@ -54,9 +54,9 @@ export async function notifyContact(payload: ContactPayload): Promise<void> {
     toRaw.split(",").map((s) => s.trim()).filter((s) => s.length > 0)
   )];
 
-  // ① 担当者への社内通知 ＋ ② 問い合わせ者への自動返信 を並列送信
-  const sends: Promise<unknown>[] = [
-    ...toAddresses.map((to) =>
+  // ① 担当者への社内通知（必須）
+  const notifyResults = await Promise.allSettled(
+    toAddresses.map((to) =>
       sendEmail({
         to,
         from,
@@ -64,26 +64,32 @@ export async function notifyContact(payload: ContactPayload): Promise<void> {
         text: buildNotifyBody(payload),
         context: "notifyContact",
       })
-    ),
-    sendEmail({
+    )
+  );
+
+  const notifyFailures = notifyResults.filter((r) => r.status === "rejected");
+  if (notifyFailures.length > 0) {
+    const messages = notifyFailures
+      .map((r) => (r as PromiseRejectedResult).reason?.message ?? String((r as PromiseRejectedResult).reason))
+      .join(", ");
+    console.error(`[notifyContact] notify failed: from="${from}" toAddresses=${JSON.stringify(toAddresses)}`);
+    throw new Error(`[notifyContact] SES notify failed: ${messages}`);
+  }
+
+  // ② 問い合わせ者への自動返信（任意：SES サンドボックス中は未検証アドレスへ送れないため失敗しても 500 にしない）
+  try {
+    await sendEmail({
       to: payload.email,
       from,
       subject: `【日本提携支援】無料相談のお申し込みを受け付けました`,
       text: buildAutoReplyBody(payload),
       context: "autoReply",
-    }),
-  ];
-
-  const results = await Promise.allSettled(sends);
-
-  const failures = results.filter((r) => r.status === "rejected");
-  if (failures.length > 0) {
-    const messages = failures
-      .map((r) => (r as PromiseRejectedResult).reason?.message ?? String((r as PromiseRejectedResult).reason))
-      .join(", ");
-    // デバッグ用：どのアドレスで失敗したか記録（PII注意・解決後削除）
-    console.error(`[notifyContact] from="${from}" toAddresses=${JSON.stringify(toAddresses)} userEmail="${payload.email}"`);
-    throw new Error(`[notifyContact] SES send failed: ${messages}`);
+    });
+  } catch (autoReplyErr) {
+    // 自動返信の失敗はログに残すが、フォーム送信自体は成功とみなす
+    // SES サンドボックス解除後は自動的に解消される
+    const msg = autoReplyErr instanceof Error ? autoReplyErr.message : String(autoReplyErr);
+    console.warn(`[notifyContact] autoReply skipped (non-fatal): ${msg}`);
   }
 }
 
