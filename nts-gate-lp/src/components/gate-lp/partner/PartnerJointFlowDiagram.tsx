@@ -246,13 +246,6 @@ function StepCard({ step }: { step: Step }) {
                     {item}
                   </span>
                 </div>
-                {i < step.items!.length - 1 && (
-                  <div className="flex justify-center py-0.5" aria-hidden>
-                    <span className="text-[15px] font-black leading-none" style={{ color: palette.titleColor }}>
-                      ＋
-                    </span>
-                  </div>
-                )}
               </div>
             ))}
           </div>
