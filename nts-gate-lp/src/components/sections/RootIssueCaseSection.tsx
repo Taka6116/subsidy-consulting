@@ -975,250 +975,187 @@ function ActivationCard({
 }
 
 // ============================================================
-// CycleDiagram — 中長期伴走サイクル（太い円形矢印 + 白丸アイコンノード）
+// CycleDiagram — 中長期伴走サイクル（SVG 円形 4 ノード + 時計回り矢印）
 // ============================================================
-// ノード順（時計回り）: 上=補助金制度提案 → 右=実行支援 → 下=実行フォロー → 左=次の課題発見
+// ノード順（時計回り）: 上=次の課題発見 → 右=補助金制度提案 → 下=実行支援 → 左=実行後フォロー
 const CYCLE_NODES = [
-  {
-    label: "補助金制度提案",
-    lines: ["補助金制度", "提案"],
-    angle: 270, // 上
-    // ClipboardList icon path
-    iconPath: "M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2M9 5a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2M9 5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01",
-  },
-  {
-    label: "実行支援",
-    lines: ["実行支援"],
-    angle: 0, // 右
-    // Handshake icon path (simplified)
-    iconPath: "M11 17a1 1 0 0 0 1.447.894l4-2A1 1 0 0 0 17 15V9.236a1 1 0 0 0-1.447-.894l-4 2a1 1 0 0 0-.553.894V17zM15.211 6.276a1 1 0 0 0-1.422 0l-6 6a1 1 0 0 0 1.422 1.422l6-6a1 1 0 0 0 0-1.422z M5 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm0 0v10",
-  },
-  {
-    label: "実行フォロー",
-    lines: ["実行フォロー"],
-    angle: 90, // 下
-    // TrendingUp icon path
-    iconPath: "M22 7 13.5 15.5l-5-5L2 17M22 7h-6M22 7v6",
-  },
-  {
-    label: "次の課題発見",
-    lines: ["次の課題", "発見"],
-    angle: 180, // 左
-    // Lightbulb icon path
-    iconPath: "M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5M9 18h6M10 22h4",
-  },
+  { label: "次の課題発見",   lines: ["次の課題", "発見"],     emphasis: true,  angle: 270 }, // 上
+  { label: "補助金制度提案", lines: ["補助金制度", "提案"],   emphasis: false, angle: 0   }, // 右
+  { label: "実行支援",       lines: ["実行支援"],             emphasis: false, angle: 90  }, // 下
+  { label: "実行後フォロー", lines: ["実行後", "フォロー"],   emphasis: true,  angle: 180 }, // 左
 ] as const;
 
-/** 角度（度）と半径から SVG 座標を計算 */
+/** 角度（度）と軌道半径から SVG 座標を計算 */
 function polarToCart(cx: number, cy: number, r: number, deg: number) {
   const rad = ((deg - 90) * Math.PI) / 180;
   return { x: cx + r * Math.cos(rad), y: cy + r * Math.sin(rad) };
 }
 
 /**
- * ノード間を繋ぐ太い弧の path を生成
- * ノード外周から gap 分離れた位置に開始・終了
+ * ノード i → ノード j へ向かう弧矢印の <path> を生成
+ * ノード外周（nodeR）から出発し、相手のノード外周手前で終わる
  */
-function thickArcPath(
+function arcArrowPath(
   cx: number, cy: number,
-  orbitR: number,
+  orbitR: number, nodeR: number,
   fromDeg: number, toDeg: number,
-  gapDeg: number,
 ): string {
-  const startDeg = fromDeg + gapDeg;
-  const endDeg   = toDeg   - gapDeg;
+  const gap = (Math.asin(nodeR / orbitR) * 180) / Math.PI + 4;
+  const startDeg = fromDeg + gap;
+  const endDeg   = toDeg   - gap;
   const start = polarToCart(cx, cy, orbitR, startDeg);
   const end   = polarToCart(cx, cy, orbitR, endDeg);
-  const diff  = ((endDeg - startDeg) + 360) % 360;
-  const large = diff > 180 ? 1 : 0;
-  return `M ${start.x.toFixed(2)} ${start.y.toFixed(2)} A ${orbitR} ${orbitR} 0 ${large} 1 ${end.x.toFixed(2)} ${end.y.toFixed(2)}`;
+  // 時計回り (sweep-flag=1)
+  return `M ${start.x} ${start.y} A ${orbitR} ${orbitR} 0 0 1 ${end.x} ${end.y}`;
 }
 
 function CycleDiagram() {
-  const SIZE     = 340;
-  const CX       = SIZE / 2;
-  const CY       = SIZE / 2;
-  const ORBIT_R  = 118;  // 太い弧の軌道半径
-  const NODE_R   = 44;   // ノード白丸の半径
-  const GAP_DEG  = 28;   // ノード端から弧の開始までの角度ギャップ
-  const ARC_W    = 20;   // 弧の太さ
-  const ARC_COLOR = "#2563EB";
-  const ARC_LIGHT = "#93C5FD";
+  // SVG 寸法
+  const SIZE    = 320;
+  const CX      = SIZE / 2;  // 160
+  const CY      = SIZE / 2;  // 160
+  const ORBIT_R = 108;       // ノード中心の軌道半径
+  const NODE_R  = 42;        // ノード円の半径
+  const ARROW_COLOR = "rgba(26,76,142,0.55)";
 
   return (
     <div
-      className="relative z-[2] overflow-hidden rounded-[18px] p-5 md:p-6"
+      className="relative z-[2] overflow-hidden rounded-[14px] p-4 md:p-5"
       style={{
-        background: "#ffffff",
-        border: "1.5px solid #DBEAFE",
-        boxShadow: "0 8px 32px rgba(26,76,142,0.10)",
+        background: NAVY_GRADIENT_CARD_EMPHASIZED,
+        border: "2px solid var(--accent-navy)",
+        boxShadow: "0 10px 28px rgba(26,76,142,0.16)",
       }}
     >
       {/* ─── タイトル ─── */}
-      <p
-        className="font-heading mb-1 text-center"
-        style={{
-          fontSize: "1rem",
-          fontWeight: 800,
-          color: "#1e3a6e",
-          letterSpacing: "0.04em",
-        }}
-      >
-        中長期伴走サイクル
-      </p>
-      {/* タイトル下アクセントライン */}
-      <div
-        aria-hidden
-        className="mx-auto mb-4"
-        style={{ width: "36px", height: "3px", borderRadius: "2px", background: ARC_COLOR }}
-      />
+      <div className="mb-3 flex items-center justify-center">
+        <p
+          className="font-heading"
+          style={{
+            fontSize: "0.72rem",
+            fontWeight: 700,
+            letterSpacing: "0.1em",
+            color: "var(--accent-navy)",
+          }}
+        >
+          中長期伴走サイクル
+        </p>
+      </div>
 
-      {/* ─── SVG 本体 ─── */}
+      {/* ─── SVG 円形ループ図（PC / SP 共通・width=100% でレスポンシブ） ─── */}
       <svg
         viewBox={`0 0 ${SIZE} ${SIZE}`}
         width="100%"
         aria-hidden
-        style={{ display: "block", maxWidth: "320px", margin: "0 auto" }}
+        style={{ display: "block", maxWidth: "360px", margin: "0 auto" }}
       >
         <defs>
-          {/* 太い弧用グラデーション */}
-          <linearGradient id="arcGrad0" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor={ARC_COLOR} />
-            <stop offset="100%" stopColor="#1d4ed8" />
-          </linearGradient>
-          {/* 矢印マーカー（太い弧用） */}
-          <marker id="thickArrow" markerWidth="6" markerHeight="6" refX="4" refY="3" orient="auto">
-            <polygon points="0 0, 6 3, 0 6" fill={ARC_COLOR} />
+          {/* 矢印マーカー */}
+          <marker
+            id="arrowHead"
+            markerWidth="7"
+            markerHeight="7"
+            refX="5"
+            refY="3.5"
+            orient="auto"
+          >
+            <polygon
+              points="0 0, 7 3.5, 0 7"
+              fill={ARROW_COLOR}
+            />
           </marker>
-          {/* ノード用ドロップシャドウ */}
-          <filter id="nodeShadow" x="-20%" y="-20%" width="140%" height="140%">
-            <feDropShadow dx="0" dy="2" stdDeviation="3" floodColor="rgba(26,76,142,0.18)" />
-          </filter>
-          {/* 中央コイン用グラデーション */}
-          <radialGradient id="coinGrad" cx="40%" cy="35%" r="65%">
-            <stop offset="0%" stopColor="#60a5fa" />
-            <stop offset="100%" stopColor="#1d4ed8" />
-          </radialGradient>
+          {/* emphasis ノード用グラデーション */}
+          <linearGradient id="navyGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%"   stopColor="#143a6f" />
+            <stop offset="48%"  stopColor="#1a4c8e" />
+            <stop offset="100%" stopColor="#2162a5" />
+          </linearGradient>
         </defs>
 
-        {/* ─── 太い弧矢印（時計回り4本） ─── */}
+        {/* ─── 弧矢印（時計回り4本） ─── */}
         {CYCLE_NODES.map((node, i) => {
           const next = CYCLE_NODES[(i + 1) % CYCLE_NODES.length];
-          const d = thickArcPath(CX, CY, ORBIT_R, node.angle, next.angle, GAP_DEG);
+          const d = arcArrowPath(CX, CY, ORBIT_R, NODE_R, node.angle, next.angle);
           return (
             <path
               key={`arc-${i}`}
               d={d}
               fill="none"
-              stroke={ARC_COLOR}
-              strokeWidth={ARC_W}
-              strokeLinecap="round"
-              markerEnd="url(#thickArrow)"
-              opacity="0.92"
+              stroke={ARROW_COLOR}
+              strokeWidth="2"
+              markerEnd="url(#arrowHead)"
             />
           );
         })}
 
-        {/* ─── ノード（白丸 + アイコン + ラベル） ─── */}
+        {/* ─── ノード円 + テキスト ─── */}
         {CYCLE_NODES.map((node) => {
           const { x, y } = polarToCart(CX, CY, ORBIT_R, node.angle);
           const lines = node.lines as readonly string[];
-          const iconSize = 18;
-          const iconOff  = lines.length === 1 ? -22 : -26;
           return (
-            <g key={node.label} filter="url(#nodeShadow)">
-              {/* 白丸 */}
+            <g key={node.label}>
+              {/* 影 */}
+              <circle
+                cx={x} cy={y} r={NODE_R + 2}
+                fill="rgba(26,76,142,0.10)"
+              />
+              {/* ノード本体 */}
               <circle
                 cx={x} cy={y} r={NODE_R}
-                fill="#ffffff"
-                stroke={ARC_LIGHT}
-                strokeWidth="2"
+                fill={node.emphasis ? "url(#navyGrad)" : "#ffffff"}
+                stroke={node.emphasis ? "none" : "rgba(26,76,142,0.30)"}
+                strokeWidth="1.5"
               />
-              {/* アイコン（strokeベース） */}
-              <g
-                transform={`translate(${x - iconSize / 2}, ${y + iconOff})`}
-                fill="none"
-                stroke={ARC_COLOR}
-                strokeWidth="1.8"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <svg width={iconSize} height={iconSize} viewBox="0 0 24 24">
-                  <path d={node.iconPath} />
-                </svg>
-              </g>
               {/* ラベル（1〜2行） */}
-              {lines.map((line, li) => {
-                const textY = lines.length === 1
-                  ? y + 14
-                  : y + 4 + li * 16;
-                return (
-                  <text
-                    key={li}
-                    x={x}
-                    y={textY}
-                    textAnchor="middle"
-                    fontSize="12"
-                    fontWeight="700"
-                    fontFamily="var(--font-heading, sans-serif)"
-                    fill="#1e3a6e"
-                    letterSpacing="0.02em"
-                  >
-                    {line}
-                  </text>
-                );
-              })}
+              {lines.map((line, li) => (
+                <text
+                  key={li}
+                  x={x}
+                  y={y + (lines.length === 1 ? 5 : -4 + li * 18)}
+                  textAnchor="middle"
+                  fontSize="13"
+                  fontWeight="700"
+                  fontFamily="var(--font-heading, sans-serif)"
+                  fill={node.emphasis ? "#ffffff" : "#1a4c8e"}
+                  letterSpacing="0.03em"
+                >
+                  {line}
+                </text>
+              ))}
             </g>
           );
         })}
 
-        {/* ─── 中央：コインアイコン + テキスト ─── */}
-        {/* コイン外円 */}
-        <circle cx={CX} cy={CY - 14} r="22" fill="url(#coinGrad)" opacity="0.95" />
-        {/* コイン外枠 */}
-        <circle cx={CX} cy={CY - 14} r="22" fill="none" stroke="#93c5fd" strokeWidth="1.5" />
-        {/* ¥ マーク */}
+        {/* ─── 中央：¥ アイコン + テキスト ─── */}
         <text
-          x={CX} y={CY - 6}
+          x={CX} y={CY - 18}
           textAnchor="middle"
-          fontSize="22"
+          fontSize="26"
           fontWeight="900"
-          fill="#ffffff"
-          letterSpacing="-0.02em"
+          fill="#1a4c8e"
+          opacity="0.85"
         >
           ¥
         </text>
-        {/* キラキラ装飾 */}
-        {[[-22, -32], [22, -32], [0, -42]].map(([dx, dy], i) => (
-          <text
-            key={i}
-            x={CX + dx} y={CY + dy}
-            textAnchor="middle"
-            fontSize="8"
-            fill="#93c5fd"
-            opacity="0.9"
-          >
-            ✦
-          </text>
-        ))}
-        {/* 「継続的な紹介報酬」テキスト */}
         <text
-          x={CX} y={CY + 16}
+          x={CX} y={CY + 8}
           textAnchor="middle"
-          fontSize="11"
+          fontSize="10"
           fontWeight="700"
-          fill="#1e3a6e"
-          letterSpacing="0.03em"
+          fill="#1a4c8e"
+          letterSpacing="0.04em"
+          opacity="0.8"
         >
           継続的な
         </text>
         <text
-          x={CX} y={CY + 30}
+          x={CX} y={CY + 22}
           textAnchor="middle"
-          fontSize="11"
+          fontSize="10"
           fontWeight="700"
-          fill="#1e3a6e"
-          letterSpacing="0.03em"
+          fill="#1a4c8e"
+          letterSpacing="0.04em"
+          opacity="0.8"
         >
           紹介報酬
         </text>
@@ -1226,15 +1163,14 @@ function CycleDiagram() {
 
       {/* ─── キャプション ─── */}
       <p
-        className="font-body mt-4 text-center"
+        className="font-body mt-3 text-center"
         style={{
-          fontSize: "0.75rem",
-          lineHeight: 1.8,
-          color: "#4b6585",
+          fontSize: "0.68rem",
+          lineHeight: 1.65,
+          color: "#365578",
         }}
       >
-        補助金獲得後も継続的に伴走し、次の課題を特定し、<br />
-        最適な支援提案へとつなげます。
+        補助金獲得後も継続的に伴走。次の課題を特定し、最適な支援策を提案し続けます。
       </p>
     </div>
   );
