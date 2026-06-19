@@ -14,7 +14,6 @@ import {
   Handshake,
   Lightbulb,
   TrendingUp,
-  Coins,
 } from "lucide-react";
 
 /** NTS紺（--accent-navy）ベースのグラデーション */
@@ -975,23 +974,39 @@ function cyclePolar(cx: number, cy: number, r: number, deg: number) {
   return { x: cx + r * Math.cos(rad), y: cy + r * Math.sin(rad) };
 }
 
-/** 太い円弧の path（時計回り）。fromDeg→toDeg をギャップ分だけ内側に縮めて生成 */
+/** 太い円弧の path（時計回り）。fromDeg→toDeg */
 function cycleArc(cx: number, cy: number, r: number, fromDeg: number, toDeg: number) {
   const s = cyclePolar(cx, cy, r, fromDeg);
   const e = cyclePolar(cx, cy, r, toDeg);
-  return `M ${s.x.toFixed(2)} ${s.y.toFixed(2)} A ${r} ${r} 0 0 1 ${e.x.toFixed(2)} ${e.y.toFixed(2)}`;
+  const large = ((toDeg - fromDeg + 360) % 360) > 180 ? 1 : 0;
+  return `M ${s.x.toFixed(2)} ${s.y.toFixed(2)} A ${r} ${r} 0 ${large} 1 ${e.x.toFixed(2)} ${e.y.toFixed(2)}`;
+}
+
+/** 弧の終端 toDeg に接する三角形の矢じり（時計回り方向を向く）のポリゴン座標 */
+function cycleArrowHead(cx: number, cy: number, r: number, toDeg: number, halfW: number, len: number) {
+  // 矢じりの先端は終端より少し進んだ位置
+  const tip = cyclePolar(cx, cy, r, toDeg + len);
+  // 基部は終端位置で、半径方向に ±halfW 広げる
+  const base = cyclePolar(cx, cy, r, toDeg);
+  const rad = ((toDeg - 90) * Math.PI) / 180;
+  const ux = Math.cos(rad); // 外向き半径方向
+  const uy = Math.sin(rad);
+  const p1 = { x: base.x + ux * halfW, y: base.y + uy * halfW };
+  const p2 = { x: base.x - ux * halfW, y: base.y - uy * halfW };
+  return `${tip.x.toFixed(2)},${tip.y.toFixed(2)} ${p1.x.toFixed(2)},${p1.y.toFixed(2)} ${p2.x.toFixed(2)},${p2.y.toFixed(2)}`;
 }
 
 function CycleDiagram() {
   const VB = 400;        // viewBox サイズ
   const C = VB / 2;      // 中心
-  const R_ARC = 144;     // 弧の半径（ノード中心と一致）
-  // ノードは 0/90/180/270 度。弧はその間（ギャップ各26度）を時計回りに繋ぐ
+  const R_ARC = 146;     // 弧の半径（ノード中心と一致）
+  const ARC_W = 13;      // 弧の太さ
+  // ノードは 0/90/180/270 度。弧はその間を時計回りに繋ぐ（終端に矢じり）
   const ARCS = [
-    { from: 26, to: 64 },
-    { from: 116, to: 154 },
-    { from: 206, to: 244 },
-    { from: 296, to: 334 },
+    { from: 22, to: 66 },
+    { from: 112, to: 156 },
+    { from: 202, to: 246 },
+    { from: 292, to: 336 },
   ];
 
   return (
@@ -1026,38 +1041,49 @@ function CycleDiagram() {
         >
           <defs>
             <linearGradient id="cycleArcGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#6f9fd8" />
-              <stop offset="100%" stopColor="#3b6fc4" />
+              <stop offset="0%" stopColor="#5e8fd0" />
+              <stop offset="100%" stopColor="#2f63bd" />
             </linearGradient>
-            <marker id="cycleArrowHead" markerWidth="5" markerHeight="5" refX="2.6" refY="2.5" orient="auto">
-              <polygon points="0 0, 5 2.5, 0 5" fill="#3b6fc4" />
-            </marker>
           </defs>
 
-          {/* 装飾：同心の点線円 */}
-          <circle cx={C} cy={C} r="96" fill="none" stroke="#cfe0f4" strokeWidth="1" strokeDasharray="2 5" />
-          <circle cx={C} cy={C} r="72" fill="none" stroke="#dbe7f6" strokeWidth="1" strokeDasharray="2 5" />
+          {/* 装飾：中央まわりの点線円 */}
+          <circle cx={C} cy={C} r="74" fill="none" stroke="#cfe0f4" strokeWidth="1" strokeDasharray="2 5" />
 
-          {/* 太い弧矢印（時計回り4本） */}
+          {/* 太い弧矢印（時計回り4本：弧 + 矢じり） */}
           {ARCS.map((a, i) => (
-            <path
-              key={i}
-              d={cycleArc(C, C, R_ARC, a.from, a.to)}
-              fill="none"
-              stroke="url(#cycleArcGrad)"
-              strokeWidth="15"
-              strokeLinecap="round"
-              markerEnd="url(#cycleArrowHead)"
-            />
+            <g key={i}>
+              <path
+                d={cycleArc(C, C, R_ARC, a.from, a.to)}
+                fill="none"
+                stroke="url(#cycleArcGrad)"
+                strokeWidth={ARC_W}
+                strokeLinecap="round"
+              />
+              <polygon
+                points={cycleArrowHead(C, C, R_ARC, a.to, ARC_W + 6, 9)}
+                fill="#2f63bd"
+              />
+            </g>
           ))}
         </svg>
 
-        {/* 中央：コイン + テキスト（HTML） */}
+        {/* 中央：コインスタック + ¥バッジ + テキスト（HTML） */}
         <div className="absolute left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2 flex-col items-center">
-          <div className="relative">
-            <Coins size={34} strokeWidth={1.6} style={{ color: "#3b6fc4" }} aria-hidden />
-            <span aria-hidden className="absolute -right-2 -top-2 text-[10px]" style={{ color: "#9cc0ea" }}>✦</span>
-            <span aria-hidden className="absolute -left-2 top-1 text-[8px]" style={{ color: "#9cc0ea" }}>✦</span>
+          <div className="relative" style={{ width: 40, height: 34 }}>
+            {/* コインスタック（積み重なった円柱） */}
+            <svg width="40" height="34" viewBox="0 0 40 34" aria-hidden>
+              <g fill="none" stroke="#2f63bd" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <ellipse cx="16" cy="8" rx="11" ry="4" />
+                <path d="M5 8v6c0 2.2 4.9 4 11 4s11-1.8 11-4V8" />
+                <path d="M5 14v6c0 2.2 4.9 4 11 4s11-1.8 11-4v-6" />
+              </g>
+              {/* ¥ バッジ */}
+              <circle cx="30" cy="22" r="8" fill="#2f63bd" />
+              <text x="30" y="26" textAnchor="middle" fontSize="10" fontWeight="900" fill="#ffffff">¥</text>
+            </svg>
+            {/* キラキラ装飾 */}
+            <span aria-hidden className="absolute -left-3 -top-2 text-[10px]" style={{ color: "#9cc0ea" }}>✦</span>
+            <span aria-hidden className="absolute -right-3 top-0 text-[8px]" style={{ color: "#9cc0ea" }}>✦</span>
           </div>
           <p
             className="font-heading mt-2 text-center leading-tight"
