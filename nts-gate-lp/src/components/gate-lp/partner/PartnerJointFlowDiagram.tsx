@@ -233,7 +233,7 @@ function StepCard({ step }: { step: Step }) {
         {/* サブ項目（STEP 01 のみ） */}
         {step.items && (
           <div className="mt-3 flex flex-col gap-2">
-            {step.items.map((item, i) => (
+            {step.items.map((item) => (
               <div key={item}>
                 <div
                   className="flex items-center justify-center rounded-[10px] px-3 py-2"
