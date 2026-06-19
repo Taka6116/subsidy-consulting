@@ -1026,11 +1026,6 @@ function CycleDiagram() {
       >
         中長期伴走サイクル
       </p>
-      <div
-        aria-hidden
-        className="mx-auto mb-4 mt-2"
-        style={{ width: "40px", height: "3px", borderRadius: "2px", background: "#3b6fc4" }}
-      />
 
       {/* ─── リング領域（正方形） ─── */}
       <div className="relative mx-auto" style={{ width: "100%", maxWidth: "340px", aspectRatio: "1 / 1" }}>
