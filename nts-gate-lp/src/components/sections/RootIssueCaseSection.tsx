@@ -11,6 +11,10 @@ import {
   ClipboardList,
   Search,
   Monitor,
+  Handshake,
+  Lightbulb,
+  TrendingUp,
+  Coins,
 } from "lucide-react";
 
 /** NTS紺（--accent-navy）ベースのグラデーション */
@@ -318,26 +322,6 @@ export default function RootIssueCaseSection({
                   />
                 </BadgeColumn>
                 <div className="relative flex items-center justify-center" style={{ alignSelf: "center" }}>
-                  <span
-                    aria-hidden
-                    className="pointer-events-none absolute right-full top-1/2 hidden md:block"
-                    style={{
-                      width: "clamp(28px, 4vw, 56px)",
-                      height: "0",
-                      borderTop: `1.5px dashed ${LINE_COLOR}`,
-                      transform: "translateY(-1px)",
-                    }}
-                  />
-                  <span
-                    aria-hidden
-                    className="pointer-events-none absolute left-full top-1/2 hidden md:block"
-                    style={{
-                      width: "clamp(28px, 4vw, 56px)",
-                      height: "0",
-                      borderTop: `1.5px dashed ${LINE_COLOR}`,
-                      transform: "translateY(-1px)",
-                    }}
-                  />
                   <div
                     className="font-body relative z-[2] flex max-w-[200px] flex-col items-center rounded-[14px] bg-white px-4 py-3.5 sm:px-5 sm:py-4"
                     style={{
@@ -975,26 +959,156 @@ function ActivationCard({
 }
 
 // ============================================================
-// CycleDiagram — 中長期伴走サイクル（画像ベース）
+// CycleDiagram — 中長期伴走サイクル（円形矢印 + 白丸アイコンノードをコードで再現）
 // ============================================================
+// ノード（時計回り）: 上=補助金制度提案 → 右=実行支援 → 下=実行フォロー → 左=次の課題発見
+const CYCLE_NODES = [
+  { lines: ["補助金制度", "提案"], Icon: ClipboardList, pos: { left: "50%", top: "14%" } },
+  { lines: ["実行支援"],           Icon: Handshake,     pos: { left: "86%", top: "50%" } },
+  { lines: ["実行フォロー"],       Icon: TrendingUp,    pos: { left: "50%", top: "86%" } },
+  { lines: ["次の課題", "発見"],   Icon: Lightbulb,     pos: { left: "14%", top: "50%" } },
+] as const;
+
+/** 角度（度, 0=上, 時計回り）と半径から viewBox 座標を計算 */
+function cyclePolar(cx: number, cy: number, r: number, deg: number) {
+  const rad = ((deg - 90) * Math.PI) / 180;
+  return { x: cx + r * Math.cos(rad), y: cy + r * Math.sin(rad) };
+}
+
+/** 太い円弧の path（時計回り）。fromDeg→toDeg をギャップ分だけ内側に縮めて生成 */
+function cycleArc(cx: number, cy: number, r: number, fromDeg: number, toDeg: number) {
+  const s = cyclePolar(cx, cy, r, fromDeg);
+  const e = cyclePolar(cx, cy, r, toDeg);
+  return `M ${s.x.toFixed(2)} ${s.y.toFixed(2)} A ${r} ${r} 0 0 1 ${e.x.toFixed(2)} ${e.y.toFixed(2)}`;
+}
+
 function CycleDiagram() {
+  const VB = 400;        // viewBox サイズ
+  const C = VB / 2;      // 中心
+  const R_ARC = 144;     // 弧の半径（ノード中心と一致）
+  // ノードは 0/90/180/270 度。弧はその間（ギャップ各26度）を時計回りに繋ぐ
+  const ARCS = [
+    { from: 26, to: 64 },
+    { from: 116, to: 154 },
+    { from: 206, to: 244 },
+    { from: 296, to: 334 },
+  ];
+
   return (
     <div
-      className="relative z-[2] overflow-hidden rounded-[18px]"
+      className="relative z-[2] overflow-hidden rounded-[18px] p-5 md:p-6"
       style={{
         background: "#ffffff",
         border: "1.5px solid #DBEAFE",
         boxShadow: "0 8px 32px rgba(26,76,142,0.10)",
       }}
     >
-      <Image
-        src="/cycle-diagram.png"
-        alt="中長期伴走サイクル：補助金制度提案 → 実行支援 → 実行フォロー → 次の課題発見 の繰り返し"
-        width={600}
-        height={700}
-        className="h-auto w-full"
-        sizes="(max-width: 768px) 100vw, 400px"
+      {/* ─── タイトル ─── */}
+      <p
+        className="font-heading text-center"
+        style={{ fontSize: "1rem", fontWeight: 800, color: "#1e3a6e", letterSpacing: "0.04em" }}
+      >
+        中長期伴走サイクル
+      </p>
+      <div
+        aria-hidden
+        className="mx-auto mb-4 mt-2"
+        style={{ width: "40px", height: "3px", borderRadius: "2px", background: "#3b6fc4" }}
       />
+
+      {/* ─── リング領域（正方形） ─── */}
+      <div className="relative mx-auto" style={{ width: "100%", maxWidth: "340px", aspectRatio: "1 / 1" }}>
+        {/* 弧矢印 + 装飾点線（SVG レイヤー） */}
+        <svg
+          viewBox={`0 0 ${VB} ${VB}`}
+          className="absolute inset-0 h-full w-full"
+          aria-hidden
+        >
+          <defs>
+            <linearGradient id="cycleArcGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#6f9fd8" />
+              <stop offset="100%" stopColor="#3b6fc4" />
+            </linearGradient>
+            <marker id="cycleArrowHead" markerWidth="5" markerHeight="5" refX="2.6" refY="2.5" orient="auto">
+              <polygon points="0 0, 5 2.5, 0 5" fill="#3b6fc4" />
+            </marker>
+          </defs>
+
+          {/* 装飾：同心の点線円 */}
+          <circle cx={C} cy={C} r="96" fill="none" stroke="#cfe0f4" strokeWidth="1" strokeDasharray="2 5" />
+          <circle cx={C} cy={C} r="72" fill="none" stroke="#dbe7f6" strokeWidth="1" strokeDasharray="2 5" />
+
+          {/* 太い弧矢印（時計回り4本） */}
+          {ARCS.map((a, i) => (
+            <path
+              key={i}
+              d={cycleArc(C, C, R_ARC, a.from, a.to)}
+              fill="none"
+              stroke="url(#cycleArcGrad)"
+              strokeWidth="15"
+              strokeLinecap="round"
+              markerEnd="url(#cycleArrowHead)"
+            />
+          ))}
+        </svg>
+
+        {/* 中央：コイン + テキスト（HTML） */}
+        <div className="absolute left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2 flex-col items-center">
+          <div className="relative">
+            <Coins size={34} strokeWidth={1.6} style={{ color: "#3b6fc4" }} aria-hidden />
+            <span aria-hidden className="absolute -right-2 -top-2 text-[10px]" style={{ color: "#9cc0ea" }}>✦</span>
+            <span aria-hidden className="absolute -left-2 top-1 text-[8px]" style={{ color: "#9cc0ea" }}>✦</span>
+          </div>
+          <p
+            className="font-heading mt-2 text-center leading-tight"
+            style={{ fontSize: "0.72rem", fontWeight: 700, color: "#1e3a6e" }}
+          >
+            継続的な<br />紹介報酬
+          </p>
+        </div>
+
+        {/* 4ノード（白丸 + アイコン + ラベル, HTML） */}
+        {CYCLE_NODES.map((node) => {
+          const { Icon, lines } = node;
+          return (
+            <div
+              key={lines.join("")}
+              className="absolute flex flex-col items-center justify-center rounded-full bg-white"
+              style={{
+                left: node.pos.left,
+                top: node.pos.top,
+                width: "27%",
+                height: "27%",
+                transform: "translate(-50%, -50%)",
+                border: "2px solid #cfe0f4",
+                boxShadow: "0 4px 14px rgba(26,76,142,0.12)",
+              }}
+            >
+              <Icon size={20} strokeWidth={1.7} style={{ color: "#3b6fc4" }} aria-hidden />
+              <p
+                className="font-heading mt-1 text-center leading-tight"
+                style={{ fontSize: "0.68rem", fontWeight: 700, color: "#1e3a6e", letterSpacing: "0.01em" }}
+              >
+                {lines.map((line, li) => (
+                  <span key={li}>
+                    {line}
+                    {li < lines.length - 1 && <br />}
+                  </span>
+                ))}
+              </p>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* ─── キャプション ─── */}
+      <p
+        className="font-body mt-5 text-center"
+        style={{ fontSize: "0.75rem", lineHeight: 1.8, color: "#4b6585" }}
+      >
+        補助金獲得後も継続的に伴走し、次の課題を特定し、<br />
+        最適な支援提案へとつなげます。
+      </p>
     </div>
   );
 }
