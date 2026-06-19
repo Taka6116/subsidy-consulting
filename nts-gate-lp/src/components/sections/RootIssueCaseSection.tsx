@@ -413,7 +413,7 @@ export default function RootIssueCaseSection({
                   {/* 縦線 */}
                   <div
                     aria-hidden
-                    style={{ width: "1.5px", height: "36px", background: LINE_COLOR }}
+                    style={{ width: "3px", height: "32px", background: "#2f63bd", borderRadius: "2px" }}
                   />
                   {/* 下向き矢印 */}
                   <div
@@ -421,9 +421,9 @@ export default function RootIssueCaseSection({
                     style={{
                       width: 0,
                       height: 0,
-                      borderLeft: "5px solid transparent",
-                      borderRight: "5px solid transparent",
-                      borderTop: `7px solid ${LINE_COLOR}`,
+                      borderLeft: "8px solid transparent",
+                      borderRight: "8px solid transparent",
+                      borderTop: "11px solid #2f63bd",
                       marginBottom: "8px",
                     }}
                   />
@@ -1002,11 +1002,12 @@ function CycleDiagram() {
   const R_ARC = 146;     // 弧の半径（ノード中心と一致）
   const ARC_W = 13;      // 弧の太さ
   // ノードは 0/90/180/270 度。弧はその間を時計回りに繋ぐ（終端に矢じり）
+  // ノード円にめり込まないよう、両端に余白を確保
   const ARCS = [
-    { from: 22, to: 66 },
-    { from: 112, to: 156 },
-    { from: 202, to: 246 },
-    { from: 292, to: 336 },
+    { from: 30, to: 57 },
+    { from: 120, to: 147 },
+    { from: 210, to: 237 },
+    { from: 300, to: 327 },
   ];
 
   return (
@@ -1060,7 +1061,7 @@ function CycleDiagram() {
                 strokeLinecap="round"
               />
               <polygon
-                points={cycleArrowHead(C, C, R_ARC, a.to, ARC_W + 6, 9)}
+                points={cycleArrowHead(C, C, R_ARC, a.to, ARC_W + 5, 8)}
                 fill="#2f63bd"
               />
             </g>
