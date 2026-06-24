@@ -568,7 +568,7 @@ function buildSlideData(g: Grant): SlideData {
     ? (g.maxAmountLabel.startsWith("最大") ? g.maxAmountLabel : `最大 ${g.maxAmountLabel}`)
     : g.subsidyAmount
       ? `最大 ${Math.round(Number(g.subsidyAmount) / 10_000).toLocaleString("ja-JP")}万円`
-      : "最大数百万円規模";
+      : "公募要領で確認";
 
   const deadline = normalizeDeadline(g.deadlineLabel, g.deadline);
 
@@ -1549,8 +1549,8 @@ ${rowSvg}
   <rect x="${gx}" y="${gy}" width="${CW_G}" height="${CH_G}" rx="16" fill="#fff" stroke="#dbeafe" stroke-width="1.5" filter="url(#sh)"/>
   <rect x="${gx + 16}" y="${gy + 14}" width="36" height="36" rx="18" fill="${t.badgeFill}"/>
   <text x="${gx + 34}" y="${gy + 37}" text-anchor="middle" font-family="${FONT},sans-serif" font-size="14" font-weight="900" fill="#fff">${si + 1}</text>
-  <circle cx="${gcx + 20}" cy="${gy + 52}" r="30" fill="${s.color}" opacity="0.88"/>
-  ${flowGlyph(s.icon, gcx + 20, gy + 52, s.color)}
+  <circle cx="${gcx}" cy="${gy + 52}" r="30" fill="${s.color}" opacity="0.88"/>
+  ${flowGlyph(s.icon, gcx, gy + 52, s.color)}
   <text x="${gx + CW_G / 2}" y="${gy + CH_G - 42}" text-anchor="middle" font-family="${FONT},sans-serif" font-size="21" font-weight="900" fill="${t.ink}">${esc(s.label)}</text>
   <text x="${gx + CW_G / 2}" y="${gy + CH_G - 18}" text-anchor="middle" font-family="${FONT},sans-serif" font-size="12" fill="${t.noteText}">${esc(s.sub)}</text>`;
     }).join("\n");
@@ -1751,7 +1751,7 @@ function slide5BeforeAfter(d: SlideData, ff: string, t: SlideTheme): string {  /
 <svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
   ${ff}
   ${lightBase(t)}
-  ${lightHeader(t, "USE CASE", 152, "業務はこう変わる", 500)}
+  ${lightHeader(t, "USE CASE", 152, "業務はこう変わる", 0)}
   <!-- Beforeセクション -->
   <rect x="57" y="${BEF_Y}" width="${fullW}" height="${BEF_H}" rx="16" fill="#f1f5f9" stroke="#e2e8f0" stroke-width="1.5"/>
   <rect x="57" y="${BEF_Y}" width="${fullW}" height="46" rx="16" fill="#e2e8f0"/>
@@ -2476,12 +2476,15 @@ async function main() {
 
   const outDir = path.join(process.cwd(), "scripts", "heygen", "output");
   const previewPattern = patternArg?.toUpperCase();
+  const customPreviewDir = args.find(a => a.startsWith("--preview-dir="))?.split("=").slice(1).join("=");
   const previewDir =
-    args.includes("--dry-run") &&
-    previewPattern &&
-    ["A", "B", "C", "D"].includes(previewPattern)
-      ? path.join(outDir, `preview-${previewPattern}`)
-      : null;
+    customPreviewDir
+      ? path.resolve(customPreviewDir)
+      : args.includes("--dry-run") &&
+        previewPattern &&
+        ["A", "B", "C", "D"].includes(previewPattern)
+        ? path.join(outDir, `preview-${previewPattern}`)
+        : null;
   const saveDir = previewDir ?? outDir;
   await fs.mkdir(saveDir, { recursive: true });
   if (previewDir) {

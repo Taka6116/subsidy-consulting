@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import type { StaticImageData } from "next/image";
 import Image from "next/image";
@@ -93,7 +93,7 @@ const STEPS: Step[] = [
     tone: "start",
     title: "秘密保持契約・面談",
     description:
-      "秘密保持契約（NDA）を締結し、御社の経営課題を丁寧にヒアリング。最適な提携先をご紹介し、ご面談の場を設けます。",
+      "NDA締結後、提携先の顧客が抱える経営課題を丁寧にヒアリングし、最適な案を提案します。",
     items: ["秘密保持契約の締結", "提携先様とご紹介者様とのご面談"],
     image: isometricMeet,
     imageAlt: "NDAを締結し提携先と面談するイメージ",
@@ -107,7 +107,7 @@ const STEPS: Step[] = [
     title: "補助金申請支援",
     description:
       "御社の課題を把握・明確化した上で最適な制度を選定し、申請から採択まで一貫して伴走します。",
-    items: ["最適な補助金制度の提案", "必要書類のサポート"],
+    items: ["最適な補助金制度の提案", "必要書類の作成サポート"],
     image: isometricWin,
     imageAlt: "補助金申請を支援するイメージ",
     imageScale: 1.08,
@@ -120,7 +120,7 @@ const STEPS: Step[] = [
     title: "中長期の伴走支援",
     description:
       "申請支援で終わりではなく、次の経営課題まで見据えた御社とNTSによる中長期にわたる伴走支援を続けます。",
-    items: ["補助金活用の支援", "採択後のフォロー"],
+    items: ["採択後の年次報告フォロー", "採択後のフォロー"],
     image: isometricSupport,
     imageAlt: "中長期で伴走支援するイメージ",
     imageScale: 1.04,

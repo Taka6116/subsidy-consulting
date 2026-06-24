@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import ScrollTextReveal from "@/components/shared/ScrollTextReveal";
 import Image from "next/image";
@@ -7,7 +7,6 @@ import {
   ArrowRight,
   ChevronDown,
   ChevronRight,
-  Target,
   ClipboardList,
   Search,
   Monitor,
@@ -182,14 +181,8 @@ export default function RootIssueCaseSection({
                     minWidth: "150px",
                   }}
                 >
-                  <Target
-                    size={16}
-                    strokeWidth={2}
-                    style={{ color: "var(--accent-navy)" }}
-                    aria-hidden
-                  />
                   <p
-                    className="font-heading mt-1"
+                    className="font-heading"
                     style={{
                       fontSize: "0.78rem",
                       fontWeight: 700,
@@ -242,14 +235,8 @@ export default function RootIssueCaseSection({
                   boxShadow: "0 4px 14px rgba(26,76,142,0.10)",
                 }}
               >
-                <Target
-                  size={16}
-                  strokeWidth={2}
-                  style={{ color: "var(--accent-navy)" }}
-                  aria-hidden
-                />
                 <p
-                  className="font-heading mt-1"
+                  className="font-heading"
                   style={{
                     fontSize: "0.78rem",
                     fontWeight: 700,
