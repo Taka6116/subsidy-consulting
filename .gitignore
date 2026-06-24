@@ -13,3 +13,8 @@ skills/
 
 # Local source videos (copy processed file into nts-gate-lp/public/video/ before commit)
 /video/
+
+# HeyGen スライド生成スクリプトの出力バイナリ（大容量 - git管理不要）
+nts-gate-lp/scripts/heygen/output/publish-*.mp4
+nts-gate-lp/scripts/heygen/output/*.mp4
+nts-gate-lp/scripts/heygen/regenerate-*-log.txt
