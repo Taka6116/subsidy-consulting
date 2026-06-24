@@ -1541,7 +1541,7 @@ ${rowSvg}
       const gcx = gx + CW_G / 2;
       return `
   <rect x="${gx}" y="${gy}" width="${CW_G}" height="${CH_G}" rx="16" fill="#fff" stroke="#dbeafe" stroke-width="1.5" filter="url(#sh)"/>
-  <rect x="${gx + 16}" y="${gy + 14}" width="36" height="36" rx="18" fill="${s.color}"/>
+  <rect x="${gx + 16}" y="${gy + 14}" width="36" height="36" rx="18" fill="${t.badgeFill}"/>
   <text x="${gx + 34}" y="${gy + 37}" text-anchor="middle" font-family="${FONT},sans-serif" font-size="14" font-weight="900" fill="#fff">${si + 1}</text>
   <circle cx="${gcx + 20}" cy="${gy + 52}" r="30" fill="${s.color}" opacity="0.88"/>
   ${flowGlyph(s.icon, gcx + 20, gy + 52, s.color)}
@@ -1752,9 +1752,8 @@ function slide5BeforeAfter(d: SlideData, ff: string, t: SlideTheme): string {  /
   <rect x="57" y="${BEF_Y + 30}" width="${fullW}" height="16" fill="#e2e8f0"/>
   <text x="${57 + fullW / 2}" y="${BEF_Y + 30}" text-anchor="middle" font-family="${FONT},sans-serif" font-size="18" font-weight="800" fill="#475569">導入前の課題</text>
   ${pains.map((p, i) => itemRowC(78, BEF_Y + 68 + i * 44, p, "cross")).join("\n  ")}
-  <!-- 矢印バー -->
-  <rect x="57" y="${ARR_Y}" width="${fullW}" height="${ARR_H}" rx="12" fill="#fff7ed" stroke="${t.afterAccent}" stroke-width="1.5"/>
-  <text x="${W / 2}" y="${ARR_Y + 36}" text-anchor="middle" font-family="${FONT},sans-serif" font-size="20" font-weight="900" fill="#92400e">▼　補助金活用　▼</text>
+  <!-- 矢印（▼のみ） -->
+  <text x="${W / 2}" y="${ARR_Y + 38}" text-anchor="middle" font-family="${FONT},sans-serif" font-size="28" font-weight="900" fill="${t.afterAccent}">▼</text>
   <!-- Afterセクション -->
   <rect x="57" y="${AFT_Y}" width="${fullW}" height="${AFT_H}" rx="16" fill="#fff" filter="url(#sh)"/>
   <rect x="59" y="${AFT_Y}" width="${fullW - 4}" height="8" rx="4" fill="${t.afterAccent}"/>
