@@ -947,13 +947,13 @@ function ActivationCard({
 // ============================================================
 // ノード（時計回り）: 上=補助金制度提案 → 右=実行支援 → 下=実行フォロー → 左=次の課題発見
 
-// viewBox 寸法（縦を増やし楕円比率を緩和して曲率を自然に）
+// viewBox 寸法（円が枠内に完全に収まるよう縦を確保。楕円比率も緩和）
 const VBW = 720;
-const VBH = 300;
+const VBH = 450;
 const CX = VBW / 2;   // 360
-const CY = VBH / 2;   // 150
-const RX_E = 236;     // 楕円 横半径
-const RY_E = 104;     // 楕円 縦半径
+const CY = VBH / 2;   // 225
+const RX_E = 230;     // 楕円 横半径
+const RY_E = 140;     // 楕円 縦半径
 
 /** 角度（0=上, 時計回り）から楕円上の座標を返す */
 function ellipsePt(deg: number) {
@@ -998,12 +998,13 @@ const CYCLE_NODES_H = [
   { lines: ["次の課題", "発見"],   Icon: Lightbulb,     left: `${((CX - RX_E) / VBW * 100).toFixed(1)}%`, top: "50%" },
 ] as const;
 
-// 4本の弧（ノード 0/90/180/270° の間を、両端 ~25° 空けて時計回りに繋ぐ）
+// 4本の弧（ノード 0/90/180/270°。縦ノードは±28°, 横ノードは±40° 空けて
+// 矢じり先端が円の手前 20px 程度で止まり、進行方向が明確に見えるようにする）
 const CYCLE_ARCS = [
-  { from: 25, to: 65 },
-  { from: 115, to: 155 },
-  { from: 205, to: 245 },
-  { from: 295, to: 335 },
+  { from: 28, to: 50 },
+  { from: 130, to: 152 },
+  { from: 208, to: 230 },
+  { from: 310, to: 332 },
 ];
 
 function CycleDiagram() {
@@ -1011,30 +1012,37 @@ function CycleDiagram() {
 
   return (
     <div
-      className="relative overflow-hidden rounded-[18px] px-5 pb-5 pt-4 md:px-8 md:pb-6 md:pt-5"
+      className="relative rounded-[18px] px-5 pb-12 pt-12 md:px-8 md:pb-16 md:pt-16"
       style={{
         background: NAVY_GRADIENT_CARD_EMPHASIZED,
         border: "1.5px solid #B5D4F4",
         boxShadow: "0 8px 28px rgba(26,76,142,0.12)",
       }}
     >
-      {/* ─── タイトル ─── */}
+      {/* ─── タイトル（独立した文書フロー・最前面） ─── */}
       <p
-        className="font-heading text-center"
-        style={{ fontSize: "1.05rem", fontWeight: 800, color: "#1e3a6e", letterSpacing: "0.04em", marginBottom: "4px" }}
+        className="font-heading relative z-[4] text-center"
+        style={{
+          fontSize: "clamp(1.1rem, 2vw, 1.4rem)",
+          fontWeight: 700,
+          color: "#1e3a6e",
+          letterSpacing: "0.04em",
+          marginBottom: "44px",
+        }}
       >
         中長期伴走サイクル
       </p>
 
-      {/* ─── 楕円リング領域 ─── */}
+      {/* ─── 図解本体（楕円リング領域） ─── */}
       <div
         className="relative mx-auto w-full"
-        style={{ aspectRatio: `${VBW} / ${VBH}` }}
+        style={{ maxWidth: "920px", aspectRatio: `${VBW} / ${VBH}` }}
       >
-        {/* 弧矢印 SVG レイヤー */}
+        {/* 弧矢印 SVG レイヤー（z-1・overflow visible で矢じりが切れない） */}
         <svg
           viewBox={`0 0 ${VBW} ${VBH}`}
-          className="absolute inset-0 h-full w-full"
+          className="absolute inset-0 z-[1] h-full w-full"
+          style={{ overflow: "visible" }}
           aria-hidden
         >
           <defs>
@@ -1046,7 +1054,7 @@ function CycleDiagram() {
           {/* 装飾：中央の点線楕円 */}
           <ellipse
             cx={CX} cy={CY}
-            rx={RY_E * 0.74} ry={RY_E * 0.62}
+            rx={95} ry={62}
             fill="none"
             stroke="#aecbed"
             strokeWidth="1"
@@ -1063,57 +1071,63 @@ function CycleDiagram() {
                 strokeLinecap="round"
               />
               <polygon
-                points={ellipseArrowHead(a.to, ARC_W + 6, 22)}
+                points={ellipseArrowHead(a.to, 18, 24)}
                 fill="#2f63bd"
               />
             </g>
           ))}
         </svg>
 
-        {/* 中央：コインスタック + ¥バッジ */}
-        <div className="absolute left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2 flex-col items-center">
-          <div className="relative" style={{ width: 48, height: 40 }}>
-            <svg width="48" height="40" viewBox="0 0 48 40" aria-hidden>
-              <g fill="none" stroke="#2f63bd" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" transform="translate(3,3)">
-                <ellipse cx="16" cy="8" rx="11" ry="4" />
-                <path d="M5 8v6c0 2.2 4.9 4 11 4s11-1.8 11-4V8" />
-                <path d="M5 14v6c0 2.2 4.9 4 11 4s11-1.8 11-4v-6" />
+        {/* 中央：コインスタック + ¥バッジ（z-2） */}
+        <div className="absolute left-1/2 top-1/2 z-[2] flex -translate-x-1/2 -translate-y-1/2 flex-col items-center">
+          <div className="relative" style={{ width: 52, height: 44 }}>
+            <svg width="52" height="44" viewBox="0 0 52 44" aria-hidden>
+              <g fill="none" stroke="#2f63bd" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" transform="translate(4,4)">
+                <ellipse cx="17" cy="9" rx="12" ry="4.5" />
+                <path d="M5 9v6.5c0 2.4 5.4 4.4 12 4.4s12-2 12-4.4V9" />
+                <path d="M5 15.5v6.5c0 2.4 5.4 4.4 12 4.4s12-2 12-4.4v-6.5" />
               </g>
-              <circle cx="36" cy="27" r="9" fill="#2f63bd" />
-              <text x="36" y="31" textAnchor="middle" fontSize="11" fontWeight="900" fill="#ffffff">¥</text>
+              <circle cx="39" cy="30" r="10" fill="#2f63bd" />
+              <text x="39" y="34.5" textAnchor="middle" fontSize="12" fontWeight="900" fill="#ffffff">¥</text>
             </svg>
-            <span aria-hidden className="absolute -left-3 -top-2 text-[11px]" style={{ color: "#9cc0ea" }}>✦</span>
-            <span aria-hidden className="absolute -right-3 top-0 text-[9px]"  style={{ color: "#9cc0ea" }}>✦</span>
+            <span aria-hidden className="absolute -left-3 -top-2 text-[12px]" style={{ color: "#9cc0ea" }}>✦</span>
+            <span aria-hidden className="absolute -right-3 top-0 text-[10px]" style={{ color: "#9cc0ea" }}>✦</span>
           </div>
           <p
-            className="font-heading mt-1.5 text-center leading-tight"
-            style={{ fontSize: "0.8rem", fontWeight: 700, color: "#1e3a6e" }}
+            className="font-heading mt-2 text-center leading-tight"
+            style={{ fontSize: "clamp(0.78rem, 1.4vw, 0.95rem)", fontWeight: 700, color: "#1e3a6e" }}
           >
             継続的な<br />紹介報酬
           </p>
         </div>
 
-        {/* 4 ノード（白丸 + アイコン + ラベル） */}
+        {/* 4 ノード（白丸 + アイコン + ラベル, z-3） */}
         {CYCLE_NODES_H.map((node) => {
           const { Icon, lines } = node;
           return (
             <div
               key={lines.join("")}
-              className="absolute flex flex-col items-center justify-center rounded-full bg-white"
+              className="absolute z-[3] flex flex-col items-center justify-center rounded-full bg-white"
               style={{
                 left: node.left,
                 top: node.top,
-                width: "18%",
+                width: "20%",
                 aspectRatio: "1",
                 transform: "translate(-50%, -50%)",
                 border: "2px solid #cfe0f4",
-                boxShadow: "0 4px 16px rgba(26,76,142,0.14)",
+                boxShadow: "0 6px 20px rgba(26,76,142,0.16)",
               }}
             >
-              <Icon size={26} strokeWidth={1.8} style={{ color: "#2f63bd" }} aria-hidden />
+              <Icon size={30} strokeWidth={1.8} style={{ color: "#2f63bd" }} aria-hidden />
               <p
-                className="font-heading mt-1 text-center leading-tight"
-                style={{ fontSize: "0.76rem", fontWeight: 700, color: "#1e3a6e", letterSpacing: "0.01em" }}
+                className="font-heading mt-2 text-center"
+                style={{
+                  fontSize: "clamp(0.78rem, 1.5vw, 1rem)",
+                  fontWeight: 700,
+                  color: "#1e3a6e",
+                  letterSpacing: "0.01em",
+                  lineHeight: 1.55,
+                }}
               >
                 {lines.map((line, li) => (
                   <span key={li}>
@@ -1127,10 +1141,18 @@ function CycleDiagram() {
         })}
       </div>
 
-      {/* ─── キャプション ─── */}
+      {/* ─── 説明文（文書フロー・図解の下に独立配置） ─── */}
       <p
-        className="font-body text-center"
-        style={{ fontSize: "0.8rem", lineHeight: 1.8, color: "#4b6585", marginTop: "6px" }}
+        className="font-body relative z-[4] mx-auto text-center"
+        style={{
+          fontSize: "0.85rem",
+          lineHeight: 1.8,
+          color: "#4b6585",
+          marginTop: "44px",
+          maxWidth: "760px",
+          paddingLeft: "24px",
+          paddingRight: "24px",
+        }}
       >
         補助金獲得後も継続的に伴走し、次の課題を特定し、最適な支援提案へとつなげます。
       </p>
