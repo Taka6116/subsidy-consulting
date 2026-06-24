@@ -1,4 +1,4 @@
-/**
+﻿/**
  * 補助金解説スライド動画 完全自動生成スクリプト（HeyGen Video Agent API）
  * 実行: npx tsx scripts/heygen/generate-heygen-agent.ts [subsidyId] [flags]
  *
@@ -1008,7 +1008,10 @@ function slide1Intro(d: SlideData, ff: string, t: SlideTheme): string {
 
   // ── Pattern C: 左テキスト + 右ホワイトカード（補助上限＋3アイコン）──
   if (t.id === "C") {
-    const nameLines = wrapTextByChars(d.name, 14).slice(0, 2);
+    // 3行まで許容して文字切れを防ぐ。3行時はフォント・行間を縮小して収める
+    const nameLines = wrapTextByChars(d.name, 14).slice(0, 3);
+    const nameFsC   = nameLines.length <= 2 ? 40 : 34;
+    const nameLhC   = nameLines.length <= 2 ? 58 : 50;
     const descLines = wrapTextByChars(trimDescription(d.description, 42), 22).slice(0, 2);
     const targetLines = wrapTextByChars(d.industries.slice(0, 16), 8).slice(0, 2);
     const uc1Lines   = wrapTextByChars(
@@ -1020,7 +1023,7 @@ function slide1Intro(d: SlideData, ff: string, t: SlideTheme): string {
     const CCX = CX + CW / 2;                          // カード中央 X
     const amtFsC = scaledAmountFontSize(amountDisp, 70, 500);
     const nameY0  = 240;
-    const sepY    = nameY0 + nameLines.length * 58 + 14;
+    const sepY    = nameY0 + nameLines.length * nameLhC + 14;
     const descY0  = sepY + 42;
     const ICY     = 470;                               // アイコン円中心 Y
     const ICR     = 38;
@@ -1048,9 +1051,9 @@ function slide1Intro(d: SlideData, ff: string, t: SlideTheme): string {
   <text x="152" y="73" text-anchor="middle" font-family="${FONT},sans-serif" font-size="18" font-weight="800" fill="#fff">NTS 日本提携支援</text>
   <!-- この動画で解説する補助金 -->
   <text x="64" y="164" font-family="${FONT},sans-serif" font-size="20" font-weight="800" fill="${t.rule1}" letter-spacing="2">この動画で解説する補助金</text>
-  <!-- 補助金名（最大2行・左揃え） -->
+  <!-- 補助金名（最大3行・左揃え） -->
   ${nameLines.map((line, i) =>
-    `<text x="64" y="${nameY0 + i * 58}" font-family="${FONT},sans-serif" font-size="40" font-weight="900" fill="${t.ink}">${esc(line)}</text>`
+    `<text x="64" y="${nameY0 + i * nameLhC}" font-family="${FONT},sans-serif" font-size="${nameFsC}" font-weight="900" fill="${t.ink}">${esc(line)}</text>`
   ).join("\n  ")}
   <!-- セパレータ（短いブルーライン） -->
   <line x1="64" y1="${sepY}" x2="200" y2="${sepY}" stroke="${t.rule1}" stroke-width="3" stroke-linecap="round"/>
@@ -1151,7 +1154,10 @@ function slide1Intro(d: SlideData, ff: string, t: SlideTheme): string {
   }
 
   // ── Pattern A: 左テキスト＋右補助上限カード（ライト2分割）──────────
-  const nameLines = wrapTextByChars(d.name, 13).slice(0, 2);
+  // 3行まで許容して文字切れを防ぐ。3行時はフォント・行間を縮小して収める
+  const nameLines = wrapTextByChars(d.name, 13).slice(0, 3);
+  const nameFsA   = nameLines.length <= 2 ? 44 : 36;
+  const nameLhA   = nameLines.length <= 2 ? 62 : 52;
   const nameY0 = 248;
   const CX = 696;        // 右カード X
   const CW = 528;        // 右カード 幅
@@ -1178,9 +1184,9 @@ function slide1Intro(d: SlideData, ff: string, t: SlideTheme): string {
   <text x="152" y="75" text-anchor="middle" font-family="${FONT},sans-serif" font-size="18" font-weight="800" fill="#fff">NTS 日本提携支援</text>
   <!-- この動画で解説する補助金 -->
   <text x="64" y="190" font-family="${FONT},sans-serif" font-size="20" font-weight="700" fill="${t.rule1}" letter-spacing="2">この動画で解説する補助金</text>
-  <!-- 補助金名（左・最大2行） -->
+  <!-- 補助金名（左・最大3行） -->
   ${nameLines.map((line, i) =>
-    `<text x="64" y="${nameY0 + i * 62}" font-family="${FONT},sans-serif" font-size="44" font-weight="900" fill="${t.ink}">${esc(line)}</text>`
+    `<text x="64" y="${nameY0 + i * nameLhA}" font-family="${FONT},sans-serif" font-size="${nameFsA}" font-weight="900" fill="${t.ink}">${esc(line)}</text>`
   ).join("\n  ")}
   <!-- アイコン＋説明テキスト行 -->
   <circle cx="98" cy="500" r="32" fill="#eff6ff" stroke="${t.rule1}" stroke-width="1.5"/>
