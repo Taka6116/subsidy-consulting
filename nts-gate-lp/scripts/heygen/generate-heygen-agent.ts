@@ -7,7 +7,7 @@
  *   --pattern=A|B|C|D  スライドデザインパターンを明示指定（省略時は subsidyId のハッシュで自動選択）
  *   --publish        動画完成後に S3 アップロード + GeneratedContent 登録 → /subsidies/videos に表示
  *   --skip=N         subsidyId 省略時の候補スキップ数
- *   --voice=polly    音声を AWS Polly (Kazuha・女性・neural) で生成し HeyGen に audio として渡す
+ *   --voice=heygen   音声を HeyGen TTS（桜庭ボイス）に切り替え（デフォルトは AWS Polly Kazuha）
  *
  * 処理フロー:
  *   1. DB から補助金データを取得・補助金名をひらがな読みに変換（kuroshiro）
@@ -51,7 +51,7 @@ const SAKURABA_VOICE_ID = "6c2b2c234a604057a90578e18e10c211";
 
 /** 遷移先（QR・表示）— 正しい本番URL */
 const SITE_URL_FULL = "https://subsidy.nihon-teikei.co.jp/";
-const SITE_URL_DISPLAY = "";
+const SITE_URL_DISPLAY = "https://subsidy.nihon-teikei.co.jp/";
 
 const HEYGEN_BASE = "https://api.heygen.com";
 const HEADERS_JSON = {
@@ -117,6 +117,23 @@ function normalizeJaText(s: string): string {
   return s
     .replace(/中小・小規模/g, "中小規模")
     .replace(/高止まり/g, "高騰");
+}
+
+/**
+ * 金額テキストをボックス幅に収まるフォントサイズに自動縮小する
+ * @param text      表示する金額文字列（例: "最大1000万円"）
+ * @param baseSize  デザイン上の基本フォントサイズ
+ * @param availW    テキストを収める領域の幅(px)
+ */
+function scaledAmountFontSize(text: string, baseSize: number, availW: number): number {
+  const clean = text.replace(/\s/g, "");
+  const cjkCount = (clean.match(/[^\x00-\x7F]/g) ?? []).length;
+  const asciiCount = clean.length - cjkCount;
+  // CJK 文字は 1.0em, ASCII(数字・カンマ等)は 0.6em として推定
+  const estimatedEm = cjkCount * 1.0 + asciiCount * 0.6;
+  if (estimatedEm <= 0) return baseSize;
+  const fitted = Math.floor(availW / estimatedEm);
+  return Math.min(baseSize, Math.max(34, fitted));
 }
 
 /** 金額表示用: "3,000,000円" → "300万円" に変換してすっきり見せる */
@@ -1001,6 +1018,7 @@ function slide1Intro(d: SlideData, ff: string, t: SlideTheme): string {
     const CX  = 658;
     const CW  = 566;
     const CCX = CX + CW / 2;                          // カード中央 X
+    const amtFsC = scaledAmountFontSize(amountDisp, 70, 500);
     const nameY0  = 240;
     const sepY    = nameY0 + nameLines.length * 58 + 14;
     const descY0  = sepY + 42;
@@ -1047,7 +1065,7 @@ function slide1Intro(d: SlideData, ff: string, t: SlideTheme): string {
   <text x="${CCX}" y="159" text-anchor="middle" font-family="${FONT},sans-serif" font-size="18" font-weight="800" fill="${t.amount.label}" letter-spacing="4">補 助 上 限</text>
   <line x1="${CCX + 74}" y1="153" x2="${CX + CW - 30}" y2="153" stroke="#fcd34d" stroke-width="1.5"/>
   <!-- 金額（大・中央） -->
-  <text x="${CCX}" y="290" text-anchor="middle" font-family="${FONT},sans-serif" font-size="70" font-weight="900" fill="${t.amount.value}" letter-spacing="-2">${esc(amountDisp)}</text>
+  <text x="${CCX}" y="290" text-anchor="middle" font-family="${FONT},sans-serif" font-size="${amtFsC}" font-weight="900" fill="${t.amount.value}" letter-spacing="-2">${esc(amountDisp)}</text>
   <!-- 横区切りライン -->
   <line x1="${CX + 30}" y1="338" x2="${CX + CW - 30}" y2="338" stroke="#e2e8f0" stroke-width="1.5"/>
   <!-- ── アイコン1: 対象（ビルディング） ── -->
@@ -1089,6 +1107,7 @@ function slide1Intro(d: SlideData, ff: string, t: SlideTheme): string {
   if (t.id === "D") {
     const nameLines = wrapTextByChars(d.name, 13).slice(0, 2);
     const nameY = nameLines.length === 1 ? 306 : 254;
+    const amtFsD1 = scaledAmountFontSize(amountDisp, 82, 460);
     return `<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
   ${ff}
@@ -1124,7 +1143,7 @@ function slide1Intro(d: SlideData, ff: string, t: SlideTheme): string {
   <!-- 補助上限ラベル -->
   <text x="${W / 2}" y="424" text-anchor="middle" font-family="${FONT},sans-serif" font-size="17" font-weight="700" fill="${t.rule1}" letter-spacing="5">補 助 上 限</text>
   <!-- 金額（大・中央） -->
-  <text x="${W / 2}" y="528" text-anchor="middle" font-family="${FONT},sans-serif" font-size="82" font-weight="900" fill="${t.ink}" letter-spacing="-2">${esc(amountDisp)}</text>
+  <text x="${W / 2}" y="528" text-anchor="middle" font-family="${FONT},sans-serif" font-size="${amtFsD1}" font-weight="900" fill="${t.ink}" letter-spacing="-2">${esc(amountDisp)}</text>
   <!-- 説明テキスト -->
   <text x="${W / 2}" y="588" text-anchor="middle" font-family="${FONT},sans-serif" font-size="18" fill="${t.noteText}">対象・金額・期限・活用の流れを約1分で解説</text>
   ${slideFooter(t, 0)}
@@ -1137,6 +1156,7 @@ function slide1Intro(d: SlideData, ff: string, t: SlideTheme): string {
   const CX = 696;        // 右カード X
   const CW = 528;        // 右カード 幅
   const CCX = CX + CW / 2;
+  const amtFsA = scaledAmountFontSize(amountDisp, 66, 340);
   // ドット装飾グリッド（右上）
   const dotSvg = (() => {
     const dots: string[] = [];
@@ -1177,7 +1197,7 @@ function slide1Intro(d: SlideData, ff: string, t: SlideTheme): string {
   <rect x="${CX + 152}" y="252" width="1" height="196" fill="${t.amount.accent}" opacity="0.20"/>
   <text x="${CX + 76}" y="358" text-anchor="middle" font-family="${FONT},sans-serif" font-size="20" font-weight="800" fill="${t.amount.label}" letter-spacing="2">補助上限</text>
   <!-- 金額（右区画・縦中央） -->
-  <text x="${CCX + 76}" y="362" text-anchor="middle" font-family="${FONT},sans-serif" font-size="66" font-weight="900" fill="${t.amount.value}" letter-spacing="-2">${esc(amountDisp)}</text>
+  <text x="${CCX + 76}" y="362" text-anchor="middle" font-family="${FONT},sans-serif" font-size="${amtFsA}" font-weight="900" fill="${t.amount.value}" letter-spacing="-2">${esc(amountDisp)}</text>
   ${slideFooter(t, 0)}
 </svg>`;
 }
@@ -1193,10 +1213,9 @@ function slide2What(d: SlideData, ff: string, t: SlideTheme): string {
 <svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
   ${ff}
   ${lightBase(t)}
-  <line x1="57" y1="152" x2="${W - 57}" y2="152" stroke="${t.rule1}" stroke-width="2.5" opacity="0.55"/>
   <text x="57" y="102" font-family="${FONT},sans-serif" font-size="13" font-weight="900" fill="${t.rule1}" letter-spacing="6">WHAT</text>
   <text x="57" y="144" font-family="${FONT},sans-serif" font-size="40" font-weight="900" fill="${t.ink}">${esc(shortName)}</text>
-  <line x1="57" y1="168" x2="${W - 57}" y2="168" stroke="${t.rule1}" stroke-width="2.5" opacity="0.55"/>
+  <line x1="57" y1="160" x2="${W - 57}" y2="160" stroke="${t.rule1}" stroke-width="2.5" opacity="0.55"/>
   <rect x="57" y="190" width="10" height="${desc2.length * 56 + 20}" rx="5" fill="${t.rule1}" opacity="0.75"/>
   ${desc2.map((l, i) => `<text x="84" y="${222 + i * 56}" font-family="${FONT},sans-serif" font-size="26" fill="${t.bodyText}">${esc(l)}</text>`).join("\n  ")}
   ${slideFooter(t, 1)}
@@ -1281,6 +1300,8 @@ function slide3Numbers(d: SlideData, ff: string, t: SlideTheme): string {
     }
     return n + "円";
   });
+  // カード内金額のフォントサイズ（ボックス幅 ~300px に収まるよう動的縮小）
+  const amtFsCard = scaledAmountFontSize(amtValue, 62, 300);
 
   // ── 公募期限 ────────────────────────────────────────────────
   const deadlineVal = d.deadline.replace(/^申請期限[：:]\s*/, "");
@@ -1295,7 +1316,8 @@ function slide3Numbers(d: SlideData, ff: string, t: SlideTheme): string {
   const targetRaw = d.industries.replace(/^対象[：:]\s*/, "");
   // 括弧書き・空白除去し、自然な区切りで短縮
   const targetClean = targetRaw
-    .replace(/[（(][^）)]*[）)]/g, "")
+    .replace(/[（(][^）)]*[）)]/g, "")  // 丸括弧を除去
+    .replace(/[「"][^」"]*[」"]/g, (m) => m.replace(/^[「"]|[」"]$/g, ""))  // 「...」の括弧記号だけ除去・中身は残す
     .replace(/\s+/g, "")
     .trim();
   // 「・」「、」「など」「全般」等の区切りで自然に短縮（最大16文字優先）
@@ -1386,7 +1408,7 @@ ${valueSvg}`;
     amtPrefix
       ? `  <text x="${cx1}" y="${CY + 150}" text-anchor="middle" font-family="${FONT},sans-serif" font-size="22" font-weight="700" fill="${t.amount.valueSub ?? t.amount.label}">${esc(amtPrefix)}</text>`
       : "",
-    `  <text x="${cx1}" y="${CY + (amtPrefix ? 232 : 206)}" text-anchor="middle" font-family="${FONT},sans-serif" font-size="62" font-weight="900" fill="${t.amount.value}" letter-spacing="-2">${esc(amtValue)}</text>`,
+    `  <text x="${cx1}" y="${CY + (amtPrefix ? 232 : 206)}" text-anchor="middle" font-family="${FONT},sans-serif" font-size="${amtFsCard}" font-weight="900" fill="${t.amount.value}" letter-spacing="-2">${esc(amtValue)}</text>`,
   ].filter(Boolean).join("\n");
 
   // ── カード2：公募期限（カレンダーアイコン） ──────────────────
@@ -1694,9 +1716,9 @@ function slide5BeforeAfter(d: SlideData, ff: string, t: SlideTheme): string {  /
   ${lightBase(t)}
   ${lightHeader(t, "USE CASE", 152, "業務はこう変わる", 500)}
   <rect x="57" y="${TBL_Y}" width="${TBL_W}" height="${HDR_H + rows.length * ROW_H + 2}" rx="12" fill="#f1f5f9" stroke="#e2e8f0" stroke-width="1.5"/>
+  <line x1="${divX}" y1="${TBL_Y}" x2="${divX}" y2="${tblBotY}" stroke="#e2e8f0" stroke-width="1.5"/>
   ${hdrRow}
   ${dataRows}
-  <line x1="${divX}" y1="${TBL_Y}" x2="${divX}" y2="${tblBotY}" stroke="#e2e8f0" stroke-width="1.5"/>
   <rect x="57" y="${tblBotY}" width="${TBL_W}" height="1" fill="#e2e8f0"/>
   <text x="${W / 2}" y="${tblBotY + 42}" text-anchor="middle" font-family="${FONT},sans-serif" font-size="17" fill="${t.noteText}">おんしゃの状況に合わせて最適な使い方をご提案します</text>
   ${slideFooter(t, 4)}
@@ -1849,7 +1871,7 @@ function slide6CTA(d: SlideData, ff: string, qrDataUrl: string, photoDataUrl: st
     <circle cx="9" cy="-3" r="4.5"/>
     <path d="M 2 10 a 7 7 0 0 1 14 0 Z"/>
   </g>
-  <text x="124" y="${iconY + 6}" font-family="${FONT},sans-serif" font-size="18" font-weight="600" fill="${t.bodyText}">補助金の専門家チームが、おんしゃをサポートします</text>
+  <text x="124" y="${iconY + 6}" font-family="${FONT},sans-serif" font-size="18" font-weight="600" fill="${t.bodyText}">日本提携支援があなたをサポートします</text>
   <!-- 左：メインCTA -->
   <text x="57" y="${ctaY}" font-family="${FONT},sans-serif" font-size="44" font-weight="900" fill="${greenDark}">「お気軽にご相談ください」</text>
   <text x="57" y="${footY}" font-family="${FONT},sans-serif" font-size="21" font-weight="700" fill="${t.bodyText}">ご相談は <tspan font-weight="900" fill="${greenDark}">日本提携支援</tspan> まで</text>
@@ -1866,6 +1888,7 @@ function slide6CTA(d: SlideData, ff: string, qrDataUrl: string, photoDataUrl: st
     <text x="26" y="10" font-family="${FONT},sans-serif" font-size="17" font-weight="700" fill="${greenDark}">スマホでQRを読み取り</text>
     <text x="26" y="34" font-family="${FONT},sans-serif" font-size="15" font-weight="600" fill="${t.bodyText}">そのまま無料相談ページへ</text>
   </g>
+  <text x="${QCX}" y="${QY + QH - 28}" text-anchor="middle" font-family="${FONT},sans-serif" font-size="13" font-weight="600" fill="${greenMid}">${esc(d.siteUrlDisplay)}</text>
   ${slideFooter(t, 5)}
 </svg>`;
   }
@@ -1901,7 +1924,7 @@ function slide6CTA(d: SlideData, ff: string, qrDataUrl: string, photoDataUrl: st
   <text x="152" y="75" text-anchor="middle" font-family="${FONT},sans-serif" font-size="18" font-weight="800" fill="#fff">NTS 日本提携支援</text>
   <image x="${PX}" y="${PY}" width="${PW}" height="${PH}" preserveAspectRatio="xMidYMid slice" clip-path="url(#photoClip)" xlink:href="${photoDataUrl}"/>
   <rect x="${PX}" y="${PY}" width="${PW}" height="${PH}" rx="22" fill="none" stroke="${frameStroke}" stroke-width="2" opacity="0.50"/>
-  <text x="${pcx}" y="${PY + PH + 42}" text-anchor="middle" font-family="${FONT},sans-serif" font-size="19" fill="${t.noteText}">補助金の専門家チームが、おんしゃをサポートします</text>
+  <text x="${pcx}" y="${PY + PH + 42}" text-anchor="middle" font-family="${FONT},sans-serif" font-size="19" fill="${t.noteText}">日本提携支援があなたをサポートします</text>
   <text x="${pcx}" y="${PY + PH + 104}" text-anchor="middle" font-family="${FONT},sans-serif" font-size="42" font-weight="900" fill="${t.ink}">お気軽にご相談ください</text>
   <text x="${pcx}" y="${PY + PH + 150}" text-anchor="middle" font-family="${FONT},sans-serif" font-size="21" font-weight="800" fill="${t.rule1}">補助金のご相談は 日本提携支援まで</text>
   <!-- 右側: QRカード -->
@@ -1911,6 +1934,7 @@ function slide6CTA(d: SlideData, ff: string, qrDataUrl: string, photoDataUrl: st
   <image x="${dQrX + 6}" y="${dQrY + 6}" width="${dQrSize - 12}" height="${dQrSize - 12}" xlink:href="${qrDataUrl}"/>
   <text x="${dQCX}" y="${dQrY + dQrSize + 44}" text-anchor="middle" font-family="${FONT},sans-serif" font-size="19" font-weight="800" fill="${t.ink}">スマホでQRを読み取り</text>
   <text x="${dQCX}" y="${dQrY + dQrSize + 72}" text-anchor="middle" font-family="${FONT},sans-serif" font-size="15" fill="${t.noteText}">そのまま無料相談ページへ</text>
+  <text x="${dQCX}" y="${dQrY + dQrSize + 100}" text-anchor="middle" font-family="${FONT},sans-serif" font-size="13" font-weight="600" fill="${t.rule1}">${esc(d.siteUrlDisplay)}</text>
   ${slideFooter(t, 5)}
 </svg>`;
     }
@@ -1934,7 +1958,7 @@ function slide6CTA(d: SlideData, ff: string, qrDataUrl: string, photoDataUrl: st
   <text x="152" y="75" text-anchor="middle" font-family="${FONT},sans-serif" font-size="18" font-weight="800" fill="#fff">NTS 日本提携支援</text>
   <image x="${PX}" y="${PY}" width="${PW}" height="${PH}" preserveAspectRatio="xMidYMid slice" clip-path="url(#photoClip)" xlink:href="${photoDataUrl}"/>
   <rect x="${PX}" y="${PY}" width="${PW}" height="${PH}" rx="22" fill="none" stroke="${frameStroke}" stroke-width="2" opacity="0.65"/>
-  <text x="${pcx}" y="${PY + PH + 42}" text-anchor="middle" font-family="${FONT},sans-serif" font-size="19" fill="${t.noteText}">補助金の専門家チームが、おんしゃをサポートします</text>
+  <text x="${pcx}" y="${PY + PH + 42}" text-anchor="middle" font-family="${FONT},sans-serif" font-size="19" fill="${t.noteText}">日本提携支援があなたをサポートします</text>
   <text x="${pcx}" y="${PY + PH + 104}" text-anchor="middle" font-family="${FONT},sans-serif" font-size="42" font-weight="900" fill="${t.ink}">お気軽にご相談ください</text>
   <text x="${pcx}" y="${PY + PH + 150}" text-anchor="middle" font-family="${FONT},sans-serif" font-size="21" font-weight="800" fill="${t.rule1}">補助金のご相談は 日本提携支援まで</text>
   <rect x="788" y="126" width="384" height="454" rx="26" fill="#ffffff" stroke="${frameStroke}" stroke-width="1.5" filter="url(#sh2)"/>
@@ -1942,6 +1966,7 @@ function slide6CTA(d: SlideData, ff: string, qrDataUrl: string, photoDataUrl: st
   <image x="830" y="170" width="300" height="300" xlink:href="${qrDataUrl}"/>
   <text x="980" y="520" text-anchor="middle" font-family="${FONT},sans-serif" font-size="20" font-weight="800" fill="${t.ink}">スマホでQRを読み取り</text>
   <text x="980" y="552" text-anchor="middle" font-family="${FONT},sans-serif" font-size="16" fill="${t.noteText}">そのまま無料診断ページへ</text>
+  <text x="980" y="580" text-anchor="middle" font-family="${FONT},sans-serif" font-size="14" fill="rgba(18,50,79,0.55)">${esc(d.siteUrlDisplay)}</text>
   ${slideFooter(t, 5)}
 </svg>`;
   }
@@ -1963,7 +1988,7 @@ function slide6CTA(d: SlideData, ff: string, qrDataUrl: string, photoDataUrl: st
   <text x="152" y="75" text-anchor="middle" font-family="${FONT},sans-serif" font-size="18" font-weight="800" fill="#fff">NTS 日本提携支援</text>
   <image x="${PX}" y="${PY}" width="${PW}" height="${PH}" preserveAspectRatio="xMidYMid slice" clip-path="url(#photoClip)" xlink:href="${photoDataUrl}"/>
   <rect x="${PX}" y="${PY}" width="${PW}" height="${PH}" rx="22" fill="none" stroke="rgba(255,255,255,0.45)" stroke-width="2"/>
-  <text x="${pcx}" y="${PY + PH + 40}" text-anchor="middle" font-family="${FONT},sans-serif" font-size="19" fill="rgba(255,255,255,0.78)">補助金の専門家チームが、おんしゃをサポートします</text>
+  <text x="${pcx}" y="${PY + PH + 40}" text-anchor="middle" font-family="${FONT},sans-serif" font-size="19" fill="rgba(255,255,255,0.78)">日本提携支援があなたをサポートします</text>
   <text x="${pcx}" y="${PY + PH + 104}" text-anchor="middle" font-family="${FONT},sans-serif" font-size="44" font-weight="900" fill="#ffffff">お気軽にご相談ください</text>
   <text x="${pcx}" y="${PY + PH + 152}" text-anchor="middle" font-family="${FONT},sans-serif" font-size="22" font-weight="700" fill="${t.introSub}">補助金のご相談は 日本提携支援まで</text>
   <line x1="740" y1="150" x2="740" y2="570" stroke="rgba(255,255,255,0.25)" stroke-width="1.5" stroke-dasharray="6,4"/>
@@ -1971,6 +1996,7 @@ function slide6CTA(d: SlideData, ff: string, qrDataUrl: string, photoDataUrl: st
   <image x="830" y="170" width="300" height="300" xlink:href="${qrDataUrl}"/>
   <text x="980" y="524" text-anchor="middle" font-family="${FONT},sans-serif" font-size="20" font-weight="700" fill="rgba(255,255,255,0.9)">スマホでQRを読み取り</text>
   <text x="980" y="554" text-anchor="middle" font-family="${FONT},sans-serif" font-size="16" fill="rgba(255,255,255,0.65)">そのまま無料診断ページへ</text>
+  <text x="980" y="582" text-anchor="middle" font-family="${FONT},sans-serif" font-size="14" fill="rgba(255,255,255,0.55)">${esc(d.siteUrlDisplay)}</text>
   ${slideFooter(t, 5, true)}
 </svg>`;
 }
@@ -2387,7 +2413,8 @@ async function main() {
   const skip = skipArg ? parseInt(skipArg.replace("--skip=", ""), 10) : 0;
   const patternArg = args.find((a) => a.startsWith("--pattern="))?.replace("--pattern=", "");
   const shouldPublish = args.includes("--publish");
-  const usePollyVoice = args.includes("--voice=polly");
+  // デフォルトは AWS Polly。HeyGen TTS を使う場合は --voice=heygen を指定
+  const usePollyVoice = !args.includes("--voice=heygen");
 
   console.log("\n🔍 補助金データを取得中...");
   const grant = await fetchGrant(subsidyId, skip);
@@ -2443,26 +2470,46 @@ async function main() {
   ];
 
   const outDir = path.join(process.cwd(), "scripts", "heygen", "output");
-  await fs.mkdir(outDir, { recursive: true });
+  const previewPattern = patternArg?.toUpperCase();
+  const previewDir =
+    args.includes("--dry-run") &&
+    previewPattern &&
+    ["A", "B", "C", "D"].includes(previewPattern)
+      ? path.join(outDir, `preview-${previewPattern}`)
+      : null;
+  const saveDir = previewDir ?? outDir;
+  await fs.mkdir(saveDir, { recursive: true });
+  if (previewDir) {
+    console.log(`📁 保存先: ${previewDir}`);
+  }
 
   const pngs: Buffer[] = [];
+  const savePngs = Boolean(previewDir) || args.includes("--save-png");
   for (let i = 0; i < svgs.length; i++) {
     const png = await svgToPng(svgs[i], fontPath);
     pngs.push(png);
-    const savePath = path.join(outDir, `slide-${i + 1}.png`);
-    await fs.writeFile(savePath, png);
-    console.log(`  Slide ${i + 1}: ${(png.length / 1024).toFixed(0)} KB → ${savePath}`);
+    if (savePngs) {
+      const savePath = path.join(saveDir, `slide-${i + 1}.png`);
+      await fs.writeFile(savePath, png);
+      console.log(`  Slide ${i + 1}: ${(png.length / 1024).toFixed(0)} KB → ${savePath}`);
+    } else {
+      console.log(`  Slide ${i + 1}: ${(png.length / 1024).toFixed(0)} KB`);
+    }
   }
 
   // 一覧カード用サムネイル
   const thumbnailPng = await svgToPng(thumbnailSvg(d, ff, theme), fontPath);
-  const thumbPath = path.join(outDir, "thumbnail.png");
-  await fs.writeFile(thumbPath, thumbnailPng);
-  console.log(`  Thumbnail: ${(thumbnailPng.length / 1024).toFixed(0)} KB → ${thumbPath}`);
+  if (savePngs) {
+    const thumbPath = path.join(saveDir, "thumbnail.png");
+    await fs.writeFile(thumbPath, thumbnailPng);
+    console.log(`  Thumbnail: ${(thumbnailPng.length / 1024).toFixed(0)} KB → ${thumbPath}`);
+  } else {
+    console.log(`  Thumbnail: ${(thumbnailPng.length / 1024).toFixed(0)} KB`);
+  }
 
   // --dry-run: PNG生成のみで終了（スライドのプレビュー確認用）
   if (args.includes("--dry-run")) {
-    console.log("\n🔍 --dry-run のためここで終了します（PNGは output/ に保存済み）");
+    console.log("\n🔍 --dry-run のためここで終了します（PNGは保存済み）");
     const narrationsPreview = buildNarrations(d);
     console.log("\n📝 ナレーション原稿:");
     narrationsPreview.forEach((n, i) => console.log(`  ${i + 1}. ${n}`));

@@ -130,7 +130,7 @@
       : (
           '<div class="url-box reveal" style="--d:2">' +
           '<div class="url-label">QRコードから無料診断ページへ</div>' +
-          '<div class="url-value">subsidy.nihon-teikei.co.jp</div>' +
+          '<div class="url-value">https://subsidy.nihon-teikei.co.jp/</div>' +
           "</div>"
         );
 

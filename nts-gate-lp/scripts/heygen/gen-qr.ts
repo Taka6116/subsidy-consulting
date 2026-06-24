@@ -56,7 +56,7 @@ const svg = `<?xml version="1.0" encoding="UTF-8"?>
   <text x="440" y="405" text-anchor="middle" font-family="sans-serif" font-size="26" font-weight="800" fill="#ffffff">無料診断ツールを試す →</text>
 
   <!-- URL テキスト -->
-  <text x="440" y="468" text-anchor="middle" font-family="sans-serif" font-size="18" fill="#64748b">subsidy.nihon-teikei.co.jp</text>
+  <text x="440" y="468" text-anchor="middle" font-family="sans-serif" font-size="18" fill="#64748b">https://subsidy.nihon-teikei.co.jp/</text>
 
   <!-- 区切り線 -->
   <line x1="780" y1="160" x2="780" y2="560" stroke="#cbd5e1" stroke-width="1.5" stroke-dasharray="6,4"/>
