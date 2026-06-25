@@ -14,6 +14,20 @@ export const dynamic = "force-dynamic";
 export const maxDuration = 300;
 
 export async function POST(request: Request) {
+  if (
+    process.env.VIDEO_GENERATION_DISABLED === "1" ||
+    process.env.VIDEO_GENERATION_DISABLED === "true"
+  ) {
+    return NextResponse.json(
+      {
+        ok: false,
+        error:
+          "Video generation on Vercel is disabled (VIDEO_GENERATION_DISABLED). Use scripts/drain-pending-videos.ts locally.",
+      },
+      { status: 503 },
+    );
+  }
+
   const expectedToken = process.env.ARTICLE_GENERATE_TOKEN?.trim();
   if (!expectedToken) {
     return NextResponse.json(

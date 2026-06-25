@@ -17,7 +17,11 @@
  *   VERCEL_APP_URL          例: https://nts-gate-lp.vercel.app （末尾スラッシュなし）
  *   ARTICLE_GENERATE_TOKEN  POST /api/articles/generate 認証用
  *   REVALIDATE_SECRET       POST /api/revalidate 認証用
- *   DRAIN_LIMIT             1 回で消化する最大件数（デフォルト 5）
+ *   DRAIN_LIMIT             1 回で消化する最大件数（後方互換。未指定時は各 DRAIN_LIMIT_* のフォールバック）
+ *   DRAIN_LIMIT_ARTICLE     記事生成の 1 回あたり上限（デフォルト 1）
+ *   DRAIN_LIMIT_LP          LP 生成の 1 回あたり上限（デフォルト 1）
+ *   DRAIN_LIMIT_VIDEO       動画生成の 1 回あたり上限（デフォルト 0 = Vercel 上の FFmpeg 生成は停止）
+ *   ENABLE_VERCEL_VIDEO     "true" のときのみ /api/videos/generate を呼ぶ（デフォルト false）
  *   SYNC_USER_AGENT         jGrants へ送る User-Agent（礼儀作法用、例: "nts-lambda/1.0 (contact: ops@...)"）
  */
 import pg from "pg";
@@ -501,7 +505,22 @@ export async function handler(event = {}) {
   const VERCEL_APP_URL = (process.env.VERCEL_APP_URL ?? "").replace(/\/$/, "");
   const ARTICLE_GENERATE_TOKEN = process.env.ARTICLE_GENERATE_TOKEN;
   const REVALIDATE_SECRET = process.env.REVALIDATE_SECRET;
-  const DRAIN_LIMIT = Number(process.env.DRAIN_LIMIT ?? 5) || 5;
+  const DRAIN_LIMIT_LEGACY = Number(process.env.DRAIN_LIMIT ?? NaN);
+  const DRAIN_LIMIT_ARTICLE = Number(
+    process.env.DRAIN_LIMIT_ARTICLE ??
+      (Number.isFinite(DRAIN_LIMIT_LEGACY) ? DRAIN_LIMIT_LEGACY : 1),
+  ) || 0;
+  const DRAIN_LIMIT_LP = Number(
+    process.env.DRAIN_LIMIT_LP ??
+      (Number.isFinite(DRAIN_LIMIT_LEGACY) ? DRAIN_LIMIT_LEGACY : 1),
+  ) || 0;
+  const DRAIN_LIMIT_VIDEO = Number(
+    process.env.DRAIN_LIMIT_VIDEO ??
+      (Number.isFinite(DRAIN_LIMIT_LEGACY) ? DRAIN_LIMIT_LEGACY : 0),
+  ) || 0;
+  const ENABLE_VERCEL_VIDEO =
+    process.env.ENABLE_VERCEL_VIDEO === "true" ||
+    process.env.ENABLE_VERCEL_VIDEO === "1";
   const SYNC_USER_AGENT =
     process.env.SYNC_USER_AGENT ?? "nts-gate-lp-sync/1.0";
 
@@ -594,7 +613,7 @@ export async function handler(event = {}) {
     console.log(`${LOG} synced new=${report.sync.newGrants} updated=${report.sync.updatedGrants}`);
 
     // ----- 2) drain pending jobs -----
-    const pendingIds = await selectPendingJobs(client, DRAIN_LIMIT);
+    const pendingIds = await selectPendingJobs(client, DRAIN_LIMIT_ARTICLE);
     report.generate.picked = pendingIds.length;
     const publishedSlugs = [];
 
@@ -646,7 +665,7 @@ export async function handler(event = {}) {
     // ----- 2b) drain pending LP jobs -----
     // 記事生成の次の実行サイクル（15分後）に LP コピーを生成する。
     // 同一実行内でも pending があれば処理する（再実行・バックフィル対応）。
-    const pendingLpIds = await selectPendingLpJobs(client, DRAIN_LIMIT);
+    const pendingLpIds = await selectPendingLpJobs(client, DRAIN_LIMIT_LP);
     report.lp.picked = pendingLpIds.length;
 
     for (const subsidyId of pendingLpIds) {
@@ -671,8 +690,16 @@ export async function handler(event = {}) {
     console.log(`${LOG} lp published=${report.lp.published} failed=${report.lp.failed}`);
 
     // ----- 2c) drain pending video jobs -----
-    // 記事生成と同じ Lambda 実行内で video も順次処理（上限はDRAIN_LIMITと同じ）
-    const pendingVideoIds = await selectPendingVideoJobs(client, DRAIN_LIMIT);
+    // 動画は FFmpeg 負荷が大きいため Vercel ではなくローカル CLI / 将来 Lambda で処理する。
+    // ENABLE_VERCEL_VIDEO=true かつ DRAIN_LIMIT_VIDEO>0 のときのみ Vercel API を呼ぶ。
+    let pendingVideoIds = [];
+    if (ENABLE_VERCEL_VIDEO && DRAIN_LIMIT_VIDEO > 0) {
+      pendingVideoIds = await selectPendingVideoJobs(client, DRAIN_LIMIT_VIDEO);
+    } else {
+      console.log(
+        `${LOG} video skipped (ENABLE_VERCEL_VIDEO=${ENABLE_VERCEL_VIDEO}, DRAIN_LIMIT_VIDEO=${DRAIN_LIMIT_VIDEO}) — use scripts/drain-pending-videos.ts locally`,
+      );
+    }
     report.video.picked = pendingVideoIds.length;
     const publishedVideoSlugs = [];
 

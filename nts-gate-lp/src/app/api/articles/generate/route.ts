@@ -15,6 +15,20 @@ export const dynamic = "force-dynamic";
 export const maxDuration = 60;
 
 export async function POST(request: Request) {
+  if (
+    process.env.ARTICLE_GENERATION_DISABLED === "1" ||
+    process.env.ARTICLE_GENERATION_DISABLED === "true"
+  ) {
+    return NextResponse.json(
+      {
+        ok: false,
+        error:
+          "Article generation on Vercel is disabled (ARTICLE_GENERATION_DISABLED). Resume after CPU quota recovery.",
+      },
+      { status: 503 },
+    );
+  }
+
   const expectedToken = process.env.ARTICLE_GENERATE_TOKEN?.trim();
   if (!expectedToken) {
     return NextResponse.json(

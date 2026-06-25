@@ -199,10 +199,20 @@ ORDER BY created_at DESC;
 
 ```bash
 # Scheduler を無効化（一時停止）
-aws scheduler update-schedule --name nts-article-pipeline-15min --state DISABLED
+aws scheduler update-schedule \
+  --name nts-article-pipeline-15min \
+  --state DISABLED \
+  --schedule-expression "rate(15 minutes)" \
+  --schedule-expression-timezone "Asia/Tokyo" \
+  --flexible-time-window Mode=OFF \
+  --target file://lambda/article-pipeline/scheduler-target.example.json \
+  --region ap-northeast-1
 
-# 完全停止
-aws scheduler delete-schedule --name nts-article-pipeline-15min
+# 再開
+aws scheduler update-schedule \
+  --name nts-article-pipeline-15min \
+  --state ENABLED \
+  ...（同上）
 aws lambda delete-function --function-name nts-article-pipeline
 ```
 
