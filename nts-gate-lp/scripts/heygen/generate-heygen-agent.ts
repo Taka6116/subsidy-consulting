@@ -1618,10 +1618,7 @@ ${gridSvg}
   ${lightBase(t)}
   ${lightHeader(t, "FLOW", 118, "日本提携支援のサポートの流れ", 640)}
   ${topCards}
-  ${topArrows}
-  ${turnArrow}
   ${botCards}
-  ${botArrows}
   <rect x="57" y="${barY}" width="1166" height="56" rx="16" fill="${t.flowBarBg}"/>
   <text x="${W / 2}" y="${barY + 36}" text-anchor="middle" font-family="${FONT},sans-serif" font-size="20" font-weight="700" fill="${t.flowBarText}">無料相談から採択後の伴走まで、一貫してサポートします</text>
   ${slideFooter(t, 3)}
@@ -1725,7 +1722,7 @@ function slide5BeforeAfter(d: SlideData, ff: string, t: SlideTheme): string {  /
   ${hdrRow}
   ${dataRows}
   <rect x="57" y="${tblBotY}" width="${TBL_W}" height="1" fill="#e2e8f0"/>
-  <text x="${W / 2}" y="${tblBotY + 42}" text-anchor="middle" font-family="${FONT},sans-serif" font-size="17" fill="${t.noteText}">おんしゃの状況に合わせて最適な使い方をご提案します</text>
+  <text x="${W / 2}" y="${tblBotY + 42}" text-anchor="middle" font-family="${FONT},sans-serif" font-size="17" fill="${t.noteText}">貴社の状況に合わせて最適な使い方をご提案します</text>
   ${slideFooter(t, 4)}
 </svg>`;
   }
@@ -1813,7 +1810,7 @@ function slide5BeforeAfter(d: SlideData, ff: string, t: SlideTheme): string {  /
   <line x1="${RX + 36}" y1="${CARD_Y + 66}" x2="${RX + CARD_W - 36}" y2="${CARD_Y + 66}" stroke="${t.afterLine}" stroke-width="1.5"/>
   ${items(RX, afters, "check")}
   <!-- 下部注記 -->
-  <text x="${W / 2}" y="${CARD_Y + CARD_H + 44}" text-anchor="middle" font-family="${FONT},sans-serif" font-size="18" fill="${t.noteText}">おんしゃの状況に合わせて最適な使い方をご提案します</text>
+  <text x="${W / 2}" y="${CARD_Y + CARD_H + 44}" text-anchor="middle" font-family="${FONT},sans-serif" font-size="18" fill="${t.noteText}">貴社の状況に合わせて最適な使い方をご提案します</text>
   ${slideFooter(t, 4)}
 </svg>`;
 }
