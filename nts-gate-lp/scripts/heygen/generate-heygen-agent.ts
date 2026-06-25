@@ -998,7 +998,6 @@ function slide1Intro(d: SlideData, ff: string, t: SlideTheme): string {
   <rect x="${CX}" y="${CY}" width="${CW}" height="${CH}" rx="22" fill="#ffffff" filter="url(#sh)"/>
   <text x="${CCX}" y="${CY + 52}" text-anchor="middle" font-family="${FONT},sans-serif" font-size="20" font-weight="800" fill="${greenDark}" letter-spacing="6">補 助 上 限</text>
   <line x1="${CX + 36}" y1="${CY + 72}" x2="${CX + CW - 36}" y2="${CY + 72}" stroke="#d1d5db" stroke-width="1.5"/>
-  <polygon points="${CCX},${CY + 72} ${CCX - 7},${CY + 84} ${CCX + 7},${CY + 84}" fill="${greenMid}"/>
   <text x="${CCX}" y="${CY + 168}" text-anchor="middle" font-family="${FONT},sans-serif" font-weight="900">
     <tspan font-size="30" fill="${greenDark}">${esc(hero.prefix)}</tspan>${hero.suffix ? `<tspan font-size="78" fill="${greenBright}" dx="10">${esc(hero.num)}</tspan><tspan font-size="30" fill="${greenDark}" dx="6">${esc(hero.suffix)}</tspan>` : `<tspan font-size="56" fill="${greenBright}" dx="8">${esc(hero.num)}</tspan>`}
   </text>
@@ -1203,7 +1202,7 @@ function slide1Intro(d: SlideData, ff: string, t: SlideTheme): string {
   <rect x="${CX + 152}" y="252" width="1" height="196" fill="${t.amount.accent}" opacity="0.20"/>
   <text x="${CX + 76}" y="358" text-anchor="middle" font-family="${FONT},sans-serif" font-size="20" font-weight="800" fill="${t.amount.label}" letter-spacing="2">補助上限</text>
   <!-- 金額（右区画・縦中央） -->
-  <text x="${CCX + 76}" y="362" text-anchor="middle" font-family="${FONT},sans-serif" font-size="${amtFsA}" font-weight="900" fill="${t.amount.value}" letter-spacing="-2">${esc(amountDisp)}</text>
+  <text x="${CCX + 76}" y="350" dominant-baseline="central" text-anchor="middle" font-family="${FONT},sans-serif" font-size="${amtFsA}" font-weight="900" fill="${t.amount.value}" letter-spacing="-2">${esc(amountDisp)}</text>
   ${slideFooter(t, 0)}
 </svg>`;
 }
@@ -1236,15 +1235,9 @@ function slide2What(d: SlideData, ff: string, t: SlideTheme): string {
   ${ff}
   ${lightBase(t)}
   ${lightHeader(t, "WHAT", 118, "制度の概要", 440)}
-  <rect x="57" y="168" width="704" height="372" rx="22" fill="#ffffff" stroke="#dbeafe" stroke-width="1.5" filter="url(#sh)"/>
-  <rect x="57" y="168" width="704" height="8" rx="4" fill="url(#rule)"/>
+  <rect x="57" y="168" width="1166" height="372" rx="22" fill="#ffffff" stroke="#dbeafe" stroke-width="1.5" filter="url(#sh)"/>
+  <rect x="57" y="168" width="1166" height="8" rx="4" fill="url(#rule)"/>
   ${descC.map((l, i) => `<text x="98" y="${238 + i * 54}" font-family="${FONT},sans-serif" font-size="27" font-weight="600" fill="${t.bodyText}">${esc(l)}</text>`).join("\n  ")}
-  <rect x="800" y="198" width="380" height="282" rx="24" fill="#fffaf0" stroke="#fed7aa" stroke-width="1.5"/>
-  <text x="990" y="258" text-anchor="middle" font-family="${FONT},sans-serif" font-size="15" font-weight="900" fill="${t.amount.label}" letter-spacing="4">POINT</text>
-  <text x="990" y="324" text-anchor="middle" font-family="${FONT},sans-serif" font-size="30" font-weight="900" fill="${t.ink}">申請前に</text>
-  <text x="990" y="368" text-anchor="middle" font-family="${FONT},sans-serif" font-size="30" font-weight="900" fill="${t.ink}">押さえたい制度</text>
-  <line x1="872" y1="402" x2="1108" y2="402" stroke="#fed7aa" stroke-width="1.5"/>
-  <text x="990" y="444" text-anchor="middle" font-family="${FONT},sans-serif" font-size="15" fill="${t.noteText}">${esc(d.name.slice(0, 24))}</text>
   ${slideFooter(t, 1)}
 </svg>`;
   }
@@ -1547,8 +1540,8 @@ ${rowSvg}
       const gcx = gx + CW_G / 2;
       return `
   <rect x="${gx}" y="${gy}" width="${CW_G}" height="${CH_G}" rx="16" fill="#fff" stroke="#dbeafe" stroke-width="1.5" filter="url(#sh)"/>
-  <rect x="${gx + 16}" y="${gy + 14}" width="36" height="36" rx="18" fill="${t.badgeFill}"/>
-  <text x="${gx + 34}" y="${gy + 37}" text-anchor="middle" font-family="${FONT},sans-serif" font-size="14" font-weight="900" fill="#fff">${si + 1}</text>
+  <rect x="${gcx - 18}" y="${gy + 14}" width="36" height="36" rx="18" fill="url(#numBadge)"/>
+  <text x="${gcx}" y="${gy + 37}" text-anchor="middle" font-family="${FONT},sans-serif" font-size="14" font-weight="900" fill="#fff">${si + 1}</text>
   <circle cx="${gcx}" cy="${gy + 52}" r="30" fill="${s.color}" opacity="0.88"/>
   ${flowGlyph(s.icon, gcx, gy + 52, s.color)}
   <text x="${gx + CW_G / 2}" y="${gy + CH_G - 42}" text-anchor="middle" font-family="${FONT},sans-serif" font-size="21" font-weight="900" fill="${t.ink}">${esc(s.label)}</text>
@@ -1558,6 +1551,12 @@ ${rowSvg}
 <svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
   ${ff}
   ${lightBase(t)}
+  <defs>
+    <linearGradient id="numBadge" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1e40af"/>
+      <stop offset="100%" stop-color="#2563eb"/>
+    </linearGradient>
+  </defs>
   ${lightHeader(t, "FLOW", 118, "日本提携支援のサポートの流れ", 640)}
 ${gridSvg}
   <rect x="57" y="${GY0 + ROWS * (CH_G + GY) + 8}" width="1166" height="52" rx="13" fill="${t.flowBarBg}"/>

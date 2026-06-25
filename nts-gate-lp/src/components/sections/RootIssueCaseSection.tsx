@@ -947,13 +947,13 @@ function ActivationCard({
 // ============================================================
 // ノード（時計回り）: 上=補助金制度提案 → 右=実行支援 → 下=実行フォロー → 左=次の課題発見
 
-// viewBox 寸法（円が枠内に完全に収まるよう縦を確保。楕円比率も緩和）
+// viewBox 寸法（コンパクト化: 縦を絞って全体を小さく）
 const VBW = 720;
-const VBH = 450;
+const VBH = 370;
 const CX = VBW / 2;   // 360
-const CY = VBH / 2;   // 225
-const RX_E = 230;     // 楕円 横半径
-const RY_E = 140;     // 楕円 縦半径
+const CY = VBH / 2;   // 185
+const RX_E = 218;     // 楕円 横半径
+const RY_E = 108;     // 楕円 縦半径（縦を大幅圧縮）
 
 /** 角度（0=上, 時計回り）から楕円上の座標を返す */
 function ellipsePt(deg: number) {
@@ -1012,7 +1012,7 @@ function CycleDiagram() {
 
   return (
     <div
-      className="relative rounded-[18px] px-5 pb-12 pt-12 md:px-8 md:pb-16 md:pt-16"
+      className="relative rounded-[18px] px-5 pb-8 pt-8 md:px-8 md:pb-10 md:pt-10"
       style={{
         background: NAVY_GRADIENT_CARD_EMPHASIZED,
         border: "1.5px solid #B5D4F4",
@@ -1023,11 +1023,11 @@ function CycleDiagram() {
       <p
         className="font-heading relative z-[4] text-center"
         style={{
-          fontSize: "clamp(1.1rem, 2vw, 1.4rem)",
+          fontSize: "clamp(1rem, 1.8vw, 1.25rem)",
           fontWeight: 700,
           color: "#1e3a6e",
           letterSpacing: "0.04em",
-          marginBottom: "44px",
+          marginBottom: "20px",
         }}
       >
         中長期伴走サイクル
@@ -1036,7 +1036,7 @@ function CycleDiagram() {
       {/* ─── 図解本体（楕円リング領域） ─── */}
       <div
         className="relative mx-auto w-full"
-        style={{ maxWidth: "920px", aspectRatio: `${VBW} / ${VBH}` }}
+        style={{ maxWidth: "720px", aspectRatio: `${VBW} / ${VBH}` }}
       >
         {/* 弧矢印 SVG レイヤー（z-1・overflow visible で矢じりが切れない） */}
         <svg
@@ -1054,7 +1054,7 @@ function CycleDiagram() {
           {/* 装飾：中央の点線楕円 */}
           <ellipse
             cx={CX} cy={CY}
-            rx={95} ry={62}
+            rx={78} ry={48}
             fill="none"
             stroke="#aecbed"
             strokeWidth="1"
@@ -1080,8 +1080,8 @@ function CycleDiagram() {
 
         {/* 中央：コインスタック + ¥バッジ（z-2） */}
         <div className="absolute left-1/2 top-1/2 z-[2] flex -translate-x-1/2 -translate-y-1/2 flex-col items-center">
-          <div className="relative" style={{ width: 52, height: 44 }}>
-            <svg width="52" height="44" viewBox="0 0 52 44" aria-hidden>
+          <div className="relative" style={{ width: 42, height: 36 }}>
+            <svg width="42" height="36" viewBox="0 0 52 44" aria-hidden>
               <g fill="none" stroke="#2f63bd" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" transform="translate(4,4)">
                 <ellipse cx="17" cy="9" rx="12" ry="4.5" />
                 <path d="M5 9v6.5c0 2.4 5.4 4.4 12 4.4s12-2 12-4.4V9" />
@@ -1094,8 +1094,8 @@ function CycleDiagram() {
             <span aria-hidden className="absolute -right-3 top-0 text-[10px]" style={{ color: "#9cc0ea" }}>✦</span>
           </div>
           <p
-            className="font-heading mt-2 text-center leading-tight"
-            style={{ fontSize: "clamp(0.78rem, 1.4vw, 0.95rem)", fontWeight: 700, color: "#1e3a6e" }}
+            className="font-heading mt-1 text-center leading-tight"
+            style={{ fontSize: "clamp(0.7rem, 1.2vw, 0.82rem)", fontWeight: 700, color: "#1e3a6e" }}
           >
             継続的な<br />紹介報酬
           </p>
@@ -1111,22 +1111,22 @@ function CycleDiagram() {
               style={{
                 left: node.left,
                 top: node.top,
-                width: "20%",
+                width: "18%",
                 aspectRatio: "1",
                 transform: "translate(-50%, -50%)",
                 border: "2px solid #cfe0f4",
-                boxShadow: "0 6px 20px rgba(26,76,142,0.16)",
+                boxShadow: "0 4px 14px rgba(26,76,142,0.14)",
               }}
             >
-              <Icon size={30} strokeWidth={1.8} style={{ color: "#2f63bd" }} aria-hidden />
+              <Icon size={22} strokeWidth={1.8} style={{ color: "#2f63bd" }} aria-hidden />
               <p
-                className="font-heading mt-2 text-center"
+                className="font-heading mt-1 text-center"
                 style={{
-                  fontSize: "clamp(0.78rem, 1.5vw, 1rem)",
+                  fontSize: "clamp(0.68rem, 1.3vw, 0.88rem)",
                   fontWeight: 700,
                   color: "#1e3a6e",
                   letterSpacing: "0.01em",
-                  lineHeight: 1.55,
+                  lineHeight: 1.45,
                 }}
               >
                 {lines.map((line, li) => (
@@ -1145,11 +1145,11 @@ function CycleDiagram() {
       <p
         className="font-body relative z-[4] mx-auto text-center"
         style={{
-          fontSize: "0.85rem",
-          lineHeight: 1.8,
+          fontSize: "0.83rem",
+          lineHeight: 1.75,
           color: "#4b6585",
-          marginTop: "44px",
-          maxWidth: "760px",
+          marginTop: "20px",
+          maxWidth: "680px",
           paddingLeft: "24px",
           paddingRight: "24px",
         }}
