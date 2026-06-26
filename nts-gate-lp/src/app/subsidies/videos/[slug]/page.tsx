@@ -6,6 +6,7 @@ import Header from "@/components/shared/Header";
 import LpFooter from "@/components/gate-lp/LpFooter";
 import Breadcrumb from "@/components/shared/Breadcrumb";
 import { prisma } from "@/lib/db/prisma";
+import { resolveArticleHeroImage } from "@/lib/content/imagePool";
 
 export const revalidate = 300;
 export const dynamicParams = true;
@@ -115,9 +116,18 @@ export default async function SubsidyVideoPage({ params }: PageProps) {
           deadlineLabel: true,
           deadline: true,
           rawPayload: true,
+          targetIndustries: true,
           contents: {
             where: { contentType: "article", status: "published" },
-            select: { slug: true },
+            orderBy: { publishedAt: "desc" },
+            select: {
+              id: true,
+              slug: true,
+              title: true,
+              excerpt: true,
+              tags: true,
+              subsidyId: true,
+            },
             take: 1,
           },
         },
@@ -135,7 +145,16 @@ export default async function SubsidyVideoPage({ params }: PageProps) {
   const grantDeadline = video.grant
     ? resolveDeadlineLabel(video.grant.deadlineLabel, video.grant.deadline)
     : null;
-  const articleSlug = video.grant?.contents?.[0]?.slug ?? null;
+  const relatedArticle = video.grant?.contents?.[0] ?? null;
+  const articleSlug = relatedArticle?.slug ?? null;
+  const articleHeroImage = relatedArticle
+    ? resolveArticleHeroImage({
+        articleId: relatedArticle.id,
+        subsidyId: relatedArticle.subsidyId,
+        tags: relatedArticle.tags ?? [],
+        targetIndustries: video.grant?.targetIndustries ?? [],
+      })
+    : null;
   const dur = formatDuration(video.duration);
 
   return (
@@ -244,61 +263,85 @@ export default async function SubsidyVideoPage({ params }: PageProps) {
             </div>
           )}
 
-          {/* 関連補助金 CTA */}
+          {/* 関連解説記事 */}
           {video.grant && (
-            <section className="mt-8 overflow-hidden rounded-xl border border-sky-200 bg-gradient-to-br from-sky-50 to-blue-50 p-6 shadow-sm">
-              <p className="text-xs font-semibold uppercase tracking-wider text-sky-600">
-                関連する補助金
-              </p>
-              <h2 className="font-heading mt-2 text-lg font-bold text-neutral-900 sm:text-xl">
-                {video.grant.name ?? "補助金詳細"}
-              </h2>
-              <dl className="mt-4 grid grid-cols-1 gap-3 text-sm sm:grid-cols-2">
-                {grantAmount && (
-                  <div className="rounded-lg bg-white px-4 py-3 ring-1 ring-sky-100">
-                    <dt className="text-xs text-neutral-500">上限補助額</dt>
-                    <dd className="mt-1 font-semibold text-neutral-900">
-                      最大 {grantAmount}
-                    </dd>
+            <section className="mt-8 overflow-hidden rounded-xl border border-sky-200 bg-gradient-to-br from-sky-50 to-blue-50 shadow-sm">
+              {articleHeroImage && articleSlug && (
+                <Link
+                  href={`/subsidies/articles/${articleSlug}`}
+                  className="group block overflow-hidden"
+                >
+                  <div
+                    className="relative h-44 bg-cover bg-center transition duration-300 group-hover:scale-[1.02] sm:h-52"
+                    style={{ backgroundImage: `url(${articleHeroImage})` }}
+                  >
+                    <div className="absolute inset-0 bg-gradient-to-t from-sky-950/35 via-transparent to-transparent" />
                   </div>
+                </Link>
+              )}
+              <div className="p-6">
+                <p className="text-xs font-semibold uppercase tracking-wider text-sky-600">
+                  この補助金の情報記事
+                </p>
+                <h2 className="font-heading mt-2 text-lg font-bold text-neutral-900 sm:text-xl">
+                  {relatedArticle?.title ?? video.grant.name ?? "補助金詳細"}
+                </h2>
+                {relatedArticle?.excerpt && (
+                  <p className="mt-3 line-clamp-2 text-sm leading-relaxed text-neutral-600">
+                    {relatedArticle.excerpt}
+                  </p>
                 )}
-                {grantDeadline && (
-                  <div className="rounded-lg bg-white px-4 py-3 ring-1 ring-sky-100">
-                    <dt className="text-xs text-neutral-500">公募期限</dt>
-                    <dd className="mt-1 font-semibold text-neutral-900">
-                      {grantDeadline}
-                    </dd>
-                  </div>
-                )}
-              </dl>
-              <Link
-                href={
-                  articleSlug
-                    ? `/subsidies/articles/${articleSlug}`
-                    : `/subsidies/list/${video.grant.id}`
-                }
-                className="mt-6 inline-flex items-center justify-center rounded-lg bg-gradient-to-r from-[#0EA5E9] to-[#006FE6] px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:opacity-90"
-              >
-                解説記事を見る
-              </Link>
+                <dl className="mt-4 grid grid-cols-1 gap-3 text-sm sm:grid-cols-2">
+                  {grantAmount && (
+                    <div className="rounded-lg bg-white px-4 py-3 ring-1 ring-sky-100">
+                      <dt className="text-xs text-neutral-500">上限補助額</dt>
+                      <dd className="mt-1 font-semibold text-neutral-900">
+                        最大 {grantAmount}
+                      </dd>
+                    </div>
+                  )}
+                  {grantDeadline && (
+                    <div className="rounded-lg bg-white px-4 py-3 ring-1 ring-sky-100">
+                      <dt className="text-xs text-neutral-500">公募期限</dt>
+                      <dd className="mt-1 font-semibold text-neutral-900">
+                        {grantDeadline}
+                      </dd>
+                    </div>
+                  )}
+                </dl>
+                <div className="mt-6">
+                  <Link
+                    href={
+                      articleSlug
+                        ? `/subsidies/articles/${articleSlug}`
+                        : `/subsidies/list/${video.grant.id}`
+                    }
+                    className="inline-flex items-center justify-center rounded-lg bg-gradient-to-r from-[#0EA5E9] to-[#006FE6] px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:opacity-90"
+                  >
+                    解説記事を見る
+                  </Link>
+                </div>
+              </div>
             </section>
           )}
 
           {/* NTS 無料相談 CTA */}
-          <section className="mt-10 overflow-hidden rounded-xl bg-gradient-to-br from-[#0EA5E9] via-[#006FE6] to-[#1E3A8A] p-8 text-white shadow-sm">
+          <section className="mt-10 overflow-hidden rounded-xl bg-gradient-to-br from-[#0EA5E9] via-[#006FE6] to-[#1E3A8A] p-8 text-center text-white shadow-sm">
             <h2 className="font-heading text-xl font-bold text-white drop-shadow-sm sm:text-2xl">
               補助金活用の戦略設計は、NTS にご相談ください
             </h2>
-            <p className="mt-3 text-sm leading-relaxed text-white/90 sm:text-base">
+            <p className="mx-auto mt-3 max-w-2xl text-sm leading-relaxed text-white/90 sm:text-base">
               補助金活用の方針設計から、採択後 1 年間の伴走まで一貫して支援します。
               着手金 15 万円と段階的なコンサルティングフィーで、最後まで責任を共有します。
             </p>
-            <Link
-              href="/consult"
-              className="mt-6 inline-flex items-center justify-center rounded-lg bg-white px-6 py-3 text-sm font-semibold text-[#006FE6] shadow-sm transition hover:bg-sky-50"
-            >
-              無料相談を予約する
-            </Link>
+            <div className="mt-6 flex justify-center">
+              <Link
+                href={video.grant ? `/consult?subsidyId=${video.grant.id}` : "/consult"}
+                className="inline-flex items-center justify-center rounded-lg bg-white px-6 py-3 text-sm font-semibold text-[#006FE6] shadow-sm transition hover:bg-sky-50"
+              >
+                無料相談を予約する
+              </Link>
+            </div>
           </section>
 
           {/* 戻る */}

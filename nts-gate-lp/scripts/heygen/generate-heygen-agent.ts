@@ -1538,12 +1538,16 @@ ${rowSvg}
       const gx = 57 + col * (CW_G + GX);
       const gy = GY0 + row * (CH_G + GY);
       const gcx = gx + CW_G / 2;
+      const badgeY = gy + 12;
+      const badgeSize = 32;
+      const iconR = 28;
+      const iconCy = badgeY + badgeSize + 16 + iconR;
       return `
   <rect x="${gx}" y="${gy}" width="${CW_G}" height="${CH_G}" rx="16" fill="#fff" stroke="#dbeafe" stroke-width="1.5" filter="url(#sh)"/>
-  <rect x="${gcx - 18}" y="${gy + 14}" width="36" height="36" rx="18" fill="url(#numBadge)"/>
-  <text x="${gcx}" y="${gy + 37}" text-anchor="middle" font-family="${FONT},sans-serif" font-size="14" font-weight="900" fill="#fff">${si + 1}</text>
-  <circle cx="${gcx}" cy="${gy + 52}" r="30" fill="${s.color}" opacity="0.88"/>
-  ${flowGlyph(s.icon, gcx, gy + 52, s.color)}
+  <rect x="${gcx - badgeSize / 2}" y="${badgeY}" width="${badgeSize}" height="${badgeSize}" rx="${badgeSize / 2}" fill="url(#numBadge)"/>
+  <text x="${gcx}" y="${badgeY + 21}" text-anchor="middle" font-family="${FONT},sans-serif" font-size="14" font-weight="900" fill="#fff">${si + 1}</text>
+  <circle cx="${gcx}" cy="${iconCy}" r="${iconR}" fill="${s.color}" opacity="0.88"/>
+  ${flowGlyph(s.icon, gcx, iconCy, s.color)}
   <text x="${gx + CW_G / 2}" y="${gy + CH_G - 42}" text-anchor="middle" font-family="${FONT},sans-serif" font-size="21" font-weight="900" fill="${t.ink}">${esc(s.label)}</text>
   <text x="${gx + CW_G / 2}" y="${gy + CH_G - 18}" text-anchor="middle" font-family="${FONT},sans-serif" font-size="12" fill="${t.noteText}">${esc(s.sub)}</text>`;
     }).join("\n");

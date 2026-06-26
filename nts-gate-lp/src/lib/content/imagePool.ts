@@ -200,3 +200,18 @@ export function pickHeroImage(params: {
   const idx = hashString(params.subsidyId) % IMAGE_POOL.length;
   return IMAGE_POOL[idx];
 }
+
+/** 解説記事ページ・一覧と同一のヒーロー画像（記事 id を seed に固定） */
+export function resolveArticleHeroImage(params: {
+  articleId: string;
+  subsidyId: string;
+  tags?: string[];
+  targetIndustries?: string[];
+}): string {
+  return pickHeroImage({
+    subsidyId: params.subsidyId,
+    seedKey: params.articleId,
+    tags: params.tags ?? [],
+    targetIndustries: params.targetIndustries ?? [],
+  });
+}
