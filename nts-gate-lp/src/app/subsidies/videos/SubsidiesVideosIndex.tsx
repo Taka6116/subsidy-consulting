@@ -363,7 +363,6 @@ function VideoCardItem({ video }: { video: VideoCard }) {
         )}
         <div className="mt-auto flex flex-wrap items-center justify-between gap-1 pt-3">
           <div className="flex flex-col gap-0.5">
-            <span className="text-xs text-neutral-400">更新 {video.publishedAt}</span>
             {video.deadlineLabel ? (
               <span className={`text-xs ${expired ? "text-neutral-400 line-through" : "text-orange-600 font-medium"}`}>
                 締切 {video.deadlineLabel}
