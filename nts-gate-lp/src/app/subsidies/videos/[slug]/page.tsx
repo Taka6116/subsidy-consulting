@@ -309,7 +309,7 @@ export default async function SubsidyVideoPage({ params }: PageProps) {
                     </div>
                   )}
                 </dl>
-                <div className="mt-6">
+                <div className="mt-6 flex justify-center">
                   <Link
                     href={
                       articleSlug
