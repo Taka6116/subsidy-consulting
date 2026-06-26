@@ -5,6 +5,8 @@ import {
   Zen_Kaku_Gothic_New,
 } from "next/font/google";
 import Script from "next/script";
+import { Suspense } from "react";
+import CleanGlParam from "@/components/shared/CleanGlParam";
 import "./globals.css";
 
 /** 模倣元サイトに合わせたフォント（Poppins + Zen Kaku Gothic New） */
@@ -87,6 +89,9 @@ export default function RootLayout({
             />
           </noscript>
         )}
+        <Suspense fallback={null}>
+          <CleanGlParam />
+        </Suspense>
         {children}
       </body>
     </html>
