@@ -42,10 +42,12 @@ async function uploadToS3(buf: Buffer, key: string, contentType: string): Promis
 }
 
 async function extractFirstFrame(mp4Path: string, pngPath: string): Promise<void> {
-  // 0.15秒地点でキャプチャ（0秒ちょうどだと稀に黒フレームになることがあるため）
+  // 1.0秒地点でキャプチャ。0秒付近は HeyGen 側の導入アニメーション（フェード/ズーム等）が
+  // 残っていることがあり、実際のスライド1の静止デザインと異なるフレームを拾ってしまうため、
+  // 既存の他動画パイプライン（renderHyperframesVideo.ts）と同じ1秒地点に統一する。
   const bin = ffmpegPath as unknown as string;
   await execAsync(
-    `"${bin}" -y -ss 0.15 -i "${mp4Path}" -frames:v 1 -q:v 2 "${pngPath}"`,
+    `"${bin}" -y -ss 1.0 -i "${mp4Path}" -frames:v 1 -q:v 2 "${pngPath}"`,
   );
 }
 
