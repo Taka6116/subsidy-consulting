@@ -2007,148 +2007,6 @@ function slide6CTA(d: SlideData, ff: string, qrDataUrl: string, photoDataUrl: st
 }
 
 // ─────────────────────────────────────────────────────────────
-// 一覧カード用サムネイル（16:9・テーマ連動）
-// ─────────────────────────────────────────────────────────────
-function thumbnailSvg(d: SlideData, ff: string, t: SlideTheme): string {
-  const amountDisp = formatAmountDisp(d.amount);
-  const nameLines = wrapTextByChars(d.name, 12).slice(0, 2);
-  const deadlineVal = d.deadline.replace(/^申請期限[：:]\s*/, "");
-
-  // ── Pattern B: 左右スプリット ─────────────────────────────────
-  if (t.id === "B") {
-    const LP = 600;
-    const rcx = LP + (W - LP) / 2;
-    return `<?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
-  ${ff}
-  <defs>
-    <filter id="tsh"><feDropShadow dx="0" dy="8" stdDeviation="14" flood-color="#000" flood-opacity="0.30"/></filter>
-    <filter id="glw"><feGaussianBlur stdDeviation="36"/></filter>
-  </defs>
-  <rect x="0" y="0" width="${LP}" height="${H}" fill="${t.dark1}"/>
-  <rect x="${LP}" y="0" width="${W - LP}" height="${H}" fill="${t.dark2}"/>
-  <rect x="${LP - 3}" y="0" width="6" height="${H}" fill="${t.glow1}" opacity="0.85"/>
-  <circle cx="${rcx}" cy="${H / 2}" r="200" fill="${t.glow1}" opacity="0.12" filter="url(#glw)"/>
-  <rect x="64" y="56" width="206" height="48" rx="${t.badgeRadius}" fill="${t.badgeFill}"/>
-  <text x="167" y="88" text-anchor="middle" font-family="${FONT},sans-serif" font-size="19" font-weight="800" fill="#fff">NTS 日本提携支援</text>
-  ${nameLines.map((line, i) =>
-    `<text x="64" y="${268 + i * 78}" font-family="${FONT},sans-serif" font-size="56" font-weight="900" fill="#ffffff" filter="url(#tsh)">${esc(line)}</text>`
-  ).join("\n  ")}
-  <text x="64" y="${H - 56}" font-family="${FONT},sans-serif" font-size="18" fill="rgba(255,255,255,0.40)">公募期限 ${esc(deadlineVal)}</text>
-  <text x="${rcx}" y="248" text-anchor="middle" font-family="${FONT},sans-serif" font-size="18" font-weight="700" fill="${t.introSub}" letter-spacing="5">補 助 上 限</text>
-  <line x1="${LP + 60}" y1="266" x2="${W - 60}" y2="266" stroke="${t.glow1}" stroke-width="1.5" opacity="0.35"/>
-  <text x="${rcx}" y="416" text-anchor="middle" font-family="${FONT},sans-serif" font-size="80" font-weight="900" fill="#ffffff" filter="url(#tsh)" letter-spacing="-2">${esc(amountDisp)}</text>
-  <rect x="${W - 304}" y="56" width="240" height="48" rx="24" fill="rgba(255,255,255,0.12)" stroke="rgba(255,255,255,0.30)" stroke-width="1.5"/>
-  <path d="M ${W - 272} 70 L ${W - 272} 90 L ${W - 254} 80 Z" fill="#ffffff"/>
-  <text x="${W - 178}" y="88" text-anchor="middle" font-family="${FONT},sans-serif" font-size="19" font-weight="800" fill="#ffffff">約1分で解説</text>
-</svg>`;
-  }
-
-  // ── Pattern C: 中央スポットライト ───────────────────────────────
-  if (t.id === "C") {
-    return `<?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
-  ${ff}
-  <defs>
-    <linearGradient id="tbg" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#ffffff"/>
-      <stop offset="100%" stop-color="#edf6ff"/>
-    </linearGradient>
-    <filter id="tsh"><feDropShadow dx="0" dy="10" stdDeviation="18" flood-color="#1e3a8a" flood-opacity="0.10"/></filter>
-    <pattern id="dots" width="30" height="30" patternUnits="userSpaceOnUse">
-      <circle cx="1.5" cy="1.5" r="1.5" fill="rgba(37,99,235,0.045)"/>
-    </pattern>
-  </defs>
-  <rect width="${W}" height="${H}" fill="url(#tbg)"/>
-  <rect width="${W}" height="${H}" fill="url(#dots)"/>
-  <rect x="64" y="56" width="206" height="48" rx="${t.badgeRadius}" fill="${t.badgeFill}"/>
-  <text x="167" y="88" text-anchor="middle" font-family="${FONT},sans-serif" font-size="19" font-weight="800" fill="#fff">NTS 日本提携支援</text>
-  <rect x="${W - 304}" y="56" width="240" height="48" rx="24" fill="#ffffff" stroke="#bfdbfe" stroke-width="1.5"/>
-  <path d="M ${W - 272} 70 L ${W - 272} 90 L ${W - 254} 80 Z" fill="${t.rule1}"/>
-  <text x="${W - 178}" y="88" text-anchor="middle" font-family="${FONT},sans-serif" font-size="19" font-weight="800" fill="${t.ink}">約1分で解説</text>
-  ${nameLines.map((line, i) =>
-    `<text x="64" y="${276 + i * 72}" font-family="${FONT},sans-serif" font-size="54" font-weight="900" fill="${t.ink}" filter="url(#tsh)">${esc(line)}</text>`
-  ).join("\n  ")}
-  <rect x="728" y="250" width="430" height="212" rx="24" fill="#fffaf0" stroke="#fed7aa" stroke-width="2" filter="url(#tsh)"/>
-  <text x="943" y="314" text-anchor="middle" font-family="${FONT},sans-serif" font-size="18" font-weight="900" fill="${t.amount.label}" letter-spacing="4">補 助 上 限</text>
-  <text x="943" y="400" text-anchor="middle" font-family="${FONT},sans-serif" font-size="76" font-weight="900" fill="${t.amount.value}" letter-spacing="-2">${esc(amountDisp)}</text>
-  <text x="${W - 64}" y="668" text-anchor="end" font-family="${FONT},sans-serif" font-size="22" font-weight="700" fill="${t.noteText}">公募期限 ${esc(deadlineVal)}</text>
-</svg>`;
-  }
-
-  // ── Pattern D: ライト背景＋左タイトル＋右コーラル円形バッジ ─────────
-  if (t.id === "D") {
-    const nameYd = nameLines.length === 1 ? 326 : 270;
-    return `<?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
-  ${ff}
-  <defs>
-    <linearGradient id="tbg" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#f0f9ff"/>
-      <stop offset="100%" stop-color="#e0f2fe"/>
-    </linearGradient>
-    <filter id="tsh"><feDropShadow dx="0" dy="10" stdDeviation="18" flood-color="#0369a1" flood-opacity="0.14"/></filter>
-    <pattern id="dots" width="30" height="30" patternUnits="userSpaceOnUse">
-      <circle cx="1.5" cy="1.5" r="1.5" fill="rgba(3,105,161,0.04)"/>
-    </pattern>
-  </defs>
-  <rect width="${W}" height="${H}" fill="url(#tbg)"/>
-  <rect width="${W}" height="${H}" fill="url(#dots)"/>
-  <!-- デコレーション円（左下） -->
-  <circle cx="180" cy="620" r="220" fill="#bae6fd" opacity="0.35"/>
-  <!-- バッジ（コーラル） -->
-  <rect x="64" y="56" width="206" height="48" rx="24" fill="${t.badgeFill}"/>
-  <text x="167" y="88" text-anchor="middle" font-family="${FONT},sans-serif" font-size="19" font-weight="800" fill="#fff">NTS 日本提携支援</text>
-  <!-- 約1分バッジ -->
-  <rect x="${W - 304}" y="56" width="240" height="48" rx="24" fill="#ffffff" stroke="${t.rule2}" stroke-width="1.5"/>
-  <path d="M ${W - 272} 70 L ${W - 272} 90 L ${W - 254} 80 Z" fill="${t.rule2}"/>
-  <text x="${W - 178}" y="88" text-anchor="middle" font-family="${FONT},sans-serif" font-size="19" font-weight="800" fill="${t.ink}">約1分で解説</text>
-  <!-- 補助金名（左・縦中央） -->
-  ${nameLines.map((line, i) =>
-    `<text x="64" y="${nameYd + i * 72}" font-family="${FONT},sans-serif" font-size="54" font-weight="900" fill="${t.ink}" filter="url(#tsh)">${esc(line)}</text>`
-  ).join("\n  ")}
-  <!-- コーラル円形バッジ（右・補助上限） -->
-  <circle cx="972" cy="380" r="230" fill="${t.rule1}" opacity="0.08"/>
-  <circle cx="972" cy="380" r="180" fill="${t.rule1}" filter="url(#tsh)"/>
-  <text x="972" y="332" text-anchor="middle" font-family="${FONT},sans-serif" font-size="17" font-weight="700" fill="rgba(255,255,255,0.85)" letter-spacing="4">補 助 上 限</text>
-  <text x="972" y="430" text-anchor="middle" font-family="${FONT},sans-serif" font-size="62" font-weight="900" fill="#ffffff" letter-spacing="-2">${esc(amountDisp)}</text>
-  <!-- 期限 -->
-  <text x="${W - 64}" y="668" text-anchor="end" font-family="${FONT},sans-serif" font-size="22" font-weight="600" fill="${t.noteText}">公募期限 ${esc(deadlineVal)}</text>
-</svg>`;
-  }
-
-  // ── Pattern A: デフォルト（左寄せ・チップ） ─────────────────────
-  const chipW = Math.min(720, 250 + amountDisp.length * 50);
-  const nameY = nameLines.length === 1 ? 330 : 286;
-  return `<?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
-  ${ff}
-  <defs>
-    <linearGradient id="tbg" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="${t.dark1}"/>
-      <stop offset="100%" stop-color="${t.dark2}"/>
-    </linearGradient>
-    <filter id="tsh"><feDropShadow dx="0" dy="8" stdDeviation="14" flood-color="#000" flood-opacity="0.30"/></filter>
-  </defs>
-  <rect width="${W}" height="${H}" fill="url(#tbg)"/>
-  <circle cx="1140" cy="90" r="280" fill="${t.glow1}" opacity="0.20"/>
-  <circle cx="80" cy="660" r="260" fill="${t.glow2}" opacity="0.13"/>
-  <rect x="64" y="56" width="206" height="48" rx="${t.badgeRadius}" fill="${t.badgeFill}"/>
-  <text x="167" y="88" text-anchor="middle" font-family="${FONT},sans-serif" font-size="19" font-weight="800" fill="#fff">NTS 日本提携支援</text>
-  <rect x="${W - 304}" y="56" width="240" height="48" rx="24" fill="rgba(255,255,255,0.14)" stroke="rgba(255,255,255,0.35)" stroke-width="1.5"/>
-  <path d="M ${W - 272} 70 L ${W - 272} 90 L ${W - 254} 80 Z" fill="#ffffff"/>
-  <text x="${W - 178}" y="88" text-anchor="middle" font-family="${FONT},sans-serif" font-size="19" font-weight="800" fill="#ffffff">約1分で解説</text>
-  ${nameLines.map((line, i) =>
-    `<text x="64" y="${nameY + i * 78}" font-family="${FONT},sans-serif" font-size="58" font-weight="900" fill="#ffffff" filter="url(#tsh)">${esc(line)}</text>`
-  ).join("\n  ")}
-  <rect x="64" y="490" width="${chipW}" height="120" rx="22" fill="${t.chipFill}" stroke="${t.chipStroke}" stroke-width="2"/>
-  <text x="104" y="563" font-family="${FONT},sans-serif" font-size="26" font-weight="700" fill="${t.chipLabel}">補助上限</text>
-  <text x="${104 + 146}" y="572" font-family="${FONT},sans-serif" font-size="60" font-weight="900" fill="#ffffff" letter-spacing="-1">${esc(amountDisp)}</text>
-  <text x="${W - 64}" y="668" text-anchor="end" font-family="${FONT},sans-serif" font-size="24" font-weight="600" fill="rgba(255,255,255,0.75)">公募期限 ${esc(deadlineVal)}</text>
-</svg>`;
-}
-
-// ─────────────────────────────────────────────────────────────
 // SVG → PNG
 // ─────────────────────────────────────────────────────────────
 async function svgToPng(svg: string, fontPath: string | null): Promise<Buffer> {
@@ -2505,8 +2363,8 @@ async function main() {
     }
   }
 
-  // 一覧カード用サムネイル
-  const thumbnailPng = await svgToPng(thumbnailSvg(d, ff, theme), fontPath);
+  // 一覧カード用サムネイル（スライド1枚目＝イントロ画面をそのまま使用）
+  const thumbnailPng = pngs[0];
   if (savePngs) {
     const thumbPath = path.join(saveDir, "thumbnail.png");
     await fs.writeFile(thumbPath, thumbnailPng);
