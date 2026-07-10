@@ -3,10 +3,19 @@ import {
   InvokeModelCommand,
 } from "@aws-sdk/client-bedrock-runtime";
 import { parseAssistantJson } from "@/lib/ai/bedrockJsonExtract";
+import {
+  buildUntrustedDataMessage,
+  checkGeneratedTextSafety,
+  sanitizeUntrustedText,
+  UNTRUSTED_DATA_SYSTEM_RULES,
+} from "@/lib/ai/promptSecurity";
 
 const LOG_PREFIX = "[crawler/classify-subsidy]";
 
 const SYSTEM_PROMPT = `あなたは日本の補助金情報を構造化するエキスパートです。
+
+${UNTRUSTED_DATA_SYSTEM_RULES}
+
 以下のWebページテキストから補助金情報を抽出してください。
 
 ## ルール
@@ -121,6 +130,31 @@ function normalizeParsed(parsed: unknown): ClassifiedSubsidy | null {
   return normalized;
 }
 
+function normalizeForGrounding(value: string): string {
+  return value
+    .normalize("NFKC")
+    .toLowerCase()
+    .replace(/[^\p{L}\p{N}]/gu, "");
+}
+
+function isNameGrounded(source: string, name: string): boolean {
+  const normalizedSource = normalizeForGrounding(source);
+  const normalizedName = normalizeForGrounding(name);
+  return normalizedName.length >= 4 && normalizedSource.includes(normalizedName);
+}
+
+function isAmountGrounded(source: string, amount: number): boolean {
+  const compact = source.normalize("NFKC").replace(/[\s,，]/g, "");
+  const candidates = [String(Math.trunc(amount))];
+  if (amount >= 10_000 && amount % 10_000 === 0) {
+    candidates.push(`${amount / 10_000}万`);
+  }
+  if (amount >= 1_000 && amount % 1_000 === 0) {
+    candidates.push(`${amount / 1_000}千`);
+  }
+  return candidates.some((candidate) => compact.includes(candidate));
+}
+
 export type ClassifySubsidyInput = {
   pageText: string;
   pageUrl?: string;
@@ -138,18 +172,15 @@ export async function classifySubsidy(input: ClassifySubsidyInput): Promise<Clas
     return null;
   }
 
-  const pageText = input.pageText.trim().slice(0, 12_000);
+  const pageText = sanitizeUntrustedText(input.pageText, 12_000);
   if (!pageText) return null;
 
   try {
     const client = new BedrockRuntimeClient({ region });
-    const userPrompt = [
-      input.pageUrl ? `URL: ${input.pageUrl}` : null,
-      "## ページテキスト",
+    const userPrompt = buildUntrustedDataMessage("crawled_web_page", {
+      pageUrl: input.pageUrl ?? null,
       pageText,
-    ]
-      .filter(Boolean)
-      .join("\n");
+    });
 
     const body = JSON.stringify({
       anthropic_version: "bedrock-2023-05-31",
@@ -180,6 +211,24 @@ export async function classifySubsidy(input: ClassifySubsidyInput): Promise<Clas
     if (!classified) return null;
 
     if (!classified.isSubsidy) return null;
+    const safetyViolations = checkGeneratedTextSafety(JSON.stringify(classified));
+    if (safetyViolations.length > 0) {
+      console.warn(
+        `${LOG_PREFIX} rejected unsafe output: ${safetyViolations.join("|")}`,
+      );
+      return null;
+    }
+    if (!classified.name || !isNameGrounded(pageText, classified.name)) {
+      console.warn(`${LOG_PREFIX} rejected ungrounded subsidy name`);
+      return null;
+    }
+    if (
+      classified.maxAmount != null &&
+      !isAmountGrounded(pageText, classified.maxAmount)
+    ) {
+      console.warn(`${LOG_PREFIX} rejected ungrounded max amount`);
+      return null;
+    }
     if (classified.confidence < threshold) {
       console.log(`${LOG_PREFIX} below confidence threshold: ${classified.confidence}`);
       return null;

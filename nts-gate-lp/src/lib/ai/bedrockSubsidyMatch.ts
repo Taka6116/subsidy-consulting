@@ -6,6 +6,11 @@ import {
   parseAssistantJson,
   stripMarkdownCodeFences,
 } from "@/lib/ai/bedrockJsonExtract";
+import {
+  buildUntrustedDataMessage,
+  checkGeneratedTextSafety,
+  UNTRUSTED_DATA_SYSTEM_RULES,
+} from "@/lib/ai/promptSecurity";
 
 const LOG_PREFIX = "[bedrockSubsidyMatch]";
 
@@ -49,6 +54,8 @@ export type CompanyProfileForMatch = {
 };
 
 const SYSTEM_PROMPT = `あなたは日本の補助金制度に特化したマッチングアナリストです。
+
+${UNTRUSTED_DATA_SYSTEM_RULES}
 
 # 目的
 ユーザー企業情報とJGrants APIから取得した補助金情報をもとに、
@@ -344,7 +351,10 @@ export async function runSubsidyMatchBedrock(
   try {
     const client = new BedrockRuntimeClient({ region });
     const subsidiesForBedrock = subsidies.slice(0, 8);
-    const userPayload = JSON.stringify({ company, subsidies: subsidiesForBedrock });
+    const userPayload = buildUntrustedDataMessage("company_and_subsidies", {
+      company,
+      subsidies: subsidiesForBedrock,
+    });
 
     const body = JSON.stringify({
       anthropic_version: "bedrock-2023-05-31",
@@ -370,6 +380,13 @@ export async function runSubsidyMatchBedrock(
       console.log(`${LOG_PREFIX} empty assistant text`);
       return null;
     }
+    const safetyViolations = checkGeneratedTextSafety(assistantText);
+    if (safetyViolations.length > 0) {
+      console.warn(
+        `${LOG_PREFIX} rejected unsafe output: ${safetyViolations.join("|")}`,
+      );
+      return null;
+    }
 
     const parsed = parseAssistantJson(assistantText, LOG_PREFIX);
     let rows = parseBedrockResults(parsed);
@@ -382,7 +399,8 @@ export async function runSubsidyMatchBedrock(
         rows = partial;
       }
     }
-    return rows;
+    const allowedIds = new Set(subsidiesForBedrock.map((subsidy) => subsidy.id));
+    return rows.filter((row) => allowedIds.has(row.subsidyId));
   } catch (e) {
     console.error(LOG_PREFIX, e);
     return null;

@@ -12,6 +12,7 @@
  */
 
 import type { GeneratedArticleDraft } from "@/lib/ai/bedrockArticleGenerate";
+import { checkGeneratedTextSafety } from "@/lib/ai/promptSecurity";
 
 /**
  * 絶対に自動公開させない強度の禁止語（1 件でもヒットしたら reject）
@@ -80,7 +81,9 @@ export type QualityVerdict =
   | { ok: false; violations: string[] };
 
 export function checkArticleQuality(draft: GeneratedArticleDraft): QualityVerdict {
-  const violations: string[] = [];
+  const violations: string[] = checkGeneratedTextSafety(
+    `${draft.title}\n${draft.body}\n${draft.excerpt}\n${draft.metaDescription}\n${draft.tags.join("\n")}`,
+  );
 
   // 1. hard-ban: 1 件でもヒットしたら reject
   const haystack = `${draft.title}\n${draft.body}\n${draft.excerpt}\n${draft.metaDescription}`;
@@ -159,5 +162,5 @@ export function checkArticleQuality(draft: GeneratedArticleDraft): QualityVerdic
   }
 
   if (violations.length === 0) return { ok: true };
-  return { ok: false, violations };
+  return { ok: false, violations: [...new Set(violations)] };
 }

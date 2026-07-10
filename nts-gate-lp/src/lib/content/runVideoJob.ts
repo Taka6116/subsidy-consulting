@@ -26,6 +26,7 @@ import {
   generateVideoScript,
   type SubsidyForVideoScript,
 } from "@/lib/ai/bedrockVideoScriptGenerate";
+import { checkVideoScriptQuality } from "@/lib/content/generatedContentGuard";
 import { validateVideoData } from "@/lib/video/validateVideoData";
 import { synthesizeAndUpload } from "@/lib/aws/pollyTts";
 import { synthesizeElevenLabsAndUpload } from "@/lib/aws/elevenLabsTts";
@@ -473,9 +474,15 @@ export async function runVideoJob(
       validation = validateVideoData(script.sections);
     }
     if (!validation.isValid) {
-      console.warn(
-        `${LOG_PREFIX} validation still failing after ${retryCount} retries — proceeding with warnings:`,
-        validation.warnings,
+      throw new Error(
+        `Video script validation failed after ${retryCount} retries: ${validation.errors.join(" | ")}`,
+      );
+    }
+
+    const securityVerdict = checkVideoScriptQuality(script);
+    if (!securityVerdict.ok) {
+      throw new Error(
+        `Video script security rejected: ${securityVerdict.violations.join(" | ")}`,
       );
     }
 

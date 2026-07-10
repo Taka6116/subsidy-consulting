@@ -14,6 +14,7 @@ import {
   generateSubsidyLpCopy,
   type SubsidyForLp,
 } from "@/lib/ai/bedrockLpGenerate";
+import { checkLpQuality } from "@/lib/content/generatedContentGuard";
 import {
   cleanSubsidyName,
   cleanSubsidyDescription,
@@ -24,7 +25,8 @@ const LOG_PREFIX = "[runLpJob]";
 export type RunLpJobResult = {
   contentId: string;
   subsidyId: string;
-  status: "published" | "skipped";
+  status: "published" | "rejected" | "skipped";
+  violations: string[];
 };
 
 export type RunLpJobParams = {
@@ -54,13 +56,18 @@ export async function runLpJob(params: RunLpJobParams): Promise<RunLpJobResult> 
       where: { subsidyId, contentType: "lp" },
     });
 
-    if (existing && !force) {
+    if (existing && !force && existing.status !== "rejected") {
       console.log(`${LOG_PREFIX} existing lp found (contentId=${existing.id}) — skip`);
       await prisma.contentJob.update({
         where: { subsidyId_jobType: { subsidyId, jobType } },
         data: { status: "done", completedAt: new Date() },
       });
-      return { contentId: existing.id, subsidyId, status: "skipped" };
+      return {
+        contentId: existing.id,
+        subsidyId,
+        status: "skipped",
+        violations: [],
+      };
     }
 
     const subsidyForLp: SubsidyForLp = {
@@ -78,7 +85,16 @@ export async function runLpJob(params: RunLpJobParams): Promise<RunLpJobResult> 
 
     const copy = await generateSubsidyLpCopy(subsidyForLp);
 
-    // copy が null でも保存はする（フォールバックで描画されるため）
+    // 公開前ガード: 形式不備・禁止表現・インジェクション痕跡を含むコピーは公開しない
+    const verdict = checkLpQuality(copy);
+    const effectiveStatus = verdict.ok ? "published" : "rejected";
+    const violations = verdict.ok ? [] : verdict.violations;
+    if (!verdict.ok) {
+      console.warn(
+        `${LOG_PREFIX} quality rejected subsidyId=${subsidyId} violations=${violations.join("|")}`,
+      );
+    }
+
     const bodyJson = copy ? JSON.stringify(copy) : null;
     const now = new Date();
 
@@ -88,8 +104,11 @@ export async function runLpJob(params: RunLpJobParams): Promise<RunLpJobResult> 
         where: { id: existing.id },
         data: {
           body: bodyJson,
-          status: "published",
-          publishedAt: existing.publishedAt ?? now,
+          status: effectiveStatus,
+          publishedAt:
+            effectiveStatus === "published"
+              ? (existing.publishedAt ?? now)
+              : null,
         },
       });
     } else {
@@ -100,8 +119,8 @@ export async function runLpJob(params: RunLpJobParams): Promise<RunLpJobResult> 
           slug: null, // LP は slug 不要（URL は /subsidies/lp/[id]）
           title: grant.name ?? "補助金LP",
           body: bodyJson,
-          status: "published",
-          publishedAt: now,
+          status: effectiveStatus,
+          publishedAt: effectiveStatus === "published" ? now : null,
         },
       });
     }
@@ -111,8 +130,15 @@ export async function runLpJob(params: RunLpJobParams): Promise<RunLpJobResult> 
       data: { status: "done", completedAt: new Date() },
     });
 
-    console.log(`${LOG_PREFIX} done contentId=${saved.id} hasCopy=${!!copy}`);
-    return { contentId: saved.id, subsidyId, status: "published" };
+    console.log(
+      `${LOG_PREFIX} done contentId=${saved.id} hasCopy=${!!copy} status=${effectiveStatus}`,
+    );
+    return {
+      contentId: saved.id,
+      subsidyId,
+      status: effectiveStatus,
+      violations,
+    };
   } catch (e) {
     await prisma.contentJob
       .update({

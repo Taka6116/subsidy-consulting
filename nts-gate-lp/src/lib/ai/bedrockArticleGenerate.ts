@@ -11,6 +11,11 @@ import {
 import {
   parseAssistantJson,
 } from "@/lib/ai/bedrockJsonExtract";
+import {
+  buildUntrustedDataMessage,
+  checkGeneratedTextSafety,
+  UNTRUSTED_DATA_SYSTEM_RULES,
+} from "@/lib/ai/promptSecurity";
 
 const LOG_PREFIX = "[bedrockArticleGenerate]";
 
@@ -38,6 +43,8 @@ export type GeneratedArticleDraft = {
 };
 
 const SYSTEM_PROMPT = `あなたは日本の中小企業向け補助金制度に特化した SEO 記事ライターです。
+
+${UNTRUSTED_DATA_SYSTEM_RULES}
 
 # 読者像
 - 中小企業の経営者（50 代前後）
@@ -227,7 +234,7 @@ export async function generateSubsidyArticleDraft(
 
   try {
     const client = new BedrockRuntimeClient({ region });
-    const userPayload = JSON.stringify({ subsidy });
+    const userPayload = buildUntrustedDataMessage("subsidy", { subsidy });
 
     const body = JSON.stringify({
       anthropic_version: "bedrock-2023-05-31",
@@ -251,6 +258,13 @@ export async function generateSubsidyArticleDraft(
 
     if (!assistantText.trim()) {
       console.log(`${LOG_PREFIX} empty assistant text`);
+      return null;
+    }
+    const safetyViolations = checkGeneratedTextSafety(assistantText);
+    if (safetyViolations.length > 0) {
+      console.warn(
+        `${LOG_PREFIX} rejected unsafe output: ${safetyViolations.join("|")}`,
+      );
       return null;
     }
 

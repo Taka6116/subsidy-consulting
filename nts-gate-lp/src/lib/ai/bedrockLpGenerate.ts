@@ -12,6 +12,11 @@ import {
   InvokeModelCommand,
 } from "@aws-sdk/client-bedrock-runtime";
 import { parseAssistantJson } from "@/lib/ai/bedrockJsonExtract";
+import {
+  buildUntrustedDataMessage,
+  checkGeneratedTextSafety,
+  UNTRUSTED_DATA_SYSTEM_RULES,
+} from "@/lib/ai/promptSecurity";
 
 const LOG_PREFIX = "[bedrockLpGenerate]";
 
@@ -41,6 +46,8 @@ export type GeneratedLpCopy = {
 };
 
 const SYSTEM_PROMPT = `あなたは日本の中小企業向け補助金活用 LP の専門コピーライターです。
+
+${UNTRUSTED_DATA_SYSTEM_RULES}
 
 # 読者像
 - 中小企業の経営者（40〜60代）
@@ -237,7 +244,12 @@ export async function generateSubsidyLpCopy(
       max_tokens: 4000,
       temperature: 0.4,
       system: SYSTEM_PROMPT,
-      messages: [{ role: "user", content: JSON.stringify({ subsidy }) }],
+      messages: [
+        {
+          role: "user",
+          content: buildUntrustedDataMessage("subsidy", { subsidy }),
+        },
+      ],
     });
 
     const res = await client.send(
@@ -253,6 +265,13 @@ export async function generateSubsidyLpCopy(
     const assistantText = assistantTextFromBedrockBody(raw);
     if (!assistantText.trim()) {
       console.log(`${LOG_PREFIX} empty assistant text`);
+      return null;
+    }
+    const safetyViolations = checkGeneratedTextSafety(assistantText);
+    if (safetyViolations.length > 0) {
+      console.warn(
+        `${LOG_PREFIX} rejected unsafe output: ${safetyViolations.join("|")}`,
+      );
       return null;
     }
 

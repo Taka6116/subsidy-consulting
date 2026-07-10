@@ -3,9 +3,8 @@
  *
  * チェック内容:
  *  - 「公募要領で確認」出現回数 > 1 → error
- *  - numbers スライドに具体的数値なし → error
+ *  - numbers スライドに入力値または「要確認」の表示なし → error
  *  - hook headline に「補助金」含む → warning
- *  - story スライドに数値効果なし（%/万円/時間/倍） → warning
  *  - headline が40文字超 → warning
  */
 
@@ -17,14 +16,13 @@ export type ValidationResult = {
   warnings: string[];
 };
 
-/** テキスト中に具体的な数値（アラビア数字または「〜割」「〜分の〜」等）が含まれるか */
-function containsNumericValue(text: string): boolean {
-  return /[0-9０-９]/.test(text) || /割|分の|倍|円|%|％/.test(text);
-}
-
-/** テキスト中に定量的な効果（%・万円・時間・倍）が含まれるか */
-function containsQuantitativeEffect(text: string): boolean {
-  return /%|％|万円|時間|倍/.test(text);
+/** 入力由来の数値、または値を創作しないための「要確認」が明示されているか */
+function containsNumericValueOrUnknown(text: string): boolean {
+  return (
+    /[0-9０-９]/.test(text) ||
+    /割|分の|円|%|％/.test(text) ||
+    /要確認|不明/.test(text)
+  );
 }
 
 export function validateVideoData(sections: VideoScriptSection[]): ValidationResult {
@@ -38,18 +36,11 @@ export function validateVideoData(sections: VideoScriptSection[]): ValidationRes
   const kouboCount = (allText.match(/公募要領/g) ?? []).length;
   if (kouboCount > 1) {
     errors.push(
-      `「公募要領」という語が動画全体で${kouboCount}回使われています（最大1回まで）。推定値＋注記で埋めてください。`,
+      `「公募要領」という語が動画全体で${kouboCount}回使われています（最大1回まで）。不明な値は「要確認」に統一してください。`,
     );
   }
 
   for (const section of sections) {
-    const sectionText = [
-      section.heading,
-      section.text,
-      ...(section.slide_lines ?? []),
-      section.highlight ?? "",
-    ].join(" ");
-
     // ── E2: numbers スライドに数値なし ────────────────────────────
     if (section.type === "numbers") {
       const numbersText = [
@@ -57,9 +48,9 @@ export function validateVideoData(sections: VideoScriptSection[]): ValidationRes
         section.highlight ?? "",
         section.text,
       ].join(" ");
-      if (!containsNumericValue(numbersText)) {
+      if (!containsNumericValueOrUnknown(numbersText)) {
         errors.push(
-          `「${section.heading}」（numbersスライド）に具体的な数値がありません。補助率・上限額・期限などの数値を必ず入れてください。`,
+          `「${section.heading}」（numbersスライド）に入力値または「要確認」の表示がありません。入力にない数値は創作しないでください。`,
         );
       }
     }
@@ -71,21 +62,14 @@ export function validateVideoData(sections: VideoScriptSection[]): ValidationRes
       );
     }
 
-    // ── W2: story スライドに数値効果なし ──────────────────────────
-    if (section.type === "story" && !containsQuantitativeEffect(sectionText)) {
-      warnings.push(
-        `「${section.heading}」（storyスライド）に数値効果（%・万円・時間・倍）がありません。Before/After の効果を定量的に示してください。`,
-      );
-    }
-
-    // ── W3: headline が40文字超 ────────────────────────────────────
+    // ── W2: headline が40文字超 ────────────────────────────────────
     if (section.heading.length > 40) {
       warnings.push(
         `見出し「${section.heading}」が${section.heading.length}文字で40文字を超えています。短くしてください。`,
       );
     }
 
-    // ── W4: highlight が空または未設定 ────────────────────────────
+    // ── W3: highlight が空または未設定 ────────────────────────────
     if (!section.highlight || section.highlight.trim().length === 0) {
       warnings.push(
         `「${section.heading}」スライドの highlight が空です。10文字以内のキーワードを設定してください。`,

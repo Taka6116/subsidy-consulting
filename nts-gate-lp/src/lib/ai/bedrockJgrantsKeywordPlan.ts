@@ -8,6 +8,11 @@ import {
   InvokeModelCommand,
 } from "@aws-sdk/client-bedrock-runtime";
 import { parseAssistantJson } from "@/lib/ai/bedrockJsonExtract";
+import {
+  buildUntrustedDataMessage,
+  checkGeneratedTextSafety,
+  UNTRUSTED_DATA_SYSTEM_RULES,
+} from "@/lib/ai/promptSecurity";
 
 const LOG_PREFIX = "[bedrockJgrantsKeywordPlan]";
 
@@ -23,6 +28,8 @@ export type KeywordPlanInput = {
 };
 
 const SYSTEM_PROMPT = `あなたは jGrants 補助金一覧APIの「keyword」パラメータ用の検索語を設計するアシスタントです。
+
+${UNTRUSTED_DATA_SYSTEM_RULES}
 
 # 入力
 ユーザーがフォームに入力した以下のフィールドのみが与えられる（空の項目もある）:
@@ -94,7 +101,9 @@ export async function runJgrantsKeywordPlanBedrock(
 
   try {
     const client = new BedrockRuntimeClient({ region });
-    const userPayload = JSON.stringify({ userInput: input });
+    const userPayload = buildUntrustedDataMessage("keyword_plan_input", {
+      userInput: input,
+    });
 
     const body = JSON.stringify({
       anthropic_version: "bedrock-2023-05-31",
@@ -117,6 +126,13 @@ export async function runJgrantsKeywordPlanBedrock(
     const assistantText = assistantTextFromBedrockBody(raw);
     if (!assistantText.trim()) {
       console.log(`${LOG_PREFIX} empty assistant text`);
+      return null;
+    }
+    const safetyViolations = checkGeneratedTextSafety(assistantText);
+    if (safetyViolations.length > 0) {
+      console.warn(
+        `${LOG_PREFIX} rejected unsafe output: ${safetyViolations.join("|")}`,
+      );
       return null;
     }
 
