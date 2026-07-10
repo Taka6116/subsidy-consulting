@@ -791,9 +791,6 @@ function SubsidyResultCard({ grant }: { grant: SubsidyCard }) {
             自治体
           </span>
         ) : null}
-        <span className="ml-auto text-[11px] font-semibold text-[#6b7a99]">
-          更新 {formatUpdatedAt(grant.updatedAt)}
-        </span>
       </div>
 
       <div className="flex flex-1 flex-col px-4 py-4">
