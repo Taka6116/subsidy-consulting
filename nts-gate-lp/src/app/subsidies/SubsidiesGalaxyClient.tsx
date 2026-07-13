@@ -2,12 +2,13 @@
 
 import { useState, useCallback, useEffect } from "react";
 import Link from "next/link";
+import { ArrowUpRight, BookOpen, FileSearch, PlaySquare, Sparkles } from "lucide-react";
 import { getPartnerUrl } from "@/lib/partnerUrl";
 import IntroOverlay from "@/components/subsidies/IntroOverlay";
-import SubsidyHero from "@/components/subsidies/SubsidyHeroV2";
+import SubsidyHeroV3 from "@/components/subsidies/SubsidyHeroV3";
+import type { TopPageContent } from "@/lib/subsidies/topPageContent";
 
-type Counts = { grants: number; articles: number; videos: number; lps: number };
-type Props  = { counts: Counts; activePrefectureCount: number };
+type Props = { content: TopPageContent };
 
 const CATEGORY_CARDS = [
   {
@@ -16,6 +17,9 @@ const CATEGORY_CARDS = [
     desc: "省庁・jGrantsから自動収集した最新補助金を検索。締切・上限額・対象業種を一目で確認。",
     badge: "最速更新",
     badgeClass: "bg-amber-50 text-amber-700 ring-amber-200",
+    icon: FileSearch,
+    iconClass: "bg-blue-600 text-white",
+    accentClass: "from-blue-600 to-cyan-500",
   },
   {
     href: "/subsidies/articles",
@@ -23,6 +27,9 @@ const CATEGORY_CARDS = [
     desc: "補助金ごとの詳しい解説・申請ポイントをまとめた専門記事。",
     badge: "補助金記事",
     badgeClass: "bg-blue-50 text-blue-700 ring-blue-200",
+    icon: BookOpen,
+    iconClass: "bg-indigo-600 text-white",
+    accentClass: "from-indigo-600 to-violet-500",
   },
   {
     href: "/subsidies/lp",
@@ -30,6 +37,9 @@ const CATEGORY_CARDS = [
     desc: "制度ごとの対象課題・活用例・申請の流れをLP形式で整理。",
     badge: "webページ",
     badgeClass: "bg-teal-50 text-teal-700 ring-teal-200",
+    icon: Sparkles,
+    iconClass: "bg-teal-600 text-white",
+    accentClass: "from-teal-600 to-emerald-500",
   },
   {
     href: "/subsidies/videos",
@@ -37,10 +47,13 @@ const CATEGORY_CARDS = [
     desc: "音声ナレーション付きの動画で補助金の概要を手軽に理解。通勤中にも。",
     badge: "補助金解説動画",
     badgeClass: "bg-emerald-50 text-emerald-700 ring-emerald-200",
+    icon: PlaySquare,
+    iconClass: "bg-sky-600 text-white",
+    accentClass: "from-sky-600 to-blue-500",
   },
 ] as const;
 
-export default function SubsidiesGalaxyClient({ counts, activePrefectureCount }: Props) {
+export default function SubsidiesGalaxyClient({ content }: Props) {
   const partnerHref = getPartnerUrl();
   const [introComplete, setIntroComplete] = useState(false);
   const handleIntroComplete = useCallback(() => setIntroComplete(true), []);
@@ -68,33 +81,55 @@ export default function SubsidiesGalaxyClient({ counts, activePrefectureCount }:
         style={{ opacity: 0 }}
         className="relative font-body"
       >
-        {/* ヒーロー（地図 + コピー + リアルタイム検知 + 特徴カード） */}
-        <SubsidyHero counts={counts} activePrefectureCount={activePrefectureCount} />
+        {/* ヒーロー（コピー + チーム写真 + 新着記事/動画/ガイド + 最新速報） */}
+        <SubsidyHeroV3
+          articles={content.articles}
+          videos={content.videos}
+          guides={content.guides}
+          liveItems={content.liveItems}
+        />
 
         {/* ── カテゴリナビ ── */}
         <section className="mx-auto w-full max-w-[1400px] px-6 pb-16 pt-6">
-          <div className="mb-6 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent" />
+          <div className="mb-7 flex items-end justify-between">
+            <div>
+              <p className="text-xs font-black tracking-[0.18em] text-[#1d5fe8]">EXPLORE</p>
+              <h2 className="mt-1 font-heading text-2xl font-black text-[#10294a]">
+                補助金情報を、目的から探す
+              </h2>
+            </div>
+            <p className="hidden max-w-[360px] text-right text-sm font-medium leading-6 text-[#6b7e94] lg:block">
+              制度の検索から申請のポイントまで、必要な情報へ最短でアクセスできます。
+            </p>
+          </div>
 
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-            {CATEGORY_CARDS.map((card) => (
+            {CATEGORY_CARDS.map((card) => {
+              const Icon = card.icon;
+              return (
               <Link
                 key={card.href}
                 href={card.href}
-                className="group flex flex-col rounded-2xl border border-[#dbe4f0] bg-white/80 p-6 shadow-sm transition-all duration-150 hover:-translate-y-1 hover:border-blue-200 hover:shadow-lg"
+                className="group relative flex min-h-[230px] flex-col overflow-hidden rounded-2xl border border-[#dbe4f0] bg-white p-6 shadow-[0_10px_28px_rgba(30,66,110,0.07)] transition-all duration-200 hover:-translate-y-1.5 hover:border-blue-200 hover:shadow-[0_18px_36px_rgba(30,66,110,0.15)]"
               >
-                <div className="mb-3">
-                  <span className={`rounded-full px-2.5 py-0.5 text-[10px] font-medium ring-1 ${card.badgeClass}`}>
+                <div className={`absolute inset-x-0 top-0 h-1 bg-gradient-to-r ${card.accentClass}`} />
+                <div className="mb-5 flex items-center justify-between">
+                  <span className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold ring-1 ${card.badgeClass}`}>
                     {card.badge}
+                  </span>
+                  <span className={`grid h-11 w-11 place-items-center rounded-xl shadow-sm ${card.iconClass}`}>
+                    <Icon className="h-5 w-5" />
                   </span>
                 </div>
                 <h2 className="font-heading text-lg font-semibold text-[#0f172a]">{card.label}</h2>
                 <p className="mt-3 flex-1 text-sm leading-relaxed text-[#475569]">{card.desc}</p>
-                <div className="mt-5 flex items-center gap-1 text-xs font-semibold text-[#2563eb] transition-all duration-150 group-hover:gap-2">
+                <div className="mt-5 flex items-center gap-1.5 text-xs font-bold text-[#2563eb]">
                   詳しく見る
-                  <span aria-hidden="true" className="transition-transform duration-150 group-hover:translate-x-0.5">→</span>
+                  <ArrowUpRight aria-hidden="true" className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                 </div>
               </Link>
-            ))}
+              );
+            })}
           </div>
         </section>
 

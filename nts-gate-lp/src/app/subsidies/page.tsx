@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Header from "@/components/shared/Header";
 import LpFooter from "@/components/gate-lp/LpFooter";
 import SubsidiesGalaxyClient from "./SubsidiesGalaxyClient";
-import { getPortalStats } from "@/lib/subsidies/portalStats";
+import { getTopPageContent } from "@/lib/subsidies/topPageContent";
 
 export const metadata: Metadata = {
   title: "補助金情報 | 日本提携支援",
@@ -13,22 +13,13 @@ export const metadata: Metadata = {
 export const revalidate = 0;
 
 export default async function SubsidiesPage() {
-  const { grantCount, articleCount, videoCount, lpCount, activePrefectureCount } =
-    await getPortalStats();
+  const content = await getTopPageContent();
 
   return (
     <>
       <Header />
       <main className="subsidies-portal relative z-[2] font-body">
-        <SubsidiesGalaxyClient
-          counts={{
-            grants: grantCount,
-            articles: articleCount,
-            videos: videoCount,
-            lps: lpCount,
-          }}
-          activePrefectureCount={activePrefectureCount}
-        />
+        <SubsidiesGalaxyClient content={content} />
       </main>
       <LpFooter />
     </>

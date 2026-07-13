@@ -1,6 +1,7 @@
-// 一覧ページのヒーロー用人物写真のWebPを生成する
-// 1) subsidies-list-hero-business-woman.webp        … 右端フェードのみ（モバイル用・矩形）
-// 2) subsidies-list-hero-business-woman-circle.webp … 円デザインの外側を透過（デスクトップ用）
+// ヒーロー用写真のWebPを生成する
+// 1) subsidies-list-hero-business-woman.webp        … 右端フェードのみ（一覧・モバイル用・矩形）
+// 2) subsidies-list-hero-business-woman-circle.webp … 円デザインの外側を透過（一覧・デスクトップ用）
+// 3) subsidies-top-hero-team.webp                   … 補助金TOPヒーローのチーム写真
 import sharp from "sharp";
 
 const src = "public/images/subsidies-list-hero-business-woman.png";
@@ -62,3 +63,9 @@ const circleInfo = await sharp(src)
   .webp({ quality: 92, alphaQuality: 95 })
   .toFile("public/images/subsidies-list-hero-business-woman-circle.webp");
 console.log("circle:", JSON.stringify(circleInfo));
+
+// --- 補助金TOPヒーロー: チーム写真（マスクなし・高画質WebP） ---
+const teamInfo = await sharp("public/images/subsidies-top-hero-team.jpg")
+  .webp({ quality: 92 })
+  .toFile("public/images/subsidies-top-hero-team.webp");
+console.log("team:", JSON.stringify(teamInfo));
