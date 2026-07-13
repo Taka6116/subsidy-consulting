@@ -207,7 +207,8 @@ export default function SubsidiesListClient({
     for (const g of grants) {
       for (const i of g.targetIndustries ?? []) {
         const trimmed = i?.trim();
-        if (trimmed) set.add(trimmed);
+        // 「全業種」はどの絞り込みにも一致するワイルドカードなので選択肢からは除外する
+        if (trimmed && trimmed !== "全業種") set.add(trimmed);
       }
     }
     const dynamic = Array.from(set).sort((a, b) => a.localeCompare(b, "ja")).slice(0, 60);
@@ -250,7 +251,9 @@ export default function SubsidiesListClient({
 
     if (industryFilter) {
       list = list.filter((g) =>
-        (g.targetIndustries ?? []).some((i) => i?.trim() === industryFilter),
+        (g.targetIndustries ?? []).some(
+          (i) => i?.trim() === industryFilter || i?.trim() === "全業種",
+        ),
       );
     }
 
@@ -333,7 +336,23 @@ export default function SubsidiesListClient({
 
   return (
     <div>
-      <SubsidiesListHero counts={counts} />
+      <SubsidiesListHero
+        prefectureGroups={PREFECTURE_GROUPS}
+        industryOptions={industryOptions}
+        deadlineOptions={STATUS_TABS.map((t) => ({ value: t.key, label: t.label }))}
+        sortOptions={SORT_OPTIONS.map((o) => ({ value: o.value, label: o.label }))}
+        prefecture={prefectureFilter}
+        industry={industryFilter}
+        deadline={statusTab}
+        sort={sortKey}
+        onPrefectureChange={setPrefectureFilter}
+        onIndustryChange={setIndustryFilter}
+        onDeadlineChange={(v) => setStatusTab(v as StatusTab)}
+        onSortChange={(v) => setSortKey(v as SortKey)}
+        onSearch={() =>
+          listTopRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })
+        }
+      />
 
       <div className="relative z-20 mx-auto -mt-3 w-full max-w-[1720px] space-y-6 px-3 pb-7 md:-mt-5 md:px-5 md:pb-8 lg:px-6">
         {/* 検索・フィルター */}

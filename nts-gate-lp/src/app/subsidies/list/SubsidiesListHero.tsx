@@ -1,181 +1,226 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, FileSearch } from "lucide-react";
+import {
+  ArrowRight,
+  ArrowUpDown,
+  Briefcase,
+  CalendarDays,
+  MapPin,
+  MessageCircle,
+  Search,
+} from "lucide-react";
+
+type Option = { value: string; label: string };
 
 type SubsidiesListHeroProps = {
-  counts: {
-    all: number;
-    open: number;
-    closed: number;
-  };
+  prefectureGroups: { label: string; prefectures: string[] }[];
+  industryOptions: string[];
+  deadlineOptions: Option[];
+  sortOptions: Option[];
+  prefecture: string;
+  industry: string;
+  deadline: string;
+  sort: string;
+  onPrefectureChange: (value: string) => void;
+  onIndustryChange: (value: string) => void;
+  onDeadlineChange: (value: string) => void;
+  onSortChange: (value: string) => void;
+  onSearch: () => void;
 };
 
-function StatusCard({
-  counts,
-  openRatio,
-  className = "",
+const SELECT_CLASS =
+  "w-full appearance-none rounded-lg border border-[#cfdbec] bg-white py-2.5 pl-9 pr-8 text-sm font-semibold text-[#22355a] shadow-sm transition focus:outline-none focus:ring-2 focus:ring-[#1f4dab]/25";
+
+function FieldRow({
+  label,
+  icon,
+  children,
 }: {
-  counts: SubsidiesListHeroProps["counts"];
-  openRatio: number;
-  className?: string;
+  label: string;
+  icon: React.ReactNode;
+  children: React.ReactNode;
 }) {
   return (
-    <div
-      className={`w-[292px] rounded-2xl border border-white/90 bg-white/95 p-5 shadow-[0_20px_45px_rgba(35,74,117,0.17)] backdrop-blur-sm ${className}`}
-    >
-      <div className="flex items-center justify-between border-b border-[#e5edf6] pb-3.5">
-        <div className="flex items-center gap-2 text-xs font-bold text-[#2b4c70]">
-          <FileSearch className="h-4 w-4 text-[#1a7b6f]" />
-          公募状況
-        </div>
-        <span className="text-[10px] text-[#8091a6]">掲載データ</span>
-      </div>
-      <div className="mt-4 grid grid-cols-2 gap-4">
-        <div>
-          <p className="flex items-center gap-1.5 text-[11px] font-semibold text-[#258467]">
-            <span className="h-1.5 w-1.5 rounded-full bg-[#22a57e]" />
-            受付中
-          </p>
-          <p className="mt-1.5 text-[2rem] font-black leading-none tracking-tight text-[#19775f]">
-            {counts.open.toLocaleString("ja-JP")}
-            <span className="ml-1 text-xs">件</span>
-          </p>
-        </div>
-        <div className="border-l border-[#e7edf4] pl-4">
-          <p className="text-[11px] font-semibold text-[#8c6270]">受付終了</p>
-          <p className="mt-1.5 text-[2rem] font-black leading-none tracking-tight text-[#a24f60]">
-            {counts.closed.toLocaleString("ja-JP")}
-            <span className="ml-1 text-xs">件</span>
-          </p>
-        </div>
-      </div>
-      <div className="mt-5 flex items-center gap-2">
-        <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-[#e7edf4]">
-          <div
-            className="h-full rounded-full bg-[#24aa82]"
-            style={{ width: `${openRatio}%` }}
-          />
-        </div>
-        <span className="text-[10px] font-bold text-[#6c829b]">{openRatio}%</span>
-      </div>
-    </div>
+    <label className="grid grid-cols-[64px_minmax(0,1fr)] items-center gap-2">
+      <span className="text-[13px] font-bold text-[#3c4f70]">{label}</span>
+      <span className="relative block">
+        <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[#7b90b4]">
+          {icon}
+        </span>
+        {children}
+        <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[10px] text-[#7b90b4]">
+          ▼
+        </span>
+      </span>
+    </label>
   );
 }
 
 export default function SubsidiesListHero({
-  counts,
+  prefectureGroups,
+  industryOptions,
+  deadlineOptions,
+  sortOptions,
+  prefecture,
+  industry,
+  deadline,
+  sort,
+  onPrefectureChange,
+  onIndustryChange,
+  onDeadlineChange,
+  onSortChange,
+  onSearch,
 }: SubsidiesListHeroProps) {
-  const openRatio =
-    counts.all > 0 ? Math.min(100, Math.round((counts.open / counts.all) * 100)) : 0;
-
   return (
     <section
-      className="relative isolate overflow-hidden bg-[#eff8ff]"
+      className="relative isolate overflow-hidden bg-[#f2f4f6]"
       aria-labelledby="subsidies-list-title"
     >
-      <div
-        className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_72%_35%,rgba(180,221,252,0.42),transparent_31%),linear-gradient(108deg,#fbfdff_0%,#f4faff_42%,#e4f3ff_100%)]"
-        aria-hidden
-      />
-      {/* デスクトップ: 人物の頭が上端付近・裾が下端に届くサイズで、中央やや右に配置 */}
-      <div
-        className="pointer-events-none absolute -top-[13%] bottom-0 left-0 right-0 hidden md:block"
-        aria-hidden
-      >
-        <Image
-          src="/images/subsidies-list-hero-business-woman-circle.webp"
-          alt=""
-          fill
-          priority
-          sizes="100vw"
-          className="object-contain object-[57%_100%]"
-        />
-      </div>
-      {/* ヒーロー下端はページ背景色へなだらかに繋げて境界線を消す */}
-      <div
-        className="pointer-events-none absolute inset-x-0 bottom-0 h-14 bg-[linear-gradient(180deg,rgba(247,249,252,0)_0%,rgba(247,249,252,0.55)_58%,#f7f9fc_100%)]"
-        aria-hidden
-      />
-      <div
-        className="pointer-events-none absolute inset-0 opacity-10 [background-image:radial-gradient(#b2d4ef_1px,transparent_1px)] [background-size:22px_22px] md:hidden"
-        aria-hidden
-      />
-
-      <div className="relative mx-auto min-h-[430px] max-w-[1720px] px-5 py-9 sm:px-7 md:flex md:min-h-[450px] md:items-center md:px-10 md:py-11 lg:min-h-[475px] lg:px-14">
-        <div className="relative z-10 flex max-w-[730px] flex-col justify-center md:w-[52%] lg:w-[49%]">
-          <p className="inline-flex w-fit items-center gap-2 rounded-full border border-[#c7dcf1] bg-white/85 px-3.5 py-1.5 text-xs font-bold tracking-wide text-[#1f5da4] shadow-sm">
-            <span className="h-2 w-2 rounded-full bg-[#20a37a]" />
-            全国の補助金をまとめて検索
-          </p>
-
-          <h1
-            id="subsidies-list-title"
-            className="mt-5 max-w-[660px] font-heading text-[clamp(2rem,4vw,3.55rem)] font-black leading-[1.2] tracking-[-0.035em] text-[#10294a]"
-          >
-            使える補助金を、
-            <br />
-            <span className="text-[#1766bd]">迷わず見つける。</span>
-          </h1>
-          <p className="mt-5 max-w-[580px] text-sm font-medium leading-7 text-[#526882] sm:text-[15px]">
-            国・自治体の補助金情報を集約。業種・地域・締切から、
-            <br className="hidden sm:block" />
-            自社に合う制度をスムーズに探せます。
-          </p>
-
-          <div className="mt-7 flex flex-wrap gap-3">
-            <a
-              href="#subsidy-search"
-              className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-[#075cc8] px-5 text-sm font-bold text-white shadow-[0_12px_24px_rgba(7,92,200,0.23)] transition hover:-translate-y-0.5 hover:bg-[#074fa9]"
-            >
-              補助金を検索する
-              <ArrowRight className="h-4 w-4" />
-            </a>
-            <Link
-              href="/consult"
-              className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl border border-[#a9c4e2] bg-white/90 px-5 text-sm font-bold text-[#18569d] shadow-sm transition hover:-translate-y-0.5 hover:bg-white"
-            >
-              無料相談する
-              <ArrowRight className="h-4 w-4" />
-            </Link>
-          </div>
-          <Link
-            href="/subsidies/articles"
-            className="mt-4 inline-flex w-fit items-center gap-1.5 text-xs font-bold text-[#276db5] transition hover:text-[#0c4e96]"
-          >
-            最新の解説記事を見る
-            <ArrowRight className="h-3.5 w-3.5" />
-          </Link>
+      {/* デスクトップ: 写真は4:3のままトリミングせず右端に配置（引きの構図） */}
+      <div className="pointer-events-none absolute inset-y-0 right-0 hidden md:block" aria-hidden>
+        <div className="relative aspect-[4/3] h-full">
+          <Image
+            src="/images/subsidies-list-hero-consult.webp"
+            alt=""
+            fill
+            priority
+            sizes="(min-width: 768px) 820px, 100vw"
+            quality={95}
+            className="object-cover"
+          />
+          <div className="absolute inset-0 bg-[linear-gradient(90deg,#f2f4f6_0%,rgba(242,244,246,0.85)_6%,rgba(242,244,246,0)_22%)]" />
         </div>
+      </div>
 
-        {/* モバイルはコピーの下に写真を独立配置 */}
-        <div className="relative -mx-5 mt-8 min-h-[300px] overflow-hidden sm:-mx-7 md:hidden">
-          <div className="absolute inset-0">
-            <Image
-              src="/images/subsidies-list-hero-business-woman.webp"
-              alt="補助金活用を検討する事業者"
-              fill
-              priority
-              sizes="100vw"
-              className="object-cover object-[67%_42%]"
-            />
-            <div
-              className="absolute inset-0 bg-[linear-gradient(180deg,#eff8ff_0%,rgba(239,248,255,0.08)_24%,rgba(239,248,255,0)_100%)]"
-              aria-hidden
-            />
-          </div>
-          <StatusCard
-            counts={counts}
-            openRatio={openRatio}
-            className="absolute bottom-5 left-1/2 -translate-x-1/2"
+      <div className="relative mx-auto w-full max-w-[1720px] px-5 pb-9 pt-16 sm:px-7 sm:pt-10 md:px-10 md:pb-11 md:pt-10 lg:px-14">
+        <p className="text-[13px] font-bold tracking-wide text-[#33475f]">
+          全国の補助金をまとめて検索
+        </p>
+
+        <h1
+          id="subsidies-list-title"
+          className="mt-3 font-heading text-[clamp(1.6rem,3vw,2.6rem)] font-black leading-[1.3] tracking-[-0.01em] text-[#12203a]"
+        >
+          <span className="text-[#1a6fe0]">使える補助金</span>を、迷わず見つける。
+        </h1>
+
+        <p className="mt-3 max-w-[520px] text-sm font-medium leading-7 text-[#43556e]">
+          国・自治体の補助金情報を集約。業種・地域・締切から、
+          <br className="hidden sm:block" />
+          自社に合う制度をスムーズに探せます。
+        </p>
+
+        {/* モバイルは写真を独立表示 */}
+        <div className="relative -mx-5 mt-5 aspect-[16/9] overflow-hidden sm:-mx-7 md:hidden">
+          <Image
+            src="/images/subsidies-list-hero-consult.webp"
+            alt="補助金の活用について相談する様子"
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover object-[center_20%]"
           />
         </div>
 
-        {/* 参考構図どおり、人物の右側へ独立配置 */}
-        <StatusCard
-          counts={counts}
-          openRatio={openRatio}
-          className="absolute right-[clamp(2rem,4vw,5rem)] top-1/2 hidden -translate-y-[42%] md:block"
-        />
+        {/* 検索パネル */}
+        <div className="mt-6 grid max-w-[760px] gap-5 rounded-2xl border border-[#e2e8f2] bg-white p-5 shadow-[0_18px_45px_rgba(21,52,94,0.14)] sm:p-6 md:mt-7 md:grid-cols-[minmax(0,1.05fr)_minmax(220px,0.85fr)]">
+          <div className="grid gap-3">
+            <FieldRow label="対象地域" icon={<MapPin className="h-4 w-4" />}>
+              <select
+                value={prefecture}
+                onChange={(e) => onPrefectureChange(e.target.value)}
+                className={SELECT_CLASS}
+                aria-label="対象地域で絞り込み"
+              >
+                <option value="">全国すべて</option>
+                {prefectureGroups.map((group) => (
+                  <optgroup key={group.label} label={group.label}>
+                    {group.prefectures.map((p) => (
+                      <option key={p} value={p}>
+                        {p}
+                      </option>
+                    ))}
+                  </optgroup>
+                ))}
+              </select>
+            </FieldRow>
+
+            <FieldRow label="業種" icon={<Briefcase className="h-4 w-4" />}>
+              <select
+                value={industry}
+                onChange={(e) => onIndustryChange(e.target.value)}
+                className={SELECT_CLASS}
+                aria-label="業種で絞り込み"
+              >
+                <option value="">すべての業種</option>
+                {industryOptions.map((i) => (
+                  <option key={i} value={i}>
+                    {i}
+                  </option>
+                ))}
+              </select>
+            </FieldRow>
+
+            <FieldRow label="締切" icon={<CalendarDays className="h-4 w-4" />}>
+              <select
+                value={deadline}
+                onChange={(e) => onDeadlineChange(e.target.value)}
+                className={SELECT_CLASS}
+                aria-label="受付状況で絞り込み"
+              >
+                {deadlineOptions.map((o) => (
+                  <option key={o.value} value={o.value}>
+                    {o.label}
+                  </option>
+                ))}
+              </select>
+            </FieldRow>
+
+            <FieldRow label="並び替え" icon={<ArrowUpDown className="h-4 w-4" />}>
+              <select
+                value={sort}
+                onChange={(e) => onSortChange(e.target.value)}
+                className={SELECT_CLASS}
+                aria-label="並び替え"
+              >
+                {sortOptions.map((o) => (
+                  <option key={o.value} value={o.value}>
+                    {o.label}
+                  </option>
+                ))}
+              </select>
+            </FieldRow>
+          </div>
+
+          <div className="flex flex-col justify-center gap-3 md:border-l md:border-[#e8edf5] md:pl-5">
+            <button
+              type="button"
+              onClick={onSearch}
+              className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl px-5 text-sm font-bold text-white shadow-[0_10px_22px_rgba(11,78,162,0.24)] transition hover:-translate-y-0.5 hover:brightness-110 [background:var(--nts-gradient-primary)]"
+            >
+              <Search className="h-4 w-4" />
+              補助金を検索する
+              <ArrowRight className="h-4 w-4" />
+            </button>
+            <Link
+              href="/consult"
+              className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl border border-[#b9cdea] bg-white px-5 text-sm font-bold text-[#18569d] shadow-sm transition hover:-translate-y-0.5 hover:bg-[#f6faff]"
+            >
+              <MessageCircle className="h-4 w-4" />
+              無料相談する
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+            <Link
+              href="/subsidies/articles"
+              className="inline-flex items-center justify-center gap-1.5 text-xs font-bold text-[#1d5fe8] transition hover:text-[#0c4e96]"
+            >
+              最新の解説記事を見る
+              <ArrowRight className="h-3.5 w-3.5" />
+            </Link>
+          </div>
+        </div>
       </div>
     </section>
   );

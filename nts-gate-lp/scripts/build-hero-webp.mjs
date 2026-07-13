@@ -69,3 +69,10 @@ const teamInfo = await sharp("public/images/subsidies-top-hero-team.jpg")
   .webp({ quality: 92 })
   .toFile("public/images/subsidies-top-hero-team.webp");
 console.log("team:", JSON.stringify(teamInfo));
+
+// --- 補助金一覧ヒーロー: 相談風景写真（マスクなし・高画質WebP） ---
+const consultInfo = await sharp("public/images/subsidies-list-hero-consult.jpg")
+  .sharpen({ sigma: 0.8 })
+  .webp({ quality: 96 })
+  .toFile("public/images/subsidies-list-hero-consult.webp");
+console.log("consult:", JSON.stringify(consultInfo));

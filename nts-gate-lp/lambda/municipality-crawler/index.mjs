@@ -59,6 +59,33 @@ function toSafeArray(value) {
     .slice(0, 20);
 }
 
+// LLM分類結果は業種を構造化して返さないため、name/description/targetBusiness からキーワードで推定する
+// （一覧ページの絞り込みに必要）。
+const INDUSTRY_KEYWORD_RULES = [
+  { label: "農林水産業", keywords: ["農業", "林業", "漁業", "水産", "畜産", "農園", "農地", "酪農"] },
+  { label: "製造業", keywords: ["製造業", "製造", "工場", "ものづくり", "モノづくり", "生産設備", "金属加工", "食品加工", "町工場"] },
+  { label: "建設業", keywords: ["建設業", "建設", "建築", "土木", "解体工事", "リフォーム", "住宅工事", "工事業"] },
+  { label: "物流・運輸", keywords: ["物流", "運輸業", "運送業", "倉庫業", "トラック運送", "配送業"] },
+  { label: "IT・情報通信", keywords: ["IT導入", "情報通信業", "ソフトウェア", "システム開発", "デジタル化", "情報サービス業", "アプリ開発"] },
+  { label: "小売・サービス業", keywords: ["小売業", "商店街", "商店", "小売店", "サービス業", "卸売業", "EC事業", "美容業"] },
+  { label: "医療・福祉", keywords: ["医療機関", "病院", "診療所", "クリニック", "介護", "福祉施設", "薬局", "訪問看護"] },
+  { label: "飲食業", keywords: ["飲食店", "飲食業", "レストラン", "居酒屋", "カフェ", "食堂"] },
+  { label: "観光・宿泊", keywords: ["観光", "宿泊業", "ホテル", "旅館", "民泊", "旅行業"] },
+];
+const BROAD_INDUSTRY_KEYWORDS = ["中小企業全般", "業種を問わず", "全業種", "全ての事業者", "すべての事業者", "業種問わず"];
+
+function inferIndustriesFromText(text) {
+  if (!text) return [];
+  const matched = new Set();
+  for (const rule of INDUSTRY_KEYWORD_RULES) {
+    if (rule.keywords.some((k) => text.includes(k))) matched.add(rule.label);
+  }
+  if (matched.size === 0 && BROAD_INDUSTRY_KEYWORDS.some((k) => text.includes(k))) {
+    matched.add("全業種");
+  }
+  return [...matched];
+}
+
 function normalizeSubsidyRate(value) {
   if (value == null) return null;
   const s = String(value).trim();
@@ -186,7 +213,15 @@ async function upsertMunicipalityGrant(client, municipality, discovered) {
   const fetchedAt = toIsoDateOrNull(discovered.fetchedAt) || new Date();
   const subsidyAmount = normalizeMaxAmount(discovered.maxAmount);
   const subsidyRate = normalizeSubsidyRate(discovered.subsidyRate);
-  const targetIndustries = toSafeArray(discovered.targetIndustries);
+  const explicitIndustries = toSafeArray(discovered.targetIndustries);
+  const targetIndustries =
+    explicitIndustries.length > 0
+      ? explicitIndustries
+      : inferIndustriesFromText(
+          [name, discovered.targetBusiness, discovered.description]
+            .filter((v) => typeof v === "string" && v.trim())
+            .join(" "),
+        );
   const targetIndustryNote =
     toSafeString(discovered.targetBusiness, 2000) || toSafeString(discovered.description, 2000);
   const description = toSafeString(discovered.description, MAX_DESC_LEN);
