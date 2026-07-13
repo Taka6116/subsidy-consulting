@@ -8,6 +8,7 @@ import SubsidyDeadlineRail, {
   type DeadlineRailItem,
 } from "@/components/subsidies/SubsidyDeadlineRail";
 import Pagination from "@/components/shared/Pagination";
+import SubsidiesListHero from "./SubsidiesListHero";
 
 type StatusTab = "all" | "open" | "soon" | "closed";
 type SortKey = "newest" | "deadline" | "amount";
@@ -145,12 +146,6 @@ function formatInstitution(grant: SubsidyCard): string {
   }
 }
 
-function formatUpdatedAt(updatedAt: string): string {
-  const d = new Date(updatedAt);
-  if (Number.isNaN(d.getTime())) return "-";
-  return `${d.getFullYear()}/${String(d.getMonth() + 1).padStart(2, "0")}/${String(d.getDate()).padStart(2, "0")}`;
-}
-
 function statusBadgeFor(grant: SubsidyCard): {
   label: string;
   className: string;
@@ -182,6 +177,11 @@ const SORT_OPTIONS: Array<{ value: SortKey; label: string }> = [
   { value: "amount", label: "補助上限が大きい順" },
 ];
 
+const FALLBACK_INDUSTRIES = [
+  "製造業", "建設業", "小売・サービス業", "IT・情報通信",
+  "物流・運輸", "農林水産業", "医療・福祉", "飲食業", "観光・宿泊", "その他",
+];
+
 const STATUS_TABS: Array<{ key: StatusTab; label: string }> = [
   { key: "all", label: "すべて" },
   { key: "open", label: "受付中" },
@@ -201,11 +201,6 @@ export default function SubsidiesListClient({
   const [sortKey, setSortKey] = useState<SortKey>("newest");
   const [page, setPage] = useState(1);
   const listTopRef = useRef<HTMLDivElement>(null);
-
-  const FALLBACK_INDUSTRIES = [
-    "製造業", "建設業", "小売・サービス業", "IT・情報通信",
-    "物流・運輸", "農林水産業", "医療・福祉", "飲食業", "観光・宿泊", "その他",
-  ];
 
   const industryOptions = useMemo(() => {
     const set = new Set<string>();
@@ -300,14 +295,6 @@ export default function SubsidiesListClient({
   const safePage = Math.min(Math.max(1, page), totalPages || 1);
   const visibleGrants = filtered.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE);
 
-  const latestUpdated = useMemo(() => {
-    if (grants.length === 0) return "-";
-    const latest = [...grants].sort(
-      (a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime(),
-    )[0];
-    return formatUpdatedAt(latest.updatedAt);
-  }, [grants]);
-
   const closingSoon = useMemo(() => {
     return [...grants]
       .filter((g) => {
@@ -345,30 +332,15 @@ export default function SubsidiesListClient({
   };
 
   return (
-    <div className="space-y-6">
-      {/* 圧縮Hero */}
-      <section className="rounded-2xl border border-[#dbe3f0] bg-white px-6 py-7 shadow-sm md:px-8 md:py-8">
-        <div className="flex flex-col gap-5 md:flex-row md:items-start md:justify-between">
-          <div>
-            <span className="inline-flex items-center rounded-full bg-[#eef3ff] px-3 py-1 text-xs font-bold text-[#1f3f85] ring-1 ring-[#dbe5fa]">
-              補助金データベース
-            </span>
-            <h1 className="mt-3 text-2xl font-black tracking-tight text-[#0d2640] md:text-3xl">
-              使える補助金を探す
-            </h1>
-            <p className="mt-2 max-w-[640px] text-sm leading-relaxed text-[#4f5b73] md:text-[15px]">
-              自治体・業種・目的・締切から、自社に合う補助金情報を確認できます。
-            </p>
-          </div>
-          <SubsidySignalStrip counts={counts} latestUpdated={latestUpdated} />
-        </div>
-        <p className="mt-4 text-[11px] text-[#6b7a99]">
-          全国の自治体・省庁ページから自動収集
-        </p>
-      </section>
+    <div>
+      <SubsidiesListHero counts={counts} />
 
-      {/* 検索・フィルター */}
-      <section className="rounded-2xl border border-[#dbe3f0] bg-white p-4 shadow-sm md:p-5">
+      <div className="relative z-20 mx-auto -mt-3 w-full max-w-[1720px] space-y-6 px-3 pb-7 md:-mt-5 md:px-5 md:pb-8 lg:px-6">
+        {/* 検索・フィルター */}
+        <section
+          id="subsidy-search"
+          className="scroll-mt-24 rounded-2xl border border-[#dbe3f0] bg-white p-4 shadow-[0_10px_30px_rgba(28,70,117,0.08)] md:p-5"
+        >
         <div className="grid gap-3 md:grid-cols-[1.6fr_1fr_1fr_auto] md:items-center">
           <div className="flex items-center rounded-xl border border-[#d6e1f4] bg-[#f9fbff] px-3 py-2.5 shadow-inner">
             <Search className="mr-2 h-4 w-4 shrink-0 text-[#8193bc]" />
@@ -497,10 +469,10 @@ export default function SubsidiesListClient({
             ) : null}
           </div>
         ) : null}
-      </section>
+        </section>
 
-      {/* 件数表示 */}
-      <div ref={listTopRef} className="flex flex-wrap items-center justify-between gap-2">
+        {/* 件数表示 */}
+        <div ref={listTopRef} className="flex flex-wrap items-center justify-between gap-2">
         <p className="text-sm text-[#4f5b73]">
           <span className="font-extrabold text-[#0d2640]">{filtered.length.toLocaleString("ja-JP")}</span>
           <span className="ml-1">件中</span>
@@ -517,10 +489,10 @@ export default function SubsidiesListClient({
             締切間近 {closingSoon.length}件あり
           </p>
         ) : null}
-      </div>
+        </div>
 
-      {/* リスト本体 */}
-      <section className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_300px]">
+        {/* リスト本体 */}
+        <section className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_300px]">
         <div>
           {filtered.length === 0 ? (
             <div className="rounded-2xl border border-dashed border-[#cdd6e6] bg-white px-6 py-16 text-center">
@@ -580,142 +552,7 @@ export default function SubsidiesListClient({
             </Link>
           </div>
         </aside>
-      </section>
-    </div>
-  );
-}
-
-// ─────────────────────────────────────────────────────────────
-// Subsidy Status Panel  (Live Index Console)
-// ─────────────────────────────────────────────────────────────
-function useCountUp(target: number, enabled: boolean) {
-  const [value, setValue] = useState(0);
-  const rafRef = useRef<number | null>(null);
-  useEffect(() => {
-    if (!enabled) { setValue(target); return; }
-    if (target === 0) { setValue(0); return; }
-    const duration = 900;
-    const start = performance.now();
-    const tick = (now: number) => {
-      const progress = Math.min((now - start) / duration, 1);
-      const eased = 1 - (1 - progress) ** 3;
-      setValue(Math.round(eased * target));
-      if (progress < 1) { rafRef.current = requestAnimationFrame(tick); }
-      else { setValue(target); }
-    };
-    rafRef.current = requestAnimationFrame(tick);
-    return () => { if (rafRef.current !== null) cancelAnimationFrame(rafRef.current); };
-  }, [target, enabled]);
-  return value;
-}
-
-function SubsidySignalStrip({
-  counts,
-  latestUpdated,
-}: {
-  counts: { all: number; open: number; soon: number };
-  latestUpdated: string;
-}) {
-  const [mounted, setMounted] = useState(false);
-  const prefersReduced =
-    typeof window !== "undefined" &&
-    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  useEffect(() => { setMounted(true); }, []);
-
-  const animate = mounted && !prefersReduced;
-  const dispAll  = useCountUp(counts.all,  animate);
-  const dispOpen = useCountUp(counts.open, animate);
-  const dispSoon = useCountUp(counts.soon, animate);
-
-  const openRatio = counts.all > 0 ? (counts.open / counts.all) * 100 : 0;
-
-  return (
-    <div
-      className="w-full shrink-0 overflow-hidden rounded-2xl transition-transform duration-200 hover:-translate-y-0.5 md:w-[300px] lg:w-[320px]"
-      style={{
-        background: "linear-gradient(160deg, #ffffff 0%, #f0f5ff 100%)",
-        border: "1px solid rgba(16,24,40,0.08)",
-        boxShadow:
-          "0 1px 2px rgba(16,24,40,0.06), 0 4px 8px rgba(16,24,40,0.04), 0 12px 24px rgba(16,24,40,0.03)",
-      }}
-    >
-      {/* ── 上段: ヘッダー ── */}
-      <div
-        className="flex items-center justify-between px-4 py-2.5"
-        style={{ borderBottom: "1px solid rgba(16,24,40,0.06)" }}
-      >
-        <div className="flex items-center gap-1.5">
-          <span
-            className="inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-[#1f4dab]"
-            style={{ background: "rgba(31,77,171,0.08)" }}
-          >
-            収集状況
-          </span>
-        </div>
-        <span className="text-[10px] font-medium tabular-nums text-[#8898b4]">
-          更新 {latestUpdated}
-        </span>
-      </div>
-
-      {/* ── 中段: メトリクス ── */}
-      <div className="px-4 py-4">
-        {/* 受付中: 主役 */}
-        <div className="mb-3 flex items-end justify-between">
-          <div>
-            <div className="flex items-center gap-1.5">
-              <span className="relative flex h-2 w-2 shrink-0" aria-hidden>
-                {!prefersReduced && mounted && (
-                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-40" />
-                )}
-                <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
-              </span>
-              <p className="text-[11px] font-semibold tracking-wide text-emerald-700">受付中</p>
-            </div>
-            <p className="mt-0.5 tabular-nums text-[2.25rem] font-black leading-none tracking-tight text-emerald-800">
-              {dispOpen.toLocaleString("ja-JP")}
-            </p>
-          </div>
-          {/* 右: 収集済み + 期限注意の小表示 */}
-          <div className="flex flex-col items-end gap-2 pb-0.5">
-            <div className="text-right">
-              <p className="text-[10px] font-medium text-[#8898b4]">収集済み</p>
-              <p className="tabular-nums text-[15px] font-black text-[#1e3060]">
-                {dispAll.toLocaleString("ja-JP")}
-              </p>
-            </div>
-            <div className="text-right">
-              <p className="text-[10px] font-medium text-[#8898b4]">期限注意</p>
-              <p className="tabular-nums text-[15px] font-black text-amber-700">
-                {dispSoon.toLocaleString("ja-JP")}
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* ── 下段: データレール ── */}
-      <div
-        className="px-4 pb-3"
-        style={{ borderTop: "1px solid rgba(16,24,40,0.05)" }}
-      >
-        <div className="mt-3 flex items-center gap-2">
-          <div
-            className="relative h-1.5 flex-1 overflow-hidden rounded-full"
-            style={{ background: "rgba(16,24,40,0.06)" }}
-            aria-label={`受付中比率 ${Math.round(openRatio)}%`}
-          >
-            <div
-              className="h-full rounded-full bg-emerald-400/70 transition-[width] duration-1000"
-              style={{ width: mounted ? `${openRatio}%` : "0%" }}
-            />
-          </div>
-          <span className="shrink-0 tabular-nums text-[10px] font-semibold text-[#8898b4]">
-            {Math.round(openRatio)}%
-          </span>
-        </div>
-        <p className="mt-1.5 text-[10px] text-[#a0aec0]">
-          受付中 / 収集済み
-        </p>
+        </section>
       </div>
     </div>
   );

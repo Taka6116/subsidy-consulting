@@ -93,9 +93,7 @@ export default async function SubsidiesListPage() {
     <>
       <Header />
       <main className="relative z-[2] min-h-[100svh] bg-[#f7f9fc] pt-16 font-body sm:pt-20">
-        <div className="mx-auto w-full max-w-[1720px] px-3 py-8 md:px-5 lg:px-6">
-          <SubsidiesListClient grants={grants} />
-        </div>
+        <SubsidiesListClient grants={grants} />
       </main>
       <LpFooter />
     </>
